@@ -1,0 +1,10 @@
+# exclude everything except directory _pyhton_
+__pycache__/
+/ede/ede/__pycache__/
+
+# exclude everything into csv directory
+csv/**
+
+#exclude *.pyc files
+*.pyc
+
