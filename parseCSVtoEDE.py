@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import requests, io, os
+import requests, io, os, sys
 
 def downloadFile(idFile='1j-1QXj-vM-pTYxsemzjFaszs-Sgwf4iM',fileName='ede.py'):
   urlFile = f'http://drive.google.com/uc?export=download&id={idFile}' 
@@ -18,10 +18,17 @@ def downloadFile(idFile='1j-1QXj-vM-pTYxsemzjFaszs-Sgwf4iM',fileName='ede.py'):
 def main():
   print(f"Iniciando programa...")
   fileName='ede.py'
-  pathDownloadFile = downloadFile()
-  
+  #pathDownloadFile = downloadFile()
+  if(len(sys.argv) < 2):
+    sys.argv.append('--help')
+
+  if('update' in sys.argv):
+    pathDownloadFile = downloadFile()
+  else:
+    pathDownloadFile = None
+
   if (not pathDownloadFile):
-    print(f"No se logró descargar el archivo '{fileName}' desde Internet...\nSe buscará una copia local...")
+    print(f"No se descargó el archivo '{fileName}' desde Internet...\nSe buscará una copia local...")
     if (os.path.exists(fileName)):
       print(f"Se encontró una copia local del archivo '{fileName}'...")
       pathDownloadFile = fileName
