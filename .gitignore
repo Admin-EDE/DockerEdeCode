@@ -1,10 +1,14 @@
-# exclude everything except directory _pyhton_
+# exclude everything into directory
+.devcontainer/
+.dockerignore
+.vscode
 __pycache__/
 /ede/ede/__pycache__/
-
-# exclude everything into csv directory
 csv/**
 
 #exclude *.pyc files
 *.pyc
 
+#exclude *.txt and *.zip
+*.txt
+*.zip
