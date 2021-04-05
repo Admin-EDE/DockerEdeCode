@@ -33,6 +33,7 @@ def setup_custom_logger(name, t_stamp):
   _logginLevel = logging.DEBUG if "--debug" in sys.argv else logging.INFO
   logger.setLevel(_logginLevel)
   logger.addHandler(handlerStream)
+  logger.addHandler(handlerFile)
   return logger
 
 def main():
