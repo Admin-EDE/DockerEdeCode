@@ -83,4 +83,4 @@ def main():
   logger.info(f'Tiempo de ejecucion: {str(time() - tiempo_inicial)}')
   
 if __name__== "__main__":
-  main();
+  main()
