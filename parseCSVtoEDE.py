@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-logger = logging.getLogger('root')
 
 #import argparse #Librería usada en funcion main() para crear el menú de la consola
 import importlib.util #utilizada en función module_from_file para cargar las librerías del estándar
@@ -9,6 +8,32 @@ import io, os, sys
 from datetime import datetime
 from pytz import timezone 
 from time import time #importamos la función time para capturar tiempos
+
+def module_from_file(module_name, file_path):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+def setup_custom_logger(name, t_stamp):
+  _nameLogFile = f'./{t_stamp}_LOG.txt'
+  stream_formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(levelname)s - %(message)s')
+  file_formatter=logging.Formatter(
+    '{"time": "%(asctime)s", "name": "%(name)s", "module": "%(module)s", "funcName": "%(funcName)s", \
+      "lineno": "%(lineno)d", "levelname": "%(levelname)s", "message": "%(message)s", "pathname": "%(pathname)s"}'
+  )
+
+  handlerStream = logging.StreamHandler(); 
+  handlerStream.setFormatter(stream_formatter)
+  
+  handlerFile = logging.FileHandler(_nameLogFile, mode='w', encoding='utf8')
+  handlerFile.setFormatter(file_formatter)
+
+  logger = logging.getLogger(name)
+  _logginLevel = logging.DEBUG if "--debug" in sys.argv else logging.INFO
+  logger.setLevel(_logginLevel)
+  logger.addHandler(handlerStream)
+  return logger
 
 def main():
   tiempo_inicial = time()
@@ -58,31 +83,4 @@ def main():
   logger.info(f'Tiempo de ejecucion: {str(time() - tiempo_inicial)}')
   
 if __name__== "__main__":
-  main();  
-
-def module_from_file(module_name, file_path):
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-def setup_custom_logger(name, t_stamp):
-  _nameLogFile = f'./{t_stamp}_LOG.txt'
-  stream_formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(levelname)s - %(message)s')
-  file_formatter=logging.Formatter(
-    '{"time": "%(asctime)s", "name": "%(name)s", "module": "%(module)s", "funcName": "%(funcName)s", \
-      "lineno": "%(lineno)d", "levelname": "%(levelname)s", "message": "%(message)s", "pathname": "%(pathname)s"}'
-  )
-
-  handlerStream = logging.StreamHandler(); 
-  handlerStream.setFormatter(stream_formatter)
-  
-  handlerFile = logging.FileHandler(_nameLogFile, mode='w', encoding='utf8')
-  handlerFile.setFormatter(file_formatter)
-
-  logger = logging.getLogger(name)
-  _logginLevel = logging.DEBUG if "--debug" in sys.argv else logging.INFO
-  logger.setLevel(_logginLevel)
-  logger.addHandler(handlerStream)
-  logger.addHandler(handlerFile)
-  return logger
+  main();
