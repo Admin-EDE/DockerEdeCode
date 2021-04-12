@@ -4,8 +4,7 @@
 .vscode
 __pycache__/
 /ede/ede/__pycache__/
-/csv/*.csv
-!/csv/
+
 
 #exclude *.pyc files
 *.pyc
