@@ -639,7 +639,7 @@ class check:
   #VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3E6(self):
     try:
-      _l = self.jornadasList
+      _l = self.jornadaList
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaJornada(e)])
         _r   = False if len(_err)>0 else True
