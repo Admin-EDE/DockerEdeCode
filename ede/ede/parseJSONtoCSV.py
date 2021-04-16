@@ -88,13 +88,20 @@ class parse:
             
             record.append(value)
           records.append(record)
-      _t = f"tabla:{tbl}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
       return self.eliminarDuplicados(records)
     except Exception as e:
-      _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
-    finally:
-      logger.info(_t)
-    return True    
+      _t = f"ERROR:{str(e)}."
+      if(gruop):
+        _t+= f"Grupo: {grupo}."
+      if(tbl):
+        _t+= f"Tabla: {tbl}."
+      if(col):
+        _t+= f"Columna: {col}."
+      if(_tipo):
+        _t+="_Tipo:{_tipo}."
+      if(value):
+        _t+="value:{value}"
+      logger.info()
 
   def eliminarDuplicados(self,mylist):
     seen = set()
@@ -121,7 +128,7 @@ class parse:
       _t = f"Table {TableName} -> {_c} registros procesados."
       _f.close()        
     except Exception as e:
-      _t = f"ERROR:'{str(e)}'. Tabla:'{TableName}'. Unique_records: {Unique_records}"
+      _t = f"ERROR:'{str(e)}'. Tabla:'{TableName}'. #Registros: '{_c}'"
     finally:
       logger.info(_t)
     return True
