@@ -101,7 +101,7 @@ class parse:
         _t+="_Tipo:{_tipo}."
       if(value):
         _t+="value:{value}"
-      logger.info()
+      logger.info(_t)
 
   def eliminarDuplicados(self,mylist):
     seen = set()
