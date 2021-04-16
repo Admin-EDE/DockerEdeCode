@@ -90,17 +90,17 @@ class parse:
           records.append(record)
       return self.eliminarDuplicados(records)
     except Exception as e:
-      _t = f"ERROR:{str(e)}."
+      _t = f"ERROR:{str(e)}.\n"
       if(grupo):
-        _t+= f"Grupo: {grupo}."
+        _t+= f"Grupo: {grupo}.\n"
       if(tbl):
-        _t+= f"Tabla: {tbl}."
+        _t+= f"Tabla: {tbl}.\n"
       if(col):
-        _t+= f"Columna: {col}."
+        _t+= f"Columna: {col}.\n"
       if(_tipo):
-        _t+="_Tipo:{_tipo}."
+        _t+=f"_Tipo:{_tipo}.\n"
       if(value):
-        _t+="value:{value}"
+        _t+=f"value:{value}.\n"
       logger.info(_t)
 
   def eliminarDuplicados(self,mylist):
