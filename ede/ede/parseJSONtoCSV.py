@@ -91,7 +91,7 @@ class parse:
       return self.eliminarDuplicados(records)
     except Exception as e:
       _t = f"ERROR:{str(e)}."
-      if(gruop):
+      if(grupo):
         _t+= f"Grupo: {grupo}."
       if(tbl):
         _t+= f"Tabla: {tbl}."
