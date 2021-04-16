@@ -71,26 +71,26 @@ class parse:
     return jsonData,file
 
   def leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(self,jsonData,elem):
-    #Mapeo de tipos de datos SQL -> Pyhton
-    records = []
-    for grupo in jsonData[elem['JSONGroupName']]:
-      for tbl in grupo[elem['TableName']]:
-        record = []
-        for indice,col in enumerate(elem['ColumnList']):
-          dt = elem['DataType'][indice]
-          _tipo = ''.join([s for s in list(dt) if s.isalpha()])
-          
-          value = tbl.get(col) if (tbl.get(col) is not None) else ''
-          
-          if(_tipo in {'bit', 'bigint', 'int', 'smallint', 'tinyint'} and value!=''):
-            try:
-                value = int(value)
-            except Exception as e:
-              _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"; logger.info(_t);
-           
-          record.append(value)
-        records.append(record)
-    return self.eliminarDuplicados(records)
+    try:
+      #Mapeo de tipos de datos SQL -> Pyhton
+      records = []
+      for grupo in jsonData[elem['JSONGroupName']]:
+        for tbl in grupo[elem['TableName']]:
+          record = []
+          for indice,col in enumerate(elem['ColumnList']):
+            dt = elem['DataType'][indice]
+            _tipo = ''.join([s for s in list(dt) if s.isalpha()])
+            
+            value = tbl.get(col) if (tbl.get(col) is not None) else ''
+            
+            if(_tipo in {'bit', 'bigint', 'int', 'smallint', 'tinyint'} and value!=''):
+              value = int(value)
+            
+            record.append(value)
+          records.append(record)
+      return self.eliminarDuplicados(records)
+    except Exception as e:
+      _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"; logger.info(_t);
 
   def eliminarDuplicados(self,mylist):
     seen = set()
