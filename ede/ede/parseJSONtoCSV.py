@@ -92,7 +92,7 @@ class parse:
     except Exception as e:
       _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
     finally:
-      logger.info(_t)
+      logger.info(f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}")
     return True
     
 
