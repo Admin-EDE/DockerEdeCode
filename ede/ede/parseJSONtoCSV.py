@@ -121,7 +121,7 @@ class parse:
       _t = f"Table {TableName} -> {_c} registros procesados."
       _f.close()        
     except Exception as e:
-      _t = f"ERROR:'{str(e)}'. Tabla:'{TableName}'. {_c} registros perdidos."
+      _t = f"ERROR:'{str(e)}'. Tabla:'{TableName}'. Unique_records: {Unique_records}"
     finally:
       logger.info(_t)
     return True
