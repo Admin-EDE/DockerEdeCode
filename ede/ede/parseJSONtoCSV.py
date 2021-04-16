@@ -90,8 +90,6 @@ class parse:
           records.append(record)
       return self.eliminarDuplicados(records)
     except Exception as e:
-      _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
-    finally:
       logger.info(f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}")
     return True
     
