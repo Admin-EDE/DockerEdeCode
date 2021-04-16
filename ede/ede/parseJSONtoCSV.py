@@ -61,7 +61,7 @@ class parse:
               jsonfile.close()
             os.remove(file)
       else:
-        file = path_to_file;
+        file = path_to_file
         _t=f"Trabajando sobre archivo: '{file}'"; logger.info(_t)
         with open(file, mode='r', encoding="utf-8") as jsonfile:
           jsonData = json.load(jsonfile)
@@ -88,11 +88,13 @@ class parse:
             
             record.append(value)
           records.append(record)
+      _t = f"tabla:{tbl}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
       return self.eliminarDuplicados(records)
     except Exception as e:
-      logger.info(f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}")
-    return True
-    
+      _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
+    finally:
+      logger.info(_t)
+    return True    
 
   def eliminarDuplicados(self,mylist):
     seen = set()
@@ -119,5 +121,7 @@ class parse:
       _t = f"Table {TableName} -> {_c} registros procesados."
       _f.close()        
     except Exception as e:
-      logger.info(f"ERROR:'{str(e)}'. Tabla:'{TableName}'. {_c} registros perdidos.")
+      _t = f"ERROR:'{str(e)}'. Tabla:'{TableName}'. {_c} registros perdidos."
+    finally:
+      logger.info(_t)
     return True
