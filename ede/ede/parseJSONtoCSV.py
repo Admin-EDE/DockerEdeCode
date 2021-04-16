@@ -90,7 +90,11 @@ class parse:
           records.append(record)
       return self.eliminarDuplicados(records)
     except Exception as e:
-      logger.info(f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}")
+      _t = f"ERROR:{str(e)}. _Tipo:{_tipo}. value:{value}. Columna:{col}"
+    finally:
+      logger.error(_t)
+    return True
+    
 
   def eliminarDuplicados(self,mylist):
     seen = set()
@@ -119,5 +123,5 @@ class parse:
     except Exception as e:
       _t = f"ERROR:'{str(e)}'. Tabla:'{TableName}'. {_c} registros perdidos."
     finally:
-      logger.info(_t);
+      logger.info(_t)
     return True
