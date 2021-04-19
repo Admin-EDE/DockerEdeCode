@@ -810,7 +810,7 @@ class check:
         curso2 = list(set([m[0] for m in courses2 if m[0] is not None]))
         _c = len(set(curso1) & set(curso2))
         _err = "No coinciden los ID de Curso en las tablas Organization + Course + K12Course"
-        logger.info(f"Aprobado") if _c == 0 else logger.error(_err)
+        logger.info(f"Aprobado") if _c == len(curso1) == len(curso2) else logger.error(_err)
       else:
         logger.error(f"S/Datos")
 
