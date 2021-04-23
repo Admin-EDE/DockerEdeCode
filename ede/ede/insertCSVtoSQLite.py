@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-logger = logging.getLogger('root');
+logger = logging.getLogger('root')
 
 import pandas as pd 
 import numpy as np
@@ -20,8 +20,8 @@ import shutil
 
 class insert:
   def __init__(self, args):
-    self.args = args;
-    logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}");
+    self.args = args
+    logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}")
     #t_stamp = self.args.t_stamp;
     # self._encode = _encode
     # self._sep = _sep
@@ -34,7 +34,7 @@ class insert:
     self.encriptarClaveParaLaSuperintendencia()
         
   def execute(self):
-    return self.transferCSVToSQL_withPandas(self.args.path_to_dir_csv_file, self.args.path_to_DB_file, self.args.secPhase);
+    return self.transferCSVToSQL_withPandas(self.args.path_to_dir_csv_file, self.args.path_to_DB_file, self.args.secPhase)
     
   def cargarBaseDeDatos(self, fileName):
     #idFile = '1hqAjAknc6dY720X5zO_ZU2FqI_mZa3nB'
@@ -122,13 +122,13 @@ class insert:
     conn = engine.connect()
     for root, dirs, files in os.walk(path_to_dir_csv_file, topdown=False):
       for name in files:
-        logger.info(f"\nProcesando archivo {name}...");
+        logger.info(f"\nProcesando archivo {name}...")
         tbl = name[:-4]
         rows = conn.execute(f"pragma table_info('{tbl}');")
-        logger.info(f"Abriendo tabla: '{tbl}' y obteniendo sus columnas... {rows.returns_rows}");
+        logger.info(f"Abriendo tabla: '{tbl}' y obteniendo sus columnas... {rows.returns_rows}")
         if(not rows.returns_rows):
           logger.info(f"No existe tabla con el nombre: '{tbl}', no se procesará el archivo...")
-          continue;
+          continue
 
         jsonCol = self.dict_factory(rows)
         logger.info(f"jsonCol: {jsonCol}")
@@ -136,7 +136,7 @@ class insert:
         _fileName = os.path.join(root, name)
         df = pd.read_csv(_fileName,sep=self.args._sep,encoding=self.args._encode,dtype=jsonCol)
         _c = str(df.count()[0])                
-        logger.info(f'Leyendo: {_fileName} -> {_c} registros procesados.');
+        logger.info(f'Leyendo: {_fileName} -> {_c} registros procesados.')
 
         try:
           df.to_sql(tbl, con = conn, index=False, if_exists='append')
@@ -150,6 +150,6 @@ class insert:
           logger.info(f"name: {name}")
           #self.dfLog.loc[self.dfLog['csv']==_fileName,self.dfLog.columns=='#readingRows'] = _c
           #self.dfLog.loc[self.dfLog['csv']==_fileName,self.dfLog.columns=='resultReading'] = _result                              
-          logger.info(f"Table: {tbl} #Rows: {len(df.index)} {_result}");
+          logger.info(f"Table: {tbl} #Rows: {len(df.index)} {_result}")
     conn.close()
     return _r
