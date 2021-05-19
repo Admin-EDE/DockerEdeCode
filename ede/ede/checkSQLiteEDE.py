@@ -976,3 +976,6 @@ class check:
     _t = f"VERIFICA CLAVE ALEATORIA DOCENTES: {_r}"
     logger.info(_t);
     return _r
+
+### Appoderado INICIO ###
+### Appoderado FIN ###
