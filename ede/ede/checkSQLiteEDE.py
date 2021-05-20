@@ -982,25 +982,4 @@ class check:
 
 
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
-  
-  # Prueba GIT (no considerar contenido)
-  # VALIDA LA EXISTENCIA DE PERSONAS AUTORIZADAS PARA RETIRO POR ALUMNO
-  def fn0FA(self, conn):
-    try:
-      rows = conn.execute("SELECT RUN FROM personList;").fetchall()
-      logger.info(f"Personas Autorizadas: {len(rows)}")
-      if(len(rows)>0):
-        # VALIDA QUE LA LISTA TENGA DATOS
-        self.rutLista = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))        
-        logger.info(f"Aprobado")
-      else:
-        logger.error(f"S/Datos")
-
-      return True    
-
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista personList para obtener la lista de personas autorizadas para retiro por alumno: {str(e)}")
-      logger.error(f"Rechazado")
-      return False  
-
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
