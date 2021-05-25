@@ -980,6 +980,9 @@ class check:
 ### Appoderado INICIO ###
 ### Appoderado FIN ###
 
+### WebClass INICIO ###
+### WebClass FIN ###
+
 
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
