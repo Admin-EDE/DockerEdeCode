@@ -985,4 +985,28 @@ class check:
 
 
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
+  #VALIDO QUE EXISTA INFORMACION DE ALUMNOS
+  def fn0FA(self, conn):
+    try:
+      rows = conn.execute("""
+      SELECT 
+        a.personId        
+      FROM PersonList
+      WHERE Role like '%Estudiante%';
+    """).fetchall()
+
+      logger.info(f"len(estudiantes): {len(rows)}")
+
+      if(len(rows)>0):
+        self.personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        logger.info(f"Aprobado")
+      else:
+        logger.error(f"S/Datos")
+
+      return True    
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la tabla OrganizationPersonRole: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
