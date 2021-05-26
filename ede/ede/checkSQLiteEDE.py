@@ -985,28 +985,47 @@ class check:
 
 
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
-  #VALIDO QUE EXISTA INFORMACION DE ALUMNOS
+
+  #VALIDO QUE LA LISTA PersonList FILTRADA POR ALUMNOS Y PERSONAS AUTORIZADAS PARA RETIRO CONTENGA DATOS
   def fn0FA(self, conn):
     try:
       rows = conn.execute("""
       SELECT 
-        a.personId        
+        personId,
+        tieneRelacionCon,
+        RetirarEstudiantesIndicador
       FROM PersonList
       WHERE Role like '%Estudiante%';
     """).fetchall()
-
       logger.info(f"len(estudiantes): {len(rows)}")
-
       if(len(rows)>0):
-        self.personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        tieneRelacionCon = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        RetirarEstudiantesIndicador = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        self.comparaRelacionCon = [len(personId) == len(tieneRelacionCon) == len(RetirarEstudiantesIndicador)]
         logger.info(f"Aprobado")
       else:
         logger.error(f"S/Datos")
-
-      return True    
-
+      return True 
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la tabla OrganizationPersonRole: {str(e)}")
+      logger.error(f"NO se pudo ejecutar la consulta a la vista PersonList: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  #VALIDO QUE LOS ALUMNOS TENGAN PERSONA ASOCIADA Y ESTA ULTIMA PERMISO PARA RETIRARLO
+  def fn0FB(self):
+    try:
+      _l = self.comparaRelacionCon
+      if(len(_l)>0):
+        _r   = _l
+        _t = f"VERIFICA QUE TODAS LAS PERSONAS RELACIONADAS: {_r}.";
+        logger.info(_t) if _r else logger.error(_t)
+        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+      else:
+        logger.info("S/Datos")
+      return True
+    except Exception as e:
+      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
