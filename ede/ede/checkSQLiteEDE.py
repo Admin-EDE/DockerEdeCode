@@ -42,7 +42,7 @@ class check:
       "fn28B": "No/Verificado",
       "fn3F0": "self.fn3F0(conn)",
       "fn3F1": "self.fn3F1(conn)",
-      "fn3F2": "self.fn3F2(conn)",
+      "fn3F2": "self.fn3F2(conn)", 
       "fn3F3": "self.fn3F3()",
       "fn3F4": "self.fn3F4()",
       "fn3F5": "self.fn3F5()",
@@ -1026,6 +1026,32 @@ class check:
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  #VALIDO SI HAY INFORMACION DE RETIROS NO HABITUALES
+  def fnXX(self,conn):
+    try:
+      rows = conn.execute("""
+      SELECT 
+        personId,
+        tieneRelacionCon,
+        RetirarEstudiantesIndicador
+      FROM PersonList
+      WHERE Role like '%Estudiante%';
+    """).fetchall()
+      logger.info(f"len(estudiantes): {len(rows)}")
+      if(len(rows)>0):
+        personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        tieneRelacionCon = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        RetirarEstudiantesIndicador = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        self.comparaRelacionCon = [len(personId) == len(tieneRelacionCon) == len(RetirarEstudiantesIndicador)]
+        logger.info(f"Aprobado")
+      else:
+        logger.error(f"S/Datos")
+      return True 
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la vista PersonList: {str(e)}")
       logger.error(f"Rechazado")
       return False
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
