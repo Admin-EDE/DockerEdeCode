@@ -335,7 +335,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaFormatoNumero(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DEL NUMERO DE LISTA DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DEL FORMATO DEL NUMERO DE LISTA DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -353,7 +353,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaFormatoNumero(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL NUMERO DE MATRICULA DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DEL NUMERO DE MATRICULA DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -371,7 +371,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaFormatoFecha(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DE LAS DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DEL FORMATO DE LAS DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -895,7 +895,7 @@ class check:
     return False
 
   def validaTribalAffiliation(self, e):
-    _lista = self.listValidations['TribalAffiliationDescriptionList']
+    _lista = list(set(self.listValidations['TribalAffiliationDescriptionList']))
     return True if e in _lista else False
 
   def validaBoolean(self, e):
