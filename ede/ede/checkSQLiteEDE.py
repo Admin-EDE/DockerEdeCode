@@ -22,7 +22,7 @@ class check:
     self.args = args;
     logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}");
     self.functions = {
-      "fn0FA": "No/Verificado",
+      "fn0FA": "self.fn0FA(conn)",
       "fn0FB": "No/Verificado",
       "fn1FA": "No/Verificado",
       "fn1FB": "No/Verificado",
@@ -986,72 +986,62 @@ class check:
 
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
 
-  #VALIDO QUE LA LISTA PersonList FILTRADA POR ALUMNOS Y PERSONAS AUTORIZADAS PARA RETIRO CONTENGA DATOS
+ ### FN0FA INICIO ###
   def fn0FA(self, conn):
     try:
       rows = conn.execute("""
-      SELECT 
-        personId,
-        tieneRelacionCon,
-        RetirarEstudiantesIndicador
-      FROM PersonList
-      WHERE Role like '%Estudiante%';
+      SELECT A.personId
+      FROM PersonList A
+	    JOIN OrganizationPersonRole B 
+      ON A.personId = B.personId	
+	    JOIN jerarquiasList C 
+      ON B.OrganizationId = C.OrganizationIdDelCurso
+      WHERE A.Role like '%Estudiante%'
+      AND C.nivel NOT IN ('03:Educación Básica Adultos'
+							            ,'06:Educación Media Humanístico Científica Adultos'
+							            ,'08:Educación Media Técnico Profesional y Artística, Adultos');
     """).fetchall()
-      logger.info(f"len(estudiantes): {len(rows)}")
-      if(len(rows)>0):
-        personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        tieneRelacionCon = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        RetirarEstudiantesIndicador = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        self.comparaRelacionCon = [len(personId) == len(tieneRelacionCon) == len(RetirarEstudiantesIndicador)]
-        logger.info(f"Aprobado")
-      else:
-        logger.error(f"S/Datos")
-      return True 
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista PersonList: {str(e)}")
-      logger.error(f"Rechazado")
-      return False
 
-  #VALIDO QUE LOS ALUMNOS TENGAN PERSONA ASOCIADA Y ESTA ULTIMA PERMISO PARA RETIRARLO
-  def fn0FB(self):
-    try:
-      _l = self.comparaRelacionCon
-      if(len(_l)>0):
-        _r   = _l
-        _t = f"VERIFICA QUE TODAS LAS PERSONAS RELACIONADAS: {_r}.";
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-      return True
-    except Exception as e:
-      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-      return False
-
-  #VALIDO SI HAY INFORMACION DE RETIROS NO HABITUALES
-  def fnXX(self,conn):
-    try:
-      rows = conn.execute("""
-      SELECT 
-        personId,
-        tieneRelacionCon,
-        RetirarEstudiantesIndicador
-      FROM PersonList
-      WHERE Role like '%Estudiante%';
-    """).fetchall()
-      logger.info(f"len(estudiantes): {len(rows)}")
+      logger.info(f"VERIFICA QUE EXISTA LISTADO DE ALUMNOS EN VISTA PERSONLIST Y QUE TENGAN PERSONAS ASOCIADAS Y AUTORIZADAS PARA RETIRO.")
+      
       if(len(rows)>0):
+        cont = 0
         personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        tieneRelacionCon = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        RetirarEstudiantesIndicador = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        self.comparaRelacionCon = [len(personId) == len(tieneRelacionCon) == len(RetirarEstudiantesIndicador)]
-        logger.info(f"Aprobado")
+
+        for alumno in personId:
+
+              select = "SELECT tieneRelacionCon, RetirarEstudianteIndicador  FROM  PersonList WHERE personId ="
+              condicion = str(alumno)
+              query = select+condicion
+              tieneRelacionCon = conn.execute(query).fetchall()
+
+              persona = self.convertirArray2DToList(list([m[0] for m in tieneRelacionCon if m[0] is not None]))  
+              retira = self.convertirArray2DToList(list([m[1] for m in tieneRelacionCon if m[1] is not None]))
+
+              if(len(persona)>0 and len(retira)>0):
+                if("SI" in retira):
+                  cont = cont + 1
+
+        logger.info(f"Total Alumnos                                     : {len(rows)}")
+        logger.info(f"Total Personas asociadas y autorizadas para retiro: {cont}")
+
+        if(cont == len(rows)):
+          logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
+          logger.info(f"Apobado")
+          return True
+        else:
+          logger.error(f"No todos los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
+          logger.error(f"Rechazado")
+          return False
+
       else:
-        logger.error(f"S/Datos")
-      return True 
+        logger.info(f"S/Datos")
+        return  False
+
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista PersonList: {str(e)}")
+      logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
       logger.error(f"Rechazado")
       return False
+### FN0FA FIN ###
+   
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
