@@ -23,7 +23,7 @@ class check:
     logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}");
     self.functions = {
       "fn0FA": "self.fn0FA(conn)",
-      "fn0FB": "No/Verificado",
+      "fn0FB": "self.fn0FB(conn)",
       "fn1FA": "No/Verificado",
       "fn1FB": "No/Verificado",
       "fn1FC": "No/Verificado",
@@ -989,7 +989,7 @@ class check:
  ### FN0FA INICIO ###
   def fn0FA(self, conn):
     try:
-      rows = conn.execute("""
+      r_ = conn.execute("""
       SELECT A.personId
       FROM PersonList A
 	    JOIN OrganizationPersonRole B 
@@ -1004,28 +1004,24 @@ class check:
 
       logger.info(f"VERIFICA QUE EXISTA LISTADO DE ALUMNOS EN VISTA PERSONLIST Y QUE TENGAN PERSONAS ASOCIADAS Y AUTORIZADAS PARA RETIRO.")
       
-      if(len(rows)>0):
-        cont = 0
-        personId = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+      if(len(r_)>0):
+        c_ = 0
+        p_ = self.convertirArray2DToList(list([m[0] for m in r_ if m[0] is not None]))
 
-        for alumno in personId:
+        for a_ in p_:
+          s_ = "SELECT RetirarEstudianteIndicador  FROM  PersonRelationship WHERE personId = '%s'" %(str(a_))
+          t_ = conn.execute(s_).fetchall()
+          r2_ = self.convertirArray2DToList(list([m[0] for m in t_ if m[0] is not None]))
 
-              select = "SELECT tieneRelacionCon, RetirarEstudianteIndicador  FROM  PersonList WHERE personId ="
-              condicion = str(alumno)
-              query = select+condicion
-              tieneRelacionCon = conn.execute(query).fetchall()
+          if(len(r2_)>0):
+            for r in r2_:
+              if(r == True):
+                c_ = c_ + 1
 
-              persona = self.convertirArray2DToList(list([m[0] for m in tieneRelacionCon if m[0] is not None]))  
-              retira = self.convertirArray2DToList(list([m[1] for m in tieneRelacionCon if m[1] is not None]))
+        logger.info(f"Total Alumnos                                     : {len(r_)}")
+        logger.info(f"Total Personas asociadas y autorizadas para retiro: {c_}")
 
-              if(len(persona)>0 and len(retira)>0):
-                if("SI" in retira):
-                  cont = cont + 1
-
-        logger.info(f"Total Alumnos                                     : {len(rows)}")
-        logger.info(f"Total Personas asociadas y autorizadas para retiro: {cont}")
-
-        if(cont == len(rows)):
+        if(c_ == len(r_)):
           logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
           logger.info(f"Apobado")
           return True
@@ -1043,5 +1039,89 @@ class check:
       logger.error(f"Rechazado")
       return False
 ### FN0FA FIN ###
+
+### FN0FB INICIO ###
+
+  def fn0FB(self, conn):
+    try:
+
+      r_ = conn.execute("""
+      SELECT a.OrganizationPersonRoleId
+          ,a.ExitDate
+		      ,a.personId
+      FROM OrganizationPersonRole a
+	    JOIN jerarquiasList B 
+      ON A.OrganizationId = B.OrganizationIdDelCurso
+      WHERE a.RoleId = 6
+      AND a.ExitDate IS NOT NULL
+	    AND B.nivel NOT IN ('03:Educación Básica Adultos'
+							            ,'06:Educación Media Humanístico Científica Adultos'
+							            ,'08:Educación Media Técnico Profesional y Artística, Adultos');
+    """).fetchall()
+
+      logger.info(f"VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DE ALUMNOS QUE NO PERTENECEN A EDUCACION DE ADULTOS.")
+
+      if(len(r_)>0):
+
+        for r in r_:
+          o_ = r[0]
+          f_ = r[1] 
+          p_ = r[2] 
+
+          s1_ = "SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador ,B.OrganizationPersonRoleId FROM PersonRelationship A JOIN OrganizationPersonRole B ON A.RelatedPersonId = B.personId WHERE A.personId = '%s'" %(str(p_))
+          tr1_ = conn.execute(s1_).fetchall()
+          logger.info(f"VERIFICA QUE EL ALUMNO TENGA PERSONAS ASOCIADAS.")
+          
+          if(len(tr1_)>0):
+            for t1_ in tr1_:
+              p2_ = t1_[0]
+              r_ = t1_[1]
+              opr_ = t1_[2]
+
+              s2_ = "SELECT Date,digitalRandomKey,fileScanBase64 FROM RoleAttendanceEvent WHERE OrganizationPersonRoleId = '%s' and Date = '%s'" %(str(opr_),str(f_))
+              tr2_ = conn.execute(s2_).fetchall()
+              logger.info(f"VERIFICA QUE LA PERSONA QUE RETIRA AL ALUMNO REGISTRE FIRMA DIGITAL O DOCUMENTO ESCANEADO DE AUTORIZACION.")
+            
+              if(len(tr2_)>0):
+                for t2_ in tr2_:
+                  d_  = str(t2_[0])
+                  rk_ = str(t2_[1])
+                  fb_ = str(t2_[2])
+                  logger.info(f"rk_ "+rk_)
+                  logger.info(f"fb_ "+fb_)         
+                  if(d_ == f_):
+                    if rk_ != "None":
+                      logger.info(f"Registro contiene randomKey para el retiro anticipado.")
+                      logger.info(f"Apobado")
+                      return True
+                  elif fb_ != "None":
+                      logger.info(f"Registro contiene documento digitalizado para el retiro anticipado.")
+                      logger.info(f"Apobado")
+                      return True
+                  else:
+                    logger.info(f"Registro NO contiene randomKey ni documento digitalizado para el retiro anticipado.")
+                    logger.error(f"Rechazado")
+                    return False
+            else:
+              logger.error(f"Falta informacion en tabla RoleAttendanceEvent de retiro anticipado de alumnos.")
+              logger.error(f"Rechazado")
+              return False   
+
+          else:
+            logger.info(f"El alumno no tiene ninguna persona asociada en los registros del establecimiento.")
+            logger.error(f"Rechazado")
+            return False
+
+      else:
+        logger.info(f"NO existen registros de retiro anticipado de alumnos.")
+        logger.info(f"Apobado")
+        return True
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+### FN0FB FIN ###
    
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
