@@ -1044,76 +1044,165 @@ class check:
 
   def fn0FB(self, conn):
     try:
+      
+      _msg = ""
+      _f1 = False
+      _drk = 0 #DigitalRandomKey
+      _pr = 0 #PersonId autorizada para retiro
 
-      r_ = conn.execute("""
-      SELECT a.OrganizationPersonRoleId
-          ,a.ExitDate
-		      ,a.personId
-      FROM OrganizationPersonRole a
-	    JOIN jerarquiasList B 
-      ON A.OrganizationId = B.OrganizationIdDelCurso
-      WHERE a.RoleId = 6
-      AND a.ExitDate IS NOT NULL
-	    AND B.nivel NOT IN ('03:Educación Básica Adultos'
-							            ,'06:Educación Media Humanístico Científica Adultos'
-							            ,'08:Educación Media Técnico Profesional y Artística, Adultos');
-    """).fetchall()
+      _s1 = """SELECT a.OrganizationPersonRoleId
+                      ,date(a.ExitDate) as ExitDate
+                      ,time(a.ExitDate) as ExitTime
+                      ,a.personId
+                FROM OrganizationPersonRole a                
+                JOIN Organization B
+                ON A.OrganizationId = B.OrganizationId
+                JOIN RefOrganizationType D
+                ON B.RefOrganizationTypeId = D.RefOrganizationTypeId
+                WHERE a.RoleId = 6
+                AND a.ExitDate IS NOT NULL
+                AND B.name NOT IN ('03:Educación Básica Adultos'
+                                    ,'06:Educación Media Humanístico Científica Adultos'
+                                    ,'08:Educación Media Técnico Profesional y Artística, Adultos')
+				        AND D.Description = 'K12 School';"""
 
-      logger.info(f"VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DE ALUMNOS QUE NO PERTENECEN A EDUCACION DE ADULTOS.")
+      _s2 = """SELECT a.OrganizationPersonRoleId
+                      ,date(a.ExitDate) as ExitDate
+                      ,time(a.ExitDate) as ExitTime
+                      ,a.personId
+                FROM OrganizationPersonRole a 
+                JOIN Organization B
+                ON A.OrganizationId = B.OrganizationId
+                JOIN RefOrganizationType C
+                ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
+                WHERE date(a.ExitDate) = ?
+                AND (c.Description = 'Course Section' or c.Description = 'Course');"""
 
-      if(len(r_)>0):
+      _s3 = """SELECT digitalRandomKey,		
+                      fileScanBase64,
+                      observaciones
+                FROM RoleAttendanceEvent
+              WHERE OrganizationPersonRoleId = ? 
+                AND (RefAttendanceEventTypeId = 2 OR RefAttendanceEventTypeId = 5)
+                AND RefAttendanceStatusId = 5
+                AND date(Date) = ?
+                and time(Date) = ?;"""
 
-        for r in r_:
-          o_ = r[0]
-          f_ = r[1] 
-          p_ = r[2] 
+      _s4 = """SELECT a.OrganizationPersonRoleId
+                      ,date(a.ExitDate) as ExitDate
+                      ,time(a.ExitDate) as ExitTime
+                      ,a.personId
+                      ,a.RoleId
+                FROM OrganizationPersonRole a 
+                JOIN Organization B
+                ON A.OrganizationId = B.OrganizationId
+                JOIN RefOrganizationType C
+                ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
+                WHERE date(a.ExitDate) = ?
+                AND time(a.ExitDate) = ?
+                AND c.Description = 'K12 School';"""
 
-          s1_ = "SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador ,B.OrganizationPersonRoleId FROM PersonRelationship A JOIN OrganizationPersonRole B ON A.RelatedPersonId = B.personId WHERE A.personId = '%s'" %(str(p_))
-          tr1_ = conn.execute(s1_).fetchall()
-          logger.info(f"VERIFICA QUE EL ALUMNO TENGA PERSONAS ASOCIADAS.")
-          
-          if(len(tr1_)>0):
-            for t1_ in tr1_:
-              p2_ = t1_[0]
-              r_ = t1_[1]
-              opr_ = t1_[2]
+      _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
+                    FROM PersonRelationship A 
+                    WHERE A.personId = ?"""
 
-              s2_ = "SELECT Date,digitalRandomKey,fileScanBase64 FROM RoleAttendanceEvent WHERE OrganizationPersonRoleId = '%s' and Date = '%s'" %(str(opr_),str(f_))
-              tr2_ = conn.execute(s2_).fetchall()
-              logger.info(f"VERIFICA QUE LA PERSONA QUE RETIRA AL ALUMNO REGISTRE FIRMA DIGITAL O DOCUMENTO ESCANEADO DE AUTORIZACION.")
-            
-              if(len(tr2_)>0):
-                for t2_ in tr2_:
-                  d_  = str(t2_[0])
-                  rk_ = str(t2_[1])
-                  fb_ = str(t2_[2])
-                  logger.info(f"rk_ "+rk_)
-                  logger.info(f"fb_ "+fb_)         
-                  if(d_ == f_):
-                    if rk_ != "None":
-                      logger.info(f"Registro contiene randomKey para el retiro anticipado.")
-                      logger.info(f"Apobado")
-                      return True
-                  elif fb_ != "None":
-                      logger.info(f"Registro contiene documento digitalizado para el retiro anticipado.")
-                      logger.info(f"Apobado")
-                      return True
-                  else:
-                    logger.info(f"Registro NO contiene randomKey ni documento digitalizado para el retiro anticipado.")
-                    logger.error(f"Rechazado")
-                    return False
-            else:
-              logger.error(f"Falta informacion en tabla RoleAttendanceEvent de retiro anticipado de alumnos.")
-              logger.error(f"Rechazado")
-              return False   
+      #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
+      logger.info(f"VERIFICA CONSISTENCIA EN FECHA Y HORA DE REGISTROS DE RETIRO Y LA EXISTENCIA DE FIRMA DIGITAL Y/O DOCUMENTO DIGITALIZADO DE AUTORIZACION PARA EL CASO DE QUIEN RETIRA.")
+      _r = conn.execute(_s1).fetchall()
+      if(len(_r)>0):
+        for r in _r:         
+          _o = r[0]
+          _f = r[1]
+          _t = r[2] 
+          _p = r[3] 
+          #VERIFICA SI EXISTE REGISTRO DE RETIRO DE CLASES PREVIO AL RETIRO DEL ESTABLECIMIENTO EN LA MISMA FECHA (OrganizationPersonRole)
+          _v = (str(_f))
+          _r2 = conn.execute(_s2, _v).fetchall()
+          if (len(_r2)>0):
+            for r2 in _r2:              
+              _o2 = r2[0]
+              _f2 = r2[1]
+              _t2 = r2[2]
+              _p2 = r2[3] 
 
+              if(_p == _p2):
+                _v2 = (str(_o2),str(_f2),str(_t2))
+                _r3 = conn.execute(_s3, _v2).fetchall()                
+                if(len(_r3)>0):
+                  for r3 in _r3:
+                    _drk = r3[0]
+                    if _drk is None:
+                      logger.error(f"Registro de salida de clases no tiene firma de docente (OrganizationPersonRole).")
+                      logger.error(f"Rechazado")
+                      return False
+                else:
+                  logger.error(f"No hay registro de retiro de clases (RoleAttendanceEvent)")
+                  logger.error(f"Rechazado")
+                  return False
+
+              else:
+                _v2 = (str(_o2),str(_f2),str(_t2))
+                _r3 = conn.execute(_s3, _v2).fetchall() 
+                if(len(_r3)>0):
+                  for r3 in _r3:
+                    _drk2 = r3[0]
+
+                    if _drk2 is None:
+                      logger.error(f"Registro de salida de clases no tiene firma de docente (RoleAttendanceEvent).")
+                      logger.error(f"Rechazado")
+                      return False
           else:
-            logger.info(f"El alumno no tiene ninguna persona asociada en los registros del establecimiento.")
+            logger.error(f"NO existe registro de salida de clases previo al retiro del establecimiento del alumno.")
             logger.error(f"Rechazado")
             return False
+          
+          #VERIFICA SI EXISTE REGISTRO DE RETIRO DE ESTABLECIMIENTO Y QUE COINCIDA CON FECHA Y HORA (RoleAttendanceEvent)
+          _v4 = (str(_f),str(_t))
+          _r4 = conn.execute(_s4, _v4).fetchall()
+          if(len(_r4)>0):
+            for r4 in _r4:
+              _o4 = r4[0]
+              _f4 = r4[1]
+              _t4 = r4[2]
+              _p4 = r4[3] 
+              _rl4 = r4[4] 
 
+              _v5 = (str(_o4),str(_f4),str(_t4))
+              _r5 = conn.execute(_s3, _v5).fetchall()
+              #logger.info(f"_o4 {str(_o4)},_f4 {str(_f4)},_t4 {str(_t4)},_rl {str(_rl4)}")
+              if(len(_r5)>0):
+                for r5 in _r5:
+                  _drk = r5[0]
+                  _fsb = r5[1]
+                  _obs = r5[2]
+                  if(_rl4 == 6):
+                    if(_drk is None and _obs is None):
+                      logger.error(f"Falta firma y observacion en registro de retiro de estudiante de establecimiento.")
+                      logger.error(f"Rechazado")
+                      return False
+                  elif(_rl4 == 11):
+                    if _drk is None:
+                      logger.error(f"Falta firma de administrativo en registro de retiro de estudiante de establecimiento.")
+                      logger.error(f"Rechazado")
+                      return False
+                  else:
+                    _v6 = (_p4)
+                    _r6 = conn.execute(_s5, _v6).fetchall()                
+                    if(len(_r6)>0):
+                      for r6 in _r6:
+                        _pr = r6[1]
+                        if not _pr:
+                          logger.info(f"La persona que retira a alumno no figura como autorizado en el sistema.")
+                          logger.info(f"Apobado")
+                          return True
+                    if(_drk is None and _fsb is None):
+                      logger.error(f"Falta firma o documento digitalizado de apoderado en registro de retiro de estudiante de establecimiento.")
+                      logger.error(f"Rechazado")
+                      return False
+
+        return True
       else:
-        logger.info(f"NO existen registros de retiro anticipado de alumnos.")
+        logger.info(f"NO existen registros de retiro anticipado del establecimiento de alumnos.")
         logger.info(f"Apobado")
         return True
 
