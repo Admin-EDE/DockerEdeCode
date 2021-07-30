@@ -59,8 +59,10 @@ def main():
     args.func(args); #Ejecuta la función por defecto
   else:
     logger.info(parser.format_help())
-    
-  zipFile = ZipFile(f'./{t_stamp}_Data.zip','a')
+
+  zipfileName = f'{t_stamp}_Data.zip'
+
+  zipFile = ZipFile(f'./{zipfileName}','a')
   listFiles = [
     f'./{t_stamp}_key.txt',
     f'./{t_stamp}_key.encrypted',
@@ -79,7 +81,8 @@ def main():
         zipFile.write(file)
       if not file.startswith('./csv/'):
         os.remove(file)
-
+  
+  logger.info(f'Archivo creado con éxito: {zipfileName}')
   logger.info("Finalizando ejecución desde 'ede.py'...")
   logger.info(f'Tiempo de ejecucion: {str(time() - tiempo_inicial)}')
   
