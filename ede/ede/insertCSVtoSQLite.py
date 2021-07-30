@@ -48,8 +48,13 @@ class insert:
     return path_to_DB_file
 
   def getPublicKeyFromEmail(self,email):
-    url = './ede/ede/RegistroEDE.csv'
-    df = pd.read_csv(url)
+    try:
+      url = 'https://docs.google.com/spreadsheets/d/1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A/export?format=csv&id=1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A'
+      df = pd.read_csv(url)
+    except:
+      logger.info('Error al cargar planilla online, se cargará la planilla local')
+      url = './ede/ede/RegistroEDE.csv'
+      df = pd.read_csv(url)
     _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
     _t=f"clave pública: {df[df['Dirección de correo electrónico']=='admin@ede.mineduc.cl']['Clave Pública'].values[0]}"; logger.info(_t)
     return df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
