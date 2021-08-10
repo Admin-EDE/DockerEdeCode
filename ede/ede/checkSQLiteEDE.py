@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
-logger = logging.getLogger('root');
+logger = logging.getLogger('root')
 
 from validate_email import validate_email
 import re
 from itertools import cycle
 from datetime import datetime
-from pytz import timezone 
+from pytz import timezone
 import os
 import pandas as pd
 import numpy as np
