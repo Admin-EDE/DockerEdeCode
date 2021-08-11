@@ -24,9 +24,9 @@ class check:
     self.functions = {
       "fn0FA": "self.fn0FA(conn)",
       "fn0FB": "self.fn0FB(conn)",
-      "fn1FA": "No/Verificado",
-      "fn1FB": "No/Verificado",
-      "fn1FC": "No/Verificado",
+      "fn1FA": "self.fn1FA(conn)",
+      "fn1FB": "self.fn1FB(conn)",
+      "fn1FC": "self.fn1FC(conn)",
       "fn2FA": "No/Verificado",
       "fn2EA": "No/Verificado",
       "fn2DA": "No/Verificado",
