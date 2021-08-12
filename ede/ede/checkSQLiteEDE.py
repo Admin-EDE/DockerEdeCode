@@ -42,7 +42,7 @@ class check:
       "fn28B": "No/Verificado",
       "fn3F0": "self.fn3F0(conn)",
       "fn3F1": "self.fn3F1(conn)",
-      "fn3F2": "self.fn3F2(conn)", 
+      "fn3F2": "self.fn3F2(conn)",
       "fn3F3": "self.fn3F3()",
       "fn3F4": "self.fn3F4()",
       "fn3F5": "self.fn3F5()",
@@ -263,7 +263,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validarRUN(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}"; 
+        _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}";
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -904,7 +904,9 @@ class check:
   # VERIFICA DATOS DE LAS ORGANIZACIONES
   # VERIFICA JERARQUIA DE LOS DATOS
   # la jerarquí es:
-  #  RBD -> Modalidad -> Jornada -> Niveles -> Rama -> Sector Económico -> Especialidad -> Tipo de Curso -> COD_ENSE -> Grado -> Curso -> Asignatura
+  #  RBD -> Modalidad -> Jornada -> Niveles -> Rama -> 
+  #  Sector Económico -> Especialidad ->
+  #  Tipo de Curso -> COD_ENSE -> Grado -> Curso -> Asignatura
   def validaFormatoRBD(self, e):
     r = re.compile('^RBD\d{5}$')
     if(isinstance(e,str)):
@@ -1456,12 +1458,11 @@ class check:
 
 ### Mi Aula INICIO ###
 
- ### Registro de Salidas y Retiros (No Habituales) INICIO ###
- ### FN0FA INICIO ###
+### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
+### FN0FA INICIO ###
   def fn0FA(self, conn):
     try:
-      _l = []
-      _r = conn.execute("""
+      r_ = conn.execute("""
       SELECT A.personId
       FROM PersonList A
 	    JOIN OrganizationPersonRole B 
@@ -1476,33 +1477,26 @@ class check:
 
       logger.info(f"VERIFICA QUE EXISTA LISTADO DE ALUMNOS EN VISTA PERSONLIST Y QUE TENGAN PERSONAS ASOCIADAS Y AUTORIZADAS PARA RETIRO.")
       
-      if(len(_r)>0):
-        _c = 0
-        _p = self.convertirArray2DToList(list([m[0] for m in _r if m[0] is not None]))
+      if(len(r_)>0):
+        c_ = 0
+        p_ = self.convertirArray2DToList(list([m[0] for m in r_ if m[0] is not None]))
 
-        for _a in _p:
-          _s = "SELECT RetirarEstudianteIndicador  FROM  PersonRelationship WHERE personId = '%s'" %(str(_a))
-          _t = conn.execute(_s).fetchall()
-          _r2 = self.convertirArray2DToList(list([m[0] for m in _t if m[0] is not None]))
+        for a_ in p_:
+          s_ = "SELECT RetirarEstudianteIndicador  FROM  PersonRelationship WHERE personId = '%s'" %(str(a_))
+          t_ = conn.execute(s_).fetchall()
+          r2_ = self.convertirArray2DToList(list([m[0] for m in t_ if m[0] is not None]))
 
-          if(len(_r2)>0):
-            for r in _r2:
+          if(len(r2_)>0):
+            for r in r2_:
               if(r == True):
-                _c = _c + 1
-              else:
-                _s1 = "SELECT RUN  FROM  PersonList WHERE personId = %s" %(str(_a))
-                _t1 = conn.execute(_s1).fetchall()
-                if(len(_t1)>0):
-                  for t in _t1:                   
-                    _l.append(t)                         
+                c_ = c_ + 1
 
-        logger.info(f"Total Alumnos                                     : {len(_r)}")
-        logger.info(f"Total Personas asociadas y autorizadas para retiro: {_c}")
-        logger.info(f"RUTs sin datos: {_l}")
+        logger.info(f"Total Alumnos                                     : {len(r_)}")
+        logger.info(f"Total Personas asociadas y autorizadas para retiro: {c_}")
 
-        if(_c == len(_r)):
+        if(c_ == len(r_)):
           logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
-          logger.info(f"Aprobado")
+          logger.info(f"Apobado")
           return True
         else:
           logger.error(f"No todos los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
@@ -1520,7 +1514,6 @@ class check:
 ### FN0FA FIN ###
 
 ### FN0FB INICIO ###
-
   def fn0FB(self, conn):
     try:
       
@@ -1672,7 +1665,7 @@ class check:
                         _pr = r6[1]
                         if not _pr:
                           logger.info(f"La persona que retira a alumno no figura como autorizado en el sistema.")
-                          logger.info(f"Aprobado")
+                          logger.info(f"Apobado")
                           return True
                     if(_drk is None and _fsb is None):
                       logger.error(f"Falta firma o documento digitalizado de apoderado en registro de retiro de estudiante de establecimiento.")
@@ -1682,20 +1675,18 @@ class check:
         return True
       else:
         logger.info(f"NO existen registros de retiro anticipado del establecimiento de alumnos.")
-        logger.info(f"Arpobado")
+        logger.info(f"Apobado")
         return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
-### FN0FB FIN ###
-### Registro de Salidas y Retiros (No Habituales) FIN ###
+### FN0FB FIN ###   
+### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
 
 ### Registro de la entrega de la informacion INICIO ###
 ### fn1FA INICIO ###
-
 def fn1FA(self, conn):
     try:
 
@@ -1787,11 +1778,9 @@ def fn1FA(self, conn):
     logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
     logger.error(f"Rechazado")
     return False
-
 ### 1FA FIN ###
 
 ### fn1FB INICIO ###
-
 def fn1FB(self, conn):
     try:
       _l = []
@@ -1895,8 +1884,8 @@ def fn1FB(self, conn):
     logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
     logger.error(f"Rechazado")
     return False
-
 ### fn1FB FIN ###
+
 ### fn1FC INICIO ###
 def fn1FC(self, conn):
     try:
@@ -2005,7 +1994,6 @@ def fn1FC(self, conn):
     logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
     logger.error(f"Rechazado")
     return False
-
 ### fn1FC FIN ###
 ### Registro de la entrega de la informacion FIN ###
    
