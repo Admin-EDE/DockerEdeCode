@@ -1995,6 +1995,7 @@ def fn1FC(self, conn):
     logger.error(f"Rechazado")
     return False
 ### fn1FC FIN ###
+
 ### Registro de la entrega de la informacion FIN ###
    
 
