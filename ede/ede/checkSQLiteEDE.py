@@ -213,20 +213,20 @@ class check:
   def fn3F2(self, conn):
     try:
       rows = conn.execute("""
-        SELECT 
+        SELECT
           RUN
           ,IPE
           ,emailAddress
           ,emailAddressType
-          ,TelephoneNumber 
+          ,TelephoneNumber
           ,telephoneNumberType
-          ,numeroListaCurso    
+          ,numeroListaCurso
           ,numeroMatricula
           ,fechaIncorporacionEstudiante
           ,fechaRetiroEstudiante
           ,fechaCumpleanos
           ,TribalAffiliationDescription
-        FROM PersonList;
+        FROM PersonList where role like '%Estudiante%';
       """).fetchall()
 
       logger.info(f"len(personList): {len(rows)}")
@@ -455,7 +455,7 @@ class check:
   def fn3FE(self, conn):
     try:
       rows = conn.execute("""
-      SELECT 
+      SELECT
         personId
         ,ciudadNacimiento
         ,regionNacimiento
@@ -531,7 +531,7 @@ class check:
       else:
         logger.error(f"S/Datos")
 
-      return True    
+      return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por docentes: {str(e)}")
@@ -594,7 +594,7 @@ class check:
   #VERIFICA SI LA VISTA jerarquiasList contiene información
   def fn3E4(self, conn):
     try:
-      rows = conn.execute("SELECT * FROM jerarquiasList;").fetchall()
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso  FROM jerarquiasList;").fetchall()
       logger.info(f"len(organizaciones): {len(rows)}")
       if(len(rows)>0):
         self.modalidadList = self.convertirArray2DToList(list(set([m[2] for m in rows if m[2] is not None])))
@@ -1384,43 +1384,44 @@ class check:
   ## Fin fn8F3 WC ##
   ## Inicio fn8F2 WC ##
   def fn8F2(self,conn):
-      try:
-          i=0
-          j=0
-          conex=conn.cursor()
-          Lista_incidencias=conex.execute(""" from * Organization O join OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
-          join Person P on OPR.PersonId = P.PersonId
-          join Incident I on OPR.OrganizationPersonRoleId = I.OrganizationPersonRoleId
-          join IncidentPerson IP on I.IncidentId = IP.IncidentId
-          join K12StudentDiscipline KSD on I.IncidentId = KSD.IncidentId
-          where OPR.RoleId=6;""").fetchall()
-          a=len(Lista_incidencias)
-          d=len(Lista_incidencias[0])
-          if Lista_incidencias is not None:
-              for fila in Lista_incidencias:
-                  for fila[i] in fila:
-                      if fila[i] is None:
-                          logger.error(f"Dato en vacion en incidencia:",{fila},"no se puede continuar validacion")
-                          logger.error(f'Rechazado')
-                          return False
-                      else:
-                          if j==a and i==d:
-                              logger.info(f"Datos completos y verificados")
-                              logger.infor(f'Aprobado')
-                              return True
-                          else:
-                              j+=1
-                              i+=1
-          else:
-              logger.error(f"S/Datos ")
-              logger.error(f"Rechazado")
-              return False
-      except Exception as e:
-          logger.error(f"NO se pudo ejecutar la verificación en la lista")
-          logger.error(f"Rechazado")
-          return False
-  ## Fin fn8F2 WC ##
-  ## WebClass Fin ##
+    try:
+        i=0
+        j=0
+        conex=conn.cursor()
+        Lista_incidencias=conex.execute("""SELECT * FROM Organization O JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
+    JOIN Person P on OPR.PersonId = P.PersonId
+    JOIN Incident I on OPR.OrganizationPersonRoleId = I.OrganizationPersonRoleId
+    JOIN IncidentPerson IP on I.IncidentId = IP.IncidentId
+    JOIN K12StudentDiscipline KSD on I.IncidentId = KSD.IncidentId
+    WHERE OPR.RoleId=6;""").fetchall()
+        a=len(Lista_incidencias)
+        d=len(Lista_incidencias[0])
+        if Lista_incidencias is not None:
+
+            for fila in Lista_incidencias:
+                for fila[i] in fila:
+                    if fila[i] is None:
+                        logger.error(f"Dato en vacion en incidencia:",{fila},"no se puede continuar validacion", )
+                        return False
+                    else:
+                        if j==a and i==d:
+                            logger.info(f"Datos completos y verificados")
+                            return True
+                        else:
+                            j+=1
+                            i+=1
+        else:
+            logger.error(f"S/Datos ")
+            logger.error(f"Rechazado")
+
+    except Exception as e:
+        logger.error(f"NO se pudo ejecutar la verificación en la lista")
+        logger.error(f"Rechazado")
+        return False
+
+## Fin fn8F2##
+
+### WebClass FIN ###
 
 
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula INICIO ###
@@ -1503,7 +1504,7 @@ class check:
                 AND B.name NOT IN ('03:Educación Básica Adultos'
                                     ,'06:Educación Media Humanístico Científica Adultos'
                                     ,'08:Educación Media Técnico Profesional y Artística, Adultos')
-				        AND D.Description = 'K12 School';"""
+                AND D.Description = 'K12 School';"""
 
       _s2 = """SELECT a.OrganizationPersonRoleId
                       ,date(a.ExitDate) as ExitDate
@@ -1517,11 +1518,11 @@ class check:
                 WHERE date(a.ExitDate) = ?
                 AND (c.Description = 'Course Section' or c.Description = 'Course');"""
 
-      _s3 = """SELECT digitalRandomKey,		
+      _s3 = """SELECT digitalRandomKey,
                       fileScanBase64,
                       observaciones
                 FROM RoleAttendanceEvent
-              WHERE OrganizationPersonRoleId = ? 
+              WHERE OrganizationPersonRoleId = ?
                 AND (RefAttendanceEventTypeId = 2 OR RefAttendanceEventTypeId = 5)
                 AND RefAttendanceStatusId = 5
                 AND date(Date) = ?
@@ -1532,7 +1533,7 @@ class check:
                       ,time(a.ExitDate) as ExitTime
                       ,a.personId
                       ,a.RoleId
-                FROM OrganizationPersonRole a 
+                FROM OrganizationPersonRole a
                 JOIN Organization B
                 ON A.OrganizationId = B.OrganizationId
                 JOIN RefOrganizationType C
@@ -1542,7 +1543,7 @@ class check:
                 AND c.Description = 'K12 School';"""
 
       _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
-                    FROM PersonRelationship A 
+                    FROM PersonRelationship A
                     WHERE A.personId = ?"""
 
       #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
