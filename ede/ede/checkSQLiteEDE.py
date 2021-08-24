@@ -34,12 +34,12 @@ class check:
       "fn2CA": "No/Verificado",
       "fn2CB": "No/Verificado",
       "fn2BA": "No/Verificado",
-      "fn2AA": "No/Verificado",
+      "fn2AA": "self.fn2AA(conn)",
       "fn29A": "No/Verificado",
       "fn29B": "No/Verificado",
       "fn29C": "No/Verificado",
       "fn28A": "No/Verificado",
-      "fn28B": "No/Verificado",
+      "fn28B": "self.fn28B(conn)",
       "fn3F0": "self.fn3F0(conn)",
       "fn3F1": "self.fn3F1(conn)",
       "fn3F2": "self.fn3F2(conn)",
@@ -1420,7 +1420,96 @@ class check:
         return False
 
 ## Fin fn8F2##
+## Inicio fn2AA WC ##
+  def fn2AA(self, conn):
+        try:
+            results = conn.execute("""
+            select p.personId
+            from Person p join PersonStatus ps on p.PersonId=ps.PersonId
+            where p.RefVisaTypeId=6 and ps.StatusValue=1 and ps.RefPersonStatusTypeId=25;
+            """).fetchall()
 
+            resultsTwo = conn.execute("""
+            select p.personId
+            from Person p
+            join PersonStatus ps on p.PersonId=ps.PersonId
+            where p.RefVisaTypeId=6 and ps.RefPersonStatusTypeId=25;
+            """).fetchall()
+
+            if(len(results)>0 and len(resultsTwo)>0):
+                lista = list(set([m[0] for m in results if m[0] is not None]))
+                listaDos = list(set([m[0] for m in resultsTwo if m[0] is not None]))
+
+
+                if lista == listaDos:
+                    logger.info(f"todos los alumnos de intercambios fueron aprobados")
+                    logger.info(f"Aprobado")
+                    return True
+                else :
+                    logger.error(f'bo todos los alumnos de intercambio han sido aprobados')
+                    logger.error(f'Rechazado')
+                    return False
+
+
+            else:
+                logger.error(f"Sin Datos")
+                logger.error(f'Rechazado')
+                return False
+
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn2AA WC ##
+
+## Inicio fn28B WC ##
+  def fn28B(self, conn):
+        try:
+            _query = conn.execute("""
+            select
+                PS.PersonStatusId,
+                PS.PersonId,
+                PS.RefPersonStatusTypeId,
+                PS.docNumber,
+                PS.Description,
+                PS.fileScanBase64
+            from OrganizationPersonRole OPR
+                    join Person P on OPR.PersonId = P.PersonId
+                    join PersonStatus PS on P.PersonId = PS.PersonId
+                    join PersonBirthplace PB on P.PersonId = PB.PersonId
+            where OPR.RoleId = 6
+            and PB.RefCountryId != 45
+            and PS.RefPersonStatusTypeId = 34
+            group by P.PersonId;
+            """).fetchall()
+            if(len(_query)>0):
+                _docNumber = (list([m[3] for m in _query if m[0] is not None]))
+                if not _docNumber :
+                    logger.error(f"Sin Nro de documento")
+                    logger.error(f'Rechazado')
+                    return False
+                _description = (list([m[4] for m in _query if m[0] is not None]))
+                if not _description :
+                    logger.error(f"Sin descripcion de documento")
+                    logger.error(f'Rechazado')
+                    return False
+                _fileScanBase64 = (list([m[5] for m in _query if m[0] is not None]))
+                if not _fileScanBase64 :
+                    logger.error(f"Sin fileScanBasse64")
+                    logger.error(f'Rechazado')
+                    return False
+                logger.info(f'Certificado de convalidacion de ramos validado')
+                logger.info(f'Aprobado')
+                return True
+            else:
+                logger.error(f"S/Datos")
+                logger.error(f"Rechazado")
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn28B WC ##
 ### WebClass FIN ###
 
 
