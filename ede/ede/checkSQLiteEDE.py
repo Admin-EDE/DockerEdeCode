@@ -24,9 +24,9 @@ class check:
     self.functions = {
       "fn0FA": "self.fn0FA(conn)",
       "fn0FB": "self.fn0FB(conn)",
-      "fn1FA": "No/Verificado",
-      "fn1FB": "No/Verificado",
-      "fn1FC": "No/Verificado",
+      "fn1FA": "self.fn1FA(conn)",
+      "fn1FB": "self.fn1FB(conn)",
+      "fn1FC": "self.fn1FC(conn)",
       "fn2FA": "No/Verificado",
       "fn2EA": "No/Verificado",
       "fn2DA": "No/Verificado",
@@ -91,8 +91,8 @@ class check:
       "fn5E5": "self.fn5E5(conn)",
       "fn5E6": "No/Verificado",
       "fn5D0": "self.fn5D0(conn date)",
-      "fn6F0": "No/Verificado",
-      "fn6F1": "No/Verificado",
+      "fn6F0": "self.fn6F0(conn)",
+      "fn6F1": "self.fn6F1(conn)",
       "fn6E0": "No/Verificado",
       "fn6E1": "No/Verificado",
       "fn6E2": "No/Verificado",
@@ -2104,5 +2104,500 @@ class check:
       return False
 
 ### FN0FB FIN ###
-
 ### Registro de Salidas y Retiros (No Habituales) Mi Aula FIN ###
+### Registro de la entrega de la informacion INICIO ###
+### fn1FA INICIO ###
+  def fn1FA(self, conn):
+    _Apo=[]
+    try:
+
+     # VALIDO LA EXISTENCIA DE ALUMNOS RETIRADOS Y QUE TENGAN REGISTRADA FECHA DE RETIRO
+      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
+                FROM PersonStatus A
+                JOIN PersonIdentifier B
+                ON A.personId = B.personId
+                JOIN OrganizationPersonRole C
+                ON A.personId = C.personId
+                where A.RefPersonStatusTypeId = 30;"""
+
+      # OBTENGO INFORMACION DE APODERADO
+      _s2 = """SELECT A.RelatedPersonId ,A.personId
+                FROM PersonRelationship A
+                JOIN OrganizationPersonRole B
+                ON A.RelatedPersonId = B.personId
+                WHERE A.personId = ?
+                AND B.RoleId = 15;"""
+
+      # OBTENGO ID DE INCIDENTE ASOCIADO
+      _s3 = """SELECT A.IncidentId
+                FROM IncidentPerson A
+                JOIN Incident B
+                ON A.IncidentId = B.IncidentId
+                WHERE A.personId = ?
+                AND B.RefIncidentBehaviorId = 33;"""
+
+      # OBTENGO INFORMACION DE PERSONAS ASOCIADAS A INCIDENTE
+      _s4 = """SELECT A.personId,A.RefIncidentPersonTypeId ,A.digitalRandomKey, A.fileScanBase64
+                FROM IncidentPerson A
+                WHERE A.IncidentId = ?;"""
+
+      #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
+      logger.info(f"VERIFICA LA EXISTENCIA DE REGISTRO DE RETIROS DE ESTUDIANTES DEL ESTABLECIMIENTO.")
+      _r = conn.execute(_s1).fetchall()
+      if(len(_r)>0):
+        _p = self.convertirArray2DToList(list([m[0] for m in _r if m[0] is not None]))
+        _i = self.convertirArray2DToList(list([m[1] for m in _r if m[1] is not None]))
+        _opr = self.convertirArray2DToList(list([m[2] for m in _r if m[2] is not None]))
+        _ed = self.convertirArray2DToList(list([m[3] for m in _r if m[3] is not None])) 
+        #VALIDO QUE REIGISTRO DE RETIRO TENGA FECHA DEL EVENTO
+        if (len(_p)>len(_ed)):
+          logger.error(f"Existen registros de retiros de estudiantes del establecimiento sin fecha de evento.")
+          logger.error(f"Rechazado")
+          return False
+        else:
+          for p in _p:
+            _v = str(p)
+            _r2 = conn.execute(_s2,_v).fetchall()
+            if(len(_r2)>0):  
+              for rp in _r2:
+                _v3 = str(rp[0])
+                _r3 = conn.execute(_s3, _v3).fetchall()
+                if(len(_r3)>0):
+                  for r3 in _r3:
+                    _v4 = r3
+                    _r4 = conn.execute(_s4, _v4).fetchall()
+                    if(len(_r4)>0):
+                      for r4 in _r4:
+                        va1=str(r4[2])
+                        va2=str(r4[3])
+                        if(str(r4[1]) == "44"): #docente
+                          if va1 is None:
+                            logger.error(f"No hay registro de firma digital de docente / administrativo para incidente.")
+                            logger.error(f"Rechazado")
+                            return False
+                        elif(str(r4[1]) == "43"): #apoderado
+                          if va1 is None: 
+                            if va2 is None:
+                              logger.error(f"No hay registro de firma digital ni documento digitalizado de apoderado para incidente.")
+                              logger.error(f"Rechazado")
+                              return False
+                    else:
+                      logger.error(f"No hay registro de personas asociadas a incidente Id: {str(r3)}")
+                      logger.error(f"Rechazado")
+                      return False
+
+                else:
+                  logger.error(f"No hay registro de entrega de informacion por retiro de estudiante de establecimiento.")
+                  logger.error(f"Rechazado")
+                  return False
+      else:
+        logger.info(f"NO existen registros de retiro de alumnos del establecimiento.")
+        logger.info(f"Aprobado")
+        return True
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fn1FA FIN ###
+
+### fn1FB INICIO ###
+  def fn1FB(self, conn):
+    try:
+      _l = []
+      _l2 = []
+      # OBTENGO LISTADO DE ALUMNOS
+      _s1 = """SELECT personId,run
+                FROM personList
+                WHERE Role like '%Estudiante%';"""
+
+      # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
+      _s2 = """SELECT A.RelatedPersonId,D.RUN
+                FROM PersonRelationship A
+                JOIN OrganizationPersonRole B
+                ON A.RelatedPersonId = B.personId
+                JOIN Role C
+                ON B.RoleId = C.RoleId
+                JOIN personList D
+                ON A.RelatedPersonId = D.personId
+                WHERE A.personId = ?
+                AND B.RoleId = 15;"""
+
+      # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
+      _s3 = """SELECT A.IncidentId
+                FROM IncidentPerson A
+                JOIN Incident B
+                ON A.IncidentId = B.IncidentId
+                WHERE A.personId = ?
+                AND B.RefIncidentBehaviorId = 35;"""
+
+      # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
+      _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
+                FROM IncidentPerson A
+                JOIN personList C
+                ON A.personId = C.personId
+                WHERE A.IncidentId = ?;"""
+
+      _q1 = conn.execute(_s1).fetchall()
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          _p = str(q1[0])
+          _r = str(q1[0])
+          _q2 = conn.execute(_s2,_p).fetchall()
+          if(len(_q2)!=0):
+            for q2 in _q2:
+              _p1 = str(q2[0])
+              _r2 = str(q2[1])
+              _q3 = conn.execute(_s3,_p1).fetchall()
+              logger.info(len(_q3))
+              if(len(_q3)!=0):
+                for q3 in _q3:
+                  _i = str(q3[0])
+                  if(_i is None):
+                    _l2.append(_r2)
+                  else:                  
+                    _q4 = conn.execute(_s4,_i).fetchall()
+                    if(len(_q4)!=0):
+                      _lst = self.convertirArray2DToList(list([m[0] for m in _q4 if m[0] is not None]))
+                      if '44' in _lst and '43' in _lst:
+                        for q4 in _q4:
+                          _pr = q4[0]
+                          if(str(_pr)=="44"): #docente
+                            _rdk = str(q4[1])
+                            if(_rdk is None):
+                              logger.error(f"No hay registro de firma de docente para evento de entrega de informacion de interes.")
+                              logger.error(f"Rechazado")
+                              return False
+                          elif(str(_pr)=="43"): #apoderado
+                              _fsb = str(q4[2])
+                              if(_fsb is None):
+                                logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento de entrega de informacion de interes.")
+                                logger.error(f"Rechazado1")
+                                return False
+                      else:
+                        logger.error(f"No har registro de docente y/o apoderado para evento de entrega de informacion de interes.")
+                        logger.error(f"Rechazado")
+                        return False
+
+                    else:
+                      logger.error(f"No hay registro de personas asociadas al evento de entrega de informacion de interes.")
+                      logger.error(f"Rechazado")
+                      return False
+
+                if(len(_l2)>0):
+                  logger.error(f"Los siguientes apoderados no tienen registro de entrega de informacion de interes por parte del establecimiento: {str(_l2)}")
+                  logger.error(f"Rechazado")
+                  return False
+
+              else:
+                logger.error(f"No hay registro de entrega de informacion de interes del establecimiento al apoderado.")
+                logger.error(f"Rechazado")
+                return False
+
+          else:
+            _l.append(_r)
+           
+
+        if(len(_l)>0):
+          logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
+          logger.error(f"Rechazado")
+          return False
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fn1FB FIN ###
+
+### fn1FC INICIO ###
+  def fn1FC(self, conn):
+    try:
+      _l = []
+      _l2 = []
+      # OBTENGO LISTADO DE ALUMNOS
+      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
+                FROM PersonStatus A
+                JOIN PersonIdentifier B
+                ON A.personId = B.personId
+                JOIN OrganizationPersonRole C
+                ON A.personId = C.personId
+                where A.RefPersonStatusTypeId = 30;"""
+
+      # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
+      _s2 = """SELECT A.RelatedPersonId,D.RUN
+                FROM PersonRelationship A
+                JOIN OrganizationPersonRole B
+                ON A.RelatedPersonId = B.personId
+                JOIN Role C
+                ON B.RoleId = C.RoleId
+                JOIN personList D
+                ON A.RelatedPersonId = D.personId
+                WHERE A.personId = ?
+                AND B.RoleId = 15;"""
+
+      # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
+      _s3 = """SELECT A.IncidentId
+                FROM IncidentPerson A
+                WHERE A.personId = ?
+                AND B.RefIncidentBehaviorId = 36;"""
+
+      # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
+      _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
+                FROM IncidentPerson A
+                JOIN personList C
+                ON A.personId = C.personId
+                WHERE A.IncidentId = ?;"""
+
+      _q1 = conn.execute(_s1).fetchall()
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          _p = str(q1[0])
+          _r = str(q1[0])
+
+          _q2 = conn.execute(_s2,_p).fetchall()
+          if(len(_q2)!=0):
+            for q2 in _q2:
+              _p1 = str(q2[0])
+              _r2 = str(q2[1])
+
+              _q3 = conn.execute(_s3,_p1).fetchall()
+              if(len(_q3)!=0):
+                for q3 in _q3:
+                  _i = str(q3[0])
+                  if(_i is None):
+                    _l2.append(_r2)
+                  else:                  
+                    _q4 = conn.execute(_s4,_i).fetchall()
+                    if(len(_q4)!=0):
+                      _lst = self.convertirArray2DToList(list([m[0] for m in _q4 if m[0] is not None]))
+                      if '44' in _lst and '43' in _lst:
+                        for q4 in _q4:
+                          _pr = str(q4[0])
+                          if(str(_pr)=="44"): #docente
+                            _rdk = str(q4[1])
+                            if(_rdk is None):
+                              logger.error(f"No hay registro de firma de docente/administrativo para evento.")
+                              logger.error(f"Rechazado")
+                              return False
+                          elif(str(_pr)=="43"): #apoderado
+                              _fsb = str(q4[2])
+                              if(_fsb is None):
+                                logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento.")
+                                logger.error(f"Rechazado")
+                                return False
+                      else:
+                        logger.error(f"No har registro de docente y/o apoderado para evento.")
+                        logger.error(f"Rechazado")
+                        return False
+
+                    else:
+                      logger.error(f"No hay registro de personas asociadas al evento.")
+                      logger.error(f"Rechazado")
+                      return False
+
+                if(len(_l2)>0):
+                  logger.error(f"Los siguientes apoderados no tienen registro de evento: {str(_l2)}")
+                  logger.error(f"Rechazado")
+                  return False
+
+              else:
+                logger.error(f"No hay registro de entrega de informacion al apoderado.")
+                logger.error(f"Rechazado")
+                return False
+
+          else:
+            _l.append(_r)
+
+        if(len(_l)>0):
+          logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
+          logger.error(f"Rechazado")
+          return False
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fn1FC FIN ###
+
+### Esta Funcion es para compara las cantidad de dias del establecimiento y compararlas con el alumno del establecimiento(cabe señalar que esta restando los dias fesitvos y feriados)
+### fn6F0 INICIO ###
+
+  def fn6F0(self,conn):
+    arr=[]
+    try:
+           # select para listar todos los colegios de tabla organizacion
+      _S1= """ SELECT a.OrganizationId,a.Name,b.OrganizationCalendarId,strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate,strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
+                FROM Organization a
+                JOIN OrganizationCalendar b 
+                ON a.OrganizationId=b.OrganizationId
+                JOIN OrganizationCalendarSession c
+                ON  b.organizationcalendarid=c.organizationcalendarid where a.Reforganizationtypeid=10;"""
+
+      # trae la fechas para calcular los dias feriados 
+      _s2=""" select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from OrganizationCalendarCrisis where OrganizationId = ?;"""
+
+       # select para ver todos los dias de eventos por cada organizacion 
+      _s3=""" select * from OrganizationCalendarEvent where OrganizationCalendarId = ?;"""
+
+
+       # contabilizar los crisis de un colegio 
+      _s4=""" select b.RUN,strftime('%Y-%m-%d',a.EntryDate) as EntryDate,strftime('%Y-%m-%d',a.ExitDate) as ExitDate from OrganizationPersonRole a
+                join personlist b
+                on a.personid=b.personId 
+                where OrganizationId = ? and roleId=6 ;"""
+    
+
+      now=datetime.now()
+      _q1 = conn.execute(_S1).fetchall()
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          org_id=str(q1[0])
+          org_ca=str(q1[2])
+          fecha_in=str(q1[3])
+          fecha_ter=str(q1[4])
+          f1=datetime.strftime(now, '%Y-%m-%d')
+
+          if (f1 <= fecha_ter):
+            fecha_ter=f1
+
+          
+          diastotal=int(np.busday_count(fecha_in,fecha_ter))
+          
+          
+          _q2 = conn.execute(_s2,org_id).fetchall()
+          if(len(_q2)!=0):
+            for q2 in _q2:
+                f2x=str(q2[0])
+                f2=str(q2[1])
+
+                if (f1 <= fecha_ter):
+                  f2=f1
+
+                
+                diastotal2=int(np.busday_count(f2x,f2))
+                if diastotal2> diastotal :
+                  contador2=diastotal2-diastotal
+
+                else:
+                  contador2= diastotal-diastotal2
+
+          elif(len(_q2)==0): 
+            contador2= diastotal
+          
+          _q3 = conn.execute(_s3,org_ca).fetchall()
+          if(len(_q3)!=0):
+            xx=len(_q3)
+
+            if int(xx)>contador2:
+
+              contador3=int(xx)-contador2
+
+            else:
+
+              contador3=contador2-int(xx)
+
+          elif(len(_q3)==0):
+            contador3=contador2
+           
+          _q4 = conn.execute(_s4,int(org_id)).fetchall()
+          if(len(_q4)!=0):
+            for w1 in _q4:
+              personid=str(w1[0])
+              fecha1w=str(w1[1])
+              fecha2w=str(w1[2])
+
+              if str(w1[1]) is None:
+                fecha1w=fecha_in
+
+              if str(w1[2]) is None:
+                fecha2w=fecha_ter
+              
+              if (f1 <= fecha1w):
+                fecha2w=f1
+
+              diastotal3=int(np.busday_count(fecha1w,fecha2w))
+              if diastotal3 < (contador2 + contador3):
+                diastotal3 = (contador2 + contador3)-diastotal3
+              else:
+                diastotal3 = diastotal3 - (contador2 + contador3)
+              
+              if(contador3!=diastotal3):
+                arr.append(personid)
+
+            if(len(arr)!=0):
+              logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
+              logger.error(f"Rechazado")
+              return False  
+
+          else:  
+              logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
+              logger.error(f"Rechazado")
+              return False    
+
+      else:
+        logger.error(f"No hay informacion de establecimiento.")
+        logger.error(f"Rechazado")
+        return False   
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+
+### fn6F0 FIN ###
+
+### En esta funcion se determina si la informacion esta correcta de la asistencia de los estudiantes presenciales 
+### comienzo fn6F1 ###
+  def fn6F1(self,conn):
+    arr=[]
+    try:
+           
+      _S1= """ select strftime('%d',b.Date) as Dia,strftime('%m',b.Date) as Mes,strftime('%Y',b.Date) as Año,a.Identifier as Numerolista ,b.VirtualIndicator 
+                        from PersonIdentifier a join RoleAttendanceEvent b on b.OrganizationPersonRoleId=c.OrganizationPersonRoleId 
+                         join  OrganizationPersonRole c 
+                        where a.RefPersonIdentificationSystemId=54  and c.roleid=6 and b.VirtualIndicator=0 ;"""
+    
+
+      now=datetime.now()
+      _q1 = conn.execute(_S1).fetchall()
+      XX=0
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          dia=str(q1[0])
+          mes=str(q1[1])
+          año=str(q1[2])
+          numero_l=str(q1[3])
+          estado_asis=str(q1[4])
+          
+          if (dia is None) or (mes is None) or (año is None) or (numero_l is None) or (estado_asis is None): 
+            arr.append(numero_l)
+
+          if int(estado_asis)==0:
+            asistencia="Presencial"
+
+          if(len(arr)!=0):
+              logger.error(f"Los siguientes numero de lista necesita informacion: {str(arr)} ")
+              logger.error(f"Rechazado")
+              return False
+
+          else:
+              logger.info(f"Ningunos de los registros le falta un dato.")
+              logger.info(f"Apobado")
+              return True
+          
+
+      else:
+        logger.error(f"No hay registro Numero de lista asociados .")
+        logger.error(f"Rechazado")
+        return False   
+    
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+###   fin fn6f1  ###
+   
+
+### Mi Aula FIN ###
