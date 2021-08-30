@@ -20,7 +20,7 @@ from sqlalchemy import create_engine
 class check:
   def __init__(self, args):
     self.args = args;
-    logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}");
+    logger.info(f"tipo de argumento: {type(self.args)}, valores: {self.args}");
     self.functions = {
       "fn0FA": "self.fn0FA(conn)",
       "fn0FB": "self.fn0FB(conn)",
@@ -127,8 +127,8 @@ class check:
       "fn8F3": "self.fn8F3(conn)",
       "fn9F0": "No/Verificado",
       "fn9F1": "No/Verificado",
-      "fn9F2": "No/Verificado",
-      "fn9F3": "No/Verificado"
+      "fn9F2": "self.fn9F2(conn)",
+      "fn9F3": "self.fn9F3(conn)"
     }
     # self.dfLog = dfLog
     # self._encode = _encode
@@ -1736,6 +1736,143 @@ class check:
             logger.error(f"Rechazado")
             return False
 ## Fin fn28B WC ##
+
+## Fin fn9F2 WC ##
+  def fn9F2(self, conn):
+        try:
+            queryEstudiantes = conn.execute("""
+                select
+          DISTINCT
+          o.OrganizationId,
+          o.Name
+                from person p join OrganizationPersonRole opr
+                on p.PersonId = opr.PersonId
+                join Organization O on opr.OrganizationId = O.OrganizationId
+                where opr.RoleId = 6 and O.RefOrganizationTypeId = 21;""").fetchall()
+
+            if (len(queryEstudiantes)>0):
+                organizations = (list([m[0] for m in queryEstudiantes if m[0] is not None]))
+                organizations = str(organizations)
+                organizations = organizations.replace('[','(')
+                organizations = organizations.replace(']',')')
+                querySelect = "select CourseId from CourseSection where CourseId in"
+                queryComplete = querySelect+organizations
+                try:
+                    queryAsignaturas = conn.execute(queryComplete).fetchall()
+                    if (len(queryAsignaturas)>0):
+                        cursos = (list([m[0] for m in queryAsignaturas if m[0] is not None]))
+                        cursos = str(cursos)
+                        cursos = cursos.replace('[','(')
+                        cursos = cursos.replace(']',')')
+                        querySelectCalendar = "select * from OrganizationCalendar where OrganizationId in"
+                        queryCalendarComplete = querySelectCalendar+cursos
+                        try:
+                            queryCalendarios = conn.execute(queryCalendarComplete).fetchall()
+                            if (len(queryCalendarios)>0):
+                                organizationId = (list([m[1] for m in queryCalendarios if m[0] is not None]))
+                                calendarCode = (list([m[2] for m in queryCalendarios if m[0] is not None]))
+                                calendarDescripction = (list([m[3] for m in queryCalendarios if m[0] is not None]))
+                                calendarYear = (list([m[4] for m in queryCalendarios if m[0] is not None]))
+
+                                if not organizationId :
+                                    logger.error(f"Sin OrganizationId")
+                                    logger.error(f'Rechazado')
+                                    return False
+                                if not calendarCode :
+                                    logger.error(f"Sin CalendarCode")
+                                    logger.error(f'Rechazado')
+                                    return False
+                                if not calendarDescripction :
+                                    logger.error(f"Sin CaldendarDescription")
+                                    logger.error(f'Rechazado')
+                                    return False
+                                if not calendarYear :
+                                    logger.error(f"Sin CalendarYear")
+                                    logger.error(f'Rechazado')
+                                    return False
+                                print(f'Calendarios ingresados correctamente')
+                                print(f'Aprobado')
+                                return True
+                            else:
+                                logger.error(f"S/Datos")
+                                logger.error(f"Rechazado")
+                                return False
+                        except Exception as e:
+                            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                            logger.error(f"Rechazado")
+                            return False
+                    else:
+                        logger.error(f"S/Datos")
+                        logger.error(f"Rechazado")
+                        return False
+                except Exception as e:
+                    logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                    logger.error(f"Rechazado")
+                    return False
+            else:
+                logger.error(f"S/Datos")
+                logger.error(f"Rechazado")
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn9F2 WC ##
+
+## Inicio fn9F3 WC ##
+  def fn9F3(self, conn):
+        try:
+            incident = conn.execute("""
+            select IncidentId from Incident;
+            """).fetchall()
+            if(len(incident)>0):
+                listIncident = (list([m[0] for m in incident if m[0] is not None]))
+                for x in listIncident:
+                    try:
+                        x = str(x)
+                        incidentParent = conn.execute("""
+                        select * from IncidentPerson where IncidentId =
+                        """+x+"""
+                        where RefIncidentPersonRoleTypeId = 8
+                        and RefIncidentPersonTypeId = 43
+                        """).fetchall()
+                        incidentProfessor = conn.execute("""
+                        select * from IncidentPerson where IncidentId =
+                        """+x+"""
+                        where RefIncidentPersonRoleTypeId = 7
+                        and RefIncidentPersonTypeId = 44
+                        """).fetchall()
+                        parent = 0
+                        professor = 0
+                        if (len(incidentParent)>0):
+                            parent +=1
+                        else:
+                            logger.error(f"S/Datos")
+                            logger.error(f"Rechazado")
+                            return False
+                        if (len(incidentProfessor)>0):
+                            professor += 1
+                        else:
+                            logger.error(f"S/Datos")
+                            logger.error(f"Rechazado")
+                            return False
+                    except Exception as e:
+                        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                        logger.error(f"Rechazado")
+                        return False
+                logger.info(f'Reuniones validas')
+                logger.info(f'Aprobado')
+                return True
+            else:
+                logger.error(f"Sin incidentes registrados")
+                logger.error(f"Aprobado")
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn9F3 WC ##
+
 ### WebClass FIN ###
 
 
