@@ -226,7 +226,7 @@ class check:
           ,fechaRetiroEstudiante
           ,fechaCumpleanos
           ,TribalAffiliationDescription
-        FROM PersonList where role like '%Estudiante%';
+        FROM PersonList;
       """).fetchall()
 
       logger.info(f"len(personList): {len(rows)}")
@@ -406,7 +406,7 @@ class check:
       _l1 = self.numListaList;_l2 = self.numMatriculaList;_l3 = self.fechaIncorporacionEstudianteList;
       if(len(_l1)>0 and len(_l2)>0 and len(_l3)>0):
         _r   = len(_l1) == len(_l2) == len(_l3)
-        _t = f"Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes: {_r}.";
+        _t = f"Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes: {_r}.  NumLista:{len(_l1)}, NumMat:{len(_l2)}, FechaIncorporación:{len(_l3)}";
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
