@@ -1401,6 +1401,159 @@ class check:
             return False
 ## Fin fn2CA WC ##
 
+ ## Inicio fn2CB WC ##
+  def fn2CB(self,conn):
+        try:
+            _query = conn.execute("""
+            select
+                StatusEndDate,
+                PS.fileScanBase64,
+                IP.Identifier
+            from OrganizationPersonRole OPR
+            join Person P on OPR.PersonId = P.PersonId
+            join PersonStatus PS on P.PersonId = PS.PersonId
+            join Incident I on OPR.OrganizationPersonRoleId = I.OrganizationPersonRoleId
+            join IncidentPerson IP on I.IncidentId = IP.IncidentId
+            where
+              OPR.RoleId = 6
+              and PS.RefPersonStatusTypeId = 30
+              and I.RefIncidentBehaviorId = 33
+            """).fetchall()
+            if(len(_query)>0):
+                _endDate = (list([m[0] for m in _query if m[0] is not None]))
+                if not _endDate:
+                    logger.error(f"Sin fecha de termino de la matricula/s")
+                    logger.error(f'Rechazado')
+                    return False
+                _file = (list([m[1] for m in _query if m[1] is not None]))
+                if not _file:
+                    logger.error(f"Sin archivo/s del retiro del estudiante en el sistema")
+                    logger.error(f'Rechazado')
+                    return False
+                _personIdentifier = (list([m[2] for m in _query if m[2] is not None]))
+                if not _personIdentifier:
+                    logger.error(f"El alumno/s no posee/n RUT")
+                    logger.error(f'Rechazado')
+                    return False
+                logger.info(f'Registro de reuniones con apoderados para la entrega de documento por retiro del estudiante validado/s')
+                logger.info(f'Aprobado')
+                return True
+            else:
+                logger.error(f'S/Datos')
+                logger.error(f'Rechazado')
+                logger.error(f'No existen registro de alumnos retirados del establecimiento')
+                return True
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+ ## Fin fn2CB WC ##
+  
+ ## Inicio fn2BA WC ##
+  def fn2BA(self,conn):
+        try:
+            _query = conn.execute("""
+            select
+                PS.fileScanBase64
+            from OrganizationPersonRole OPR
+            join Person P on OPR.PersonId = P.PersonId
+            join PersonStatus PS on P.PersonId = PS.PersonId
+            where OPR.RoleId = 6
+            and PS.RefPersonStatusTypeId IN (25, 24, 31)
+            """).fetchall() # out PS.Description, PS.fileScanBase64, PS.docNumber
+            if (len(_query)>0):
+              _documento = (list([m[0] for m in _query if m[0] is not None]))
+              if not _documento:
+                logger.error(f"No existen documentos cargados en el sistema para estudiantes exedentes")
+                logger.error(f'Rechazado')
+                return False
+              logger.info(f'Todos los alumnos exedentes cuentan con su documento correspondiente')
+              logger.info(f'Aprobado')
+              return True
+            else:
+                logger.error(f'S/Datos')
+                logger.error(f'No existen alumnos exedentes en el establecimiento')
+                return True
+        except Exception as e:
+            logger.error(f'NO se pudo ejecutar la verificación en la lista')
+            logger.error(f'Rechazado')
+            return False
+  ## Fin fn2BA WC ##
+  
+## Inicio fn29A WC ##
+  def fn29A(self, conn):
+        try:
+            results = conn.execute("""
+            select opr.PersonId,
+                  (select o2.OrganizationId
+                    from OrganizationPersonRole opr2
+                            join Organization o2 on o2.OrganizationId = opr2.OrganizationId
+                    where RefOrganizationTypeId = 21
+                      and opr2.PersonId = opr.PersonId)                              as seccion,
+
+                  (select opr3.OrganizationPersonRoleId
+                    from OrganizationPersonRole opr3
+                    where opr3.PersonId = opr.PersonId)                              as personrole,
+
+                  (select grado.OrganizationId
+                    from Organization grado
+                            join RefOrganizationType rft on grado.RefOrganizationTypeId = rft.RefOrganizationTypeId
+                            join OrganizationRelationship or1 on or1.OrganizationId = grado.OrganizationId
+                            join OrganizationRelationship or2 on or1.OrganizationId = or2.Parent_OrganizationId
+                    where or2.OrganizationId = (select o2.OrganizationId
+                                                from OrganizationPersonRole opr2
+                                                        join Organization o2 on o2.OrganizationId = opr2.OrganizationId
+                                                where o2.RefOrganizationTypeId = 21
+                                                  and opr2.PersonId = opr.PersonId)) as grado,
+                  o3.Name
+            from OrganizationPersonRole opr
+                    join Organization o on o.OrganizationId = opr.OrganizationId
+                    join K12StudentEnrollment k12se on k12se.OrganizationPersonRoleId = personrole
+                    join Organization o3 on o3.OrganizationId = grado
+                    join PersonStatus ps on opr.PersonId = ps.PersonId
+            where o.RefOrganizationTypeId = 47 /*cambiar a id respectivo, este id hace referencia a el nuevo tipo de organizacion agregado para practicaProfesional*/
+              and k12se.RefEnrollmentStatusId = 2
+              and cast(strftime('%Y', k12se.FirstEntryDateIntoUSSchool) as integer) =
+                  cast(strftime('%Y', current_timestamp) as integer)
+              and ps.RefPersonStatusTypeId = 26;
+            """).fetchall()
+            if(len(results)>0):
+                lista = list(set([m[0] for m in results if m[0] is not None]))
+                lista2 = list(set([m[4] for m in results if m[4] is not None]))
+                con=len(lista)
+                x=0
+                for l1 in lista:
+                    grado=(lista2[x][4])
+                    if (grado[-8:-1].lower()=="3° medio"):
+                        results2 = conn.execute("""
+                        select opr.organizationid
+                        from OrganizationPersonRole opr
+                                join K12StudentCourseSection k12cs on opr.OrganizationPersonRoleId = k12cs.OrganizationPersonRoleId
+                                join Organization o on o.OrganizationId = opr.OrganizationId
+                        where PersonId = ?
+                          and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
+                          and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
+                        """([l1])).fetchall()
+                        if (len(results2))<1:
+                            logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
+                            logger.error(f"Rechazado")
+                            return False
+                    x+=x
+                logger.info(f"todos los alumnos de practica cumplen con los requisitos")
+                logger.info(f"Aprobado")
+                return True
+
+            else:
+                logger.error(f"S/Datos")
+                logger.error(f"No existen alumnos en practica registrados")
+                return True
+
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn29A WC ##
+
 ## Inicio fn8F1 WC ##
   def fn8F1(self, conn):
           try:
