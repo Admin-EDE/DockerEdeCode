@@ -2275,7 +2275,7 @@ class check:
                                 logger.error(f"Rechazado1")
                                 return False
                       else:
-                        logger.error(f"No har registro de docente y/o apoderado para evento de entrega de informacion de interes.")
+                        logger.error(f"No hay registro de docente y/o apoderado para evento de entrega de informacion de interes.")
                         logger.error(f"Rechazado")
                         return False
 
@@ -2295,13 +2295,15 @@ class check:
                 return False
 
           else:
-            _l.append(_r)
-           
+            _l.append(_r)           
 
         if(len(_l)>0):
           logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
           logger.error(f"Rechazado")
           return False
+        else:
+          logger.error(f"Aprobado")
+          return True        
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
@@ -2607,7 +2609,7 @@ class check:
                 ON a.OrganizationPersonRoleId = b.OrganizationPersonRoleId
                 JOIN personList c
                 ON b.personId = c.personId
-                WHERE ((a.Date in (SELECT Date FROM OrganizationCalendarEvent)
+                WHERE (a.Date in (SELECT Date FROM OrganizationCalendarEvent)
                     OR(a.Date BETWEEN (SELECT StartDate 
                               FROM OrganizationCalendarCrisis) and  
                               (SELECT EndDate 
@@ -2651,10 +2653,10 @@ class check:
       if(len(_q1)!=0):
         for q1 in _q1:
           _r = str(q1[1])
-          _e1 = str(q[2])
-          _e2 = str(q[3])
-          _sd1 = str(q[4])
-          _sd2 = str(q[5])
+          _e1 = str(q1[2])
+          _e2 = str(q1[3])
+          _sd1 = str(q1[4])
+          _sd2 = str(q1[5])
 
           if(_e is None) or (_sd1 is None):
             _l.append(_r)
@@ -2768,7 +2770,7 @@ class check:
                 FROM OrganizationPersonRole A
                 JOIN Organization B
                 ON A.OrganizationId = B.OrganizationId
-                JOIN Person c
+                JOIN PersonList c
                 ON a.personId = c.personId
                 JOIN PersonStatus D
                 ON A.personId = D.personId
@@ -2809,19 +2811,6 @@ class check:
         logger.error(f"Rechazado")
         return False
   ### fin fn6C0 ###
-
-### inicio fn6C2 ###
-  def fn6C2(self, conn):
-    try:
-      logger.info(f"fn6C2 - Valida que los alumnos excedentes cuenten con la autorizacion ministerial.")
-
-
-
-    except Exception as e:
-        logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-        logger.error(f"Rechazado")
-        return False
- ### fin fn6C2 ###
 
 ### comienzo fn6E0 ###
   def fn6E0(self,conn):
