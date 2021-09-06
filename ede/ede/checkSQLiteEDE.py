@@ -1554,6 +1554,289 @@ class check:
             return False
 ## Fin fn29A WC ##
 
+## Inicio fn29B WC ##
+  def fn29B(self, conn):
+        try:
+            query = conn.execute("""
+            select OPR.OrganizationId, P.PersonId, count(P.PersonId)
+            from Person P
+                    join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
+                    join PersonStatus PS on P.PersonId = PS.PersonId
+            where RoleId = 6
+              and ps.RefPersonStatusTypeId = 35
+              and OrganizationPersonRoleId in (select OrganizationId
+                                              from Organization
+                                              where RefOrganizationTypeId = 47)
+            group by OPR.OrganizationId, P.PersonId;
+            """).fetchall()
+            k12StudentEnrollment = conn.execute("""
+            select OrganizationPersonRoleId
+            from K12StudentEnrollment;
+            """).fetchall()
+            if(len(query)>0 and len(k12StudentEnrollment)>0):
+                estudiantes = (list([m[2] for m in query if m[2] is not None]))
+                organizaciones = (list([m[0] for m in query if m[0] is not None]))
+                organizacionesK12 = (list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
+                for x in estudiantes:
+                    if(x == 2):
+                        logger.error(f"Matriculas repetidas")
+                        logger.error(f"Rechazado")
+                        return False
+                    else:
+                        for y in organizacionesK12:
+                            for z in organizaciones:
+                                if(y in z):
+                                    contador = contador + 1
+                                else:
+                                    logger.error(f"Matricula/s no registrada/s")
+                                    logger.error(f"Rechazado")
+                                    return False
+                logger.info(f'Matriculas ingresadas correctamente')
+                logger.info(f'Aprobado')
+                return True
+            else:
+                logger.error(f"S/Datos")
+                logger.error(f"No existen alumnos en practica registrados")
+                return True
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn29B WC ##
+## Inicio fn29C WC ##
+  def fn29C(self, conn):
+        try:
+            _queryStud = conn.execute("""
+            select OPR.OrganizationId
+            from OrganizationPersonRole OPR
+                    join Person P on OPR.PersonId = P.PersonId
+                    join Organization O on OPR.OrganizationId = O.OrganizationId
+            where OPR.RoleId = 6
+              and O.RefOrganizationTypeId = 47
+            group by P.PersonId,
+                    OPR.OrganizationId;
+            """).fetchall()
+
+            _queryProf = conn.execute("""
+            select OPR.OrganizationId
+            from OrganizationPersonRole OPR
+                    join Person P on OPR.PersonId = P.PersonId
+                    join Organization O on OPR.OrganizationId = O.OrganizationId
+            where OPR.RoleId = 17
+              and O.RefOrganizationTypeId = 47
+            group by P.PersonId,
+                    OPR.OrganizationId;
+            """).fetchall()
+            if((len(_queryStud)>0) and (len(_queryProf)>0)):
+                _organizationStu = (list([m[5] for m in _queryStud if m[0] is not None]))
+                if not _organizationStu :
+                    logger.error(f"Sin Alumnos")
+                    logger.error(f'Rechazado')
+                    return False
+                _organizationProf = (list([m[5] for m in _queryProf if m[0] is not None]))
+                if not _organizationProf :
+                    logger.error(f"Sin profesores")
+                    logger.error(f'Rechazado')
+                    return False
+                _contador = 0
+                z = len(_organizationStu)
+                for x in _organizationStu:
+                    for y in _organizationProf:
+                        if x in y:
+                            _contador += 1
+                if _contador == z:
+                    logger.info(f'Todos los alumnos en practica con profesor')
+                    logger.info(f'Aprobado')
+                    return True
+                else:
+                    logger.error(f'Alumnos en practica sin profesor')
+                    logger.error(f'Rechazado')
+                    return False
+            else:
+                logger.error(f"S/Datos")
+                logger.error(f"No existen alumnos en practica registrados")
+                return True
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+## Fin fn29C WC ##
+
+## Inicio fn5E0 WC ##
+  def fn5E0(self, conn):
+        try:
+            organizations = conn.execute("""
+            select
+                RAE.date,
+                OPR.OrganizationId
+            from Organization O
+                    join OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
+                    join RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
+            where O.RefOrganizationTypeId = 22
+            order by RAE.Date asc;
+            """).fetchall()
+            if(len(organizations)>0):
+                dates = list(set([m[0] for m in organizations if m[0] is not None]))
+                organizationsId = list(set([m[1] for m in organizations if m[1] is not None]))
+                for d in dates:
+                    for o in organizationsId:
+                        try:
+                            d = d[0]
+                            o = o
+                            alumnosPresentes = conn.execute("""
+                            select count(rae.date),
+                                  opr.organizationid,
+                                  date as hora
+                            from RoleAttendanceEvent rae
+                                    join OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
+                            where refattendancestatusid = 1
+                              and date = ?
+                              and opr.organizationid = ?
+                              and rae.OrganizationPersonRoleId in
+                                  (select opr2.OrganizationPersonRoleId
+                                  from OrganizationPersonRole opr2
+                                  where RoleId = 6)
+                            group by rae.date, opr.OrganizationId
+                            order by rae.date;
+                            """,([str(d),str(o)])).fetchall()
+
+                            alumnosAusentes = conn.execute("""
+                            select count(rae.date),
+                                  opr.organizationid
+                            from RoleAttendanceEvent rae
+                                    join OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
+                            where refattendancestatusid in (2, 3)
+                              and date = ?
+                              and opr.organizationid = ?
+                              and rae.OrganizationPersonRoleId in
+                                  (select opr2.OrganizationPersonRoleId
+                                  from OrganizationPersonRole opr2
+                                  where RoleId = 6)
+                            group by rae.date, opr.OrganizationId
+                            order by rae.date;
+                            """,([str(d),str(o)])).fetchall()
+
+                            alumnosRetrasados = conn.execute("""
+                            select count(rae.date)
+                            from RoleAttendanceEvent rae
+                                    join OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
+                            where refattendancestatusid = 4
+                              and date = ?
+                              and opr.organizationid = ?
+                              and rae.OrganizationPersonRoleId in
+                                  (select opr2.OrganizationPersonRoleId
+                                  from OrganizationPersonRole opr2
+                                  where RoleId = 6)
+                            group by rae.date, opr.OrganizationId
+                            order by rae.date;
+                            """,([str(d),str(o)])).fetchall()
+
+                            alumnosTotales = conn.execute("""
+                            select count(rae.date)
+                            from RoleAttendanceEvent rae
+                                    join OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
+                            where date = ?
+                              and opr.organizationid = ?
+                              and rae.OrganizationPersonRoleId in
+                                  (select opr2.OrganizationPersonRoleId
+                                  from OrganizationPersonRole opr2
+                                  where RoleId = 6)
+                            group by rae.date, opr.OrganizationId
+                            order by rae.date;
+                            """,([str(d),str(o)])).fetchall()
+
+                            profesorObservacion = conn.execute("""
+                            select Identifier,
+                                  observaciones,
+                                  RAE.OrganizationPersonRoleId,
+                                  OPR.OrganizationId,
+                                  RAE.VirtualIndicator
+                            from PersonIdentifier PI
+                                    join OrganizationPersonRole OPR on PI.PersonId = OPR.PersonId
+                                    join RoleAttendanceEvent RAE on RAE.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+                            where RAE.VirtualIndicator != 0
+                              and OPR.RoleId != 6
+                              and date = ?
+                              and OPR.organizationid = ?;
+                            """,([str(d),str(o)])).fetchall()
+                            fecha2=(list([m[4] for m in alumnosPresentes if m[4] is not None]))
+                            if (len(fecha2)<=0):
+                                logger.error(f'Sin firmas')
+                                logger.error(f'Rechazado')
+                                return False
+                            asignatura = conn.execute("""
+                            select ClassPeriod,
+                                  name,
+                                  ClassMeetingDays
+                            from CourseSectionSchedule css
+                                    join Organization o on o.OrganizationId = css.OrganizationId
+                            where ? between ClassBeginningTime and ClassEndingTime;
+                            """,(fecha2)).fetchall()
+
+                            firma = (list([m[4] for m in profesorObservacion if m[4]is not None]))
+
+                            aPresentes=(list([m[0] for m in alumnosPresentes if m[0] is not None]))
+                            aAusentes=(list([m[0] for m in alumnosAusentes if m[0] is not None]))
+                            aRetrasados=(list([m[0] for m in alumnosRetrasados if m[0] is not None]))
+                            aTotales=(list([m[0] for m in alumnosTotales if m[0] is not None]))
+
+                            seccion=(list([m[1] for m in alumnosPresentes if m[1] is not None]))
+                            periodo=(list([m[0] for m in asignatura if m[0] is not None]))
+                            name=(list([m[1] for m in asignatura if m[1] is not None]))
+
+                            if (int(alumnosPresentes) + int(alumnosAusentes) + int(alumnosRetrasados)) != int(alumnosTotales):
+                                logger.error(f'Asistencia incorrecta')
+                                logger.error(f'Rechazado')
+                                return False
+
+                            if not alumnosAusentes :
+                                aAusentes=0
+                            else:
+                                aAusentes=alumnosAusentes[0][0]
+
+                            if not alumnosRetrasados :
+                                aRetrasados=0
+                            else:
+                                aRetrasados=alumnosRetrasados[0]
+
+                            if not profesorObservacion :
+                                logger.error(f"Sin profesores")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not seccion:
+                                logger.error(f"Sin seccion")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not aPresentes:
+                                logger.error(f"Sin presentes")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not name:
+                                logger.error(f"Sin asignatura")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not periodo:
+                                logger.error(f"Sin periodo")
+                                logger.error(f'Rechazado')
+                                return False
+                            return True
+                        except Exception as e:
+                            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                            logger.error(f"Rechazado")
+                            return False
+                logger.info(f'Aprobado')
+                logger.info(f'Clases validadas')
+                return True
+            else:
+                logger.error(f"S/Datos")
+                logger.error(f'Sin asistencia por bloque')
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}"))
+            logger.error(f"Rechazado")
+            return False
+## Fin fn5E0 WC ##
+
 ## Inicio fn8F1 WC ##
   def fn8F1(self, conn):
           try:
