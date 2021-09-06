@@ -1832,7 +1832,7 @@ class check:
                 logger.error(f'Sin asistencia por bloque')
                 return False
         except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}"))
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
             logger.error(f"Rechazado")
             return False
 ## Fin fn5E0 WC ##
@@ -2430,56 +2430,38 @@ class check:
 
 ## Inicio fn28A WC ##
   def fn28A(self, conn):
-            try:
-                _query = conn.execute("""
-                select PB.PersonId,
-                        PB.City,
-                        PB.RefStateId,
-                        PB.RefCountryId
-
-                  from OrganizationPersonRole OPR
-                          join Person P on OPR.PersonId = P.PersonId
-                          join PersonIdentifier PI on P.PersonId = PI.PersonId
-                          join PersonStatus PS on P.PersonId = PS.PersonId
-                          join PersonBirthplace PB on P.PersonId = PB.PersonId
-                  where PI.RefPersonIdentificationSystemId = 52
-                    and OPR.RoleId = 6
-                    and PI.Identifier is not null
-                    and length(trim(PI.Identifier)) > 0
-                    and PS.RefPersonStatusTypeId = 34;
-                """).fetchall()
-                if(len(_query)>0):
-                  _personId = (list([m[0] for m in _query if m[0] is not None]))
-                  if not _personId:
-                    logger.error(f"Sin Person ID")
-                    logger.error(f'Rechazado')
-                    return False
-                  _city = (list([m[1] for m in _query if m[1] is not None]))
-                  if not _city:
-                    logger.error(f"Sin ciudad de origen")
-                    logger.error(f'Rechazado')
-                    return False
-                  _state = (list([m[2] for m in _query if m[2] is not None]))
-                  if not _state:
-                    logger.error(f"Sin estado de origen")
-                    logger.error(f'Rechazado')
-                    return False
-                  _country = (list([m[3] for m in _query if m[3] is not None]))
-                  if not _country:
-                    logger.error(f"Sin Pais de origen")
-                    logger.error(f'Rechazado')
-                    return False
-                  logger.info(f'Documento de pais de origen registrado correctamente')
-                  logger.info(f'Aprobado')
-                  return True
-                else:
-                    logger.error(f"S/Datos")
-                    logger.error(f"Rechazado")
-                    return False
-            except Exception as e:
-                logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                logger.error(f"Rechazado")
-                return False
+    try:
+        _query = conn.execute("""
+        select
+               PS.fileScanBase64
+        from OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join PersonIdentifier PI on P.PersonId = PI.PersonId
+                join PersonStatus PS on P.PersonId = PS.PersonId
+                join PersonBirthplace PB on P.PersonId = PB.PersonId
+        where PI.RefPersonIdentificationSystemId = 52
+          and OPR.RoleId = 6
+          and PI.Identifier is not null
+          and length(trim(PI.Identifier)) > 0
+          and PS.RefPersonStatusTypeId = 34;
+        """).fetchall()
+        if(len(_query)>0):
+          _documento = (list([m[0] for m in _query if m[0] is not None]))
+          if not _documento:
+            logger.error(f"Sin Documento en el sistema")
+            logger.error(f'Rechazado')
+            return False
+          logger.info(f'Documento de pais de origen registrado correctamente')
+          logger.info(f'Aprobado')
+          return True
+        else:
+          logger.error(f"S/Datos")
+          logger.error(f"No existen estudiantes migrantes registrados en el establecimiento")
+          return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
 ## Fin fn28A WC ##
 
 ## Inicio fn5E1 WC ##
