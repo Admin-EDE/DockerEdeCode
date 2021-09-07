@@ -32,8 +32,8 @@ class check:
       "fn2DA": "self.fn2DA(conn)",
       "fn2DB": "self.fn2DB(conn)",
       "fn2CA": "self.fn2CA(conn)",
-      "fn2CB": "No/Verificado",
-      "fn2BA": "No/Verificado",
+      "fn2CB": "self.fn2CB(conn)",
+      "fn2BA": "self.fn2BA(conn)",
       "fn2AA": "self.fn2AA(conn)",
       "fn29A": "No/Verificado",
       "fn29B": "No/Verificado",
@@ -1309,35 +1309,34 @@ class check:
   def fn2DB(self,conn):
         try:
             _query = conn.execute("""
-            select
-              P.FirstName,
-              P.LastName,
-              PS.fileScanBase64
+            select DISTINCT P.PersonId
             from OrganizationPersonRole OPR
-            join Person P on OPR.PersonId = P.PersonId
-            join PersonStatus PS on P.PersonId = PS.PersonId
+                    join Person P on OPR.PersonId = P.PersonId
+                    join PersonStatus PS on P.PersonId = PS.PersonId
             where OPR.RoleId = 6
-            and PS.RefPersonStatusTypeId = 33
+              and PS.RefPersonStatusTypeId = 33;
             """).fetchall()
             if(len(_query)>0):
-              _firstName = (list([m[0] for m in _query if m[0] is not None]))
-              if not _firstName:
-                logger.error(f"Alumno/s sin nombre registrado")
+              _queryType = conn.execute("""
+              SELECT PS.PersonId
+              FROM PersonStatus PS
+              WHERE PS.PersonId in (select DISTINCT P.PersonId
+                                    from OrganizationPersonRole OPR
+                                            join Person P on OPR.PersonId = P.PersonId
+                                            join PersonStatus PS on P.PersonId = PS.PersonId
+                                    where OPR.RoleId = 6
+                                      and PS.RefPersonStatusTypeId = 33)
+                AND PS.fileScanBase64 IS NOT NULL
+                AND PS.fileScanBase64 <> '';
+              """).fetchall
+              if(len(_query) == len(_queryType)):
+                logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
+                logger.info(f'Aprobado')
+                return True
+              else:
+                logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
                 logger.error(f'Rechazado')
                 return False
-              _lastName = (list([m[1] for m in _query if m[1] is not None]))
-              if not _lastName:
-                logger.error(f"Sin nombre")
-                logger.error(f'Rechazado')
-                return False
-              _documento = (list([m[2] for m in _query if m[2] is not None]))
-              if not _documento:
-                logger.error(f"Sin documento/s de matricula ingresado/s")
-                logger.error(f'Rechazado')
-                return False
-              logger.info(f'Todos los alumnos matriculados bajo el decreto 152, articulo 60 poseen su documento de matricula')
-              logger.info(f'Aprobado')
-              return True
             else:
                 logger.error(f"S/Datos")
                 logger.error(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
@@ -1405,42 +1404,36 @@ class check:
   def fn2CB(self,conn):
         try:
             _query = conn.execute("""
-            select
-                StatusEndDate,
-                PS.fileScanBase64,
-                IP.Identifier
+            select OPR.OrganizationPersonRoleId
             from OrganizationPersonRole OPR
-            join Person P on OPR.PersonId = P.PersonId
-            join PersonStatus PS on P.PersonId = PS.PersonId
-            join Incident I on OPR.OrganizationPersonRoleId = I.OrganizationPersonRoleId
-            join IncidentPerson IP on I.IncidentId = IP.IncidentId
-            where
-              OPR.RoleId = 6
-              and PS.RefPersonStatusTypeId = 30
-              and I.RefIncidentBehaviorId = 33
+                    join Person P on OPR.PersonId = P.PersonId
+                    join PersonStatus PS on P.PersonId = PS.PersonId
+            where OPR.RoleId = 6
+              and PS.RefPersonStatusTypeId = 30;
             """).fetchall()
             if(len(_query)>0):
-                _endDate = (list([m[0] for m in _query if m[0] is not None]))
-                if not _endDate:
-                    logger.error(f"Sin fecha de termino de la matricula/s")
-                    logger.error(f'Rechazado')
-                    return False
-                _file = (list([m[1] for m in _query if m[1] is not None]))
-                if not _file:
-                    logger.error(f"Sin archivo/s del retiro del estudiante en el sistema")
-                    logger.error(f'Rechazado')
-                    return False
-                _personIdentifier = (list([m[2] for m in _query if m[2] is not None]))
-                if not _personIdentifier:
-                    logger.error(f"El alumno/s no posee/n RUT")
-                    logger.error(f'Rechazado')
-                    return False
-                logger.info(f'Registro de reuniones con apoderados para la entrega de documento por retiro del estudiante validado/s')
-                logger.info(f'Aprobado')
-                return True
+                _queryEntregaDocumentos = conn.execute("""
+                select I.IncidentId
+                from Incident I
+                        join IncidentPerson IP on I.IncidentId = IP.IncidentId
+                where I.RefIncidentBehaviorId = 33
+                  and I.OrganizationPersonRoleId in (select OPR.OrganizationPersonRoleId
+                                                    from OrganizationPersonRole OPR
+                                                              join Person P on OPR.PersonId = P.PersonId
+                                                              join PersonStatus PS on P.PersonId = PS.PersonId
+                                                    where OPR.RoleId = 6
+                                                      and PS.RefPersonStatusTypeId = 30);
+                """).fetchall()
+                if(len(_query)==len(_queryEntregaDocumentos)):
+                  logger.info(f'Todos los alumnos retirados del establecimiento cuentan con una entrega de documentos respectiva al apoderado')
+                  logger.info(f'Aprobado')
+                  return True
+                else:
+                  logger.error(f'Los alumnos retirados del establecimiento no cuentan con un registro de entrega de documentos al apoderado')
+                  logger.error(f'Rechazado')
+                  return False
             else:
                 logger.error(f'S/Datos')
-                logger.error(f'Rechazado')
                 logger.error(f'No existen registro de alumnos retirados del establecimiento')
                 return True
         except Exception as e:
@@ -1453,26 +1446,38 @@ class check:
   def fn2BA(self,conn):
         try:
             _query = conn.execute("""
-            select
-                PS.fileScanBase64
+            select DISTINCT P.PersonId
             from OrganizationPersonRole OPR
-            join Person P on OPR.PersonId = P.PersonId
-            join PersonStatus PS on P.PersonId = PS.PersonId
+                    join Person P on OPR.PersonId = P.PersonId
+                    join PersonStatus PS on P.PersonId = PS.PersonId
             where OPR.RoleId = 6
-            and PS.RefPersonStatusTypeId IN (25, 24, 31)
-            """).fetchall() # out PS.Description, PS.fileScanBase64, PS.docNumber
+              and PS.RefPersonStatusTypeId IN (25, 24, 31);
+            """).fetchall()
             if (len(_query)>0):
-              _documento = (list([m[0] for m in _query if m[0] is not None]))
-              if not _documento:
-                logger.error(f"No existen documentos cargados en el sistema para estudiantes exedentes")
+              _queryExcedentes = conn.execute("""
+              select 'file' as fileScanBase64
+              from PersonStatus
+              where fileScanBase64 is not null
+                and fileScanBase64 <> ''
+                and PersonId in (
+                  select DISTINCT P.PersonId
+                  from OrganizationPersonRole OPR
+                          join Person P on OPR.PersonId = P.PersonId
+                          join PersonStatus PS on P.PersonId = PS.PersonId
+                  where OPR.RoleId = 6
+                    and PS.RefPersonStatusTypeId IN (25, 24, 31));
+              """).fetchall()
+              if (len(_queryExcedentes) == len(_query)):
+                logger.info(f'Todos los alumnos excedentes cuentan con su documento correspondiente')
+                logger.info(f'Aprobado')
+                return True
+              else:
+                logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
                 logger.error(f'Rechazado')
                 return False
-              logger.info(f'Todos los alumnos exedentes cuentan con su documento correspondiente')
-              logger.info(f'Aprobado')
-              return True
             else:
                 logger.error(f'S/Datos')
-                logger.error(f'No existen alumnos exedentes en el establecimiento')
+                logger.error(f'No existen alumnos excedentes en el establecimiento')
                 return True
         except Exception as e:
             logger.error(f'NO se pudo ejecutar la verificación en la lista')
@@ -2430,38 +2435,48 @@ class check:
 
 ## Inicio fn28A WC ##
   def fn28A(self, conn):
-    try:
-        _query = conn.execute("""
-        select
-               PS.fileScanBase64
-        from OrganizationPersonRole OPR
-                join Person P on OPR.PersonId = P.PersonId
-                join PersonIdentifier PI on P.PersonId = PI.PersonId
-                join PersonStatus PS on P.PersonId = PS.PersonId
-                join PersonBirthplace PB on P.PersonId = PB.PersonId
-        where PI.RefPersonIdentificationSystemId = 52
-          and OPR.RoleId = 6
-          and PI.Identifier is not null
-          and length(trim(PI.Identifier)) > 0
-          and PS.RefPersonStatusTypeId = 34;
-        """).fetchall()
-        if(len(_query)>0):
-          _documento = (list([m[0] for m in _query if m[0] is not None]))
-          if not _documento:
-            logger.error(f"Sin Documento en el sistema")
-            logger.error(f'Rechazado')
-            return False
-          logger.info(f'Documento de pais de origen registrado correctamente')
-          logger.info(f'Aprobado')
-          return True
-        else:
-          logger.error(f"S/Datos")
-          logger.error(f"No existen estudiantes migrantes registrados en el establecimiento")
-          return True
-    except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
-        return False
+            try:
+                _query = conn.execute("""
+                select DISTINCT P.PersonId
+                from OrganizationPersonRole OPR
+                        join Person P on OPR.PersonId = P.PersonId
+                        join PersonIdentifier PI on P.PersonId = PI.PersonId
+                where PI.RefPersonIdentificationSystemId = 52
+                  and OPR.RoleId = 6
+                  and PI.Identifier is not null;
+                """).fetchall()
+                if(len(_query)>0):
+                  _personStatus = conn.execute("""
+                  select 'file' as fileScanBase64
+                  from PersonStatus
+                  where RefPersonStatusTypeId = 34
+                    and fileScanBase64 is not null
+                    and fileScanBase64 <> ''
+                    and PersonId in (
+                      select DISTINCT P.PersonId
+                      from OrganizationPersonRole OPR
+                              join Person P on OPR.PersonId = P.PersonId
+                              join PersonIdentifier PI on P.PersonId = PI.PersonId
+                      where PI.RefPersonIdentificationSystemId = 52
+                        and OPR.RoleId = 6
+                        and PI.Identifier is not null)
+                  """).fetchall()
+                  if(len(_query) == len(_personStatus)):
+                    logger.info(f'Los alumnos extranjeros cuentan con documento de convalidacion de estudios')
+                    logger.info(f'Aprobado')
+                    return True
+                  else:
+                    logger.error(f'No todos los alumnos extranjeros no poseen documento de convalidacion de estudios')
+                    logger.error(f'Rechazado')
+                    return False
+                else:
+                    logger.error(f"S/Datos")
+                    logger.error(f"No existen estudiantes migrantes registrados en el establecimiento")
+                    return True
+            except Exception as e:
+                logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                logger.error(f"Rechazado")
+                return False
 ## Fin fn28A WC ##
 
 ## Inicio fn5E1 WC ##
@@ -2526,48 +2541,47 @@ class check:
 ## Fin fn531 WC ##
 
 ## Inicio fn28B WC ##
-  def fn28B(self, conn):
+def fn28B(self, conn):
         try:
             _query = conn.execute("""
-            select
-                PS.PersonStatusId,
-                PS.PersonId,
-                PS.RefPersonStatusTypeId,
-                PS.docNumber,
-                PS.Description,
-                PS.fileScanBase64
+            select DISTINCT PI.PersonId
             from OrganizationPersonRole OPR
                     join Person P on OPR.PersonId = P.PersonId
-                    join PersonStatus PS on P.PersonId = PS.PersonId
-                    join PersonBirthplace PB on P.PersonId = PB.PersonId
-            where OPR.RoleId = 6
-            and PB.RefCountryId != 45
-            and PS.RefPersonStatusTypeId = 34
-            group by P.PersonId;
+                    join PersonIdentifier PI on P.PersonId = PI.PersonId
+            where PI.RefPersonIdentificationSystemId = 52
+              and OPR.RoleId = 6
+              and PI.Identifier is not null;
             """).fetchall()
             if(len(_query)>0):
-                _docNumber = (list([m[3] for m in _query if m[0] is not None]))
-                if not _docNumber :
-                    logger.error(f"Sin Nro de documento")
-                    logger.error(f'Rechazado')
-                    return False
-                _description = (list([m[4] for m in _query if m[0] is not None]))
-                if not _description :
-                    logger.error(f"Sin descripcion de documento")
-                    logger.error(f'Rechazado')
-                    return False
-                _fileScanBase64 = (list([m[5] for m in _query if m[0] is not None]))
-                if not _fileScanBase64 :
-                    logger.error(f"Sin fileScanBasse64")
-                    logger.error(f'Rechazado')
-                    return False
-                logger.info(f'Certificado de convalidacion de ramos validado')
+              _queryDocuments = conn.execute("""
+              SELECT PS.PersonId
+              FROM PersonStatus PS
+              WHERE PS.PersonId in (select DISTINCT PI.PersonId
+                                    from OrganizationPersonRole OPR
+                                            join Person P on OPR.PersonId = P.PersonId
+                                            join PersonIdentifier PI on P.PersonId = PI.PersonId
+                                    where PI.RefPersonIdentificationSystemId = 52
+                                      and OPR.RoleId = 6
+                                      and PI.Identifier is not null)
+                AND PS.fileScanBase64 IS NOT NULL
+                AND PS.fileScanBase64 <> ''
+                AND PS.docNumber IS NOT NULL
+                AND PS.docNumber <> ''
+                AND PS.Description IS NOT NULL
+                AND PS.Description <> '';
+              """).fetchall()
+              if (len(_query) == len(_queryDocuments)):
+                logger.info(f'Todos los estudiantes migrantes poseen sus documentos de convalidacion de ramos ingresados correctamente')
                 logger.info(f'Aprobado')
                 return True
-            else:
-                logger.error(f"S/Datos")
-                logger.error(f"Rechazado")
+              else:
+                logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
+                logger.error(f'Rechazado')
                 return False
+            else:
+                logger.error(f"No existen estudiantes migrantes registrados en el establecimiento")
+                logger.error(f"S/Datos")
+                return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
             logger.error(f"Rechazado")
