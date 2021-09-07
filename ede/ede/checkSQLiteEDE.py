@@ -2541,7 +2541,7 @@ class check:
 ## Fin fn531 WC ##
 
 ## Inicio fn28B WC ##
-def fn28B(self, conn):
+  def fn28B(self, conn):
         try:
             _query = conn.execute("""
             select DISTINCT PI.PersonId
