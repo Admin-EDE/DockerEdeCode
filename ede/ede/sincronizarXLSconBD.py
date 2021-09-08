@@ -17,7 +17,7 @@ def cargarPlanilla():
 def inspectDB():
   secPhase = "BD en blanco solo con parámetros definidos por Enlaces-Mineduc"
   #path_to_DB_file = "./ede/ede/ceds-nds-v7_1_encryptedD3.db"
-  path_to_DB_file = "./ceds-nds-v7_1_encryptedD3 - copia.db"
+  path_to_DB_file = "./ceds-nds-v7_1_encryptedD3.db"
   try:
     engine = create_engine(f"sqlite+pysqlcipher://:{secPhase}@/{path_to_DB_file}?cipher=aes-256-cfb&kdf_iter=64000")    
     return inspect(engine)
