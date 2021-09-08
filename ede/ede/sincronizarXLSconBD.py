@@ -8,7 +8,7 @@ import pandas as pd
 
 #Carga planilla
 def cargarPlanilla():
-  url = './ede/ede/NDS-Reference-v7_1.xlsx';
+  url = './NDS-Reference-v7_1.xlsx'
   xd = pd.read_excel(url,'NDS Columns')
   _t=f'Planilla {url} cargada satisfactoriamente'; print(_t)
   return xd
@@ -17,7 +17,7 @@ def cargarPlanilla():
 def inspectDB():
   secPhase = "BD en blanco solo con parámetros definidos por Enlaces-Mineduc"
   #path_to_DB_file = "./ede/ede/ceds-nds-v7_1_encryptedD3.db"
-  path_to_DB_file = "./ede/ede/copia.db"
+  path_to_DB_file = "./ceds-nds-v7_1_encryptedD3 - copia.db"
   try:
     engine = create_engine(f"sqlite+pysqlcipher://:{secPhase}@/{path_to_DB_file}?cipher=aes-256-cfb&kdf_iter=64000")    
     return inspect(engine)
@@ -44,14 +44,19 @@ def main():
       column_items = inspector.get_columns(table_name)
       #matching = [s for s in column_items if any(xs in s['name'] for xs in matchers)]
       #print('\t'.join(n for n in column_items[0]))
-      for c in column_items:
-        assert len(c) == len(column_items[0])
-        _d = xd[(xd['Table']==table_name) & (xd['Column']==c['name'])].values
+      xdColumns = xd['Column'][(xd['Table']==table_name)].tolist()
+#      print(xdColumns)
+      for col in column_items:
+        assert len(col) == len(column_items[0])
+        _d = xd[(xd['Table']==table_name) & (xd['Column']==col['name'])].values
+        #print("col['name']",col['name'])
+        if(col['name'] in xdColumns): xdColumns.remove(col['name'])
         if(not _d.any()):
           #print(table_name,c)
-          print(table_name,'\t'.join(str(c[n]) for n in c))
-        
-        
+          print(table_name,'\t'.join(str(col[n]) for n in col))
+      if(xdColumns):
+        print("----- Tabla: ",table_name," faltan columnas en BD:", xdColumns)
+
   return _result
   
 if __name__== "__main__":
