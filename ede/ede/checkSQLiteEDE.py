@@ -2376,7 +2376,8 @@ class check:
                 I.OrganizationPersonRoleId,
                 OPR.RoleId
                 FROM Incident I
-                JOIN OrganizationPersonRole OPR on I.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId;
+                JOIN OrganizationPersonRole OPR on I.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+                WHERE OPR.RoleId = 6;
                 """).fetchall()
             if(len(_queryIncident)>0):
                 _incidentId = (list([m[0] for m in _queryIncident if m[0] is not None]))
@@ -2410,11 +2411,12 @@ class check:
                     logger.error(f'Rechazado')
                     return False
                 _roleId = (list([m[6] for m in _queryIncident if m[6] is not None]))
-                if _roleId != 6:
+                if _roleId[0] != 6:
                     logger.error(f"Sin estudiante en incidente")
                     logger.error(f'Rechazado')
                     return False
                 for x in _incidentId:
+
                     _queryIncidentPerson = conn.execute("""
                     SELECT DISTINCT
                     I.IncidentId,
@@ -2424,8 +2426,8 @@ class check:
                     FROM IncidentPerson I
                             JOIN Person P on I.PersonId = P.PersonId
                             JOIN OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
-                    WHERE I.IncidentId =
-                    """,int(x)).fetchall()
+                    WHERE I.IncidentId =?
+                    """,x ).fetchall()
                     if (len(_queryIncidentPerson)>0):
                         _personId = (list([m[1] for m in _queryIncidentPerson if m[1] is not None]))
                         _refRoleType = (list([m[2] for m in _queryIncidentPerson if m[2] is not None]))
@@ -2825,7 +2827,7 @@ class check:
                         """+x+""" where RefIncidentPersonRoleTypeId = 8 and RefIncidentPersonTypeId = 43""").fetchall()
                         incidentProfessor = conn.execute("""
                         SELECT * from IncidentPerson where IncidentId =
-                        """+x+""" where RefIncidentPersonRoleTypeId = 7 RefIncidentPersonTypeId = 44""").fetchall()
+                        """+x+""" where RefIncidentPersonRoleTypeId = 7 and RefIncidentPersonTypeId = 44""").fetchall()
                         parent = 0
                         professor = 0
                         if (len(incidentParent)>0):
