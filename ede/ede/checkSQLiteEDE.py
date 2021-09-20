@@ -4432,8 +4432,387 @@ class check:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
 ### fin  fn682  ###
+
+### inicio fn6E1 ###
+  def fn6E1(self,conn):
+    arr=[]
+    diaSemana=[]
+    numero=0
+    try:
+  
+      _S3=""" select organizationid from Organization where reforganizationtypeid=22  ;"""
+
+      _S4=""" select * from coursesectionschedule where organizationid=?   ;"""
+
+      _S5=""" select a.OrganizationPersonRoleId,a.OrganizationId,a.PersonId,a.roleid,strftime('%Y-%m-%d %H:%M',a.EntryDate) as EntryDate, strftime('%Y-%m-%d %H:%M',a.ExitDate) as ExitDate,a.RecordStartDateTime,a.RecordEndDateTime,b.Identifier
+                    from  OrganizationPersonRole a 
+                    join PersonIdentifier b on a.personId=b.personId  
+                    where roleid=6;"""
+
+      _S6=""" select a.OrganizationPersonRoleId,strftime('%Y-%m-%d',b.Date) as Date,b.fileScanbase64,b.observaciones 
+                    from OrganizationPersonRole a join RoleAttendanceEvent b on a.OrganizationPersonRoleId= b.OrganizationPersonRoleId
+                    where a.OrganizationPersonRoleId= ? and b.Date= ?;"""
+
+      now=datetime.now()
+      _q1 = conn.execute(_S3).fetchall()
+      XX=0
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          organizationid=str(q1[0])
+          _q2 = conn.execute(_S4,organizationid).fetchall()
+          if(len(_q2)!=0):
+            for q2 in _q2:
+              diaSemana=str(q2[2]).split(",")
+              hora_comi=str(q2[3])
+              hora_final=str(q2[4])
+              periodo=str(q2[5])
+              cantidad_letras=int(len(periodo))-1
+              periodo2=(periodo[-2:])
+              _q3 = conn.execute(_S5).fetchall()
+              if(int(periodo2.strip())==3):
+                 for q3 in _q3:
+                   id_alu=str(q3[8])
+                   orgaId=str(q3[0])
+                   hora1=str(q3[4])
+                   hora2=str(q3[5])
+                   dfs=datetime.strptime(hora1[:10],'%Y-%m-%d')
+                   nombresemana2=dfs.isoweekday()
+                   for aa in diaSemana:
+                      if str(aa.lower())=='lunes':
+                        numero=0
+                      elif str(aa.lower())=='martes':
+                        numero=1
+                      elif str(aa.lower())=='miercoles': 
+                        numero=2
+                      elif str(aa.lower())=='jueves':
+                        numero=3
+                      elif str(aa.lower())=='viernes':
+                        numero=4
+
+                      if int(nombresemana2)==int(numero):
+                        if datetime.strptime(hora1[11:len(hora1)], '%H:%M')> datetime.strptime(hora_comi[:5], '%H:%M'):
+                          _q4 = conn.execute(_S6,orgaId,dfs).fetchall()
+                          if(len(_q4)!=0):
+                            for q4 in _q4:
+                              justi=str(q4[2])
+                              obv=str(q4[3])
+                              if justi=="None" or obv== "None":
+                                arr.append(id_alu)
+                          
+                          else:
+                            arr.append(id_alu)  
+
+
+          if(len(arr)!=0):
+            logger.error(f"Los siguientes alumnos llegaron tarde o : {str(arr)} ")
+            logger.error(f"Rechazado")
+            return False
+          else:
+            logger.info(f"Aprobado")
+            return True
+      else:
+        logger.error(f"No hay registro Numero de lista asociados .")
+        logger.error(f"Rechazado")
+        return False   
+    
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin fn6E1  ###
+
+### inicio fn6E4 ### 
+  def fn6E4(self,conn):
+    arr=[]
+    arr2=[]
+    arr3=[]
+    dias_laborales=[]
+    dias_laborales2=[]
+    numero=0
+    try:
+  
+      _S3="""     select DISTINCT(strftime('%Y-%m-%d',date)) as date from roleattendanceevent ;"""
+
+      _S4=""" select strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarEvent  ;"""
+
+      _S5=""" select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from organizationcalendarcrisis;"""
+
+      _Trae_fechas= """     WITH RECURSIVE dates(date) AS (
+                      VALUES (?)
+                      UNION ALL
+                      SELECT date(date, '+1 day')
+                      FROM dates
+                      WHERE date < ?
+                      )
+                      SELECT strftime('%Y-%m-%d',date) as date  FROM dates;"""
+      now=datetime.now()
+      _q1 = conn.execute(_S3).fetchall()
+      XX=0
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          fecha_co=datetime.strptime(str(q1[0]),'%Y-%m-%d')
+          _q2 = conn.execute(_S4).fetchall()
+          if(len(_q2)!=0):
+            for q2 in _q2:
+              fecha_eve=datetime.strptime(str(q2[0]),'%Y-%m-%d')
+              if fecha_co==fecha_eve:               
+                  arr.append(str(fecha_co))         
+
+              if(len(arr)!=0):
+                logger.error(f"Los siguientes Fechas estan repetidas en la tabla OrganizationCalendarEvent  : {str(arr)} ")
+                logger.error(f"Rechazado")
+
+      _q5 = conn.execute(_S5).fetchall()
+      if(len(_q5)!=0):
+        for q5 in _q5:
+        # funcion que sirve para traer de la base datos los dias contados y guardar en un arreglo los dias que no caigan en sabado y domingo#
+          date1=datetime.strptime(str(q5[0]), '%Y-%m-%d')
+          date2=datetime.strptime(str(q5[1]), '%Y-%m-%d')
+
+          _q7 = conn.execute(_Trae_fechas,date1,date2).fetchall()
+          for q7 in _q7:
+            fechaxx=str(q7)
+            fechaxx1=fechaxx.replace(',','')
+            fechaxx2=fechaxx1.replace('(','')
+            fechaxx3=datetime.strptime(fechaxx2[1:11],'%Y-%m-%d')
+            if int(fechaxx3.isoweekday())!=6 : #sabado
+              if int(fechaxx3.isoweekday())!=7: #domingo
+                dias_laborales.append(str(datetime.strftime(fechaxx3,'%Y-%m-%d')))
+
+          arr3=np.array(dias_laborales)  
+          dias_laborales2.append(np.unique(arr3))
+
+          xx1=0
+          for xx in dias_laborales2:
+            fechaxx=str(xx)
+            fechaxx1=fechaxx.replace(',','')
+            fechaxx2=fechaxx1.replace('(','')
+            fecha_crisis=datetime.strptime(fechaxx2[2:12],'%Y-%m-%d')
+            _qx = conn.execute(_S3).fetchall()
+            if(len(_qx)!=0):
+              for q1 in _qx:
+                fechax=str(q1)
+                fechax1=fechax.replace(',','')
+                fechaxx=fechax1.replace('(','')
+                fecha_co=datetime.strptime(fechaxx[1:11],'%Y-%m-%d')
+                if fecha_crisis==fecha_co:
+                  arr2.append(str(datetime.strftime(fecha_crisis,'%Y-%m-%d')))
+          xx1+xx1+1  
+
+        if(len(arr2)!=0):
+          logger.error(f"Los siguientes Fechas estan repetidas en la tabla organizationcalendarcrisis  : {str(arr2)} ")
+          logger.error(f"Rechazado")
+          return False
+        else:
+          logger.error(f"Aprobado")
+          return True  
+
+      else:
+        logger.error(f"No hay registro Numero de lista asociados .")
+        logger.error(f"Rechazado")
+        return False   
+    
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin  fn6E4 ###
+
+### inicio  fn6C2 ###
+  def fn6C2(self,conn):
+    arr=[]
+    arr2=[]
+    arr3=[]
+    dias_laborales=[]
+    dias_laborales2=[]
+    numero=0
+    try:
+  
+      _S3="""             select b.identifier,a.docnumber, a.filescanbase64,a.StatusStartDate from PersonStatus a join PersonIdentifier b on a.personid=b.personId
+            where  RefPersonStatusTypeId=31 ;"""
+
+      now=datetime.now()
+      _q1 = conn.execute(_S3).fetchall()
+      XX=0
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          rut=str(q1[0])
+          filescanbase64=str(q1[2])
+          docnumber=str(q1[1])
+          dateF=str(q1[3])
+
+          if ((filescanbase64 is None) or (docnumber is None) or (dateF is None)):
+            arr.append(rut)
+
+        if(len(arr)!=0):
+          logger.error(f"Los siguientes alumnos no tienen Rex de aprobacion : {str(arr)} ")
+          logger.error(f"Rechazado")
+          return False
+        else:
+          logger.error(f"Aprobado")
+          return True  
+
+      else:
+        logger.error(f"No hay registro Numero de lista asociados .")
+        logger.error(f"Rechazado")
+        return False   
+    
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin  fn6C2 ###
+
+### inicio  fn6B0 ###
+  def fn6B0(self,conn):
+    arr=[]
+    arr2=[]
+    arr3=[]
+    dias_laborales=[]
+    dias_laborales2=[]
+    numero=0
+    try:
+
+      _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
+      join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
+  
+      _S3_1=""" select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
+                where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+
+      _S4_1="""     select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
+        on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+
+      now=datetime.now()
+      rrr=0
+      _q1 = conn.execute(_S1).fetchall()
+      if(len(_q1)!=0): 
+        for q1 in _q1:
+          personid=int(q1[0]) 
+          fecha_asis=datetime.strptime(str(q1[1][:10]),'%Y-%m-%d')
+          fecha_asis=datetime.strftime(fecha_asis,'%d-%m-%Y')
+          if rrr==0:
+            _q3 = conn.execute(_S3_1,personid,fecha_asis).fetchall()
+            if(len(_q3)!=0):
+              for xx in _q3:
+                contador=int(xx[0])
+                if contador>=2:
+                  _q4 = conn.execute(_S4_1,personid,fecha_asis).fetchall()
+                  if(len(_q4)!=0):
+                    for xx in _q4: 
+                      rut=str(xx[0]) 
+                      fecha_cam_start=str(xx[13])
+                      fecha_cam_end=str(xx[14])
+                      obser=str(xx[11])
+                      tipo=int(xx[4])
+                      digital=str(xx[9])
+                      if tipo==1:
+                        if(fecha_cam_start == "None") or (fecha_cam_end == "None") or (obser == "None") or  (digital == "None"):
+                          arr.append(rut)
+                          
+                      if tipo==2:
+                        if(fecha_cam_start == "None") or (fecha_cam_end == "None") or (obser == "None") or  (digital == "None"):
+                          arr2.append(rut)
+        
+        if(len(arr)!=0):
+          logger.error(f"Las siguientes asistencias por dia del alumno no tienen firma digital : {str(arr)} ")
+          logger.error(f"Rechazado")
+          return False
+
+        if(len(arr2)!=0):
+          logger.error(f"Las siguientes asistencias por bloque del alumno no tienen firma digital : {str(arr2)} ")
+          logger.error(f"Rechazado")
+          return False
+
+        else:
+          logger.info(f"Aprobado")
+          return True 
+
+      else:
+        logger.error(f"No hay registro de alumnos .")
+        logger.error(f"Rechazado")
+        return False   
+    
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin fn6B0 ###
+
+### inicio  fn6B1 ###
+  def fn6B1(self,conn):
+    arr=[]
+    arr2=[]
+    arr3=[]
+    dias_laborales=[]
+    dias_laborales2=[]
+    numero=0
+    try:
+
+      _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
+      join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
+  
+      _S3_1=""" select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
+                where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+
+      _S4_1="""     select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
+        on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+
+      now=datetime.now()
+      rrr=0
+      _q1 = conn.execute(_S1).fetchall()
+      if(len(_q1)!=0): 
+        for q1 in _q1:
+          personid=int(q1[0]) 
+          fecha_asis=datetime.strptime(str(q1[1][:10]),'%Y-%m-%d')
+          fecha_asis=datetime.strftime(fecha_asis,'%d-%m-%Y')
+          if rrr==0:
+            _q3 = conn.execute(_S3_1,personid,fecha_asis).fetchall()
+            if(len(_q3)!=0):
+              for xx in _q3:
+                contador=int(xx[0])
+                if contador>=3:
+                  _q4 = conn.execute(_S4_1,personid,fecha_asis).fetchall()
+                  if(len(_q4)!=0):
+                    for xx in _q4: 
+                      rut=str(xx[0]) 
+                      fecha_cam_start=str(xx[13])
+                      fecha_cam_end=str(xx[14])
+                      obser=str(xx[11])
+                      tipo=int(xx[4])
+                      digital=str(xx[9])
+                      if tipo==1:
+                        if(fecha_cam_start == "None")  or  (digital == "None"):
+                          arr.append(rut)
+                          
+                      if tipo==2:
+                        if(fecha_cam_start == "None")  or  (digital == "None"):
+                          arr2.append(rut)
+        
+        if(len(arr)!=0):
+          logger.error(f"Las siguientes asistencias por dia del alumno no tienen firma digital por el director : {str(arr)} ")
+          logger.error(f"Rechazado")
+          
+
+        if(len(arr2)!=0):
+          logger.error(f"Las siguientes asistencias por bloque del alumno no tienen firma digital por el director  : {str(arr2)} ")
+          logger.error(f"Rechazado")
+          return False
+
+        else:
+          logger.info(f"Aprobado")
+          return True 
+
+      else:
+        logger.error(f"No hay registro de alumnos .")
+        logger.error(f"Rechazado")
+        return False   
+    
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin  fn6B1  ###
 
 # Lista de fechas rango de rango fechas menos sabado y domingo
   def ListaFechasRango(self,fecha_ini,fecha_ter,conn):
