@@ -96,7 +96,7 @@ class check:
       "fn6E0": "self.fn6E0(conn)",
       "fn6E1": "self.fn6E1(conn)",
       "fn6E2": "self.fn6E2(conn)",
-      "fn6E3": "No/Verificado",
+      "fn6E3": "self.fn6E3(conn)",
       "fn6E4": "self.fn6E4(conn)",
       "fn6E5": "No/Verificado",
       "fn6D0": "self.fn6D0(conn)",
@@ -3374,7 +3374,7 @@ class check:
     try:
 
      # VALIDO LA EXISTENCIA DE ALUMNOS RETIRADOS Y QUE TENGAN REGISTRADA FECHA DE RETIRO
-      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
+      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.Ex  itDate
                 FROM PersonStatus A
                 JOIN PersonIdentifier B
                 ON A.personId = B.personId
@@ -4887,5 +4887,79 @@ class check:
     arr6=np.array(arr5)  
     arr7.append(np.unique(arr6))
     return arr7
+
+### inicio fn6E3 ###
+  def fn6E3(self,conn):
+    _flag1 = 0
+    _flag2 = 0
+    try:
+      #OBTENGO LAS FECHAS CON SUSPENSION DE CLASES
+      _s1 = """SELECT rexNumber,rexDate,fileScanBase64
+                FROM OrganizationCalendarEvent
+                WHERE indicadorSinClases = 1;"""
+      
+      _s2="""SELECT rexNumber,rexNumber,fileScanBase64
+              FROM OrganizationCalendarSession
+              WHERE claseRecuperadaId != NULL;"""
+
+      _q1 = conn.execute(_s1).fetchall()
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          _rexNumber = q1[0]
+          _rexDate = q1[1]
+          _fsb = q1[2]
+          if(_rexNumber is None):
+            _msg1 = f"No hay información de resolución ministerial para la suspensión de clases (numero de resolución)"
+            _flag1 = 1
+          if(_rexDate is None):
+            _msg1 = f"No hay información de resolución ministerial para la suspensión de clases (fecha de resolución)"
+            _flag1 = 1
+          if(_fsb is None):
+            _msg1 = f"No hay información de resolución ministerial para la suspensión de clases (documento digitalizado)"
+            _flag1 = 1        
+      
+      else:
+        logger.info(f"No hay información en el establecimiento de eventos que impliquen suspensión de clases.")
+        logger.info(f"Aprobado")
+        return True
+
+      _q2 = conn.execute(_s2).fetchall()
+      if(len(_q2)!=0):
+        for q2 in _q2:
+          _rxn = q2[0]
+          _rxd = q2[1]
+          _rxfbs = q2[2]
+          if(_rxn is None):
+            _msg2 = f"No hay información de resolución ministerial para recuperación de clases (numero de resolución)"
+            _flag2 = 1
+          if(_rxd is None):
+            _msg2 = f"No hay información de resolución ministerial para  recuperación de clases (fecha de resolución)"
+            _flag2 = 1
+          if(_rxfbs is None):
+            _msg2 = f"No hay información de resolución ministerial para  recuperación de clases (documento digitalizado)"
+            _flag1 = 1  
+
+      else:
+        logger.info(f"No hay información en el establecimiento de clases recuperadas.")
+        logger.info(f"Aprobado")
+        return True
+
+      if(_flag1 == 1):
+        logger.error(_msg1)
+        logger.error(f"Rechazado")
+        return False
+      elif(_flag2 == 1):
+        logger.error(_msg2)
+        logger.error(f"Rechazado")
+        return False
+      else:
+        logger.info(f"Aprobado")
+        return True
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin fn6E3 ###
 
 ### MIAULA FIN ###
