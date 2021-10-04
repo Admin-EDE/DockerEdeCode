@@ -156,14 +156,6 @@ class check:
           logger.info(f"Resultado de la evaluación de la función {key}: {eval_}")
           _result = eval_ and _result
 
-      #_r[0] = self.verificaIntegridadReferencial(conn,self.args._FKErrorsFile)
-      #self.verificaDatosDeLasPersonas(conn)
-      #self.verificaDatosEstudiantes(conn)
-      #self.verificaDatosDocentes(conn)
-      #self.verificaDatosEstablecimiento(conn)
-      #self.verificaJerarquiasOrganizacional(conn)
-      #self.verificaClaveAleatoriaDocentes(conn)
-
       if(not _result):
         raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
 
