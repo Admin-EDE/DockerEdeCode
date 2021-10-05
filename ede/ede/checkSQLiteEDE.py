@@ -3366,7 +3366,7 @@ class check:
     try:
 
      # VALIDO LA EXISTENCIA DE ALUMNOS RETIRADOS Y QUE TENGAN REGISTRADA FECHA DE RETIRO
-      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.Ex  itDate
+      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
                 FROM PersonStatus A
                 JOIN PersonIdentifier B
                 ON A.personId = B.personId
