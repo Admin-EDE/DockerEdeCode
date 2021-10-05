@@ -145,7 +145,9 @@ class check:
   #----------------------------------------------------------------------------
   def execute(self):
     _result = True
-    engine = create_engine(f"sqlite+pysqlcipher://:{self.args.secPhase}@/{self.args.path_to_DB_file}?cipher=aes-256-cfb&kdf_iter=64000")
+    sec = self.args.secPhase
+    path = self.args.path_to_DB_file
+    engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000")
     try:
       conn = engine.connect()
 
@@ -157,7 +159,8 @@ class check:
           _result = eval_ and _result
 
       if(not _result):
-        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
+        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación.\
+           Hay errores en la revisión. Revise el LOG para más detalles")
 
     except Exception as e:
       _t = "ERROR en la validación: "+str(e)
