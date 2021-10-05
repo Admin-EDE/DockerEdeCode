@@ -130,12 +130,6 @@ class check:
       "fn9F2": "self.fn9F2(conn)",
       "fn9F3": "self.fn9F3(conn)"
     }
-    # self.dfLog = dfLog
-    # self._encode = _encode
-    # self._sep = _sep
-    # self.secPhase = secPhase
-    # self.path_to_DB_file = path_to_DB_file
-    #t_stamp = datetime.timestamp(datetime.now(timezone('Chile/Continental')))
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
 
@@ -155,14 +149,6 @@ class check:
           eval_ = eval(value)
           logger.info(f"Resultado de la evaluación de la función {key}: {eval_}")
           _result = eval_ and _result
-
-      #_r[0] = self.verificaIntegridadReferencial(conn,self.args._FKErrorsFile)
-      #self.verificaDatosDeLasPersonas(conn)
-      #self.verificaDatosEstudiantes(conn)
-      #self.verificaDatosDocentes(conn)
-      #self.verificaDatosEstablecimiento(conn)
-      #self.verificaJerarquiasOrganizacional(conn)
-      #self.verificaClaveAleatoriaDocentes(conn)
 
       if(not _result):
         raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
