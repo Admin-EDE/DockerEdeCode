@@ -94,26 +94,26 @@ class check:
       "fn6F0": "self.fn6F0(conn)",
       "fn6F1": "self.fn6F1(conn)",
       "fn6E0": "self.fn6E0(conn)",
-      "fn6E1": "No/Verificado",
+      "fn6E1": "self.fn6E1(conn)",
       "fn6E2": "self.fn6E2(conn)",
-      "fn6E3": "No/Verificado",
-      "fn6E4": "No/Verificado",
+      "fn6E3": "self.fn6E3(conn)",
+      "fn6E4": "self.fn6E4(conn)",
       "fn6E5": "No/Verificado",
       "fn6D0": "self.fn6D0(conn)",
       "fn6D1": "self.fn6D1(conn)",
       "fn6C0": "self.fn6C0(conn)",
       "fn6C1": "No/Verificado",
       "fn6C2": "self.fn6C2(conn)",
-      "fn6B0": "No/Verificado",
-      "fn6B1": "No/Verificado",
+      "fn6B0": "self.fn6B0(conn)",
+      "fn6B1": "self.fn6B1(conn)",
       "fn6A0": "No/Verificado",
       "fn6A1": "No/Verificado",
       "fn6A2": "No/Verificado",
       "fn6A3": "No/Verificado",
       "fn690": "No/Verificado",
-      "fn680": "No/Verificado",
-      "fn681": "No/Verificado",
-      "fn682": "No/Verificado",
+      "fn680": "self.fn680(conn)",
+      "fn681": "self.fn681(conn)",
+      "fn682": "self.fn682(conn)",
       "fn7F0": "No/Verificado",
       "fn7F1": "No/Verificado",
       "fn7F2": "No/Verificado",
@@ -3573,6 +3573,7 @@ class check:
     try:
       _l = []
       _l2 = []
+      _l3 = 0
       # OBTENGO LISTADO DE ALUMNOS
       _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
                 FROM PersonStatus A
@@ -3638,12 +3639,16 @@ class check:
                               logger.error(f"No hay registro de firma de docente/administrativo para evento.")
                               logger.error(f"Rechazado")
                               return False
+                            else:
+                              _l3 = 1
                           elif(str(_pr)=="43"): #apoderado
                               _fsb = str(q4[2])
                               if(_fsb is None):
                                 logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento.")
                                 logger.error(f"Rechazado")
                                 return False
+                              else:
+                                _l3 = 1
                       else:
                         logger.error(f"No har registro de docente y/o apoderado para evento.")
                         logger.error(f"Rechazado")
@@ -3671,6 +3676,10 @@ class check:
           logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
           logger.error(f"Rechazado")
           return False
+
+      if(_l3 == 1):
+        logger.info(f"Aprobado")
+        return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
@@ -3713,46 +3722,30 @@ class check:
           fecha_in=str(q1[3])
           fecha_ter=str(q1[4])
           f1=datetime.strftime(now, '%Y-%m-%d')
-
           if (f1 <= fecha_ter):
-            fecha_ter=f1
-
-          
-          diastotal=int(np.busday_count(fecha_in,fecha_ter))
-          
-          
+            fecha_ter=f1          
+          diastotal=int(np.busday_count(fecha_in,fecha_ter))  
           _q2 = conn.execute(_s2,org_id).fetchall()
           if(len(_q2)!=0):
             for q2 in _q2:
                 f2x=str(q2[0])
                 f2=str(q2[1])
-
                 if (f1 <= fecha_ter):
-                  f2=f1
-
-                
+                  f2=f1               
                 diastotal2=int(np.busday_count(f2x,f2))
                 if diastotal2> diastotal :
                   contador2=diastotal2-diastotal
-
                 else:
                   contador2= diastotal-diastotal2
-
           elif(len(_q2)==0): 
-            contador2= diastotal
-          
+            contador2= diastotal          
           _q3 = conn.execute(_s3,org_ca).fetchall()
           if(len(_q3)!=0):
             xx=len(_q3)
-
             if int(xx)>contador2:
-
               contador3=int(xx)-contador2
-
             else:
-
               contador3=contador2-int(xx)
-
           elif(len(_q3)==0):
             contador3=contador2
            
@@ -3762,34 +3755,31 @@ class check:
               personid=str(w1[0])
               fecha1w=str(w1[1])
               fecha2w=str(w1[2])
-
               if str(w1[1]) is None:
                 fecha1w=fecha_in
-
               if str(w1[2]) is None:
-                fecha2w=fecha_ter
-              
+                fecha2w=fecha_ter              
               if (f1 <= fecha1w):
                 fecha2w=f1
-
               diastotal3=int(np.busday_count(fecha1w,fecha2w))
               if diastotal3 < (contador2 + contador3):
                 diastotal3 = (contador2 + contador3)-diastotal3
               else:
-                diastotal3 = diastotal3 - (contador2 + contador3)
-              
+                diastotal3 = diastotal3 - (contador2 + contador3)              
               if(contador3!=diastotal3):
                 arr.append(personid)
-
             if(len(arr)!=0):
               logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
               logger.error(f"Rechazado")
-              return False  
+              return False 
+            else:
+              logger.info(f"Aprobado")
+              return True
 
           else:  
               logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
               logger.error(f"Rechazado")
-              return False    
+              return False   
 
       else:
         logger.error(f"No hay informacion de establecimiento.")
@@ -3928,12 +3918,12 @@ class check:
           logger.error(f"Rechazado")
           return False
         else:
-          logger.error(f"Aprobado")
+          logger.info(f"Aprobado")
           return True
 
       else:
         logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
-        logger.info(f"Apobado")
+        logger.info(f"Aprobado")
         return True
 
     except Exception as e:
@@ -4228,7 +4218,7 @@ class check:
                 return False      
                     
       else:
-        logger.info(f"En el colegio no asignaturas de pratica profesional.")
+        logger.info(f"En el colegio no hay asignaturas de pratica profesional.")
         logger.info(f"Aprobado")
         return True   
     
@@ -4533,7 +4523,7 @@ class check:
 
       _S5=""" select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from organizationcalendarcrisis;"""
 
-      _Trae_fechas= """     WITH RECURSIVE dates(date) AS (
+      _Trae_fechas= """ WITH RECURSIVE dates(date) AS (
                       VALUES (?)
                       UNION ALL
                       SELECT date(date, '+1 day')
@@ -4624,7 +4614,7 @@ class check:
     numero=0
     try:
   
-      _S3="""             select b.identifier,a.docnumber, a.filescanbase64,a.StatusStartDate from PersonStatus a join PersonIdentifier b on a.personid=b.personId
+      _S3="""select b.identifier,a.docnumber, a.filescanbase64,a.StatusStartDate from PersonStatus a join PersonIdentifier b on a.personid=b.personId
             where  RefPersonStatusTypeId=31 ;"""
 
       now=datetime.now()
@@ -4645,13 +4635,13 @@ class check:
           logger.error(f"Rechazado")
           return False
         else:
-          logger.error(f"Aprobado")
+          logger.info(f"Aprobado")
           return True  
 
       else:
-        logger.error(f"No hay registro Numero de lista asociados .")
-        logger.error(f"Rechazado")
-        return False   
+        logger.error(f"No hay informacion de estudiantes excedentes")
+        logger.info(f"Aprobado")
+        return True  
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
@@ -4787,6 +4777,7 @@ class check:
         if(len(arr)!=0):
           logger.error(f"Las siguientes asistencias por dia del alumno no tienen firma digital por el director : {str(arr)} ")
           logger.error(f"Rechazado")
+          return False
           
 
         if(len(arr2)!=0):
@@ -4891,5 +4882,79 @@ class check:
     arr6=np.array(arr5)  
     arr7.append(np.unique(arr6))
     return arr7
+
+### inicio fn6E3 ###
+  def fn6E3(self,conn):
+    _flag1 = 0
+    _flag2 = 0
+    try:
+      #OBTENGO LAS FECHAS CON SUSPENSION DE CLASES
+      _s1 = """SELECT rexNumber,rexDate,fileScanBase64
+                FROM OrganizationCalendarEvent
+                WHERE indicadorSinClases = 1;"""
+      
+      _s2="""SELECT rexNumber,rexNumber,fileScanBase64
+              FROM OrganizationCalendarSession
+              WHERE claseRecuperadaId != NULL;"""
+
+      _q1 = conn.execute(_s1).fetchall()
+      if(len(_q1)!=0):
+        for q1 in _q1:
+          _rexNumber = q1[0]
+          _rexDate = q1[1]
+          _fsb = q1[2]
+          if(_rexNumber is None):
+            _msg1 = f"No hay información de resolución ministerial para la suspensión de clases (numero de resolución)"
+            _flag1 = 1
+          if(_rexDate is None):
+            _msg1 = f"No hay información de resolución ministerial para la suspensión de clases (fecha de resolución)"
+            _flag1 = 1
+          if(_fsb is None):
+            _msg1 = f"No hay información de resolución ministerial para la suspensión de clases (documento digitalizado)"
+            _flag1 = 1        
+      
+      else:
+        logger.info(f"No hay información en el establecimiento de eventos que impliquen suspensión de clases.")
+        logger.info(f"Aprobado")
+        return True
+
+      _q2 = conn.execute(_s2).fetchall()
+      if(len(_q2)!=0):
+        for q2 in _q2:
+          _rxn = q2[0]
+          _rxd = q2[1]
+          _rxfbs = q2[2]
+          if(_rxn is None):
+            _msg2 = f"No hay información de resolución ministerial para recuperación de clases (numero de resolución)"
+            _flag2 = 1
+          if(_rxd is None):
+            _msg2 = f"No hay información de resolución ministerial para  recuperación de clases (fecha de resolución)"
+            _flag2 = 1
+          if(_rxfbs is None):
+            _msg2 = f"No hay información de resolución ministerial para  recuperación de clases (documento digitalizado)"
+            _flag1 = 1  
+
+      else:
+        logger.info(f"No hay información en el establecimiento de clases recuperadas.")
+        logger.info(f"Aprobado")
+        return True
+
+      if(_flag1 == 1):
+        logger.error(_msg1)
+        logger.error(f"Rechazado")
+        return False
+      elif(_flag2 == 1):
+        logger.error(_msg2)
+        logger.error(f"Rechazado")
+        return False
+      else:
+        logger.info(f"Aprobado")
+        return True
+
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+### fin fn6E3 ###
 
 ### MIAULA FIN ###
