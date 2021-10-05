@@ -8,7 +8,6 @@ __pycache__/
 !/csv/
 /csv/*.csv
 
-ede/ede/agregaColumnsEdeModel.py
 
 #exclude *.pyc files
 *.pyc
