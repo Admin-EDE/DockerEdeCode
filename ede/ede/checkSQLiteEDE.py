@@ -98,7 +98,7 @@ class check:
       "fn3C7": "No/Verificado",
       "fn3C8": "No/Verificado",
       "fn3C9": "No/Verificado",
-      "fn3CA": "No/Verificado",
+      "fn3CA": "self.fn3CA(conn)",
       "fn4FA": "self.fn4FA(conn)",
       "fn5F0": "self.fn5F0(conn)",
       "fn5E0": "self.fn5E0(conn)",
@@ -966,6 +966,17 @@ class check:
       return r.match(e) is not None
     return False
 
+  def validaEventosDeAsistencia(self, e):
+    _r = False
+    if (e[1] == 'Class/section attendance' and e[2] == 'Course Section'):
+      _r = True
+    elif (e[1] == 'Daily attendance' and e[2] == 'Course'):
+      _r = True
+    elif (e[0] == 'Reingreso autorizado' and e[2] == 'K12 School'):
+      _r = True
+
+    return _r
+
   # VERIFICA DATOS DE LAS ORGANIZACIONES
   def fn3C5(self, conn):
     try:
@@ -984,8 +995,40 @@ class check:
     except Exception as e:
       logger.error(f"No se pudieron validar los verificadores de indentidad: {str(e)}")
       logger.error(f"Rechazado")
-      return False  
-  
+      return False
+
+  # Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
+  # Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
+  # Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento
+  def fn3CA(self, conn):
+    try:
+      rows = conn.execute("""
+      SELECT ast.Description as 'RefAttendanceStatus',aet.Description as 'AttendanceEventType', orgt.Description as 'OrganizationType'
+      FROM RoleAttendanceEvent rae
+      INNER JOIN OrganizationPersonRole opr on opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+      INNER JOIN Organization org on org.OrganizationId = opr.OrganizationId
+      INNER JOIN RefAttendanceEventType aet on aet.RefAttendanceEventTypeId = rae.RefAttendanceEventTypeId
+      INNER JOIN RefOrganizationType orgt on orgt.RefOrganizationTypeId = org.RefOrganizationTypeId
+      INNER JOIN RefAttendanceStatus ast on ast.RefAttendanceStatusId = rae.RefAttendanceStatusId;
+      """).fetchall()
+      logger.info(f"len(OrganizationType): {len(rows)}")
+      if(len(rows)>0):
+        # Siempre deberían existir elementos de asistencia
+        data = list(set([(m[0],m[1],m[2]) for m in rows if m[0] is not None]))
+        _err,_r = self.imprimeErrores(data,self.validaEventosDeAsistencia,"VERIFICA que los eventos de asistencia se encuentren correctamente asignados")
+        logger.info(f"Aprobado") if _r else logger.error(_err)
+      else:
+        logger.info("La BD no contiene información de asistencia cargada")
+        logger.info("S/DATOS")
+
+      return True
+    except Exception as e:
+      logger.error(f"No se pudo verificar que los eventos de asistencia esten bien asignados a las Organizaciones: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+
+
 ## WebClass INICIO ##
   ## Inicio fn2FA WC ##
   def fn2FA(self, conn):
@@ -2280,7 +2323,7 @@ class check:
                 if (alumnosPresentes):
                     fecha2=(list([m[4] for m in alumnosPresentes if m[4] is not None]))
                     asignatura = conn.execute("""select ClassPeriod,name from CourseSectionSchedule css join Organization o on o.OrganizationId=css.OrganizationId
-                      where  ? between ClassBeginningTime and ClassEndingTime;""",(fecha2)).fetchall()
+                      where ? between ClassBeginningTime and ClassEndingTime;""",(fecha2)).fetchall()
                     aPresentes=(list([m[0] for m in alumnosPresentes if m[0] is not None]))
                     seccion=(list([m[1] for m in alumnosPresentes if m[1] is not None]))
                     dia=(list([m[2] for m in alumnosPresentes if m[2] is not None]))
