@@ -146,12 +146,6 @@ class check:
       "fn9F2": "self.fn9F2(conn)",
       "fn9F3": "self.fn9F3(conn)"
     }
-    # self.dfLog = dfLog
-    # self._encode = _encode
-    # self._sep = _sep
-    # self.secPhase = secPhase
-    # self.path_to_DB_file = path_to_DB_file
-    #t_stamp = datetime.timestamp(datetime.now(timezone('Chile/Continental')))
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
 
