@@ -968,20 +968,24 @@ class check:
 
   # VERIFICA DATOS DE LAS ORGANIZACIONES
   def fn3C5(self, conn):
-    _r = False;error=''
-    rows = conn.execute("SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
-    logger.info(f"len(ClaveAleatoriaDocente): {len(rows)}")
-    if(len(rows)>0):
-      # Valida los números de clave aleatoria de los docentes
-      data = list(set([m[0] for m in rows if m[0] is not None])) + list(set([m[1] for m in rows if m[1] is not None]))
-      _err,_r = self.imprimeErrores(data,self.validaFormatoClaveAleatoria,"VERIFICA FORMATO Clave Aleatoria Docente")
-    else:
-      _err = "La BD no contiene clave aleatoria de los docentes"
+    try:
+      rows = conn.execute("SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
+      logger.info(f"len(ClaveAleatoriaDocente): {len(rows)}")
+      if(len(rows)>0):
+        # Valida los números de clave aleatoria de los docentes
+        data = list(set([m[0] for m in rows if m[0] is not None])) + list(set([m[1] for m in rows if m[1] is not None]))
+        _err,_r = self.imprimeErrores(data,self.validaFormatoClaveAleatoria,"VERIFICA FORMATO Clave Aleatoria Docente")
+        logger.info(f"Aprobado") if _r else logger.error(_err)
+      else:
+        logger.info("La BD no contiene clave aleatoria de los docentes")
+        logger.info("S/DATOS")
 
-    _t = f"VERIFICA CLAVE ALEATORIA DOCENTES: {_r}"
-    logger.info(_t)
-    return _r
-
+      return True
+    except Exception as e:
+      logger.error(f"No se pudieron validar los verificadores de indentidad: {str(e)}")
+      logger.error(f"Rechazado")
+      return False  
+  
 ## WebClass INICIO ##
   ## Inicio fn2FA WC ##
   def fn2FA(self, conn):
