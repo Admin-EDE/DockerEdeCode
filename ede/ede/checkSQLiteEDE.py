@@ -93,7 +93,7 @@ class check:
       "fn3C2": "No/Verificado",
       "fn3C3": "No/Verificado",
       "fn3C4": "No/Verificado",
-      "fn3C5": "No/Verificado",
+      "fn3C5": "self.fn3C5(conn)",
       "fn3C6": "No/Verificado",
       "fn3C7": "No/Verificado",
       "fn3C8": "No/Verificado",
@@ -252,7 +252,7 @@ class check:
         self.TribalList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None]))) # Valida que las afiliaciones tribales sean las permitidas en Chile
         logger.info(f"Aprobado")
       else:
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
 
       return True
 
@@ -479,7 +479,7 @@ class check:
         self.comparaEstudiantes = [len(personId) == len(cuidadNac) == len(regionNac) == len(paisNac)]
         logger.info(f"Aprobado")
       else:
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
 
       return True
 
@@ -534,7 +534,7 @@ class check:
         self.comparaDocentes = [len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod)]
         logger.info(f"Aprobado")
       else:
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
 
       return True
 
@@ -569,7 +569,7 @@ class check:
         self.formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
         logger.info(f"Aprobado")
       else:
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
 
       return True
 
@@ -614,7 +614,7 @@ class check:
         self.letraCursoList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None])))
         logger.info(f"Aprobado")
       else:
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
 
       return True
 
@@ -817,7 +817,7 @@ class check:
         _err = "No coinciden los ID de Curso en las tablas Organization + Course + K12Course"
         logger.info(f"Aprobado") if _c == len(curso1) == len(curso2) else logger.error(_err)
       else:
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
 
       return True
 
@@ -967,7 +967,7 @@ class check:
     return False
 
   # VERIFICA DATOS DE LAS ORGANIZACIONES
-  def verificaClaveAleatoriaDocentes(self, conn):
+  def fn3C5(self, conn):
     _r = False;error=''
     rows = conn.execute("SELECT ClaveAleatoriaDocente FROM oprList where ClaveAleatoriaDocente not null;").fetchall()
     logger.info(f"len(ClaveAleatoriaDocente): {len(rows)}")
@@ -981,9 +981,6 @@ class check:
     _t = f"VERIFICA CLAVE ALEATORIA DOCENTES: {_r}"
     logger.info(_t)
     return _r
-
-### Appoderado INICIO ###
-### Appoderado FIN ###
 
 ## WebClass INICIO ##
   ## Inicio fn2FA WC ##
@@ -1016,8 +1013,8 @@ class check:
                         logger.error(f'Rechazado')
                         return False
                 else:
-                    logger.error(f"S/Datos")
-                    logger.error(f'No hay registros de matriculas')
+                    logger.info(f"S/Datos")
+                    logger.info(f'No hay registros de matriculas')
                     return False
             except Exception as e:
                 logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -1259,8 +1256,8 @@ class check:
             logger.error(f"Aprobado")
             return True
         except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"S/DATOS")
+            logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.info(f"S/Datos")
             return False
   ## Fin fn2EA WC ##
 
@@ -1388,8 +1385,8 @@ class check:
                 logger.error(f'Rechazado')
                 return False
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
+                logger.info(f"S/Datos")
+                logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
                 return False
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -1637,8 +1634,8 @@ class check:
                 return True
 
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"No existen alumnos en practica registrados")
+                logger.info(f"S/Datos")
+                logger.info(f"No existen alumnos en practica registrados")
                 return True
 
         except Exception as e:
@@ -1688,8 +1685,8 @@ class check:
                 logger.info(f'Aprobado')
                 return True
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"No existen alumnos en practica registrados")
+                logger.info(f"S/Datos")
+                logger.info(f"No existen alumnos en practica registrados")
                 return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -1747,8 +1744,8 @@ class check:
                     logger.error(f'Rechazado')
                     return False
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"No existen alumnos en practica registrados")
+                logger.info(f"S/Datos")
+                logger.info(f"No existen alumnos en practica registrados")
                 return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -1922,8 +1919,8 @@ class check:
                 logger.info(f'Clases validadas')
                 return True
             else:
-                logger.error(f"S/Datos")
-                logger.error(f'Sin asistencia por bloque')
+                logger.info(f"S/Datos")
+                logger.info(f'Sin asistencia por bloque')
                 return False
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -1992,8 +1989,8 @@ class check:
             logger.info(f'Todos los registros de asistencia cuentan con un estado asignado')
             return True
           else:
-              logger.error(f"S/datos")
-              logger.error(f"Sin datos de asistencia")
+              logger.info(f"S/Datos")
+              logger.info(f"Sin datos de asistencia")
               return False
       except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -2202,7 +2199,7 @@ class check:
                     else:
                         logger.error(f"Sin Datos de alumnos: {org}")
                 if x==0:
-                  logger.error(f"S/Datos")
+                  logger.info(f"S/Datos")
                   return False
                 logger.info("Se validaron todos los datos")
                 logger.info(f"Aprobado")
@@ -2323,8 +2320,8 @@ class check:
                         logger.error(f"Rechazado")
                         return False
                 else:
-                    logger.error(f"S/Datos")
-                    logger.error(f'Sin asistencia por bloque')
+                    logger.info(f"S/Datos")
+                    logger.info(f'Sin asistencia por bloque')
                     return False
             logger.info(f'Validacion aprobada')
             logger.info(f'Aprobado')
@@ -2521,8 +2518,8 @@ class check:
                     logger.error(f'Rechazado')
                     return False
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"No hay alumnos de intercambio registrados en el establecimiento")
+                logger.info(f"S/Datos")
+                logger.info(f"No hay alumnos de intercambio registrados en el establecimiento")
                 return True
 
         except Exception as e:
@@ -2590,8 +2587,8 @@ class check:
                     logger.error(f'Rechazado')
                     return False
                 else:
-                    logger.error(f"S/Datos")
-                    logger.error(f"No existen estudiantes migrantes registrados en el establecimiento")
+                    logger.info(f"S/Datos")
+                    logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
                     return True
             except Exception as e:
                 logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -2725,8 +2722,8 @@ class check:
                 logger.error(f'Rechazado')
                 return False
             else:
-                logger.error(f"No existen estudiantes migrantes registrados en el establecimiento")
-                logger.error(f"S/Datos")
+                logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
+                logger.info(f"S/Datos")
                 return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -2791,24 +2788,24 @@ class check:
                                 logger.info(f'Aprobado')
                                 return True
                             else:
-                                logger.error(f"S/Datos")
-                                logger.error(f"Rechazado")
+                                logger.info(f"S/Datos")
+                                logger.info(f"Rechazado")
                                 return False
                         except Exception as e:
                             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                             logger.error(f"Rechazado")
                             return False
                     else:
-                        logger.error(f"S/Datos")
-                        logger.error(f"Rechazado")
+                        logger.info(f"S/Datos")
+                        logger.info(f"Rechazado")
                         return False
                 except Exception as e:
                     logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                     logger.error(f"Rechazado")
                     return False
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
+                logger.info(f"S/Datos")
+                logger.info(f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
                 return False
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -2838,14 +2835,14 @@ class check:
                         if (len(incidentParent)>0):
                             parent +=1
                         else:
-                            logger.error(f"S/Datos")
-                            logger.error(f"Sin registros de actividades familiares o comunitarias")
+                            logger.info(f"S/Datos")
+                            logger.info(f"Sin registros de actividades familiares o comunitarias")
                             return False
                         if (len(incidentProfessor)>0):
                             professor += 1
                         else:
-                            logger.error(f"S/Datos")
-                            logger.error(f"Sin registros de actividades familiares o comunitarias")
+                            logger.info(f"S/Datos")
+                            logger.info(f"Sin registros de actividades familiares o comunitarias")
                             return False
                     except Exception as e:
                         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -2855,8 +2852,8 @@ class check:
                 logger.info(f'Aprobado')
                 return True
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"Sin registros de actividades familiares o comunitarias")
+                logger.info(f"S/Datos")
+                logger.info(f"Sin registros de actividades familiares o comunitarias")
                 return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -2913,8 +2910,8 @@ class check:
             WHERE RefDisciplinaryActionTakenId = 8;
             """).fetchall()
             if(len(_queryStudentAcademicHonor) == 0 and len(_k12StudentDiscipline) == 0 and len(_negative) == 0 and len(_mettings) == 0):
-                logger.error(f"S/Datos")
-                logger.error(f"Rechazado")
+                logger.info(f"S/Datos")
+                logger.info(f"Rechazado")
                 return False
             else:
                 for a in _queryStudentAcademicHonor:
@@ -3005,8 +3002,8 @@ class check:
                 logger.info(f"Aprobado")
                 return True
             else:
-                logger.error(f"S/Datos")
-                logger.error(f"Sin clases en las que no hay docente/s")
+                logger.info(f"S/Datos")
+                logger.info(f"Sin clases en las que no hay docente/s")
                 return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
