@@ -3651,9 +3651,11 @@ class check:
 
       # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
       _s3 = """SELECT A.IncidentId
-                FROM IncidentPerson A
-                WHERE A.personId = ?
-                AND B.RefIncidentBehaviorId = 36;"""
+            FROM IncidentPerson A
+            INNER JOIN Incident B ON A.IncidentId = B.IncidentId
+            WHERE A.personId = ?
+            AND B.RefIncidentBehaviorId = 36;
+          """
 
       # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
       _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
