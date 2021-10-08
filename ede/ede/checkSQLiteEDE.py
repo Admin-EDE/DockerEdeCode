@@ -3178,7 +3178,7 @@ class check:
         logger.info(f"Total Alumnos                                     : {len(r_)}")
         logger.info(f"Total Personas asociadas y autorizadas para retiro: {c_}")
 
-        if(c_ == len(r_)):
+        if(c_ >= len(r_)):
           logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
           logger.info(f"Apobado")
           return True
