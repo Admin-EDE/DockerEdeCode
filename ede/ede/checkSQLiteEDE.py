@@ -2873,10 +2873,10 @@ class check:
                         x = str(x)
                         incidentParent = conn.execute("""
                         SELECT * from IncidentPerson where IncidentId =
-                        """+x+""" where RefIncidentPersonRoleTypeId = 8 and RefIncidentPersonTypeId = 43""").fetchall()
+                        """+x+""" and RefIncidentPersonRoleTypeId = 8 and RefIncidentPersonTypeId = 43""").fetchall()
                         incidentProfessor = conn.execute("""
                         SELECT * from IncidentPerson where IncidentId =
-                        """+x+""" where RefIncidentPersonRoleTypeId = 7 and RefIncidentPersonTypeId = 44""").fetchall()
+                        """+x+""" and RefIncidentPersonRoleTypeId = 7 and RefIncidentPersonTypeId = 44""").fetchall()
                         parent = 0
                         professor = 0
                         if (len(incidentParent)>0):
@@ -4718,10 +4718,10 @@ class check:
       _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
       join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
   
-      _S3_1=""" select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
+      _S3_1="""select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
                 where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
 
-      _S4_1="""     select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
+      _S4_1="""select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
         on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
 
       now=datetime.now()
