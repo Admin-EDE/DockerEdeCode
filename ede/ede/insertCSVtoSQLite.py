@@ -93,7 +93,7 @@ class insert:
     _t = 'Archivo encriptado de la SIE generado exitosamente';logger.info(_t)
     return True
 
-  def dict_factory(self, rows):
+  def dict_factory(self, rows, tbl):
     _dTypes = {
         "bit": [pd.api.types.is_bool_dtype, pd.Int64Dtype(), "bool"],
         "integer": [pd.api.types.is_integer_dtype, pd.Int64Dtype(), "int32"],
@@ -101,18 +101,18 @@ class insert:
         "nvarchar":  [pd.api.types.is_string_dtype, np.unicode_, "str"],
         "char":  [pd.api.types.is_string_dtype, np.unicode_, "str"],            
         "numeric": [pd.api.types.is_float_dtype, np.float_, "float64"],
-        "NUMERIC": [pd.api.types.is_float_dtype, np.float_, "float64"],      
         "datetime": [pd.api.types.is_string_dtype, np.unicode_, "str"],     
-        "TEXT": [pd.api.types.is_string_dtype, np.unicode_, "str"],     
+        "text": [pd.api.types.is_string_dtype, np.unicode_, "str"],     
         }    
   
     d = {}
     for col in rows:
       logger.info(col)
       try:
-        d[col[1]] = _dTypes[''.join([s for s in list(col[2]) if s.isalpha()])][1]
+        _k = ''.join([s for s in list(col[2]) if s.isalpha()])
+        d[col[1]] = _dTypes[_k.lower()][1]
       except:
-        logger.info(f"ERROR: Tipo de datos {col[2]} no encontrado, se procesará como 'np.unicode_' ...")
+        logger.info(f"ERROR: Tipo de datos {tbl}->{col[2]} no encontrado, se procesará como 'np.unicode_' ...")
         d[col[1]] = np.unicode_
     return d
 
@@ -130,7 +130,7 @@ class insert:
           logger.info(f"No existe tabla con el nombre: '{tbl}', no se procesará el archivo...")
           continue
 
-        jsonCol = self.dict_factory(rows)
+        jsonCol = self.dict_factory(rows, tbl)
         logger.info(f"jsonCol: {jsonCol}")
 
         _fileName = os.path.join(root, name)
