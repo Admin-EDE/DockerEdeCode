@@ -72,9 +72,9 @@ class check:
       "fn3ED": "self.fn3ED()",
       "fn3EE": "self.fn3EE()",
       "fn3EF": "self.fn3EF(conn)",
-      "fn3D0": "No/Verificado",
-      "fn3D1": "No/Verificado",
-      "fn3D2": "No/Verificado",
+      "fn3D0": "self.fn3D0(conn)",
+      "fn3D1": "self.fn3D1(conn)",
+      "fn3D2": "self.fn3D2(conn)",
       "fn3D3": "No/Verificado",
       "fn3D4": "No/Verificado",
       "fn3D5": "No/Verificado",
@@ -85,14 +85,14 @@ class check:
       "fn3DA": "No/Verificado",
       "fn3DB": "No/Verificado",
       "fn3DC": "No/Verificado",
-      "fn3DD": "No/Verificado",
+      "fn3DD": "self.fn3DD(conn)",
       "fn3DE": "No/Verificado",
       "fn3DF": "No/Verificado",
       "fn3C0": "No/Verificado",
       "fn3C1": "No/Verificado",
       "fn3C2": "No/Verificado",
-      "fn3C3": "No/Verificado",
-      "fn3C4": "No/Verificado",
+      "fn3C3": "self.fn3C3(conn)",
+      "fn3C4": "self.fn3C4(conn)",
       "fn3C5": "self.fn3C5(conn)",
       "fn3C6": "No/Verificado",
       "fn3C7": "No/Verificado",
@@ -823,6 +823,373 @@ class check:
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  # Verifica que cada asignatura se encuentre asociada a un curso.
+  # Entrega los organizationID de las asignaturas 
+  # que no están asociadas a ningún curso
+  def fn3D0(self, conn):
+    try:
+      asignaturas = conn.execute("""
+/* 
+* Selecciona de la tabla Organization los ID's de todas las asignaturas
+* que no tengan un curso asociado 
+*/ 
+WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrganizationType WHERE Description LIKE 'Course Section')
+        SELECT o.Organizationid 
+        FROM Organization o
+        WHERE 
+                -- Selecciona de la lista solo las organizaciones de tipo ASIGNATURA
+                RefOrganizationTypeid in refOrganizationTypeAsignatura AND 
+                -- Con el fin de encontrar las ASIGNATURAS que no se encuentren asociadas a ningún curso, 
+                -- se excluye de la lista las organizaciones que se encuentran correctamente asignadas
+                o.OrganizationId NOT IN (
+                        -- Esta consulta obtiene la lista de ASIGNATURAS correctamente asignadas a un CURSO
+                        SELECT OrganizationId
+                        FROM OrganizationRelationship
+                        INNER JOIN Organization USING(OrganizationId)
+                        WHERE 
+                                -- PERMITE solo las organizaciones de tipo ASIGNATURA
+                                RefOrganizationTypeid in refOrganizationTypeAsignatura
+                                AND
+                                -- PERMITE solo las asignaciones que tengan como padre un CURSO
+                                Parent_OrganizationId IN (
+                                        -- Obtiene la lista de Organizaciones de tipo CURSO
+                                        SELECT OrganizationId 
+                                        FROM Organization
+                                        WHERE RefOrganizationTypeId IN (
+                                                -- Recupera el ID de referencia de las organizaciones tipo CURSO
+                                                SELECT RefOrganizationTypeid FROM RefOrganizationType WHERE Description LIKE 'Course'
+                                        )
+                                )
+        );
+      """).fetchall()
+      logger.info(f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
+      if(len(asignaturas)>0):
+        asignaturasList = list(set([m[0] for m in asignaturas if m[0] is not None]))
+        _c = len(set(asignaturasList))
+        _err = f"Las siguientes asignaturas no tienen ningún curso asociado: {asignaturasList}"
+        logger.error(_err)
+        logger.error(f"Rechazado")
+        return False          
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+
+  # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+  #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+  def fn3D1(self, conn):
+    try:
+      MaximumCapacityErrors = conn.execute("""
+        /*
+        * Selecciona los Organizaciones de tipo ASIGNATURA 
+        * que no cumplen con el criterio de la expresión regular
+        */
+        SELECT OrganizationId, MaximumCapacity
+        FROM CourseSection
+        OUTER LEFT JOIN Organization USING(OrganizationId)
+        WHERE 
+          -- Agrega a la lista todos los registros que no cumplan con la expresión regular
+          MaximumCapacity NOT REGEXP "^[1-9]{1}\d{1,3}$"
+      """).fetchall()
+      organizationMalAsignadas = conn.execute("""
+          /*
+          * Selecciona las Organizaciones que no son de tipo ASIGNATURA 
+          */
+          SELECT OrganizationId
+          FROM CourseSection
+          OUTER LEFT JOIN Organization USING(OrganizationId)
+          WHERE 
+                  -- Agrega a la lista todas las organizaciones que no sean de tipo ASIGNATURA
+                  RefOrganizationTypeid NOT IN (
+                          -- Rescata desde la tabla de referencia el ID de las organizaciones de tipo ASIGNATURA
+                          SELECT RefOrganizationTypeid 
+                          FROM RefOrganizationType 
+                          WHERE Description LIKE 'Course Section'
+                  )
+      """).fetchall()
+      logger.info(f"MaximunCapacity mal asignados: {len(MaximumCapacityErrors)}, Tabla CourseSection con organizacion mal asignadas: {len(organizationMalAsignadas)}")
+      if(len(MaximumCapacityErrors)>0 or organizationMalAsignadas>0):
+        data1 = list(set([m[0] for m in MaximumCapacityErrors if m[0] is not None]))
+        data2 = list(set([m[0] for m in organizationMalAsignadas if m[0] is not None]))
+        _c1 = len(set(data1))
+        _c2 = len(set(data2))
+        _err1 = f"Las siguientes asignaturas no tiene el campo MaximumCapacity declarado correctamente: {data1}"
+        _err2 = f"Las siguientes organizaciones no son de tipo asignaturas: {data2}"
+        if (_c1 > 0):
+          logger.error(_err1)
+        if (_c2 > 0):
+          logger.error(_err2)
+        if (_c1 > 0 or _c2 > 0):
+          logger.error(f"Rechazado")
+          return False          
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+  #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+  def fn3D2(self, conn):
+    try:
+      virtualIndicator = conn.execute("""
+        /*
+        * Selecciona los eventos que no tienen el campo VirtualIndicator
+        * correctamente asignado
+        */
+        SELECT RoleAttendanceEventId 
+        FROM RoleAttendanceEvent
+        WHERE RoleAttendanceEventId NOT IN (
+                SELECT RoleAttendanceEventId
+                FROM RoleAttendanceEvent
+                WHERE VirtualIndicator IN (0,1)
+        );
+      """).fetchall()
+      logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator)}")
+      if(len(virtualIndicator)>0):
+        data1 = list(set([m[0] for m in virtualIndicator if m[0] is not None]))
+        _c1 = len(set(data1))
+        _err1 = f"Los siguientes registros de la tabla RoleAttendanceEvent no tienen definidos el indicador de virtualidad del estudiante: {data1}"
+        if (_c1 > 0):
+          logger.error(_err1)
+          logger.error(f"Rechazado")
+          return False          
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+  #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+  def fn3C4(self, conn):
+    try:
+      RoleAttendanceEvent = conn.execute("""
+        -- Lista todos los IDs que no cumplan con la empresión regular.
+        SELECT RoleAttendanceEventId, Date
+        FROM RoleAttendanceEvent
+        WHERE 
+        -- Agrega a la lista todos los registros que no cumplan con la expresión regular
+        Date NOT REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+      """).fetchall()
+      OrganizationPersonRole = conn.execute("""
+        -- Lista todos los IDs que no cumplan con la empresión regular.
+        SELECT OrganizationPersonRoleId, EntryDate, ExitDate
+        FROM OrganizationPersonRole
+        WHERE 
+        -- Agrega a la lista todos los registros que no cumplan con la expresión regular
+        EntryDate NOT REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+        OR
+        ExitDate NOT REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+      """).fetchall()
+      logger.info(f"RoleAttendanceEvent.Date con formato errorneo: {len(RoleAttendanceEvent)}, Tabla OrganizationPersonRole.EntryDate o ExitDate con formato errone: {len(OrganizationPersonRole)}")
+      if(len(RoleAttendanceEvent)>0 or OrganizationPersonRole>0):
+        data1 = list(set([m[0] for m in RoleAttendanceEvent if m[0] is not None]))
+        data2 = list(set([m[0] for m in OrganizationPersonRole if m[0] is not None]))
+        _c1 = len(set(data1))
+        _c2 = len(set(data2))
+        _err1 = f"Las siguientes registros tiene mal formateado el campo Date: {data1}"
+        _err2 = f"Las siguientes registros tienen mal formateado el campo EntryDate o ExitDate: {data2}"
+        if (_c1 > 0):
+          logger.error(_err1)
+        if (_c2 > 0):
+          logger.error(_err2)
+        if (_c1 > 0 or _c2 > 0):
+          logger.error(f"Rechazado")
+          return False          
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  # Revisar que la organización del establecimiento, asignaturas y cursos 
+  # tengan asignada una localidad dentro del establecimiento.
+  def fn3C3(self, conn):
+    try:
+      locations = conn.execute("""
+        /*
+        * Entrega la lista de organizaciones que no contiene bien definida su ubicación dentro del establecimiento.
+        * Los campos obligatorios son: 
+        *     RefOrganizationLocationType.Description == 'Physical'
+        *     región NOT NULL AND País NOT NULL AND  ApartmentRoomOrSuiteNumber NOT NULL AND BuildingSiteNumber NOT NULL AND
+                StreetNumberAndName NOT NULL AND City NOT NULL
+        */
+        SELECT OrganizationId
+        FROM Organization
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        WHERE OrganizationId NOT IN (SELECT OrganizationId FROM (SELECT OrganizationId, RefOrganizationType.Description as 'organizationType' , LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', RefOrganizationLocationType.RefOrganizationLocationTypeId, RefOrganizationLocationType.Description as 'TipoLocalidad'
+                FROM Organization
+                OUTER LEFT JOIN OrganizationWebsite USING(OrganizationId)
+                OUTER LEFT JOIN OrganizationEmail USING(OrganizationId)
+                OUTER LEFT JOIN OrganizationTelephone USING(OrganizationId)
+                OUTER LEFT JOIN OrganizationLocation USING(OrganizationId)
+                OUTER LEFT JOIN RefEmailType USING(RefEmailTypeId)
+                OUTER LEFT JOIN RefInstitutionTelephoneType USING(RefInstitutionTelephoneTypeId)
+                OUTER LEFT JOIN RefOrganizationLocationType USING(RefOrganizationLocationTypeId)
+                OUTER LEFT JOIN LocationAddress USING(LocationId)
+                OUTER LEFT JOIN RefState USING(RefStateId)
+                OUTER LEFT JOIN RefCountry USING(RefCountryId)
+                OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+                WHERE 
+                OrganizationType in ('Course','Course Section')
+                AND
+                tipoLocalidad in ('Physical')
+                AND
+                región NOT NULL
+                AND
+                País NOT NULL
+                AND 
+                ApartmentRoomOrSuiteNumber NOT NULL
+                AND
+                BuildingSiteNumber NOT NULL
+                AND
+                StreetNumberAndName NOT NULL
+                AND
+                City NOT NULL
+        )) AND RefOrganizationType.Description IN ('Course','Course Section');
+      """).fetchall()
+      logger.info(f"Localidades mal asignadas: {len(locations)}")
+      if(len(locations)>0):
+        data1 = list(set([m[0] for m in locations if m[0] is not None]))
+        _c1 = len(set(data1))
+        _err1 = f"Los siguientes organizaciones no tienen sus ubicaciones bien asignadas: {data1}"
+        if (_c1 > 0):
+          logger.error(_err1)
+          logger.error(f"Rechazado")
+          return False          
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  """ 
+  El campo OrganizationWebsite.Website debe estar definido para la organización del establecimiento
+  El campo Organizationemail.addressElectronicMailAddress debe estar definido para la organización del establecimiento
+  El campo Organizationemail.RefEmailTypeId debe estar definido para la organización del establecimiento, al menos, el tipo Organizational (school) address [3]
+  Debe estar definido el número del establecimiento OrganizationTelephone.TelephoneNumber. Para la organización del establecimiento OrganizationTelephone.RefInstitutionTelephoneTypeId debe estar definido, al menos, los códigos Main phone number (2) y Administrative phone number (3), si son iguales se repite. 
+  El primer código es para comunicarse directamente con La Dirección del establecimiento, el otro es para los llamados administrativos.
+  Para la organización del establecimiento OrganizationLocation.RefOrganizationLocationTypeId debe estar definido Mailing [1], Physical [2] y Shipping [3], si es la misma para todos los casos, se debe repetir.
+  """
+  def fn3DD(self, conn):
+    try:
+      webSite = conn.execute("""
+        -- Revisa que la organización tipo Establecimiento tenga registrada su página web
+        SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
+        FROM Organization
+        OUTER LEFT JOIN OrganizationWebsite USING(OrganizationId)
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        WHERE 
+        RefOrganizationType.Description IN ('K12 School')
+        AND
+        Website NOT REGEXP '^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})$'
+      """).fetchall()
+      ElectronicMailAddress = conn.execute("""
+        -- Revisa que la organización tipo Establecimiento tenga registrado su email de contacto
+        SELECT OrganizationId, ElectronicMailAddress
+        FROM Organization
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        OUTER LEFT JOIN OrganizationEmail USING(OrganizationId)
+        OUTER LEFT JOIN RefEmailType USING(RefEmailTypeId)
+        WHERE 
+        RefOrganizationType.Description IN ('K12 School')
+        AND
+        ElectronicMailAddress NOT REGEXP '^(?:[a-z0-9!#$%&''*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&''*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$'
+        AND
+        RefEmailType.Description IN ('Organizational (school) address')
+      """).fetchall()
+      phoneNumbers = conn.execute("""
+        -- Revisa que la organización tipo Establecimiento tenga registrados sus teléfonos de contacto
+        SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', TelephoneNumber, RefInstitutionTelephoneType.Description as 'phoneType'--, LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
+        FROM Organization
+        OUTER LEFT JOIN OrganizationTelephone USING(OrganizationId)
+        OUTER LEFT JOIN RefInstitutionTelephoneType USING(RefInstitutionTelephoneTypeId)
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        WHERE 
+        OrganizationType in ('K12 School')
+        AND
+        TelephoneNumber NOT REGEXP '^\+56\d{9,15}$'
+        AND 
+        phoneType IN ('Main phone number','Administrative phone number')
+      """).fetchall()
+      locations = conn.execute("""
+        -- Revisa que las ubicaciones del establecimiento se encuentren bien definidas.
+        SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
+        FROM Organization
+        OUTER LEFT JOIN OrganizationLocation USING(OrganizationId)
+        OUTER LEFT JOIN RefOrganizationLocationType USING(RefOrganizationLocationTypeId)
+        OUTER LEFT JOIN LocationAddress USING(LocationId)
+        OUTER LEFT JOIN RefState USING(RefStateId)
+        OUTER LEFT JOIN RefCountry USING(RefCountryId)
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        WHERE 
+        OrganizationType in ('K12 School')
+        AND
+        tipoLocalidad IN ('Physical', 'Mailing', 'Shipping')
+        AND
+        (ApartmentRoomOrSuiteNumber NOT NULL
+        OR
+        BuildingSiteNumber IS NULL
+        OR
+        LocationAddress.City IS NULL
+        OR
+        RefState.Description IS NULL
+        OR
+        RefCountry.Description IS NULL
+        OR 
+        LocationAddress.PostalCode IS NULL
+        OR
+        LocationAddress.Latitude IS NULL
+        OR
+        LocationAddress.Longitude IS NULL
+        )
+      """).fetchall()
+
+      if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
+        data = list(set([m[0] for m in webSite if m[0] is not None]))
+        if (len(set(data)) > 0): 
+          logger.error(f"Website con formato erroneo: {data}")
+          _err = True
+        
+        data = list(set([m[0] for m in ElectronicMailAddress if m[0] is not None]))
+        if (len(set(data)) > 0): 
+          logger.error(f"ElectronicMailAddress con formato erroneo: {data}")
+          _err = True
+
+        data = list(set([m[0] for m in phoneNumbers if m[0] is not None]))
+        if (len(set(data)) > 0): 
+          logger.error(f"phoneNumbers con formato erroneo: {data}")
+          _err = True
+
+        data = list(set([m[0] for m in locations if m[0] is not None]))
+        if (len(set(data)) > 0): 
+          logger.error(f"locations con formato erroneo: {data}")
+          _err = True
+
+        if (_err):
+          logger.error(f"Rechazado")
+          return False
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
 
