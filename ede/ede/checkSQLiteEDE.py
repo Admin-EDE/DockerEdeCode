@@ -3141,7 +3141,7 @@ class check:
 
 ### WebClass FIN ###
 
-### MIAULA INICIO ###
+### --- MIAULA INICIO --- ###
 
 ### inicio FN0FA ###
   def fn0FA(self, conn):
@@ -3374,7 +3374,7 @@ class check:
     try:
 
      # VALIDO LA EXISTENCIA DE ALUMNOS RETIRADOS Y QUE TENGAN REGISTRADA FECHA DE RETIRO
-      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.Ex  itDate
+      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
                 FROM PersonStatus A
                 JOIN PersonIdentifier B
                 ON A.personId = B.personId
@@ -3463,115 +3463,187 @@ class check:
       return False
 ### fin fn1FA ###
 
-### inicio fn1FB ###
+### inicio ACTUALIZACION fn1FB ###
   def fn1FB(self, conn):
     try:
       _l = []
       _l2 = []
-      # OBTENGO LISTADO DE ALUMNOS
-      _s1 = """SELECT personId,run
+      _s1 = """SELECT A.RUN,B.RelatedPersonId,F.digitalRandomKey,F.fileScanBase64,G.IncidentId
+                FROM personList A
+                  JOIN PersonRelationship B
+                  ON A.personId = B.personId
+                  JOIN OrganizationPersonRole C
+                  ON B.personId = C.personId
+                  JOIN Role D
+                  ON C.RoleId = D.RoleId
+                  LEFT JOIN IncidentPerson F
+                  ON A.personId = F.personId
+                  JOIN Incident G
+                  ON F.IncidentId = G.IncidentId
+                WHERE A.Role like '%Estudiante%'
+                AND  G.RefIncidentBehaviorId = 35
+                AND B.RelatedPersonId IN (SELECT A.personId
+                              FROM OrganizationPersonRole A
+                              JOIN Role B
+                              ON A.RoleId = B.RoleId AND B.RoleId = 15);"""
+
+      _s2 = """SELECT RUN
                 FROM personList
-                WHERE Role like '%Estudiante%';"""
-
-      # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
-      _s2 = """SELECT A.RelatedPersonId,D.RUN
-                FROM PersonRelationship A
-                JOIN OrganizationPersonRole B
-                ON A.RelatedPersonId = B.personId
-                JOIN Role C
-                ON B.RoleId = C.RoleId
-                JOIN personList D
-                ON A.RelatedPersonId = D.personId
-                WHERE A.personId = ?
-                AND B.RoleId = 15;"""
-
-      # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
-      _s3 = """SELECT A.IncidentId
-                FROM IncidentPerson A
-                JOIN Incident B
-                ON A.IncidentId = B.IncidentId
-                WHERE A.personId = ?
-                AND B.RefIncidentBehaviorId = 35;"""
-
-      # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
-      _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
-                FROM IncidentPerson A
-                JOIN personList C
-                ON A.personId = C.personId
-                WHERE A.IncidentId = ?;"""
+                WHERE personId = ?;"""
 
       _q1 = conn.execute(_s1).fetchall()
-      if(len(_q1)!=0):
+      if(len(_q1) != 0):
         for q1 in _q1:
-          _p = str(q1[0])
-          _r = str(q1[0])
-          _q2 = conn.execute(_s2,_p).fetchall()
-          if(len(_q2)!=0):
-            for q2 in _q2:
-              _p1 = str(q2[0])
-              _r2 = str(q2[1])
-              _q3 = conn.execute(_s3,_p1).fetchall()
-              logger.info(len(_q3))
-              if(len(_q3)!=0):
-                for q3 in _q3:
-                  _i = str(q3[0])
-                  if(_i is None):
-                    _l2.append(_r2)
-                  else:                  
-                    _q4 = conn.execute(_s4,_i).fetchall()
-                    if(len(_q4)!=0):
-                      _lst = self.convertirArray2DToList(list([m[0] for m in _q4 if m[0] is not None]))
-                      if '44' in _lst and '43' in _lst:
-                        for q4 in _q4:
-                          _pr = q4[0]
-                          if(str(_pr)=="44"): #docente
-                            _rdk = str(q4[1])
-                            if(_rdk is None):
-                              logger.error(f"No hay registro de firma de docente para evento de entrega de informacion de interes.")
-                              logger.error(f"Rechazado")
-                              return False
-                          elif(str(_pr)=="43"): #apoderado
-                              _fsb = str(q4[2])
-                              if(_fsb is None):
-                                logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento de entrega de informacion de interes.")
-                                logger.error(f"Rechazado1")
-                                return False
-                      else:
-                        logger.error(f"No hay registro de docente y/o apoderado para evento de entrega de informacion de interes.")
-                        logger.error(f"Rechazado")
-                        return False
-
-                    else:
-                      logger.error(f"No hay registro de personas asociadas al evento de entrega de informacion de interes.")
-                      logger.error(f"Rechazado")
-                      return False
-
-                if(len(_l2)>0):
-                  logger.error(f"Los siguientes apoderados no tienen registro de entrega de informacion de interes por parte del establecimiento: {str(_l2)}")
-                  logger.error(f"Rechazado")
-                  return False
-
+          _rut = q1[0]
+          _relatedPerson = q1[1]
+          _drk = q1[2]
+          _fsb = q1[3]
+          _inc = q1[4]
+          if(_inc is None):
+            _l.append(_rut)
+          else:
+            if(_drk is None or _fsb is None):
+              _q2 = conn.execute(_s2,_relatedPerson).fetchall()
+              if(len(_q2) !=0):
+                for q2 in _q2:
+                  _p2 = q2[0]
+                  _l2.append(_p2)
               else:
-                logger.error(f"No hay registro de entrega de informacion de interes del establecimiento al apoderado.")
+                logger.error(f"S/Datos de apoderado para alumno {str(_rut)}.")
                 logger.error(f"Rechazado")
                 return False
+      else:
+        logger.error(f"S/Datos.")
+        logger.error(f"Rechazado")
+        return False
 
-          else:
-            _l.append(_r)           
-
-        if(len(_l)>0):
-          logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
+      if(len(_l)!=0):
+        logger.error(f"Los siguientes alumnos no registran entrega de informacion de interes al apoderado: {str(_l)}")
+        logger.error(f"Rechazado")
+        return False
+      else:
+        if(len(_l2)!=0):
+          logger.error(f"Los siguientes alumnos registran entrega de informacion sin firma ni/o documento digitalizado: {str(_l2)}")
           logger.error(f"Rechazado")
           return False
         else:
           logger.info(f"Aprobado")
-          return True        
+          return True   
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
       return False
-### fin fn1FB ###
+### fin ACTUALIZACION fn1FB ###
+### inicio  fn1FB ###
+#def fn1FB(self, conn):
+#    try:
+#      _l = []
+#      _l2 = []
+#      # OBTENGO LISTADO DE ALUMNOS
+#      _s1 = """SELECT personId,run
+#                FROM personList
+#                WHERE Role like '%Estudiante%';"""
+#
+#      # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
+#      _s2 = """SELECT A.RelatedPersonId,D.RUN
+#                FROM PersonRelationship A
+#                JOIN OrganizationPersonRole B
+#                ON A.RelatedPersonId = B.personId
+#                JOIN Role C
+#                ON B.RoleId = C.RoleId
+#                JOIN personList D
+#                ON A.RelatedPersonId = D.personId
+#                WHERE A.personId = ?
+#                AND B.RoleId = 15;"""
+#
+#      # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
+#      _s3 = """SELECT A.IncidentId
+#                FROM IncidentPerson A
+#                JOIN Incident B
+#                ON A.IncidentId = B.IncidentId
+#                WHERE A.personId = ?
+#                AND B.RefIncidentBehaviorId = 35;"""
+#
+#      # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
+#      _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
+#                FROM IncidentPerson A
+#                JOIN personList C
+#                ON A.personId = C.personId
+#                WHERE A.IncidentId = ?;"""
+#
+#      _q1 = conn.execute(_s1).fetchall()
+#      if(len(_q1)!=0):
+#        for q1 in _q1:
+#          _p = str(q1[0])
+#          _r = str(q1[0])
+#          _q2 = conn.execute(_s2,_p).fetchall()
+#          if(len(_q2)!=0):
+#            for q2 in _q2:
+#              _p1 = str(q2[0])
+#              _r2 = str(q2[1])
+#              _q3 = conn.execute(_s3,_p1).fetchall()
+#              logger.info(len(_q3))
+#              if(len(_q3)!=0):
+#                for q3 in _q3:
+#                  _i = str(q3[0])
+#                  if(_i is None):
+#                    _l2.append(_r2)
+#                  else:                  
+#                    _q4 = conn.execute(_s4,_i).fetchall()
+#                    if(len(_q4)!=0):
+#                      _lst = self.convertirArray2DToList(list([m[0] for m in _q4 if m[0] is not None]))
+#                      if '44' in _lst and '43' in _lst:
+#                        for q4 in _q4:
+#                          _pr = q4[0]
+#                          if(str(_pr)=="44"): #docente
+#                            _rdk = str(q4[1])
+#                            if(_rdk is None):
+#                              logger.error(f"No hay registro de firma de docente para evento de entrega de informacion de interes.")
+#                              logger.error(f"Rechazado")
+#                              return False
+#                          elif(str(_pr)=="43"): #apoderado
+#                              _fsb = str(q4[2])
+#                              if(_fsb is None):
+#                                logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento de entrega de informacion de interes.")
+#                                logger.error(f"Rechazado1")
+#                                return False
+#                      else:
+#                        logger.error(f"No hay registro de docente y/o apoderado para evento de entrega de informacion de interes.")
+#                        logger.error(f"Rechazado")
+#                        return False
+#
+#                    else:
+#                      logger.error(f"No hay registro de personas asociadas al evento de entrega de informacion de interes.")
+#                      logger.error(f"Rechazado")
+#                     return False
+#
+#                if(len(_l2)>0):
+#                  logger.error(f"Los siguientes apoderados no tienen registro de entrega de informacion de interes por parte del establecimiento: {str(_l2)}")
+#                  logger.error(f"Rechazado")
+#                  return False
+#
+#              else:
+#                logger.error(f"No hay registro de entrega de informacion de interes del establecimiento al apoderado.")
+#                logger.error(f"Rechazado")
+#                return False
+#
+#         else:
+#            _l.append(_r)           
+#
+#        if(len(_l)>0):
+#          logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
+#          logger.error(f"Rechazado")
+#          return False
+#        else:
+#          logger.info(f"Aprobado")
+#          return True        
+#
+#    except Exception as e:
+#      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+#      logger.error(f"Rechazado")
+#      return False
+### fin ACTUALIZACION fn1FB ###
 
 ### inicio fn1FC ###
   def fn1FC(self, conn):
@@ -4667,12 +4739,12 @@ class check:
     try:
 
       _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
-      join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
+          join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
   
-      _S3_1=""" select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
+      _S3_1="""select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
                 where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
 
-      _S4_1="""     select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
+      _S4_1="""select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
         on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
 
       now=datetime.now()
@@ -4964,4 +5036,4 @@ class check:
       return False
 ### fin fn6E3 ###
 
-### MIAULA FIN ###
+### --- MIAULA FIN --- ###
