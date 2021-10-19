@@ -75,7 +75,7 @@ class check:
       "fn3D0": "self.fn3D0(conn)",
       "fn3D1": "self.fn3D1(conn)",
       "fn3D2": "self.fn3D2(conn)",
-      "fn3D3": "No/Verificado",
+      "fn3D3": "self.fn3D3(conn)",
       "fn3D4": "No/Verificado",
       "fn3D5": "No/Verificado",
       "fn3D6": "No/Verificado",
@@ -968,6 +968,55 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+  #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+  def fn3D3(self, conn):
+    try:
+      ClassMeetingDays = conn.execute("""
+        -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
+        -- que no se encuentren dentro de la lista permitida
+        WITH split(word, str) AS (
+            SELECT '', ClassMeetingDays||',' FROM CourseSectionSchedule
+            UNION ALL SELECT
+            substr(str, 0, instr(str, ',')),
+            substr(str, instr(str, ',')+1)
+            FROM split WHERE str!=''
+        ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes');
+      """).fetchall()
+      ClassPeriod = conn.execute("""
+        -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
+        -- que no se encuentren dentro de la lista permitida
+        WITH split(word, str) AS (
+            SELECT '', ClassPeriod||',' FROM CourseSectionSchedule
+            UNION ALL SELECT
+            substr(str, 0, instr(str, ',')),
+            substr(str, instr(str, ',')+1)
+            FROM split WHERE str!=''
+        ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Bloque01','Bloque02','Bloque03','Bloque04','Bloque05','Bloque06','Bloque07','Bloque08','Bloque09','Bloque10','Bloque11','Bloque12','Bloque13','Bloque14','Bloque15','Bloque16','Bloque17','Bloque18','Bloque19','Bloque20');
+      """).fetchall()
+      logger.info(f"ClassMeetingDays con formato errorneo: {len(ClassMeetingDays)}, ClassPeriod con formato errone: {len(ClassPeriod)}")
+      if(len(ClassMeetingDays)>0 or ClassPeriod>0):
+        data1 = list(set([m[0] for m in ClassMeetingDays if m[0] is not None]))
+        data2 = list(set([m[0] for m in ClassPeriod if m[0] is not None]))
+        _c1 = len(set(data1))
+        _c2 = len(set(data2))
+        _err1 = f"Las siguientes registros tiene mal formateado el campo ClassMeetingDays: {data1}"
+        _err2 = f"Las siguientes registros tienen mal formateado el campo ClassPeriod: {data2}"
+        if (_c1 > 0):
+          logger.error(_err1)
+        if (_c2 > 0):
+          logger.error(_err2)
+        if (_c1 > 0 or _c2 > 0):
+          logger.error(f"Rechazado")
+          return False          
+      else:
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
 
