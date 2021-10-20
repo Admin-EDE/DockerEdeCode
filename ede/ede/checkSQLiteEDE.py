@@ -1552,7 +1552,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
             LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
             LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
             LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
-            LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.PersonEmailAddressId
+            LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
             JOIN Organization o on o.OrganizationId=opr.OrganizationId
 
             WHERE opr.RoleId=6 and o.RefOrganizationTypeId=21
@@ -5130,7 +5130,6 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
     dias_laborales2=[]
     numero=0
     try:
-
       _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
       join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
   
