@@ -82,7 +82,7 @@ class check:
       "fn3D7": "No/Verificado",
       "fn3D8": "No/Verificado",
       "fn3D9": "No/Verificado",
-      "fn3DA": "No/Verificado",
+      "fn3DA": "self.fn3DA(conn)",
       "fn3DB": "No/Verificado",
       "fn3DC": "No/Verificado",
       "fn3DD": "self.fn3DD(conn)",
@@ -1062,6 +1062,104 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
+  # Revisar que los cursos del establecimiento tengan bien 
+  # calculada la información de la tabla RoleAttendance.
+  def fn3DA(self, conn):
+    try:
+      listInfoSuccesfull = conn.execute("""
+        SELECT RoleAttendanceId
+        FROM RoleAttendance
+        OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationPersonRoleId)
+        OUTER LEFT JOIN Organization USING(OrganizationId)
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        OUTER LEFT JOIN Role USING(RoleId)
+        OUTER LEFT JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+        OUTER LEFT JOIN RefAttendanceStatus USING(RefAttendanceStatusId)
+        OUTER LEFT JOIN RefAttendanceEventType USING(RefAttendanceEventTypeId)
+        WHERE
+        RefOrganizationType.Description IN ('Course')
+        AND
+        Role.Name IN ('Estudiante') -- filtra la asistencia de los estudiantes
+        AND
+        RefAttendanceEventType.Description IN ('Daily attendance') -- Filtra la asistencia diaria      
+      """).fetchall()
+      if(len(listInfoSuccesfull)<=0):
+        logger.info("S/DATOS")
+        return True
+      else:
+        RoleAttendance = conn.execute("""
+          /*
+          * Lista los registros de la Tabla RoleAttendance que no coinciden 
+          * con la lista de eventos de asistencia regitrados en la tabla RoleAttendanceEvent
+          */
+          SELECT 
+            ra.RoleAttendanceId,
+            ifnull(ra.AttendanceRate, 0) as 'AttendanceRate_o',
+            ifnull(result.AttendanceRate, 0) as 'AttendanceRate_r', 
+            ifnull(ra.NumberOfDaysInAttendance, 0) as 'NumberOfDaysInAttendance_o', 
+            ifnull(result.NumberOfDaysInAttendance, 0) as 'NumberOfDaysInAttendance_r', 
+            ifnull(ra.NumberOfDaysAbsent, 0) as 'NumberOfDaysAbsent_o', 
+            ifnull(result.NumberOfDaysAbsent, 0) as 'NumberOfDaysAbsent_r', 
+            ifnull(result.totalDays, 0) as 'totalDays_r'
+          FROM RoleAttendance as ra
+          OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationPersonRoleId)
+          OUTER LEFT JOIN Organization USING(OrganizationId)
+          OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+          LEFT JOIN (
+          -- Calcula el campo AttendanceRate a partir de la información de la tabla RoleAttendanceEvent
+          SELECT *, CASE WHEN NumberOfDaysInAttendance NOT NULL THEN CAST(NumberOfDaysInAttendance / totalDays AS REAL) * 100 ELSE 0.00 END as 'AttendanceRate'
+            FROM (
+              -- Agrupando la información por estudiante, se cuenta los días presentes y ausentes de cada uno
+              SELECT RoleAttendanceId,PersonId, RefOrganizationType.Description as 'OrganizationType', 
+                CASE RefAttendanceStatus.Description 
+                  WHEN 'Present' 
+                    THEN count(personId)
+                END as 'NumberOfDaysInAttendance',
+                CASE 
+                  WHEN RefAttendanceStatus.Description like '%Absence%' 
+                    THEN count(personId)
+                END as 'NumberOfDaysAbsent',
+                count(personId) as 'totalDays'
+              FROM RoleAttendance
+              OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationPersonRoleId)
+              OUTER LEFT JOIN Organization USING(OrganizationId)
+              OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+              OUTER LEFT JOIN Role USING(RoleId)
+              OUTER LEFT JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+              OUTER LEFT JOIN RefAttendanceStatus USING(RefAttendanceStatusId)
+              OUTER LEFT JOIN RefAttendanceEventType USING(RefAttendanceEventTypeId)
+              WHERE 
+              Role.Name IN ('Estudiante') -- filtra la asistencia de los estudiantes
+              AND
+              RefAttendanceEventType.Description IN ('Daily attendance') -- Filtra la asistencia diaria
+              AND
+              RefOrganizationType.Description IN ('Course') -- Filtra que la asistencia diaria se reporte a nivel de curso
+              GROUP BY personId
+            )) as result
+          ON 
+            ra.RoleAttendanceId = result.RoleAttendanceId
+          WHERE 
+          RefOrganizationType.Description IN ('Course') AND
+          -- Filtra solo aquellos casos en que la información no coincide
+          NOT (AttendanceRate_o = AttendanceRate_r AND NumberOfDaysInAttendance_o = NumberOfDaysInAttendance_r AND NumberOfDaysAbsent_o = NumberOfDaysAbsent_r)
+        """).fetchall()
+        logger.info(f"Localidades mal asignadas: {len(RoleAttendance)}")
+        if(len(RoleAttendance)>0):
+          data1 = list(set([m[0] for m in RoleAttendance if m[0] is not None]))
+          _c1 = len(set(data1))
+          _err1 = f"Los siguientes organizaciones no tienen sus AttendanceRate bien calculados: {data1}"
+          if (_c1 > 0):
+            logger.error(_err1)
+            logger.error(f"Rechazado")
+            return False          
+        else:
+          logger.info(f"Aprobado")
+          return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
 
