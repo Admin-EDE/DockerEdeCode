@@ -81,7 +81,7 @@ class check:
       "fn3D6": "No/Verificado",
       "fn3D7": "No/Verificado",
       "fn3D8": "No/Verificado",
-      "fn3D9": "No/Verificado",
+      "fn3D9": "self.fn3D9(conn)",
       "fn3DA": "self.fn3DA(conn)",
       "fn3DB": "No/Verificado",
       "fn3DC": "No/Verificado",
@@ -1064,6 +1064,73 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
       return False
+
+  # Revisar que los cursos del establecimiento tengan bien 
+  # calculada la información de la tabla RoleAttendance.
+  def fn3D9(self, conn):
+    try:
+      listInfoSuccesfull = conn.execute("""
+        /*
+        * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
+        */
+        SELECT OrganizationId, RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
+        FROM Organization
+        INNER JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        INNER JOIN OrganizationCalendar USING(OrganizationId)
+        INNER JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
+        INNER JOIN OrganizationPersonRole USING(OrganizationId)
+        INNER JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+        WHERE
+        RefOrganizationType.Description IN ('Course Section')
+        AND
+        AttendanceTermIndicator = 1
+      """).fetchall()
+      if(len(listInfoSuccesfull)<=0):
+        logger.info("S/DATOS")
+        return True
+      else:
+        RoleAttendance = conn.execute("""
+          /*
+          * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
+          */
+          SELECT OrganizationId, r.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
+          FROM (
+            SELECT OrganizationId, RoleAttendanceEventid, AttendanceTermIndicator, OrganizationCalendarSession.OrganizationCalendarSessionId,DATETIME(DATE(BeginDate) || 'T' || TIME(SessionStartTime)) as 'InicioClase', RoleAttendanceEvent.Date, DATETIME(DATE(EndDate) || 'T' || TIME(SessionEndTime)) as 'FinClase', *
+            FROM Organization
+            OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+            OUTER LEFT JOIN OrganizationCalendar USING(OrganizationId)
+            OUTER LEFT JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
+            OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationId)
+            OUTER LEFT JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+            WHERE
+            RefOrganizationType.Description IN ('Course Section')
+            AND
+            InicioClase = RoleAttendanceEvent.Date
+            AND AttendanceTermIndicator = 1
+          ) as r
+          INNER JOIN RefOrganizationType USING(RefOrganizationTypeId)
+          INNER JOIN OrganizationCalendar USING(OrganizationId)
+          INNER JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
+          INNER JOIN OrganizationPersonRole USING(OrganizationId)
+          INNER JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+        """).fetchall()
+        logger.info(f"Eventos mal identificados: {len(RoleAttendance)}")
+        if(len(RoleAttendance)>0):
+          data1 = list(set([m[0] for m in RoleAttendance if m[0] is not None]))
+          _c1 = len(set(data1))
+          _err1 = f"Las siguientes organizaciones no coinciden: {data1}"
+          if (_c1 > 0):
+            logger.error(_err1)
+            logger.error(f"Rechazado")
+            return False          
+        else:
+          logger.info(f"Aprobado")
+          return True
+    except Exception as e:
+      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+
 
   # Revisar que los cursos del establecimiento tengan bien 
   # calculada la información de la tabla RoleAttendance.
