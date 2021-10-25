@@ -130,12 +130,12 @@ class check:
       "fn680": "self.fn680(conn)",
       "fn681": "self.fn681(conn)",
       "fn682": "self.fn682(conn)",
-      "fn7F0": "No/Verificado",
-      "fn7F1": "No/Verificado",
-      "fn7F2": "No/Verificado",
-      "fn7F3": "No/Verificado",
-      "fn7F4": "No/Verificado",
-      "fn7F5": "No/Verificado",
+      "fn7F0": "self.fn7F0(conn)",
+      "fn7F1": "self.fn7F1(conn)",
+      "fn7F2": "self.fn7F2(conn)",
+      "fn7F3": "self.fn7F3(conn)",
+      "fn7F4": "self.fn7F4(conn)",
+      "fn7F5": "self.fn7F5(conn)",
       "fn7F6": "No/Verificado",
       "fn8F0": "self.fn8F0(conn)",
       "fn8F1": "self.fn8F1(conn)",
@@ -1888,6 +1888,320 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
             logger.info(f"S/Datos")
             return False
   ## Fin fn2EA WC ##
+
+ ## Inicio fn7F0 WC ##
+  def fn7F0(self,conn):
+        try:
+            _query = conn.execute("""
+            SELECT A.AssessmentId,
+                  ASSR.PersonId,
+                  A.RefAssessmentTypeId
+             FROM AssessmentResult R
+                    JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+                    JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                    JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                    JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                    JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
+                    JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
+                      WHERE ASSR.RefAssessmentSessionStaffRoleTypeId = 6
+                        AND OPR.RoleId = 6
+                  GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
+            """).fetchall()
+            if(len(_query)>0):
+                _contador = 0
+                _assessment = int(len(_query))
+                _assessmentType = (list([m[2] for m in _query if m[2] is not None]))
+                for x in _assessmentType:
+                    if (x == 28 or x == 29):
+                        _contador += 1
+                if _contador == _assessment:
+                    logger.info(f'Todas las evaluaciones estan ingresadas como sumativas o formativas')
+                    logger.info(f'Aprobado')
+                    return True
+                else:
+                    logger.error(f'No todas las evaluaciones estan ingresadas como sumativas o formativas')
+                    logger.error(f'Rechazado')
+                    return False
+            else:
+                logger.error(f'S/Datos')
+                logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+  ## Fin fn7F0 WC ##
+
+  ## Inicio fn7F1 WC ##
+  def fn7F1(self,conn):
+        try:
+            _query = conn.execute("""
+            SELECT round(R.ScoreValue, 1) AS value,
+                  R.ScoreValue           AS fullValue
+            FROM AssessmentResult R
+                    JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+                    JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                    JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                    JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                    JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
+                    JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
+            WHERE A.RefAssessmentTypeId = 29
+              AND R.RefScoreMetricTypeId IN (1, 2)
+              AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
+              AND OPR.RoleId = 6
+            GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
+            """).fetchall()
+            if(len(_query)>0):
+                _contador = 0
+                _assessment = int(len(_query))
+                _assessmentScoreValue = (list([m[0] for m in _query if m[0] is not None]))
+                _assessmentScoreFullValue = (list([m[1] for m in _query if m[1] is not None]))
+                for y in _assessmentScoreFullValue:
+                    if (len(y)>3):
+                        logger.error(f'Se han ingresado calificaciones sumativas con mas de un decimal')
+                        logger.error(f'Rechazado')
+                        return False
+                for x in _assessmentScoreValue:
+                    if (x >= 1.0 and x <= 7.0):
+                        _contador += 1
+                if _contador == _assessment:
+                    logger.info(f'Todas las evaluaciones sumativas estan ingresadas correctamente')
+                    logger.info(f'Aprobado')
+                    return True
+                else:
+                    logger.error(f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
+                    logger.error(f'Rechazado')
+                    return False
+            else:
+                logger.error(f'S/Datos')
+                logger.error(f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+  ## Fin fn7F1 WC ##
+
+  ## Inicio fn7F2 WC ##
+  def fn7F2(self,conn):
+        try:
+            _query = conn.execute("""
+            SELECT DISTINCT PS.PersonId
+            FROM OrganizationPersonRole OPR
+                    JOIN Person P ON OPR.PersonId = P.PersonId
+                    JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+            WHERE OPR.RoleId = 6
+              AND PS.RefPersonStatusTypeId = 28;
+            """).fetchall()
+            if(len(_query)>0):
+                _scoreQuery = conn.execute("""
+                SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0)
+                FROM AssessmentResult R
+                        JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+                        JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                        JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                        JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                        JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
+                WHERE A.RefAssessmentTypeId = 28
+                  AND R.RefScoreMetricTypeId IN (1, 2)
+                  AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
+                  AND ASSR.PersonId IN (SELECT DISTINCT PS.PersonId
+                                        FROM OrganizationPersonRole OPR
+                                                JOIN Person P ON OPR.PersonId = P.PersonId
+                                                JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+                                        WHERE OPR.RoleId = 6
+                                          AND PS.RefPersonStatusTypeId = 28
+                )
+                GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId, ASSR.PersonId
+                ORDER BY ASSR.PersonId ASC;
+                """).fetchall()
+                if(len(_scoreQuery)>0):
+                    _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
+                    for x in _score:
+                        if x < 40:
+                            logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
+                            logger.error(f'Rechazado')
+                            return False
+                    logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
+                    logger.info(f'Aprobado')
+                    return True
+                else:
+                    logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
+                    logger.error(f'Rechazado')
+                    return False
+            else:
+                logger.error(f'No existen estudiantes promovidos en el establecimiento')
+                logger.error(f'S/Datos')
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+  ## Fin fn7F2 WC ##
+
+  ## Inicio fn7F3 WC ##
+  def fn7F3(self,conn):
+        try:
+            _query = conn.execute("""
+            SELECT LA.LearnerActivityId,
+                LA.PersonId,
+                LA.Weight,
+                R.ScoreValue
+            FROM LearnerActivity LA
+                    JOIN AssessmentRegistration AR ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                    JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                    JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                    JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+            WHERE A.RefAssessmentTypeId IN (28, 29)
+            AND R.RefScoreMetricTypeId IN (1, 2);
+            """).fetchall()
+            if(len(_query)>0):
+                _weight = (list([m[2] for m in _query if m[2] is not None]))
+                for x in _weight:
+                    if (x is None or x > 100 or x <= 0):
+                        logger.error(f'El peso de la/s calificacion/es esta mal ingresado')
+                        logger.error(f'Rechazado')
+                        return False
+                _scoreValue = (list([m[3] for m in _query if m[3] is not None]))
+                for y in _scoreValue:
+                    if (y is None):
+                        logger.error(f'Existen Calificaciones mal ingresadas en el establecimiento')
+                        logger.error(f'Rechazado')
+                        return False
+                logger.info(f'Calificaciones con su ponderacion ingresadas correctamente')
+                logger.info(f'Aprobado')
+                return True
+            else:
+                logger.error(f'S/Datos')
+                logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+  ## Fin fn7F3 WC ##
+
+  ## Inicio fn7F4 WC ##
+  def fn7F4(self,conn):
+        try:
+            _query = conn.execute("""
+            SELECT LearnerActivityId
+            FROM LearnerActivity
+            WHERE digitalRandomKey IS NOT NULL
+            """).fetchall()
+            if(len(_query)>0):
+                _digitalRandom = conn.execute("""
+                SELECT digitalRandomKey,
+                      DateDigitalRandomKey,
+                      personIDDigitalRandomKey
+                FROM LearnerActivity
+                WHERE LearnerActivityId IN (SELECT LearnerActivityId
+                                            FROM LearnerActivity
+                                            WHERE digitalRandomKey IS NOT NULL)
+                AND DateDigitalRandomKey IS NOT NULL
+                AND personIDDigitalRandomKey IS NOT NULL
+                """).fetchall()
+                if(len(_digitalRandom)==len(_query)):
+                  _digitalRandomKeyPerson = conn.execute("""
+                  SELECT personIDDigitalRandomKey
+                  FROM LearnerActivity
+                  WHERE LearnerActivityId IN (SELECT LearnerActivityId
+                                              FROM LearnerActivity
+                                              WHERE digitalRandomKey IS NOT NULL)
+                    AND DateDigitalRandomKey IS NOT NULL
+                    AND personIDDigitalRandomKey IS NOT NULL
+                    AND personIDDigitalRandomKey IN (SELECT P.PersonId
+                                                    FROM OrganizationPersonRole OPR
+                                                              JOIN Person P ON OPR.PersonId = P.PersonId
+                                                    WHERE OPR.RoleId IN (2, 4, 5));
+                  """).fetchall()
+                  if(len(_digitalRandom) == len(_digitalRandomKeyPerson)):
+                    logger.info(f'Las modificaciones a las ponderaciones cuentan con firma del Docente/UTP')
+                    logger.info(f'Aprobado')
+                    return True
+                  else:
+                    logger.error(f'Las firmas ingresadas no corresponden a las del Docente/UTP')
+                    logger.error(f'Rechazado')
+                    return False
+                else:
+                  logger.error(f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
+                  logger.error(f'Rechazado')
+                  return False
+            else:
+              logger.error(f'No existen cambios realizados a las ponderaciones ')
+              logger.error(f'S/Datos')
+              return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+  ## Fin fn7F4 WC ##
+
+  ## Inicio fn7F5 WC ##
+  def fn7F5(self,conn):
+        try:
+            _query = conn.execute("""
+            SELECT LA.LearnerActivityId
+            FROM Assessment A
+                    JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                    JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentRegistrationId
+                    JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+            ORDER BY LA.LearnerActivityId;
+            """).fetchall()
+            if(len(_query)>0):
+                _organizationCalendarSession = conn.execute("""
+                SELECT OrganizationCalendarSessionId
+                FROM LearnerActivity
+                WHERE LearnerActivityId IN (
+                    SELECT LA.LearnerActivityId
+                    FROM Assessment A
+                            JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                            JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentRegistrationId
+                            JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                    ORDER BY LA.LearnerActivityId)
+                  AND OrganizationCalendarSessionId IS NOT NULL
+                GROUP BY OrganizationCalendarSessionId;
+                """).fetchall()
+                if(len(_organizationCalendarSession)>0):
+                    _calendar = conn.execute("""
+                    SELECT 'Descripcion' as Descrip
+                    FROM OrganizationCalendarSession
+                    WHERE Description IS NOT NULL
+                      AND Description <> ''
+                      AND OrganizationCalendarSessionId in (
+                        SELECT OrganizationCalendarSessionId
+                        FROM LearnerActivity
+                        WHERE LearnerActivityId IN (
+                            SELECT LA.LearnerActivityId
+                            FROM Assessment A
+                                    JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                                    JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentRegistrationId
+                                    JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                            ORDER BY LA.LearnerActivityId)
+                          AND OrganizationCalendarSessionId IS NOT NULL
+                        GROUP BY OrganizationCalendarSessionId)
+                    """).fetchall()
+                    if(len(_calendar) == len(_organizationCalendarSession)):
+                      logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
+                      logger.info(f'Aprobado')
+                      return True
+                    else:
+                      logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
+                      logger.error(f'Rechazado')
+                      return False
+                else:
+                    logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
+                    logger.error(f'Rechazdo')
+                    return False
+            else:
+                logger.error(f'No evaluaciones registradas en el establecimiento ')
+                logger.error(f'S/Datos')
+                return False
+        except Exception as e:
+            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+            logger.error(f"Rechazado")
+            return False
+  ## Fin fn7F5 WC ##
 
   ## Inicio fn2DA WC ##
   def fn2DA(self,conn):
