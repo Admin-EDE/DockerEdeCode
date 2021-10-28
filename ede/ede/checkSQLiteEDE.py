@@ -2340,59 +2340,48 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
   def fn2CA(self,conn):
         try:
             _query = conn.execute("""
-            SELECT
-            DISTINCT
-                P.FirstName,
-                P.LastName,
-                P.MiddleName,
-                P.SecondLastName,
-                PS.StatusStartDate,
-                PS.StatusEndDate,
-                PS.Description,
-                PS.StatusValue,
-                PS.fileScanBase64,
-                PS.docNumber
-            from OrganizationPersonRole OPR
-            join Person P on OPR.PersonId = P.PersonId
-            join PersonStatus PS on P.PersonId = PS.PersonId
-            where
-                OPR.RoleId = 6
-                and PS.RefPersonStatusTypeId = 30
+              SELECT DISTINCT p.PersonId
+              FROM OrganizationPersonRole OPR
+              OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
+              OUTER LEFT JOIN PersonStatus PS on P.PersonId = PS.PersonId
+              OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
+              OUTER LEFT JOIN Document USING(fileScanBase64)
+              WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
             """).fetchall()
             if(len(_query)>0):
-                _statusStartDate =  list(set([m[4] for m in _query if m[1] is not None]))
-                _statusEndDate =  list(set([m[5] for m in _query if m[1] is not None]))
-                _fileScanBase64 =  list(set([m[8] for m in _query if m[8] is not None]))
-                contador = 0
-                for rowStart in _statusStartDate:
-                    for rowEnd in _statusEndDate:
-                        for file in _fileScanBase64:
-                            if rowEnd >= rowStart:
-                                _file = conn.execute("""
-                                SELECT DISTINCT documentId
-                                FROM Document
-                                WHERE fileScanBase64 IS NOT NULL
-                                    AND fileScanBase64 <> ''
-                                    and upper(fileScanBase64) like '%MOTIVO%'
-                                    OR upper(fileScanBase64) like '%IDENTIFICADOR%'
-                                    AND documentId =
-                                """,int(file)).fetchall()
-                                if (len(_file) == len (_query)):
-                                  logger.info(f'Los alumnos retirados del establecimiento cuentan con documento de motivo cargado en el sistema')
-                                  logger.info(f'Aprobado')
-                                  return True
-                                else:
-                                  logger.error(f'Los alumnos retirados del establecimiento no cuentan con documentos cargados indicando el motivo')
-                                  logger.error(f'Rechazado')
-                                  return False
-                            else:
-                                logger.error(f'Las fechas de retiro son menores a las de entrada al establecimiento del alumno')
-                                logger.error(f'Rechazado')
-                                return False
-                if (contador == len(_fileScanBase64)):
-                    logger.info(f'')
-                    logger.info(f'Aprobado')
-                    return True
+                _queryOK = conn.execute("""
+                    SELECT DISTINCT p.PersonId
+                    FROM OrganizationPersonRole OPR
+                    OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
+                    OUTER LEFT JOIN PersonStatus PS on P.PersonId = PS.PersonId
+                    OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
+                    OUTER LEFT JOIN Document USING(fileScanBase64)
+                    WHERE 
+                      RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
+                      and p.personId NOT IN (
+                        SELECT DISTINCT p.PersonId
+                        FROM OrganizationPersonRole OPR
+                        JOIN Person P on OPR.PersonId = P.PersonId
+                        JOIN PersonStatus PS on P.PersonId = PS.PersonId
+                        JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
+                        JOIN Document USING(fileScanBase64)
+                        WHERE
+                          OPR.RoleId = 6
+                          and p.RecordEndDateTime IS NULL and PS.RecordEndDateTime IS NULL and OPR.RecordEndDateTime IS NULL
+                          and PS.StatusStartDate IS NOT NULL and PS.StatusEndDate IS NOT NULL and PS.Description IS NOT NULL
+                          and RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')	
+                          and documentId IS NOT NULL and length(Document.fileScanBase64) > 0
+                      )                
+                """).fetchall()              
+                _data =  list(set([m[0] for m in _queryOK if m[0] is not None]))
+                if(len(_query)==len(_data)):
+                  logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
+                  logger.info(f'Aprobado')
+                  return True
+                else:
+                  logger.error(f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
+                  logger.error(f'Rechazado')
+                  return False
             else:
                 logger.error(f'S/Datos')
                 logger.error(f'No existen registros de alumnos retirados del establecimiento')
