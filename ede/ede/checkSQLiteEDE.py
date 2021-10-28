@@ -2234,9 +2234,6 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                   FROM Document
                   WHERE fileScanBase64 IS NOT NULL
                       AND fileScanBase64 <> ''
-                      and upper(fileScanBase64) like '%PROMOCION%'
-                    OR upper(fileScanBase64) like '%MATRICULA%'
-                    OR upper(fileScanBase64) like '%TRANSLADO%'
                       AND documentId = (
                           select fileScanBase64
                           from PersonStatus
@@ -5653,7 +5650,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
           return True 
 
       else:
-        logger.error(f"No hay registro de alumnos .")
+        logger.error(f"No hay registro de asistencia de los estudiantes.")
         logger.error(f"Rechazado")
         return False   
     
