@@ -4707,73 +4707,53 @@ class check:
 
 ### inicio  fn6B1 ###
   def fn6B1(self,conn):
-    arr=[]
-    arr2=[]
-    arr3=[]
-    dias_laborales=[]
-    dias_laborales2=[]
-    numero=0
+    _l = []
     try:
+      _s1 = """SELECT COUNT(A.RoleAttendanceEventId),C.RUN,A.OrganizationPersonRoleId,A.Date
+                FROM RoleAttendanceEvent A
+                JOIN OrganizationPersonRole B
+                ON A.OrganizationPersonRoleId = B.OrganizationPersonRoleId
+                JOIN personList C
+                ON B.personId = C.personId
+                ON B.personId = C.PERSON
+                WHERE (A.RefAttendanceEventTypeId = 1 or A.RefAttendanceEventTypeId = 2)
+                AND A.VirtualIndicator = 0
+                GROUP BY A.OrganizationPersonRoleId,Date;"""
 
-      _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
-      join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
-  
-      _S3_1=""" select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
-                where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+      _s2 = """SELECT oprIdRatificador,firmaRatificador,fechaRatificador	
+                FROM RoleAttendanceEvent
+                WHERE OrganizationPersonRoleId = ?
+                AND Date = ?
+                AND RecordEndDateTime IS NOT NULL;"""
 
-      _S4_1="""     select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
-        on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+      _r1 = conn.execute(_s1).fetchall()
+      if(len(_r1)!=0):
+        for r1 in _r1:
+          _run = r1[1]
+          _opr = r1[2]
+          _date = r1[3]
+          _r2 = conn.execute(_s2,_opr,_date).fetchall()
+          if(len(_r2)!=0):
+            for r2 in _r2:
+              _opr2 = r2[0]
+              _firma = r2[1]
+              _fechar = r2[2]
+              if(_opr2 is None or _firma is None or _fechar is None):
+                _data = str(_run)+'-'+str(_date)
+                _l.append(_data)
 
-      now=datetime.now()
-      rrr=0
-      _q1 = conn.execute(_S1).fetchall()
-      if(len(_q1)!=0): 
-        for q1 in _q1:
-          personid=int(q1[0]) 
-          fecha_asis=datetime.strptime(str(q1[1][:10]),'%Y-%m-%d')
-          fecha_asis=datetime.strftime(fecha_asis,'%d-%m-%Y')
-          if rrr==0:
-            _q3 = conn.execute(_S3_1,personid,fecha_asis).fetchall()
-            if(len(_q3)!=0):
-              for xx in _q3:
-                contador=int(xx[0])
-                if contador>=3:
-                  _q4 = conn.execute(_S4_1,personid,fecha_asis).fetchall()
-                  if(len(_q4)!=0):
-                    for xx in _q4: 
-                      rut=str(xx[0]) 
-                      fecha_cam_start=str(xx[13])
-                      fecha_cam_end=str(xx[14])
-                      obser=str(xx[11])
-                      tipo=int(xx[4])
-                      digital=str(xx[9])
-                      if tipo==1:
-                        if(fecha_cam_start == "None")  or  (digital == "None"):
-                          arr.append(rut)
-                          
-                      if tipo==2:
-                        if(fecha_cam_start == "None")  or  (digital == "None"):
-                          arr2.append(rut)
-        
-        if(len(arr)!=0):
-          logger.error(f"Las siguientes asistencias por dia del alumno no tienen firma digital por el director : {str(arr)} ")
+        if(len(_l)!=0):
+          logger.error(f"Los siguientes registros de asistencia no tienen visado de modificacion.")
           logger.error(f"Rechazado")
           return False
-          
-
-        if(len(arr2)!=0):
-          logger.error(f"Las siguientes asistencias por bloque del alumno no tienen firma digital por el director  : {str(arr2)} ")
-          logger.error(f"Rechazado")
-          return False
-
         else:
           logger.info(f"Aprobado")
-          return True 
+          return True          
 
       else:
-        logger.error(f"No hay registro de alumnos .")
+        logger.error(f"No existen registros de asistencia")
         logger.error(f"Rechazado")
-        return False   
+        return False
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
