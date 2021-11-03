@@ -3854,7 +3854,7 @@ class check:
                 ON a.OrganizationPersonRoleId = b.OrganizationPersonRoleId
                 JOIN personList c
                 ON b.personId = c.personId
-                WHERE (a.Date in (SELECT Date FROM OrganizationCalendarEvent)
+                WHERE (a.Date in (SELECT EventDate FROM OrganizationCalendarEvent)
                     OR(a.Date BETWEEN (SELECT StartDate 
                               FROM OrganizationCalendarCrisis) and  
                               (SELECT EndDate 
