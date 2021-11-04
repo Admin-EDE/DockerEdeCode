@@ -4789,10 +4789,9 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                 FROM RoleAttendanceEvent a
                 JOIN OrganizationPersonRole b
                 ON a.OrganizationPersonRoleId = b.OrganizationPersonRoleId
-                JOIN personList c
-                ON b.personId = c.personId
-                WHERE (a.Date in (SELECT Date FROM OrganizationCalendarEvent)
-                    OR(a.Date BETWEEN (SELECT StartDate 
+                JOIN personList c ON b.personId = c.personId
+                WHERE (a.Date in (SELECT EventDate FROM OrganizationCalendarEvent)
+                    OR (a.Date BETWEEN (SELECT StartDate 
                               FROM OrganizationCalendarCrisis) and  
                               (SELECT EndDate 
                                 FROM OrganizationCalendarCrisis)));"""     
