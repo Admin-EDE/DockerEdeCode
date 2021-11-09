@@ -18,6 +18,7 @@ class consoleMenu:
     parser_parseCSVtoSQL.add_argument('-nz','--nozip', help='Indica que el archivo no esta comprimido', action="store_true")
     parser_parseCSVtoSQL.add_argument('path_to_file', type=str, help="nombre del archivo a transformar")
     parser_parseCSVtoSQL.add_argument('-d','--debug', help='Aumenta el detalle de la salida', action="store_true")
+    parser_parseCSVtoSQL.add_argument('-o', '--output', type=str, help='Indica el nombre del archivo de salida')
     parser_parseCSVtoSQL.set_defaults(func=self.parse)
     
     # create the parser for the "insert" command
@@ -25,6 +26,7 @@ class consoleMenu:
     parser_insert.add_argument('--NoValidate', action='store_true', help="Desabilita la validación por defecto de los datos")
     parser_insert.add_argument('-d','--debug', help='Aumenta el detalle de la salida', action="store_true")
     parser_insert.add_argument('-e','--email', type=str, help='Indica el email del destinatario')    
+    parser_insert.add_argument('-o','--output', type=str, help='Indica el nombre del archivo de salida')
     parser_insert.set_defaults(func=self.insert)
     
     # create the parser for the "check" command
