@@ -8,6 +8,7 @@ import io, os, sys
 from datetime import datetime
 from pytz import timezone 
 from time import time #importamos la función time para capturar tiempos
+from pathlib import Path
 
 def module_from_file(module_name, file_path):
     spec = importlib.util.spec_from_file_location(module_name, file_path)
@@ -59,8 +60,26 @@ def main():
     args.func(args); #Ejecuta la función por defecto
   else:
     logger.info(parser.format_help())
-    
-  zipFile = ZipFile(f'./{t_stamp}_Data.zip','a')
+
+  try:
+    args.output
+  except AttributeError:
+    output = f'{t_stamp}_Data.zip'
+  else:
+    if (args.output is not None):
+      output = args.output
+    else:
+      output = f'{t_stamp}_Data.zip'
+  try:
+    destination = f'./{output}'
+    Path(os.path.dirname(destination)).mkdir(parents=True, exist_ok=True)
+    zipFile = ZipFile(destination, 'a')
+  except Exception as e:
+    logger.error(f"Error de comprimible: '{str(e)}'")
+    sys.exit(str(e))
+
+  logger.info(f"Comprimido en: '{destination}'")
+
   listFiles = [
     f'./{t_stamp}_key.txt',
     f'./{t_stamp}_key.encrypted',
