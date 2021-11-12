@@ -4382,9 +4382,11 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                   logger.error(f"No hay registro de entrega de informacion por retiro de estudiante de establecimiento.")
                   logger.error(f"Rechazado")
                   return False
+        logger.info(f"Aprobado")
+        return True        
       else:
         logger.info(f"NO existen registros de retiro de alumnos del establecimiento.")
-        logger.info(f"Aprobado")
+        logger.info(f"S/Datos")
         return True
 
     except Exception as e:
