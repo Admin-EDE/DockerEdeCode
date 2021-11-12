@@ -2705,7 +2705,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                             alumnosPresentes = conn.execute("""
                             SELECT count(rae.date),
                                   opr.organizationid,
-                                  date as hora
+                                  strftime('%H:%M', `Date`) as 'hora'
                             FROM RoleAttendanceEvent rae
                                     join OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
                             WHERE refattendancestatusid = 1
@@ -2778,7 +2778,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                               and date = ?
                               and OPR.organizationid = ?;
                             """,([str(d),str(o)])).fetchall()
-                            fecha2=(list([m[4] for m in alumnosPresentes if m[4] is not None]))
+                            fecha2=(list([m[2] for m in alumnosPresentes if m[2] is not None]))
                             if (len(fecha2)<=0):
                                 logger.error(f'Sin firmas')
                                 logger.error(f'Rechazado')
