@@ -4692,9 +4692,9 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
               personid=str(w1[0])
               fecha1w=str(w1[1])
               fecha2w=str(w1[2])
-              if str(w1[1]) is None:
+              if w1[1] is None:
                 fecha1w=fecha_in
-              if str(w1[2]) is None:
+              if w1[2] is None:
                 fecha2w=fecha_ter              
               if (f1 <= fecha1w):
                 fecha2w=f1
