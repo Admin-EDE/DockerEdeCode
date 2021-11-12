@@ -4568,7 +4568,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                   else:                  
                     _q4 = conn.execute(_s4,_i).fetchall()
                     if(len(_q4)!=0):
-                      _lst = self.convertirArray2DToList(list([m[0] for m in _q4 if m[0] is not None]))
+                      _lst = self.convertirArray2DToList(list([str(m[0]) for m in _q4 if m[0] is not None]))
                       if '44' in _lst and '43' in _lst:
                         for q4 in _q4:
                           _pr = str(q4[0])
