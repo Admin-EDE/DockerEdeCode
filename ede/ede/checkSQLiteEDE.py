@@ -3152,7 +3152,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                       opr.organizationid,
                       strftime('%d', `Date`) as 'dia',
                       strftime('%m', `Date`) as 'mes',
-                      date                   as hora
+                      strftime('%H:%M', `Date`) as 'hora'
                 FROM RoleAttendanceEvent rae
                         JOIN OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
                 WHERE refattendancestatusid = 1
