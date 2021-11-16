@@ -4403,7 +4403,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
       # OBTENGO LISTADO DE ALUMNOS
       _s1 = """SELECT personId,run
                 FROM personList
-                WHERE Role like '%Estudiante%';"""
+                WHERE Role like 'Estudiante';"""
 
       # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
       _s2 = """SELECT A.RelatedPersonId,D.RUN
