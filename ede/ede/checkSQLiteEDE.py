@@ -2700,8 +2700,8 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                 for d in dates:
                     for o in organizationsId:
                         try:
-                            d = d[0]
-                            o = o
+                            #d = d[0]
+                            #o = o
                             alumnosPresentes = conn.execute("""
                             SELECT count(rae.date),
                                   opr.organizationid,
