@@ -2234,7 +2234,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                   FROM Document
                   WHERE fileScanBase64 IS NOT NULL
                       AND fileScanBase64 <> ''
-                      AND documentId = (
+                      AND documentId IN (
                           select fileScanBase64
                           from PersonStatus
                           where PersonId in (
