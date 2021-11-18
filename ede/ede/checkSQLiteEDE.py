@@ -953,10 +953,10 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
           (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent WHERE VirtualIndicator IN (0,1)) as [OK],
           (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent WHERE VirtualIndicator NOT IN (0,1)) as [ERROR]
       """).fetchall()
-      if(_ExistData[0]==0):
+      if(_ExistData[0][0]==0):
         logger.info(f"S/Datos")
         return True
-      if(_ExistData[0]==_ExistData[0]):
+      if(_ExistData[0][0]==_ExistData[0][1]):
         logger.info(f"Aprobado")
         return True
       virtualIndicator = conn.execute("""
