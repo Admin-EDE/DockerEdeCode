@@ -971,15 +971,10 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
       logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator)}")
       if(len(virtualIndicator)>0):
         data1 = list(set([m[0] for m in virtualIndicator if m[0] is not None]))
-        _c1 = len(set(data1))
         _err1 = f"Los siguientes registros de la tabla RoleAttendanceEvent no tienen definidos el indicador de virtualidad del estudiante: {data1}"
-        if (_c1 > 0):
-          logger.error(_err1)
-          logger.error(f"Rechazado")
-          return False          
-      else:
-        logger.info(f"Aprobado")
-        return True
+        logger.error(_err1)
+        logger.error(f"Rechazado")
+        return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
