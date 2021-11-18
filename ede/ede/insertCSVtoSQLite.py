@@ -48,12 +48,15 @@ class insert:
     return path_to_DB_file
 
   def getPublicKeyFromEmail(self,email):
-    url = './ede/ede/RegistroEDE.csv'
-    df = pd.read_csv(url)
-    _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
-    _t=f"clave pública: {df[df['Dirección de correo electrónico']=='admin@ede.mineduc.cl']['Clave Pública'].values[0]}"; logger.info(_t)
-    return df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
-  
+    try:
+      url = './ede/ede/RegistroEDE.csv'
+      df = pd.read_csv(url)
+      _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
+      _t=f"clave pública: {df[df['Dirección de correo electrónico']=='admin@ede.mineduc.cl']['Clave Pública'].values[0]}"; logger.info(_t)
+      return df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
+    except:
+      return None
+      
   # CAMBIA CLAVE A LA BD SQLCipher
   def encriptarBD(self, DB_NAME):
     secPhase = 'BD en blanco solo con parámetros definidos por Enlaces-Mineduc'
@@ -75,11 +78,13 @@ class insert:
       #path_to_public_pem_file = io.BytesIO(r.content).read()
       #publickey = RSA.importKey(path_to_public_pem_file)
   def encryptTextUsingSiePublicKey(self, txt):
+    pubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxfLqdKTtAFwh8lPf/sjE6N3rPZqyjHNYglGQRPJ6sHHs0Ciw18v8R4eVEIwdGslFDvg3usP1PMQrW9Nyy16Sz4T5lUyPTZFgvQ0xyB1HH9gqyprxV7Rcdb5iRLj3HuUG8Bg/4mWvp5I69GpZcpPFwm0T7Y8Np1ouErf6f+Yp6c4X0JQ5Cm8EIGmom0mRw93uouYXZ+P8WMd/EEdgRl8vJpgkewt99lm5SPsW3742bgfnsT38Z2vJMziXtVIPVsdH5yKGe0arAYIY6UHC+JnOS/KjBZ609Px5Z785ZrppXiVEX0K4e294S5xhpzPuNLTAsYPfLWDjwaLZGN8hGvFSCwIDAQAB"
     if (self.args.email):
       _t = f'email: {self.args.email}.';logger.info(_t)
-      pubkey = self.getPublicKeyFromEmail(self.args.email)
-    else:
-      pubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxfLqdKTtAFwh8lPf/sjE6N3rPZqyjHNYglGQRPJ6sHHs0Ciw18v8R4eVEIwdGslFDvg3usP1PMQrW9Nyy16Sz4T5lUyPTZFgvQ0xyB1HH9gqyprxV7Rcdb5iRLj3HuUG8Bg/4mWvp5I69GpZcpPFwm0T7Y8Np1ouErf6f+Yp6c4X0JQ5Cm8EIGmom0mRw93uouYXZ+P8WMd/EEdgRl8vJpgkewt99lm5SPsW3742bgfnsT38Z2vJMziXtVIPVsdH5yKGe0arAYIY6UHC+JnOS/KjBZ609Px5Z785ZrppXiVEX0K4e294S5xhpzPuNLTAsYPfLWDjwaLZGN8hGvFSCwIDAQAB"
+      _key = self.getPublicKeyFromEmail(self.args.email)
+      if(_key):
+        _t = f'Falló la lectura de la clave pública del email: {self.args.email}. Se utilizará la clave por defecto';logger.error(_t)
+        pubkey = _key
     keyDER = b64decode(pubkey)
     publickey = RSA.importKey(keyDER)
     encryptor = PKCS1_OAEP.new(publickey)

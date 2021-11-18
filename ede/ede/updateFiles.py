@@ -18,7 +18,11 @@ class updateFiles:
   def execute(self):
     if os.path.exists(self.localRepoDirectory):
       logger.info('Directorio existe, se actualizarán los archivos')
-      repo = Repo(self.localRepoDirectory)
+      try:
+        repo = Repo(self.localRepoDirectory)
+      except:
+        logger.error(f'Por favor verifique que exista el directorio ".git" en {self.localRepoDirectory}')
+        return False
       origin = repo.remotes.origin
       origin.pull(self.destination)
     else:
@@ -51,7 +55,7 @@ class updateFiles:
 
       with open(fileName,'wb') as out:
         out.write(io.BytesIO(response.content).read()) ## Read bytes into file
-        pathFile = os.path.join(os.path.dirname(fileName), fileName)
+        pathFile = fileName
         logger.info(f'Arhivo {pathFile} guardado con éxito.')
     
     return pathFile
