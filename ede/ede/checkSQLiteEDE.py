@@ -954,14 +954,10 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         */
         SELECT RoleAttendanceEventId 
         FROM RoleAttendanceEvent
-        WHERE RoleAttendanceEventId NOT IN (
-                SELECT RoleAttendanceEventId
-                FROM RoleAttendanceEvent
-                WHERE VirtualIndicator IN (0,1)
-        );
-      """).fetchall()
-      logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator)}")
-      if(len(virtualIndicator)>0):
+        WHERE VirtualIndicator NOT IN (0,1);
+      """)
+      #logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator.fetchall())}")
+      if(len(virtualIndicator.fetchall())>0):
         data1 = list(set([m[0] for m in virtualIndicator if m[0] is not None]))
         _c1 = len(set(data1))
         _err1 = f"Los siguientes registros de la tabla RoleAttendanceEvent no tienen definidos el indicador de virtualidad del estudiante: {data1}"
