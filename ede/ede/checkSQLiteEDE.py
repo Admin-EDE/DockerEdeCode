@@ -955,9 +955,9 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         SELECT RoleAttendanceEventId 
         FROM RoleAttendanceEvent
         WHERE VirtualIndicator NOT IN (0,1);
-      """)
+      """).fetchall()
       #logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator.fetchall())}")
-      if(len(virtualIndicator.fetchall())>0):
+      if(len(virtualIndicator)>0):
         data1 = list(set([m[0] for m in virtualIndicator if m[0] is not None]))
         _c1 = len(set(data1))
         _err1 = f"Los siguientes registros de la tabla RoleAttendanceEvent no tienen definidos el indicador de virtualidad del estudiante: {data1}"
@@ -2553,7 +2553,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                         where PersonId = ?
                           and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
                           and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
-                        """([l1])).fetchall()
+                        """,[l1]).fetchall()
                         if (len(results2))<1:
                             logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
                             logger.error(f"Rechazado")
