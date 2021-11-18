@@ -1006,7 +1006,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Bloque01','Bloque02','Bloque03','Bloque04','Bloque05','Bloque06','Bloque07','Bloque08','Bloque09','Bloque10','Bloque11','Bloque12','Bloque13','Bloque14','Bloque15','Bloque16','Bloque17','Bloque18','Bloque19','Bloque20');
       """).fetchall()
-      logger.info(f"ClassMeetingDays con formato errorneo: {len(ClassMeetingDays)}, ClassPeriod con formato errone: {len(ClassPeriod)}")
+      logger.info(f"ClassMeetingDays con formato errorneo: {len(ClassMeetingDays)}, ClassPeriod con formato erroneo: {len(ClassPeriod)}")
       if(len(ClassMeetingDays)>0 or ClassPeriod>0):
         data1 = list(set([m[0] for m in ClassMeetingDays if m[0] is not None]))
         data2 = list(set([m[0] for m in ClassPeriod if m[0] is not None]))
