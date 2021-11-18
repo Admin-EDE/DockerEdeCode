@@ -35,6 +35,7 @@ class consoleMenu:
     parser_check.add_argument('path_to_DB_file', type=str, help="Nombre del archivo que contiene la BD SQLite encriptada")
     parser_check.add_argument('-d','--debug', help='Aumenta el detalle de la salida', action="store_true")
     parser_check.add_argument('-j','--json', help='El archivo de resultados en formato JSON', action="store_true")
+    parser_check.add_argument('-f','--function', help='Especifica la función que se desea revisar', action="store_true")    
     parser_check.set_defaults(func=self.check)
     
   def module_from_file(self,module_name, file_path):

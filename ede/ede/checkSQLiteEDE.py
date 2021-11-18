@@ -146,6 +146,12 @@ class check:
       "fn9F2": "self.fn9F2(conn)",
       "fn9F3": "self.fn9F3(conn)"
     }
+    
+    if (self.args.function):
+      __value = self.functions.get(self.args.function,None)
+      if(__value):
+        self.functions = {self.args.function:__value}
+
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
 
