@@ -947,6 +947,18 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3D2(self, conn):
     try:
+      _ExistData = conn.execute("""
+          SELECT
+          (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent) as [TOTAL],
+          (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent WHERE VirtualIndicator IN (0,1)) as [OK],
+          (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent WHERE VirtualIndicator NOT IN (0,1)) as [ERROR]
+      """).fetchall()
+      if(_ExistData[0]==0):
+        logger.info(f"S/Datos")
+        return True
+      if(_ExistData[0]==_ExistData[0]):
+        logger.info(f"Aprobado")
+        return True
       virtualIndicator = conn.execute("""
         /*
         * Selecciona los eventos que no tienen el campo VirtualIndicator
@@ -956,7 +968,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         FROM RoleAttendanceEvent
         WHERE VirtualIndicator NOT IN (0,1);
       """).fetchall()
-      #logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator.fetchall())}")
+      logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator)}")
       if(len(virtualIndicator)>0):
         data1 = list(set([m[0] for m in virtualIndicator if m[0] is not None]))
         _c1 = len(set(data1))
