@@ -146,7 +146,7 @@ class check:
       "fn9F2": "self.fn9F2(conn)",
       "fn9F3": "self.fn9F3(conn)"
     }
-    
+    print(type(self.args.function))
     if (self.args.function):
       __value = self.functions.get(self.args.function,None)
       if(__value):
@@ -838,49 +838,6 @@ class check:
   def fn3D0(self, conn):
     try:
       _ExistData = conn.execute("""
-<<<<<<< HEAD
-          SELECT count(RefOrganizationTypeid) as [TOTAL]
-          FROM RefOrganizationType 
-          WHERE Description LIKE 'Course Section'
-      """)
-      if(_ExistData.returns_rows == 0):
-        logger.info(f"S/Datos")
-        return True
-      
-      asignaturas = conn.execute("""
-/* 
-* Selecciona de la tabla Organization los ID's de todas las asignaturas
-* que no tengan un curso asociado 
-*/ 
-WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrganizationType WHERE Description LIKE 'Course Section')
-        SELECT o.Organizationid 
-        FROM Organization o
-        WHERE 
-                -- Selecciona de la lista solo las organizaciones de tipo ASIGNATURA
-                RefOrganizationTypeid in refOrganizationTypeAsignatura AND 
-                -- Con el fin de encontrar las ASIGNATURAS que no se encuentren asociadas a ningún curso, 
-                -- se excluye de la lista las organizaciones que se encuentran correctamente asignadas
-                o.OrganizationId NOT IN (
-                        -- Esta consulta obtiene la lista de ASIGNATURAS correctamente asignadas a un CURSO
-                        SELECT OrganizationId
-                        FROM OrganizationRelationship
-                        INNER JOIN Organization USING(OrganizationId)
-                        WHERE 
-                                -- PERMITE solo las organizaciones de tipo ASIGNATURA
-                                RefOrganizationTypeid in refOrganizationTypeAsignatura
-                                AND
-                                -- PERMITE solo las asignaciones que tengan como padre un CURSO
-                                Parent_OrganizationId IN (
-                                        -- Obtiene la lista de Organizaciones de tipo CURSO
-                                        SELECT OrganizationId 
-                                        FROM Organization
-                                        WHERE RefOrganizationTypeId IN (
-                                                -- Recupera el ID de referencia de las organizaciones tipo CURSO
-                                                SELECT RefOrganizationTypeid FROM RefOrganizationType WHERE Description LIKE 'Course'
-                                        )
-                                )
-        );
-=======
         SELECT count(OrganizationId)
         FROM OrganizationRelationship
         INNER JOIN Organization USING(OrganizationId)
@@ -928,16 +885,11 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                                                 )
                                         )
                 );
->>>>>>> 9deeacb0ef7a7a472b048b7886e385374dc252b6
       """)
       if(asignaturas.returns_rows == 0):
         logger.info(f"Aprobado")
         return True
-<<<<<<< HEAD
-
-=======
       
->>>>>>> 9deeacb0ef7a7a472b048b7886e385374dc252b6
       asignaturas = asignaturas.fetchall()
       logger.info(f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
       if(len(asignaturas) > 0):
