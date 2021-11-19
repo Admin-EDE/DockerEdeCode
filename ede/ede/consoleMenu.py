@@ -76,6 +76,7 @@ class consoleMenu:
     logger.info(f"Iniciando insert: {args}")
     module = self.module_from_file("ede", "./ede/ede/insertCSVtoSQLite.py")
     insertCSVtoSQLite = module.insert(args)
+    args.function = None    
     insertCSVtoSQLite.execute()
 
     if(not args.NoValidate):

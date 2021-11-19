@@ -837,6 +837,15 @@ class check:
   # que no están asociadas a ningún curso
   def fn3D0(self, conn):
     try:
+      _ExistData = conn.execute("""
+          SELECT count(RefOrganizationTypeid) as [TOTAL]
+          FROM RefOrganizationType 
+          WHERE Description LIKE 'Course Section'
+      """)
+      if(_ExistData.returns_rows == 0):
+        logger.info(f"S/Datos")
+        return True
+      
       asignaturas = conn.execute("""
 /* 
 * Selecciona de la tabla Organization los ID's de todas las asignaturas
@@ -870,7 +879,12 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                                         )
                                 )
         );
-      """).fetchall()
+      """)
+      if(asignaturas.returns_rows == 0):
+        logger.info(f"Aprobado")
+        return True
+
+      asignaturas = asignaturas.fetchall()
       logger.info(f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
       if(len(asignaturas)>0):
         asignaturasList = list(set([m[0] for m in asignaturas if m[0] is not None]))
