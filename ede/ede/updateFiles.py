@@ -17,7 +17,7 @@ class updateFiles:
 
   def execute(self):
     if os.path.exists(self.localRepoDirectory):
-      logger.info('Directorio existe, se actualizarán los archivos')
+      logger.info(f'Directorio existe, se actualizarán los archivos. {self.localRepoDirectory}')
       try:
         repo = Repo(self.localRepoDirectory)
       except:

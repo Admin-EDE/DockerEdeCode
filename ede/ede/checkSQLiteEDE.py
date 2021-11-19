@@ -838,6 +838,7 @@ class check:
   def fn3D0(self, conn):
     try:
       _ExistData = conn.execute("""
+<<<<<<< HEAD
           SELECT count(RefOrganizationTypeid) as [TOTAL]
           FROM RefOrganizationType 
           WHERE Description LIKE 'Course Section'
@@ -879,23 +880,73 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                                         )
                                 )
         );
+=======
+        SELECT count(OrganizationId)
+        FROM OrganizationRelationship
+        INNER JOIN Organization USING(OrganizationId)
+        WHERE 
+          -- PERMITE solo las organizaciones de tipo ASIGNATURA
+          RefOrganizationTypeid in (
+            SELECT RefOrganizationTypeid
+            FROM RefOrganizationType 
+            WHERE Description LIKE 'Course Section'
+          )
+      """).fetchall()
+      if(_ExistData[0][0] == 0):
+        logger.info(f"S/Datos")
+        return True
+      asignaturas = conn.execute("""
+        /* 
+        * Selecciona de la tabla Organization los ID's de todas las asignaturas
+        * que no tengan un curso asociado 
+        */ 
+        WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrganizationType WHERE Description LIKE 'Course Section')
+                SELECT o.Organizationid 
+                FROM Organization o
+                WHERE 
+                        -- Selecciona de la lista solo las organizaciones de tipo ASIGNATURA
+                        RefOrganizationTypeid in refOrganizationTypeAsignatura AND 
+                        -- Con el fin de encontrar las ASIGNATURAS que no se encuentren asociadas a ningún curso, 
+                        -- se excluye de la lista las organizaciones que se encuentran correctamente asignadas
+                        o.OrganizationId NOT IN (
+                                -- Esta consulta obtiene la lista de ASIGNATURAS correctamente asignadas a un CURSO
+                                SELECT OrganizationId
+                                FROM OrganizationRelationship
+                                INNER JOIN Organization USING(OrganizationId)
+                                WHERE 
+                                        -- PERMITE solo las organizaciones de tipo ASIGNATURA
+                                        RefOrganizationTypeid in refOrganizationTypeAsignatura
+                                        AND
+                                        -- PERMITE solo las asignaciones que tengan como padre un CURSO
+                                        Parent_OrganizationId IN (
+                                                -- Obtiene la lista de Organizaciones de tipo CURSO
+                                                SELECT OrganizationId 
+                                                FROM Organization
+                                                WHERE RefOrganizationTypeId IN (
+                                                        -- Recupera el ID de referencia de las organizaciones tipo CURSO
+                                                        SELECT RefOrganizationTypeid FROM RefOrganizationType WHERE Description LIKE 'Course'
+                                                )
+                                        )
+                );
+>>>>>>> 9deeacb0ef7a7a472b048b7886e385374dc252b6
       """)
       if(asignaturas.returns_rows == 0):
         logger.info(f"Aprobado")
         return True
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> 9deeacb0ef7a7a472b048b7886e385374dc252b6
       asignaturas = asignaturas.fetchall()
       logger.info(f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
-      if(len(asignaturas)>0):
+      if(len(asignaturas) > 0):
         asignaturasList = list(set([m[0] for m in asignaturas if m[0] is not None]))
         _c = len(set(asignaturasList))
         _err = f"Las siguientes asignaturas no tienen ningún curso asociado: {asignaturasList}"
         logger.error(_err)
         logger.error(f"Rechazado")
         return False          
-      else:
-        logger.info(f"Aprobado")
-        return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
@@ -962,17 +1013,12 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
   def fn3D2(self, conn):
     try:
       _ExistData = conn.execute("""
-          SELECT
-          (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent) as [TOTAL],
-          (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent WHERE VirtualIndicator IN (0,1)) as [OK],
-          (SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent WHERE VirtualIndicator NOT IN (0,1)) as [ERROR]
+          SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent
       """).fetchall()
       if(_ExistData[0][0]==0):
         logger.info(f"S/Datos")
         return True
-      if(_ExistData[0][0]==_ExistData[0][1]):
-        logger.info(f"Aprobado")
-        return True
+      
       virtualIndicator = conn.execute("""
         /*
         * Selecciona los eventos que no tienen el campo VirtualIndicator
@@ -981,7 +1027,13 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         SELECT RoleAttendanceEventId 
         FROM RoleAttendanceEvent
         WHERE VirtualIndicator NOT IN (0,1);
-      """).fetchall()
+      """)
+      
+      if(virtualIndicator.returns_rows == 0):
+        logger.info(f"Aprobado")
+        return True
+      
+      virtualIndicator = virtualIndicator.fetchall()
       logger.info(f"virtualIndicator mal asignados: {len(virtualIndicator)}")
       if(len(virtualIndicator)>0):
         data1 = list(set([m[0] for m in virtualIndicator if m[0] is not None]))
@@ -998,6 +1050,16 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3D3(self, conn):
     try:
+      _ExistData = conn.execute("""
+        -- Lista todos los registros de la tabla CourseSectionSchedule
+        -- si no hay información, se informa SIN DATOS
+        SELECT count(ClassMeetingDays), count(ClassPeriod)
+        FROM CourseSectionSchedule
+      """).fetchall()
+      if(_ExistData[0][0] == 0 and _ExistData[0][1] == 0):
+        logger.info(f"S/Datos")
+        return True      
+      
       ClassMeetingDays = conn.execute("""
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
@@ -1008,7 +1070,7 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
             substr(str, instr(str, ',')+1)
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes');
-      """).fetchall()
+      """)#.fetchall()
       ClassPeriod = conn.execute("""
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
@@ -1019,25 +1081,29 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
             substr(str, instr(str, ',')+1)
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Bloque01','Bloque02','Bloque03','Bloque04','Bloque05','Bloque06','Bloque07','Bloque08','Bloque09','Bloque10','Bloque11','Bloque12','Bloque13','Bloque14','Bloque15','Bloque16','Bloque17','Bloque18','Bloque19','Bloque20');
-      """).fetchall()
-      logger.info(f"ClassMeetingDays con formato errorneo: {len(ClassMeetingDays)}, ClassPeriod con formato erroneo: {len(ClassPeriod)}")
-      if(len(ClassMeetingDays)>0 or ClassPeriod>0):
-        data1 = list(set([m[0] for m in ClassMeetingDays if m[0] is not None]))
-        data2 = list(set([m[0] for m in ClassPeriod if m[0] is not None]))
-        _c1 = len(set(data1))
-        _c2 = len(set(data2))
-        _err1 = f"Las siguientes registros tiene mal formateado el campo ClassMeetingDays: {data1}"
-        _err2 = f"Las siguientes registros tienen mal formateado el campo ClassPeriod: {data2}"
-        if (_c1 > 0):
-          logger.error(_err1)
-        if (_c2 > 0):
-          logger.error(_err2)
-        if (_c1 > 0 or _c2 > 0):
-          logger.error(f"Rechazado")
-          return False          
-      else:
+      """)#.fetchall()
+      if(ClassMeetingDays.returns_rows == 0 and ClassPeriod.returns_rows == 0):
         logger.info(f"Aprobado")
         return True
+      if(ClassMeetingDays.returns_rows != 0):
+        ClassMeetingDays = ClassMeetingDays.fetchall()
+        logger.info(f"ClassMeetingDays con formato errorneo: {len(ClassMeetingDays)}")
+        data1 = list(set([m[0] for m in ClassMeetingDays if m[0] is not None]))        
+        _c1 = len(set(data1))
+        if (_c1 > 0):
+          logger.error(f"Las siguientes registros tiene mal formateado el campo ClassMeetingDays: {data1}")
+                
+      if(ClassPeriod.returns_rows != 0):
+        ClassPeriod = ClassPeriod.fetchall()
+        logger.info(f"ClassPeriod con formato erroneo: {len(ClassPeriod)}")        
+        data2 = list(set([m[0] for m in ClassPeriod if m[0] is not None]))
+        _c2 = len(set(data2))
+        if (_c2 > 0):
+          logger.error(f"Las siguientes registros tienen mal formateado el campo ClassPeriod: {data2}")
+
+      if (_c1 > 0 or _c2 > 0):
+        logger.error(f"Rechazado")
+        return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
@@ -1257,6 +1323,16 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
   # tengan asignada una localidad dentro del establecimiento.
   def fn3C3(self, conn):
     try:
+      _ExistData = conn.execute("""
+        SELECT count(OrganizationId)
+        FROM Organization
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        WHERE RefOrganizationType.Description IN ('Course','Course Section')
+      """).fetchall()
+      if(_ExistData[0][0]==0):
+        logger.info(f"S/Datos")
+        return True      
+      
       locations = conn.execute("""
         /*
         * Entrega la lista de organizaciones que no contiene bien definida su ubicación dentro del establecimiento.
@@ -1268,7 +1344,10 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
         SELECT OrganizationId
         FROM Organization
         OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
-        WHERE OrganizationId NOT IN (SELECT OrganizationId FROM (SELECT OrganizationId, RefOrganizationType.Description as 'organizationType' , LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', RefOrganizationLocationType.RefOrganizationLocationTypeId, RefOrganizationLocationType.Description as 'TipoLocalidad'
+        WHERE 
+        RefOrganizationType.Description IN ('Course','Course Section')
+        AND
+        OrganizationId NOT IN (SELECT OrganizationId FROM (SELECT OrganizationId, RefOrganizationType.Description as 'organizationType' , LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', RefOrganizationLocationType.RefOrganizationLocationTypeId, RefOrganizationLocationType.Description as 'TipoLocalidad'
                 FROM Organization
                 OUTER LEFT JOIN OrganizationWebsite USING(OrganizationId)
                 OUTER LEFT JOIN OrganizationEmail USING(OrganizationId)
@@ -1297,8 +1376,13 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
                 StreetNumberAndName NOT NULL
                 AND
                 City NOT NULL
-        )) AND RefOrganizationType.Description IN ('Course','Course Section');
-      """).fetchall()
+        ));
+      """)
+      if(locations.returns_rows==0):
+        logger.info(f"Aprobado")
+        return True
+      
+      locations = locations.fetchall()
       logger.info(f"Localidades mal asignadas: {len(locations)}")
       if(len(locations)>0):
         data1 = list(set([m[0] for m in locations if m[0] is not None]))
@@ -1308,9 +1392,6 @@ WITH refOrganizationTypeAsignatura AS (SELECT RefOrganizationTypeid FROM RefOrga
           logger.error(_err1)
           logger.error(f"Rechazado")
           return False          
-      else:
-        logger.info(f"Aprobado")
-        return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
