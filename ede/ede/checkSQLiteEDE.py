@@ -2845,20 +2845,20 @@ class check:
                   group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista',
                   count(rae.digitalRandomKey) as 'firmadoEnClases'
                 FROM Organization O
-                  OUTER LEFT JOIN RefOrganizationType rot
+                  JOIN RefOrganizationType rot
                     ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
                     AND O.RefOrganizationTypeId IN (
                       SELECT RefOrganizationTypeId 
                       FROM RefOrganizationType
                       WHERE Description IN ('Course Section')
                     ) 
-                  OUTER LEFT JOIN OrganizationPersonRole opr 
+                  JOIN OrganizationPersonRole opr 
                     ON O.OrganizationId = opr.OrganizationId
                     AND opr.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN RoleAttendanceEvent rae
+                  JOIN RoleAttendanceEvent rae
                     ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
                     AND rae.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN PersonIdentifier pid
+                  JOIN PersonIdentifier pid
                     ON opr.personId = pid.personId
                     AND pid.refPersonIdentificationSystemId IN (
                       SELECT refPersonIdentificationSystemId
@@ -2866,20 +2866,20 @@ class check:
                       WHERE Code IN ('listNumber')
                     )
                     AND pid.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN Role rol
+                  JOIN Role rol
                     ON opr.RoleId = rol.RoleId
                     AND opr.RoleId IN (
                       SELECT RoleId
                       FROM Role
                       WHERE Name IN ('Estudiante')
                     )
-                  OUTER LEFT JOIN OrganizationCalendar oc 
+                  JOIN OrganizationCalendar oc 
                     ON O.OrganizationId = oc.OrganizationId
                     AND oc.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN OrganizationCalendarSession ocs
+                  JOIN OrganizationCalendarSession ocs
                     ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
                     AND ocs.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN CourseSectionSchedule css
+                  JOIN CourseSectionSchedule css
                     ON O.OrganizationId = css.OrganizationId
                     AND css.RecordEndDateTime IS NULL
                 --GROUP BY rae.Date
