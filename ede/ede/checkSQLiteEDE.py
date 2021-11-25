@@ -5028,28 +5028,69 @@ class check:
     try:
       _l = []
       _l2 = []
-      _s1 = """SELECT a.OrganizationPersonRoleId,C.RUN,a.EntryDate,a.ExitDate,b.StatusStartDate,b.StatusEndDate
-                FROM OrganizationPersonRole A
-                JOIN PersonStatus B
-                ON A.personId = B.personId
-                JOIN personList C
-                ON B.personId = C.personId
-                WHERE A.RoleId = 6
-                AND B.RefPersonStatusTypeId = 30;"""
+      _s1 = """
+        SELECT 
+          opr.OrganizationPersonRoleId
+          ,pid.Identifier
+          ,opr.EntryDate
+          ,opr.ExitDate
+          ,pst.StatusStartDate
+          ,pst.StatusEndDate
+        FROM OrganizationPersonRole opr
+          JOIN Organization org 
+            ON opr.OrganizationId = org.OrganizationId
+            AND org.RefOrganizationTypeId IN (
+              SELECT RefOrganizationTypeId
+              FROM RefOrganizationType
+              WHERE RefOrganizationType.description IN ('K12 School')
+            )
+          JOIN PersonIdentifier pid 
+            ON opr.personId = pid.personId
+            AND pid.RecordEndDateTime IS NULL
+          JOIN RefPersonIdentificationSystem rpis 
+            ON pid.RefPersonIdentificationSystemId = rpis.RefPersonIdentificationSystemId
+            AND rpis.description In ('ROL UNICO NACIONAL')
+          OUTER LEFT JOIN PersonStatus pst 
+            ON opr.personId = pst.personId
+            AND pst.RecordEndDateTime IS NULL
+        WHERE 
+          opr.RoleId IN (
+            SELECT RoleId
+            FROM Role
+            WHERE role.Name IN ('Estudiante')
+          )
+          AND 
+          pst.RefPersonStatusTypeId IN (
+            SELECT RefPersonStatusTypeId
+            FROM RefPersonStatusType
+            WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
+          )
+      """
+      _q1 = conn.execute(_s1)
+      if(_q1.returns_rows == 0):
+        logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
+        logger.info(f"S/Datos")
+        return True
       
-      _q1 = conn.execute(_s1).fetchall()
+      _q1 = _q1.fetchall()
       if(len(_q1)!=0):
         for q1 in _q1:
           _r = str(q1[1])
-          _e1 = str(q1[2])
-          _e2 = str(q1[3])
-          _sd1 = str(q1[4])
-          _sd2 = str(q1[5])
+          _entryDate = str(q1[2]) # rescata OrganizationPersonRole.entryDate
+          _exitDate = str(q1[3]) # rescata OrganizationPersonRole.exitDate
+          _statusStartDate = str(q1[4]) # rescata personStatus.statusStartDate
+          _statusEndDate = str(q1[5]) # rescata personStatus.statusEndDate
 
-          if(_e1 is None) or (_sd1 is None):
+          if(_entryDate is None) or (_statusStartDate is None):
             _l.append(_r)
-          elif(_e1 != _sd1):
+          elif(_entryDate != _statusStartDate):
             _l2.append(_r)
+            
+          if(_exitDate is None) or (_statusEndDate is None):
+            _l.append(_r)
+          elif(_exitDate != _statusEndDate):
+            _l2.append(_r)
+            
         
         if(len(_l)!=0):
           logger.error(f"Hay alumnos sin rergistro de fecha de alta/baja: {str(_l)}")
@@ -5060,15 +5101,9 @@ class check:
           logger.error(f"Hay alumnos con inconsistencia en registros de alta/baja: {str(_l2)}")
           logger.error(f"Rechazado")
           return False
-        else:
-          logger.info(f"Aprobado")
-          return True
-
-      else:
-        logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
+        
         logger.info(f"Aprobado")
         return True
-
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
