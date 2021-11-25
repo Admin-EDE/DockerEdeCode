@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-logger = logging.getLogger('root');
+logger = logging.getLogger('root')
 
 from validate_email import validate_email
 import re
@@ -20,7 +20,7 @@ from sqlalchemy import create_engine
 class check:
   def __init__(self, args):
     self.args = args
-    logger.info(f"tipo de argumento: {type(self.args)}, valores: {self.args}");
+    logger.info(f"tipo de argumento: {type(self.args)}, valores: {self.args}")
     self.functions = {
       "fn0FA": "self.fn0FA(conn)",
       "fn0FB": "self.fn0FB(conn)",
@@ -136,8 +136,8 @@ class check:
     # self.secPhase = secPhase
     # self.path_to_DB_file = path_to_DB_file
     #t_stamp = datetime.timestamp(datetime.now(timezone('Chile/Continental')))
-    self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv';
-    self.listValidations = self.cargarPlanillaConListasParaValidar();
+    self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
+    self.listValidations = self.cargarPlanillaConListasParaValidar()
 
   #----------------------------------------------------------------------------
   # Transforma archivo JSON en un DataFrame de pandas con todas sus columnas.
@@ -145,7 +145,9 @@ class check:
   #----------------------------------------------------------------------------
   def execute(self):
     _result = True
-    engine = create_engine(f"sqlite+pysqlcipher://:{self.args.secPhase}@/{self.args.path_to_DB_file}?cipher=aes-256-cfb&kdf_iter=64000")
+    sec = self.args.secPhase
+    path = self.args.path_to_DB_file
+    engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000")
     try:
       conn = engine.connect()
 
@@ -156,20 +158,13 @@ class check:
           logger.info(f"Resultado de la evaluación de la función {key}: {eval_}")
           _result = eval_ and _result
 
-      #_r[0] = self.verificaIntegridadReferencial(conn,self.args._FKErrorsFile)
-      #self.verificaDatosDeLasPersonas(conn)
-      #self.verificaDatosEstudiantes(conn)
-      #self.verificaDatosDocentes(conn)
-      #self.verificaDatosEstablecimiento(conn)
-      #self.verificaJerarquiasOrganizacional(conn)
-      #self.verificaClaveAleatoriaDocentes(conn)
-
       if(not _result):
-        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
+        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación.\
+           Hay errores en la revisión. Revise el LOG para más detalles")
 
     except Exception as e:
       _t = "ERROR en la validación: "+str(e)
-      logger.info(_t);
+      logger.info(_t)
       _result = False
     finally:
       #closind database connection
@@ -181,17 +176,17 @@ class check:
   def cargarPlanillaConListasParaValidar(self):
     #idFile = '1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s'
     #url = f'https://docs.google.com/spreadsheets/d/{idFile}/export?format=xlsx&id={idFile}'
-    url = './ede/ede/listValidationData.xlsx';
+    url = './ede/ede/listValidationData.xlsx'
     xd = pd.read_excel(url,'ListValidations')
     _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
-    return xd;
+    return xd
 
   #VERIFICA LA CONEXION A LA BASE DE DATOS
   def fn3F0(self,conn):
-    _r = False;
+    _r = False
     rows = conn.execute("SELECT * FROM PersonList;").fetchall()
     if(len(rows)>0): _r = True
-    logger.info("Aprobado") if _r else logger.error("Rechazado");
+    logger.info("Aprobado") if _r else logger.error("Rechazado")
     return _r
 
   #VERIFICA LA INTEGRIDAD REFERENCIAL DE LOS DATOS
@@ -205,7 +200,7 @@ class check:
       _e = f"BD con errores, más detallen en {self.args._FKErrorsFile}"
       _r = False
 
-    logger.info(f"RESULTADO DE LA VERIFICACIÓN DE LA INTEGRIDAD REFERENCIAL: {_r}. {_e}");
+    logger.info(f"RESULTADO DE LA VERIFICACIÓN DE LA INTEGRIDAD REFERENCIAL: {_r}. {_e}")
     logger.error("Rechazado") if (_e != '') else logger.info("Aprobado")
     return _r
 
@@ -263,7 +258,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validarRUN(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -281,7 +276,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validarIpe(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL IPE DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DEL IPE DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -299,7 +294,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not validate_email(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DE FORMATO DE LOS E-MAILS DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DE FORMATO DE LOS E-MAILS DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -317,7 +312,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaFormatoE164Telefono(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DE LOS TELEFONOS DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DEL FORMATO DE LOS TELEFONOS DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -389,7 +384,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaTribalAffiliation(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DE LA LISTA DE AFILIACIONES TRIBALES DE LAS PERSONAS: {_r}. {_err}";
+        _t = f"VERIFICACION DE LA LISTA DE AFILIACIONES TRIBALES DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -403,10 +398,10 @@ class check:
   #Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes
   def fn3FB(self):
     try:
-      _l1 = self.numListaList;_l2 = self.numMatriculaList;_l3 = self.fechaIncorporacionEstudianteList;
+      _l1 = self.numListaList;_l2 = self.numMatriculaList;_l3 = self.fechaIncorporacionEstudianteList
       if(len(_l1)>0 and len(_l2)>0 and len(_l3)>0):
         _r   = len(_l1) == len(_l2) == len(_l3)
-        _t = f"Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes: {_r}.  NumLista:{len(_l1)}, NumMat:{len(_l2)}, FechaIncorporación:{len(_l3)}";
+        _t = f"Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes: {_r}.  NumLista:{len(_l1)}, NumMat:{len(_l2)}, FechaIncorporación:{len(_l3)}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -423,7 +418,7 @@ class check:
       _l1 = self.emailList;_l2 = self.emailTypeList
       if(len(_l1)>0 and len(_l2)>0):
         _r   = len(_l1) == len(_l2)
-        _t = f"VERIFICA que la cantidad de e-mails corresponda con los tipos de e-mails ingresados en las personas: {_r}.";
+        _t = f"VERIFICA que la cantidad de e-mails corresponda con los tipos de e-mails ingresados en las personas: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -440,7 +435,7 @@ class check:
       _l1 = self.phoneList;_l2 = self.phoneTypeList
       if(len(_l1)>0 and len(_l2)>0):
         _r   = len(_l1) == len(_l2)
-        _t = f"VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados en las personas: {_r}.";
+        _t = f"VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados en las personas: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -489,7 +484,7 @@ class check:
       _l = self.comparaEstudiantes
       if(len(_l)>0):
         _r   = _l
-        _t = f"VERIFICA QUE TODOS LOS ESTUDIANTES TENGAN Pais, Región y cuidad de nacimiento: {_r}.";
+        _t = f"VERIFICA QUE TODOS LOS ESTUDIANTES TENGAN Pais, Región y cuidad de nacimiento: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -544,7 +539,7 @@ class check:
       _l = self.comparaDocentes
       if(len(_l)>0):
         _r   = _l
-        _t = f"VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema: {_r}.";
+        _t = f"VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -580,7 +575,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaFormatoRBD(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DEL RBD DEL ESTABLECIMIENTO: {_r}. {_err}";
+        _t = f"VERIFICACION DEL FORMATO DEL RBD DEL ESTABLECIMIENTO: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -625,7 +620,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaModalidad(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -643,7 +638,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaJornada(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -661,7 +656,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaNivel(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -679,7 +674,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaRama(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -697,7 +692,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaSector(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -715,7 +710,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaEspecialidad(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -733,7 +728,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaTipoCurso(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -751,7 +746,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaCodigoEnse(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -769,7 +764,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaGrado(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -787,7 +782,7 @@ class check:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaLetraCurso(e)])
         _r   = False if len(_err)>0 else True
-        _t = f"VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}";
+        _t = f"VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -873,7 +868,7 @@ class check:
     _l = self.convertirArray2DToList(lista)
     _err = set([e for e in _l if not fn(e)])
     _r   = False if len(_err)>0 else True
-    _t = f"{msg}: {_r}. {_err}";logger.info(_t);
+    _t = f"{msg}: {_r}. {_err}";logger.info(_t)
     return _err,_r
 
   def validaFormatoE164Telefono(self, e):
@@ -974,7 +969,7 @@ class check:
       _err = "La BD no contiene clave aleatoria de los docentes"
 
     _t = f"VERIFICA CLAVE ALEATORIA DOCENTES: {_r}"
-    logger.info(_t);
+    logger.info(_t)
     return _r
 
 ### Appoderado INICIO ###
@@ -4731,7 +4726,11 @@ class check:
 ### inicio  fn6B0 ###
   def fn6B0(self,conn):
     _l = []
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> c19a28159eb9385924acb3041139d22d53ad6785
     try:
       _s1 = """SELECT COUNT(A.RoleAttendanceEventId),C.RUN,A.OrganizationPersonRoleId,A.Date
                 FROM RoleAttendanceEvent A
@@ -4762,7 +4761,11 @@ class check:
               _drk = r2[0]
               _obs = r2[1]
               if(_drk is None or _obs is None):
+<<<<<<< HEAD
                 _data = str(_rut)+'-'+str(_date)
+=======
+                _data = str(_rut)+''+str(_date)
+>>>>>>> c19a28159eb9385924acb3041139d22d53ad6785
                 _l.append(_data)
 
         if(len(_l)!=0):
@@ -4997,4 +5000,8 @@ class check:
       return False
 ### fin fn6E3 ###
 
+<<<<<<< HEAD
 ### --- MIAULA FIN --- ###
+=======
+### MIAULA FIN ###
+>>>>>>> c19a28159eb9385924acb3041139d22d53ad6785
