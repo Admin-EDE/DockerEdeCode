@@ -160,12 +160,17 @@ class check:
   # Agrega las columnas que faltan.
   #----------------------------------------------------------------------------
   def execute(self):
+    def regexp(expr, item):
+      reg = re.compile(expr)
+      return reg.search(item) is not None
+    
     _result = True
     sec = self.args.secPhase
     path = self.args.path_to_DB_file
     engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000")
     try:
       conn = engine.connect()
+      conn.create_function("REGEXP", 2, regexp)
 
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
