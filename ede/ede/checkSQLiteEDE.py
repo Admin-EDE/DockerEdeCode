@@ -5839,11 +5839,37 @@ WHERE
     numero=0
     try:
   
-      _S3="""select b.identifier,a.docnumber, a.filescanbase64,a.StatusStartDate from PersonStatus a join PersonIdentifier b on a.personid=b.personId
-            where  RefPersonStatusTypeId=31 ;"""
+      _S3="""
+          SELECT 
+            pid.identifier
+            ,pst.docnumber
+            ,pst.filescanbase64
+            ,pst.StatusStartDate 
+          FROM PersonStatus pst 
+            OUTER LEFT JOIN PersonIdentifier pid 
+              ON pst.personid = pid.personId
+              AND pid.RefPersonIdentificationSystemId  IN (
+                SELECT RefPersonIdentificationSystemId 
+                FROM RefPersonIdentificationSystem
+                WHERE RefPersonIdentificationSystem.description IN ('ROL UNICO NACIONAL')
+              )
+            OUTER LEFT JOIN RefPersonStatusType rpst
+              ON pst.RefPersonStatusTypeId = rpst.RefPersonStatusTypeId
+              AND rpst.RefPersonStatusTypeId IN (
+                SELECT RefPersonStatusTypeId
+                FROM RefPersonStatusType
+                WHERE RefPersonStatusType.description IN ('Excedente con derecho a subvención')
+              )
+            """
 
       now=datetime.now()
-      _q1 = conn.execute(_S3).fetchall()
+      _q1 = conn.execute(_S3)
+      if(_q1.returns_rows == 0):
+        logger.error(f"No hay informacion de estudiantes excedentes")
+        logger.info(f"S/DATOS")
+        return True  
+      
+      _q1 = _q1.fetchall()
       XX=0
       if(len(_q1)!=0):
         for q1 in _q1:
@@ -5859,15 +5885,9 @@ WHERE
           logger.error(f"Los siguientes alumnos no tienen Rex de aprobacion : {str(arr)} ")
           logger.error(f"Rechazado")
           return False
-        else:
-          logger.info(f"Aprobado")
-          return True  
 
-      else:
-        logger.error(f"No hay informacion de estudiantes excedentes")
         logger.info(f"Aprobado")
-        return True  
-    
+        return True      
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
