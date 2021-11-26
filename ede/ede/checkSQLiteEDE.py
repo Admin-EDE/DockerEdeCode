@@ -5874,9 +5874,9 @@ WHERE
       if(len(_q1)!=0):
         for q1 in _q1:
           rut=str(q1[0])
-          filescanbase64=str(q1[2])
-          docnumber=str(q1[1])
-          dateF=str(q1[3])
+          filescanbase64=q1[2]
+          docnumber=q1[1]
+          dateF=q1[3]
 
           if ((filescanbase64 is None) or (docnumber is None) or (dateF is None)):
             arr.append(rut)
