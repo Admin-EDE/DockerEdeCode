@@ -13,6 +13,33 @@ import numpy as np
 import requests
 from sqlalchemy import create_engine
 
+
+from sqlalchemy import event, func
+from sqlalchemy.sql import label
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import sessionmaker
+
+@event.listens_for(Engine, "connect")
+def sqlite_engine_connect(dbapi_connection, connection_record):
+    dbapi_connection.create_function("regexp", 2, sqlite_regexp)
+    dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
+
+
+def sqlite_regexp(expr, item):
+    if(not item): return False
+    #logger.info(f"expr: {type(expr)}->{expr}, item: {type(item)}->{item}")
+    reg = re.compile(expr, re.IGNORECASE)
+    #logger.info(f"reg:{reg}")
+    #logger.info(f"search:{reg.search(expr,str(item))}")
+    try:
+        return reg.search(expr,str(item)) is not None
+    except:
+        return False
+
+def sqlite_regexp_replace(item, find, repl):
+    reg = re.compile(find, re.IGNORECASE)
+    return reg.sub(repl, item)
+
 #----------------------------------------------------------------------------
 #PASO N° 20 - Transformar el archivo JSON en archivos CSV's. Uno por tabla.
 #----------------------------------------------------------------------------
