@@ -1760,27 +1760,26 @@ class check:
                 , opr.OrganizationId -- 38
 
               FROM Person p 
-                JOIN RefSex rf on p.RefSexId = rf.RefSexId
-                JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
-                left JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
-                left JOIN Role on Role.RoleId=opr.RoleId
-                JOIN PersonAddress pa on pa.PersonId=p.PersonId
-                LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
-                LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
-                LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
-                LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId
-                LEFT JOIN Person p2 on p2.PersonId=prs.PersonId
-                LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
-                LEFT JOIN RefCountry RefCountry2 on pa.RefCountryId = RefCountry2.RefCountryId
-                LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
-                LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
-                LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
-                LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
-                LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
-                LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
-                LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
-                JOIN Organization o on o.OrganizationId=opr.OrganizationId
-
+                OUTER LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
+                OUTER LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
+                OUTER LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
+                OUTER LEFT JOIN Role on Role.RoleId=opr.RoleId
+                OUTER LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
+                OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
+                OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
+                OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
+                OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.PersonId
+                OUTER LEFT JOIN Person p2 on p2.PersonId=prs.RelatedPersonId
+                OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
+                OUTER LEFT JOIN RefCountry RefCountry2 on pa.RefCountryId = RefCountry2.RefCountryId
+                OUTER LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
+                OUTER LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
+                OUTER LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
+                OUTER LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
+                OUTER LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
+                OUTER LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
+                OUTER LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
+                OUTER JOIN Organization o on o.OrganizationId=opr.OrganizationId
               WHERE 
                 opr.RoleId IN (
                   SELECT RoleId
@@ -1874,7 +1873,7 @@ class check:
                     logger.error(f"alumno sin comuna")
                     logger.error(f"Rechazado")
                     _response = False
-                if (fila[15] is None or fila[16] is None or fila[16] is None):
+                if (fila[15] is None or fila[16] is None or fila[17] is None):
                     logger.error(f"alumno sin dirección")
                     logger.error(f"Rechazado")
                     _response = False
@@ -4835,28 +4834,76 @@ class check:
   def fn6F0(self,conn):
     arr=[]
     try:
+      """
+SELECT 
+	CAST(julianday('2021-11-26')-julianday('2021-11-25') as INTEGER) as workDays      
+      
+WITH RECURSIVE dates(date) AS (
+  VALUES('2021-03-01')
+  UNION ALL
+  SELECT date(date, '+1 day')
+  FROM dates
+  WHERE 
+	-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','2021-10-30') 
+	AND
+	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
+)
+SELECT date 
+FROM dates
+WHERE CAST(strftime('%w',date) as INTEGER) between 1 and 5      
+      """
+      
            # select para listar todos los colegios de tabla organizacion
-      _S1= """ SELECT a.OrganizationId,a.Name,b.OrganizationCalendarId,strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate,strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
-                FROM Organization a
-                JOIN OrganizationCalendar b 
-                ON a.OrganizationId=b.OrganizationId
-                JOIN OrganizationCalendarSession c
-                ON  b.organizationcalendarid=c.organizationcalendarid where a.Reforganizationtypeid=10;"""
+      _S1= """
+SELECT 
+  org.OrganizationId,
+  org.Name,
+  b.OrganizationCalendarId,
+  strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate,
+  strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
+FROM Organization org
+  JOIN OrganizationCalendar b 
+	ON org.OrganizationId = b.OrganizationId
+  JOIN OrganizationCalendarSession c
+	ON b.organizationcalendarid = c.organizationcalendarid 
+WHERE 
+	org.RefOrganizationTypeId IN (
+		SELECT RefOrganizationTypeId
+		FROM RefOrganizationType
+		WHERE RefOrganizationType.description IN ('K12 School')
+	)
+      """
 
       # trae la fechas para calcular los dias feriados 
-      _s2=""" select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from OrganizationCalendarCrisis where OrganizationId = ?;"""
+      _s2=""" 
+        select 
+          strftime('%Y-%m-%d',StartDate) as StartDate,
+          strftime('%Y-%m-%d',EndDate) as EndDate 
+        from OrganizationCalendarCrisis 
+        where OrganizationId = ?;
+      """
 
        # select para ver todos los dias de eventos por cada organizacion 
-      _s3=""" select * from OrganizationCalendarEvent where OrganizationCalendarId = ?;"""
+      _s3=""" 
+        select * 
+        from OrganizationCalendarEvent 
+        where OrganizationCalendarId = ?;"""
 
-
-       # contabilizar los crisis de un colegio 
-      _s4=""" select b.RUN,strftime('%Y-%m-%d',a.EntryDate) as EntryDate,strftime('%Y-%m-%d',a.ExitDate) as ExitDate from OrganizationPersonRole a
-                join personlist b
-                on a.personid=b.personId 
-                where OrganizationId = ? and roleId=6 ;"""
-    
-
+       # contabilizar las crisis de un colegio 
+      _s4=""" 
+        select 
+          b.RUN,
+          strftime('%Y-%m-%d',a.EntryDate) as EntryDate,
+          strftime('%Y-%m-%d',a.ExitDate) as ExitDate 
+        from OrganizationPersonRole a
+          join personlist b
+            on a.personid=b.personId 
+        where 
+          OrganizationId = ? 
+          and 
+          roleId=6
+      """
       now=datetime.now()
       _q1 = conn.execute(_S1).fetchall()
       if(len(_q1)!=0):
@@ -4877,10 +4924,10 @@ class check:
                 if (f1 <= fecha_ter):
                   f2=f1               
                 diastotal2=int(np.busday_count(f2x,f2))
-                if diastotal2> diastotal :
-                  contador2=diastotal2-diastotal
+                if diastotal2 > diastotal :
+                  contador2 = diastotal2 - diastotal
                 else:
-                  contador2= diastotal-diastotal2
+                  contador2 = diastotal - diastotal2
           elif(len(_q2)==0): 
             contador2= diastotal          
           _q3 = conn.execute(_s3,org_ca).fetchall()
