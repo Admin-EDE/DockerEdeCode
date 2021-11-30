@@ -3976,7 +3976,14 @@ class check:
   def fn9F3(self, conn):
         try:
             incident = conn.execute("""
-            SELECT IncidentId from Incident;
+              SELECT IncidentId
+              from Incident
+              WHERE
+                RefIncidentBehaviorId IN (
+                  SELECT RefIncidentBehaviorId
+                  FROM RefIncidentBehavior
+                  WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
+                );
             """).fetchall()
             if(len(incident)>0):
                 listIncident = (list([m[0] for m in incident if m[0] is not None]))
@@ -5482,7 +5489,7 @@ WHERE
 
 ### inicio  fn680 ###
   def fn680(self,conn):
-    arr=[]
+    #arr=[]
     #arr2=[]
     #arr3=[]
     #arr4=[]
@@ -5854,7 +5861,7 @@ WHERE
         return False   
     
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de información: {str(e)}")
       logger.error(f"Rechazado")
       return False
 ### fin fn6E1  ###
