@@ -5022,10 +5022,33 @@ WHERE
     arr=[]
     try:
            
-      _S1= """ select strftime('%d',b.Date) as Dia,strftime('%m',b.Date) as Mes,strftime('%Y',b.Date) as Año,a.Identifier as Numerolista ,b.VirtualIndicator 
-                        from PersonIdentifier a join RoleAttendanceEvent b on b.OrganizationPersonRoleId=c.OrganizationPersonRoleId 
-                         join  OrganizationPersonRole c 
-                        where a.RefPersonIdentificationSystemId=54  and c.roleid=6 and b.VirtualIndicator=0 ;"""
+      _S1= """ 
+select 
+	strftime('%d',rae.Date) as Dia,
+	strftime('%m',rae.Date) as Mes,
+	strftime('%Y',rae.Date) as Año,
+	pid.Identifier as Numerolista ,
+	rae.VirtualIndicator 
+FROM PersonIdentifier pid 
+	JOIN  OrganizationPersonRole opr 
+		on opr.personId = pid.personId
+	JOIN RoleAttendanceEvent rae 
+		on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId 
+where 
+	pid.RefPersonIdentificationSystemId IN (
+		SELECT RefPersonIdentificationSystemId
+		FROM RefPersonIdentificationSystem
+		WHERE RefPersonIdentificationSystemId IN ('Número de lista')
+	)
+	AND
+	opr.roleid IN (
+		SELECT RoleId
+		FROM Role
+		WHERE Name IN ('Estudiante')
+	)
+	AND
+	rae.VirtualIndicator = 0
+         """
     
 
       now=datetime.now()
