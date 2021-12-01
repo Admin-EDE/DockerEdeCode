@@ -2117,7 +2117,7 @@ class check:
             else:
                 logger.error(f'No existen estudiantes promovidos en el establecimiento')
                 logger.error(f'S/Datos')
-                return False
+                return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
             logger.error(f"Rechazado")
@@ -2411,7 +2411,7 @@ class check:
             else:
                 logger.info(f"S/Datos")
                 logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
-                return False
+                return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
             logger.error(f"Rechazado")
