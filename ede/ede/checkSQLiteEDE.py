@@ -3314,7 +3314,7 @@ class check:
                                     join Organization o on op.OrganizationId = o.OrganizationId
                             WHERE personid in (?);""",([idAlumno])).fetchall()
                             organi=[]
-                            evalua=[]
+                            evalua_=[]
                             for org2 in organizacion:
                                 #por cada asignatura trae el calendario
                                 calendario = conn.execute("""
@@ -3337,11 +3337,11 @@ class check:
                                 where CourseId= ?;
                                 """,([org2[0]])).fetchall()
                                 if (evaluaciones):
-                                    evalua.append(evaluaciones)
+                                    evalua_.append(evaluaciones)
                         becasprogramas=(list([m[0] for m in listaPrograma if m[0] is not None]))
-                        evalua=(list([m[0] for m in evaluaciones if m[0] is not None]))
+                        evalua=(list([m[0] for m in evalua_ if m[0] is not None]))
                         profe=(list([m[0] for m in listaProfesionales if m[0] is not None]))
-                        calenda=(list([m[0] for m in calendario if m[0] is not None]))
+                        calenda=(list([m[0] for m in organi if m[0] is not None]))
                         print(profe)
                         if not profe:
                             logger.error(f"Sin profesor jefe, o profesor de asignaturas")
@@ -5965,7 +5965,7 @@ where
                 fecha_co=datetime.strptime(fechaxx[1:11],'%Y-%m-%d')
                 if fecha_crisis==fecha_co:
                   arr2.append(str(datetime.strftime(fecha_crisis,'%Y-%m-%d')))
-          xx1+xx1+1  
+          #xx1+xx1+1  
 
         if(len(arr2)!=0):
           logger.error(f"Los siguientes Fechas estan repetidas en la tabla organizationcalendarcrisis  : {str(arr2)} ")
