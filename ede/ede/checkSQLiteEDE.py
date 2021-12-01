@@ -5968,7 +5968,7 @@ where
           #xx1+xx1+1  
 
         if(len(arr2)!=0):
-          logger.error(f"Los siguientes Fechas estan repetidas en la tabla organizationcalendarcrisis  : {str(arr2)} ")
+          logger.error(f"Los siguientes Fechas estan repetidas en la tabla organizationcalendarcrisis  : {str(arr2)} \n {fechaxx1} \n {fechaxx2} \n {fechaxx3}")
           logger.error(f"Rechazado")
           return False
         else:
