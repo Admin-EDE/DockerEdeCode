@@ -52,9 +52,10 @@ class insert:
       url = './ede/ede/RegistroEDE.csv'
       df = pd.read_csv(url)
       _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
-      _t=f"clave pública: {df[df['Dirección de correo electrónico']=='admin@ede.mineduc.cl']['Clave Pública'].values[0]}"; logger.info(_t)
+      _t=f"clave pública: {df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0]}"; logger.info(_t)
       return df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
     except:
+      _t=f"clave pública: SIN INFORMACIÓN"; logger.error(_t)      
       return None
       
   # CAMBIA CLAVE A LA BD SQLCipher
