@@ -2946,10 +2946,10 @@ class check:
                 GROUP BY rae.Date
             """)#.fetchall()
             if(asistencia.returns_rows == 0):
-                logger.info(f'Rechazado')
+                logger.error(f'Rechazado')
                 logger.info(f'No cumple con los criterios de la consulta')
                 return True
-              
+                          
             asistencia = asistencia.fetchall()
             if(len(asistencia)>0):
                 totalEstudiantes = list(set([m[4] for m in asistencia if m[4] is not None]))
@@ -2962,10 +2962,13 @@ class check:
                   if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
                     logger.info(f'Rechazado')
                     logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                    return False    
                     
                   if(el_ != firmadoEnClases[idx_]):
                     logger.info(f'Rechazado')
                     logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
+                    return False    
+                
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
             logger.error(f"Rechazado")
@@ -4524,10 +4527,11 @@ class check:
                       logger.error(f"Rechazado")
                       return False
 
+        logger.info(f"Apobado")
         return True
       else:
-        logger.info(f"NO existen registros de retiro anticipado del establecimiento de alumnos.")
-        logger.info(f"Apobado")
+        logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
+        logger.info(f"S/DATOS")
         return True
 
     except Exception as e:
@@ -5899,11 +5903,11 @@ where
     numero=0
     try:
   
-      _S3="""     select DISTINCT(strftime('%Y-%m-%d',date)) as date from roleattendanceevent ;"""
+      _S3="""select DISTINCT(strftime('%Y-%m-%d',date)) as date from roleattendanceevent ;"""
 
-      _S4=""" select strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarEvent  ;"""
+      _S4="""select strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarEvent  ;"""
 
-      _S5=""" select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from organizationcalendarcrisis;"""
+      _S5="""select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from organizationcalendarcrisis;"""
 
       _Trae_fechas= """ WITH RECURSIVE dates(date) AS (
                       VALUES (?)
