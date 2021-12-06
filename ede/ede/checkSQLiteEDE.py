@@ -3994,11 +3994,69 @@ class check:
                     try:
                         x = str(x)
                         incidentParent = conn.execute("""
-                        SELECT * from IncidentPerson where IncidentId =
-                        """+x+""" and RefIncidentPersonRoleTypeId = 8 and RefIncidentPersonTypeId = 43""").fetchall()
+                          SELECT IncidentId 
+                          FROM IncidentPerson 
+                          where 
+                          IncidentId = """+x+"""
+                          and 
+                          (
+                            IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                              SELECT RefIncidentPersonRoleTypeId
+                              FROM RefIncidentPersonRoleType
+                              WHERE RefIncidentPersonRoleType.description IN ('Asiste a reunión de apoderados')
+                            )
+                            and 
+                            IncidentPerson.RefIncidentPersonTypeId IN (
+                              SELECT RefIncidentPersonTypeId
+                              FROM RefIncidentPersonType
+                              WHERE RefIncidentPersonType.description IN ('Apoderado')
+                            )
+                            OR
+                            IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                              SELECT RefIncidentPersonRoleTypeId
+                              FROM RefIncidentPersonRoleType
+                              WHERE RefIncidentPersonRoleType.description IN ('Entrevistado')
+                            )
+                            and 
+                            IncidentPerson.RefIncidentPersonTypeId IN (
+                              SELECT RefIncidentPersonTypeId
+                              FROM RefIncidentPersonType
+                              WHERE RefIncidentPersonType.description IN ('Apoderado')
+                            )	
+                          )                                                      
+                        """).fetchall()
                         incidentProfessor = conn.execute("""
-                        SELECT * from IncidentPerson where IncidentId =
-                        """+x+""" and RefIncidentPersonRoleTypeId = 7 and RefIncidentPersonTypeId = 44""").fetchall()
+                            SELECT IncidentId 
+                            FROM IncidentPerson 
+                            where 
+                            IncidentId = """+x+"""
+                            and 
+                            (
+                              IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                                SELECT RefIncidentPersonRoleTypeId
+                                FROM RefIncidentPersonRoleType
+                                WHERE RefIncidentPersonRoleType.description IN ('Dirige reunión de apoderados')
+                              )
+                              and 
+                              IncidentPerson.RefIncidentPersonTypeId IN (
+                                SELECT RefIncidentPersonTypeId
+                                FROM RefIncidentPersonType
+                                WHERE RefIncidentPersonType.description IN ('Docente')
+                              )
+                              OR
+                              IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                                SELECT RefIncidentPersonRoleTypeId
+                                FROM RefIncidentPersonRoleType
+                                WHERE RefIncidentPersonRoleType.description IN ('Entrevistador')
+                              )
+                              and 
+                              IncidentPerson.RefIncidentPersonTypeId IN (
+                                SELECT RefIncidentPersonTypeId
+                                FROM RefIncidentPersonType
+                                WHERE RefIncidentPersonType.description IN ('Docente')
+                              )	
+                            )                                                         
+                        """).fetchall()
                         parent = 0
                         professor = 0
                         if (len(incidentParent)>0):
