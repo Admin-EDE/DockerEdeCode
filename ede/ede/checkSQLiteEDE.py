@@ -5042,7 +5042,7 @@ where
 	pid.RefPersonIdentificationSystemId IN (
 		SELECT RefPersonIdentificationSystemId
 		FROM RefPersonIdentificationSystem
-		WHERE RefPersonIdentificationSystemId IN ('Número de lista')
+		WHERE RefPersonIdentificationSystem.Description IN ('Número de lista')
 	)
 	AND
 	opr.roleid IN (
@@ -5076,13 +5076,10 @@ where
               logger.error(f"Los siguientes numero de lista necesita informacion: {str(arr)} ")
               logger.error(f"Rechazado")
               return False
-
           else:
               logger.info(f"Ningunos de los registros le falta un dato.")
               logger.info(f"Apobado")
               return True
-          
-
       else:
         logger.error(f"No hay registro Numero de lista asociados .")
         logger.error(f"Rechazado")
