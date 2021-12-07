@@ -2241,7 +2241,7 @@ class check:
                     SELECT LA.LearnerActivityId
                     FROM Assessment A
                             JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                            JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentRegistrationId
+                            JOIN AssessmentRegistration AR ON AA.AssessmentRegistrationId = AR.AssessmentRegistrationId
                             JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
                     ORDER BY LA.LearnerActivityId)
                   AND OrganizationCalendarSessionId IS NOT NULL
@@ -2260,7 +2260,7 @@ class check:
                             SELECT LA.LearnerActivityId
                             FROM Assessment A
                                     JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                                    JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentRegistrationId
+                                    JOIN AssessmentRegistration AR ON AA.AssessmentRegistrationId = AR.AssessmentRegistrationId
                                     JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
                             ORDER BY LA.LearnerActivityId)
                           AND OrganizationCalendarSessionId IS NOT NULL
