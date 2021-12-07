@@ -2967,8 +2967,10 @@ class check:
                   if(el_ != firmadoEnClases[idx_]):
                     logger.info(f'Rechazado')
                     logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
-                    return False    
+                    return False
                 
+            logger.info("Aprobado")    
+            return True
         except Exception as e:
             logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
             logger.error(f"Rechazado")
