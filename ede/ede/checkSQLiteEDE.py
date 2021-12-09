@@ -2832,13 +2832,13 @@ class check:
                 WHERE 
                   Date is not NULL
                 GROUP BY rae.Date         
-            """).fetchall()
+            """)
             # La consulta siempre retorna, al menos, un registro.
             if(_ExistData.returns_rows == 0):
               logger.info(f"S/Datos")
               logger.info(f'Sin asistencia por bloque {_ExistData[0][4]}')
               return True
-          
+            _ExistData = _ExistData.fetchall()
             asistencia = conn.execute("""
                 /*
                 6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
