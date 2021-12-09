@@ -2834,7 +2834,7 @@ class check:
                 GROUP BY rae.Date         
             """).fetchall()
             if(not _ExistData):
-              raise "No hay registros de información"
+              raise Exception("No hay registros de información")
         except Exception as e:
             logger.info(f"S/Datos")
             logger.info(f'Sin asistencia por bloque: {e}')
