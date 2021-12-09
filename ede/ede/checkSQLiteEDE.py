@@ -2930,7 +2930,7 @@ class check:
                   rae.VirtualIndicator NOT NULL
                   AND
                   -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-                  diaSemana in (css.ClassMeetingDays)
+                  css.ClassMeetingDays like '%'||diaSemana||'%'
                   AND
                   hora between css.ClassBeginningTime and css.ClassEndingTime
                   AND
