@@ -2834,7 +2834,7 @@ class check:
                 GROUP BY rae.Date         
             """)
 
-            if(_ExistData.returns_rows == 0):
+            if(not _ExistData.returns_rows):
               logger.info(f"S/Datos")
               logger.info(f'Sin asistencia por bloque {_ExistData.returns_rows}')
               return True
