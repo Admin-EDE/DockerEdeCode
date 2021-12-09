@@ -27,13 +27,13 @@ def sqlite_engine_connect(dbapi_connection, connection_record):
 
 def sqlite_regexp(expr, item):
     if(not item): return False
-    #logger.info(f"expr: {type(expr)} => {expr}, \nitem: {type(item)} => {item}")
+    logger.info(f"expr: {type(expr)} => {expr}, \nitem: {type(item)} => {item}")
     #reg = re.compile(expr, re.IGNORECASE)
     #reg = re.compile(expr)
     #logger.info(f"reg:{reg}")
     try:
         #logger.info(f"search:{re.search(fr'{expr}',str(item))}")      
-        return re.search(expr,str(item)).group(1) is not None
+        return re.search(expr,str(item)) is not None
     except Exception as e:
         print(f'ERROR: {e}')
         return False
