@@ -2947,7 +2947,7 @@ class check:
                   rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
                   AND
                   -- Agrega a la lista todos los registros que no cumplan con la expresión regular
-                  rae.digitalRandomKey REGEXP '^[0-9]{6}+([-]{1}[0-9kK]{1})?$'
+                  rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
                   
                 GROUP BY rae.Date
             """).fetchall()
