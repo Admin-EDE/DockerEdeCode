@@ -2229,7 +2229,7 @@ class check:
             SELECT LA.LearnerActivityId
             FROM Assessment A
                     JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                    JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentRegistrationId
+                    OIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
                     JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
             ORDER BY LA.LearnerActivityId;
             """).fetchall()
@@ -2241,7 +2241,7 @@ class check:
                     SELECT LA.LearnerActivityId
                     FROM Assessment A
                             JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                            JOIN AssessmentRegistration AR ON AA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                            OIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
                             JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
                     ORDER BY LA.LearnerActivityId)
                   AND OrganizationCalendarSessionId IS NOT NULL
