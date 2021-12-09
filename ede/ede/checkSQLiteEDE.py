@@ -2951,7 +2951,7 @@ class check:
             """).fetchall()
         except:
             logger.error(f'Rechazado')
-            logger.info(f'No cumple con los criterios de la consulta')
+            logger.info(f'No cumple con los criterios de la consulta: {asistencia}')
             return True
         try:
             if(len(asistencia)>0):
