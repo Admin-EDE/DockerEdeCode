@@ -2832,14 +2832,12 @@ class check:
                 WHERE 
                   Date is not NULL
                 GROUP BY rae.Date         
-            """)
-
-            if(not _ExistData.returns_rows):
-              logger.info(f"S/Datos")
-              logger.info(f'Sin asistencia por bloque {_ExistData.returns_rows}')
-              return True
-            
-            _ExistData = _ExistData.fetchall()
+            """).fetchall()
+        except:
+            logger.info(f"S/Datos")
+            logger.info(f'Sin asistencia por bloque')
+            return True
+        try:
             asistencia = conn.execute("""
                 /*
                 6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
@@ -2948,13 +2946,12 @@ class check:
                   rae.digitalRandomKey REGEXP '^[0-9]{6}+([-]{1}[0-9kK]{1})?$'
                   
                 GROUP BY rae.Date
-            """)#.fetchall()
-            if(asistencia.returns_rows == 0):
-                logger.error(f'Rechazado')
-                logger.info(f'No cumple con los criterios de la consulta')
-                return True
-                          
-            asistencia = asistencia.fetchall()
+            """).fetchall()
+        except:
+            logger.error(f'Rechazado')
+            logger.info(f'No cumple con los criterios de la consulta')
+            return True
+        try:
             if(len(asistencia)>0):
                 totalEstudiantes = list(set([m[4] for m in asistencia if m[4] is not None]))
                 estudiantesPresentes = list(set([m[5] for m in asistencia if m[5] is not None]))
