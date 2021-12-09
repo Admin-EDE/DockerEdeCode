@@ -34,7 +34,8 @@ def sqlite_regexp(expr, item):
     try:
         logger.info(f"search:{reg.fullmatch(expr,str(item))}")      
         return reg.fullmatch(expr,str(item)) is not None
-    except:
+    except Exception as e:
+        print(f'ERROR: {e}')
         return False
 
 def sqlite_regexp_replace(item, find, repl):
