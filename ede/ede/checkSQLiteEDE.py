@@ -2769,7 +2769,7 @@ class check:
   ## Inicio fn5E0 WC ##
   def fn5E0(self, conn):
         try:
-            _ExistData = conn.execute("""
+            conn.execute("""
                 SELECT DISTINCT 
                   rae.Date, -- fecha completa de la clase
                   strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
@@ -2831,6 +2831,9 @@ class check:
                     AND css.RecordEndDateTime IS NULL
                 WHERE 
                   Date is not NULL
+                  AND
+                  -- Verifica que día y horario de firma corresponda con calendario de la asignatura
+                  css.ClassMeetingDays like '%'||diaSemana||'%'                  
                 GROUP BY rae.Date         
             """).fetchall()
         except:
