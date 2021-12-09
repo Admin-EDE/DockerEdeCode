@@ -27,10 +27,10 @@ def sqlite_engine_connect(dbapi_connection, connection_record):
 
 def sqlite_regexp(expr, item):
     if(not item): return False
-    logger.info(f"expr: {type(expr)} => {expr}, \nitem: {type(item)} => {item}")
+    #logger.info(f"expr: {type(expr)} => {expr}, \nitem: {type(item)} => {item}")
     #reg = re.compile(expr, re.IGNORECASE)
     reg = re.compile(expr)
-    logger.info(f"reg:{reg}")
+    #logger.info(f"reg:{reg}")
     try:
         logger.info(f"search:{reg.fullmatch(expr,str(item))}")      
         return reg.fullmatch(expr,str(item)) is not None
