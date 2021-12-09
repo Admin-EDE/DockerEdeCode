@@ -2829,10 +2829,12 @@ class check:
                   OUTER LEFT JOIN CourseSectionSchedule css
                     ON O.OrganizationId = css.OrganizationId
                     AND css.RecordEndDateTime IS NULL
+                WHERE 
+                  Date is not NULL
                 GROUP BY rae.Date         
             """).fetchall()
             # La consulta siempre retorna, al menos, un registro.
-            if(_ExistData[0][4] == 0):
+            if(_ExistData.returns_rows == 0):
               logger.info(f"S/Datos")
               logger.info(f'Sin asistencia por bloque {_ExistData[0][4]}')
               return True
