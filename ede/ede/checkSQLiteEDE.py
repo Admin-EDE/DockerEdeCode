@@ -2831,7 +2831,8 @@ class check:
                     AND css.RecordEndDateTime IS NULL
                 GROUP BY rae.Date         
             """).fetchall()
-            if(not _ExistData.returns_rows):
+            # La consulta siempre retorna, al menos, un registro.
+            if(_ExistData[0][4] == 0):
               logger.info(f"S/Datos")
               logger.info(f'Sin asistencia por bloque')
               return True
