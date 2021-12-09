@@ -2769,7 +2769,7 @@ class check:
   ## Inicio fn5E0 WC ##
   def fn5E0(self, conn):
         try:
-            conn.execute("""
+            _ExistData = conn.execute("""
                 SELECT DISTINCT 
                   rae.Date, -- fecha completa de la clase
                   strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
@@ -2831,14 +2831,13 @@ class check:
                     AND css.RecordEndDateTime IS NULL
                 WHERE 
                   Date is not NULL
-                  AND
-                  -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-                  css.ClassMeetingDays like '%'||diaSemana||'%'                  
                 GROUP BY rae.Date         
             """).fetchall()
-        except:
+            if(not _ExistData):
+              raise "No hay registros de información"
+        except Exception as e:
             logger.info(f"S/Datos")
-            logger.info(f'Sin asistencia por bloque')
+            logger.info(f'Sin asistencia por bloque: {e}')
             return True
         try:
             asistencia = conn.execute("""
