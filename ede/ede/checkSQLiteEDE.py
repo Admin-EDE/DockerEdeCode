@@ -2949,9 +2949,9 @@ class check:
                   
                 GROUP BY rae.Date
             """).fetchall()
-        except:
+        except Exception as e:
             logger.error(f'Rechazado')
-            logger.info(f'No cumple con los criterios de la consulta: {asistencia}')
+            logger.info(f'No cumple con los criterios de la consulta: {e}')
             return True
         try:
             if(len(asistencia)>0):
