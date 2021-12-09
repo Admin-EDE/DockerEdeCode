@@ -32,7 +32,7 @@ def sqlite_regexp(expr, item):
     reg = re.compile(expr)
     #logger.info(f"reg:{reg}")
     try:
-        logger.info(f"search:{reg.search(expr,item)}")      
+        logger.info(f"search:{reg.search(fr'{expr}',item)}")      
         return reg.search(expr,str(item)) is not None
     except Exception as e:
         print(f'ERROR: {e}')
