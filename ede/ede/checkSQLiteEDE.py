@@ -2834,7 +2834,7 @@ class check:
             # La consulta siempre retorna, al menos, un registro.
             if(_ExistData[0][4] == 0):
               logger.info(f"S/Datos")
-              logger.info(f'Sin asistencia por bloque')
+              logger.info(f'Sin asistencia por bloque {_ExistData[0][4]}')
               return True
           
             asistencia = conn.execute("""
