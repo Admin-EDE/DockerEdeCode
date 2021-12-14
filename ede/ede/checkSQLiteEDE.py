@@ -938,6 +938,7 @@ class check:
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3D1(self, conn):
     try:
+      MaximumCapacityErrors = None
       MaximumCapacityErrors = conn.execute("""
         -- Selecciona los Organizaciones de tipo ASIGNATURA que no cumplen con el criterio de la expresión regular
         SELECT OrganizationId, MaximumCapacity
@@ -950,6 +951,7 @@ class check:
     except Exception as e:
       pass
     try:  
+      organizationMalAsignadas = None
       organizationMalAsignadas = conn.execute("""
           -- Selecciona las Organizaciones que no son de tipo ASIGNATURA 
           SELECT OrganizationId
