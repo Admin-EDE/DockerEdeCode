@@ -2957,11 +2957,11 @@ class check:
             return True
         try:
             if(len(asistencia)>0):
-                totalEstudiantes = list(set([m[4] for m in asistencia if m[4] is not None]))
-                estudiantesPresentes = list(set([m[5] for m in asistencia if m[5] is not None]))
-                estudiantesAusentes = list(set([m[7] for m in asistencia if m[7] is not None]))
-                estudiantesRetrasados = list(set([m[9] for m in asistencia if m[9] is not None]))
-                firmadoEnClases = list(set([m[11] for m in asistencia if m[11] is not None]))
+                totalEstudiantes = list([m[4] for m in asistencia if m[4] is not None])
+                estudiantesPresentes = list([m[5] for m in asistencia if m[5] is not None])
+                estudiantesAusentes = list([m[7] for m in asistencia if m[7] is not None])
+                estudiantesRetrasados = list([m[9] for m in asistencia if m[9] is not None])
+                firmadoEnClases = list([m[11] for m in asistencia if m[11] is not None])
                 
                 for idx_,el_ in enumerate(totalEstudiantes):
                   if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
@@ -4715,14 +4715,16 @@ class check:
       # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
       _s2 = """SELECT A.RelatedPersonId,D.RUN
                 FROM PersonRelationship A
-                JOIN OrganizationPersonRole B
-                ON A.RelatedPersonId = B.personId
-                JOIN Role C
-                ON B.RoleId = C.RoleId
-                JOIN personList D
-                ON A.RelatedPersonId = D.personId
-                WHERE A.personId = ?
-                AND B.RoleId = 15;"""
+                  JOIN OrganizationPersonRole B
+                    ON A.RelatedPersonId = B.personId
+                  JOIN Role C
+                    ON B.RoleId = C.RoleId
+                  JOIN personList D
+                    ON A.RelatedPersonId = D.personId
+                WHERE 
+                A.personId = ?
+                AND
+                B.RoleId = 15;"""
 
       # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
       _s3 = """SELECT A.IncidentId
