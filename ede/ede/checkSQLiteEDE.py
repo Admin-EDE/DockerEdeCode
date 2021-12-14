@@ -939,8 +939,7 @@ class check:
   def fn3D1(self, conn):
     try:
       MaximumCapacityErrors = conn.execute("""
-        -- Selecciona los Organizaciones de tipo ASIGNATURA 
-        -- que no cumplen con el criterio de la expresión regular
+        -- Selecciona los Organizaciones de tipo ASIGNATURA que no cumplen con el criterio de la expresión regular
         SELECT OrganizationId, MaximumCapacity
         FROM CourseSection
         OUTER LEFT JOIN Organization USING(OrganizationId)
@@ -948,6 +947,9 @@ class check:
           -- Agrega a la lista todos los registros que no cumplan con la expresión regular
           MaximumCapacity NOT REGEXP "^[1-9]{1}\d{1,3}$"
       """).fetchall()
+    except Exception as e:
+      pass
+    try:  
       organizationMalAsignadas = conn.execute("""
           -- Selecciona las Organizaciones que no son de tipo ASIGNATURA 
           SELECT OrganizationId
@@ -962,6 +964,10 @@ class check:
                           WHERE Description LIKE 'Course Section'
                   )
       """).fetchall()
+    except Exception as e:
+      pass
+    
+    try:      
       logger.info(f"MaximunCapacity mal asignados: {len(MaximumCapacityErrors)}, Tabla CourseSection con organizacion mal asignadas: {len(organizationMalAsignadas)}")
       if(len(MaximumCapacityErrors)>0 or len(organizationMalAsignadas)>0):
         data1 = list(set([m[0] for m in MaximumCapacityErrors if m[0] is not None]))
