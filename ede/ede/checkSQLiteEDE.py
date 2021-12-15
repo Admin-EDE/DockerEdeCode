@@ -4436,7 +4436,7 @@ class check:
         r2_ = self.convertirArray2DToList(list([m[1] for m in r_ if m[1] is not None]))        
 
         for r in r2_:
-          if(r == True):
+          if(r == 'True'):
             c_ = c_ + 1
 
         logger.info(f"Total Alumnos                                     : {len(r_)}")
