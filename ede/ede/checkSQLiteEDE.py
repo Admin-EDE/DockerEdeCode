@@ -3637,17 +3637,17 @@ GROUP BY Organizationid, date
                 #La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
                 descriptionClassErrors.append(organizationId)
                 
-            if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
-              if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
-              if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
-              if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
-              if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
-              if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
-              return False
-            else:
-              logger.info(f'Validacion aprobada')
-              logger.info(f'Aprobado')
-              return True
+          if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
+            if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
+            if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
+            if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
+            if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
+            if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
+            return False
+          else:
+            logger.info(f'Validacion aprobada')
+            logger.info(f'Aprobado')
+            return True
         except Exception as e:
           logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
           logger.error(f"Rechazado")
