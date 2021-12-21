@@ -3410,123 +3410,247 @@ class check:
   ## Inicio fn5F0 WC ##
   def fn5F0(self, conn):
         try:
-            idorga= conn.execute("""
-            SELECT organizationId
-            FROM Organization
-            WHERE RefOrganizationTypeId = 22;
-            """).fetchall()
-            for org in idorga:
-                alumnosPresentes = conn.execute("""
-                SELECT count(rae.date),
-                      opr.organizationid,
-                      strftime('%d', `Date`) as 'dia',
-                      strftime('%m', `Date`) as 'mes',
-                      strftime('%H:%M', `Date`) as 'hora'
-                FROM RoleAttendanceEvent rae
-                        JOIN OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
-                WHERE refattendancestatusid = 1
-                  AND opr.organizationid = ?
-                  AND rae.OrganizationPersonRoleId in
-                      (SELECT opr2.OrganizationPersonRoleId
-                      FROM OrganizationPersonRole opr2
-                      where RoleId = 6)
-                GROUP by rae.date, opr.OrganizationId
-                ORDER by rae.date;
-                """,([org[0]])).fetchall()
-                alumnosAusentes = conn.execute("""
-                SELECT count(rae.date), opr.organizationid
-                from RoleAttendanceEvent rae
-                        JOIN OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
-                WHERE refattendancestatusid in (2, 3)
-                  and opr.organizationid = ?
-                  and rae.OrganizationPersonRoleId in
-                      (SELECT opr2.OrganizationPersonRoleId
-                      FROM OrganizationPersonRole opr2
-                      WHERE RoleId = 6)
-                GROUP by rae.date, opr.OrganizationId
-                ORDER by rae.date;
-                """,([org[0]])).fetchall()
-                alumnosRetrasados = conn.execute("""
-                SELECT count(rae.date)
-                FROM RoleAttendanceEvent rae
-                        join OrganizationPersonRole opr on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
-                WHERE refattendancestatusid = 4
-                  and opr.organizationid = ?
-                  and rae.OrganizationPersonRoleId in
-                      (select opr2.OrganizationPersonRoleId
-                      from OrganizationPersonRole opr2
-                      WHERE RoleId = 6)
-                GROUP by rae.date, opr.OrganizationId
-                ORDER by rae.date;
-                """,([org[0]])).fetchall()
-                profesorObservacion = conn.execute("""
-                SELECT Identifier,
-                      observaciones,
-                      RAE.OrganizationPersonRoleId,
-                      OPR.OrganizationId
-                FROM PersonIdentifier PI
-                        JOIN OrganizationPersonRole OPR on PI.PersonId = OPR.PersonId
-                        JOIN RoleAttendanceEvent RAE on RAE.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-                WHERE OPR.RoleId != 6
-                  AND OPR.organizationid = ?;
-                """,([org[0]])).fetchall()
-                if (alumnosPresentes):
-                    fecha2=(list([m[4] for m in alumnosPresentes if m[4] is not None]))
-                    asignatura = conn.execute("""select ClassPeriod,name from CourseSectionSchedule css join Organization o on o.OrganizationId=css.OrganizationId
-                      where ? between ClassBeginningTime and ClassEndingTime;""",(fecha2)).fetchall()
-                    aPresentes=(list([m[0] for m in alumnosPresentes if m[0] is not None]))
-                    seccion=(list([m[1] for m in alumnosPresentes if m[1] is not None]))
-                    dia=(list([m[2] for m in alumnosPresentes if m[2] is not None]))
-                    mes=(list([m[3] for m in alumnosPresentes if m[3] is not None]))
-                    periodo=(list([m[0] for m in asignatura if m[0] is not None]))
-                    name=(list([m[1] for m in asignatura if m[1] is not None]))
-                    if not alumnosAusentes :
-                        aAusentes=0
-                    else:
-                        aAusentes=alumnosAusentes[0][0]
-                    if not alumnosRetrasados :
-                        aRetrasados=0
-                    else:
-                        aRetrasados=alumnosRetrasados[0]
-                    if not profesorObservacion :
-                        logger.error(f"Sin profesores")
-                        logger.error(f"Rechazado")
-                        return False
-                    if not dia:
-                        logger.error(f"Sin dia")
-                        logger.error(f"Rechazado")
-                        return False
-                    if not mes:
-                        logger.error(f"Sin mes")
-                        logger.error(f"Rechazado")
-                        return False
-                    if not seccion:
-                        logger.error(f"Sin seccion")
-                        logger.error(f"Rechazado")
-                        return False
-                    if not aPresentes:
-                        logger.error(f"Sin presentes")
-                        logger.error(f"Rechazado")
-                        return False
-                    if not name:
-                        logger.error(f"Sin asignatura")
-                        logger.error(f"Rechazado")
-                        return False
-                    if not periodo:
-                        logger.error(f"Sin periodo")
-                        logger.error(f"Rechazado")
-                        return False
-                else:
-                    logger.info(f"S/Datos")
-                    logger.info(f'Sin asistencia por bloque')
-                    return False
-            logger.info(f'Validacion aprobada')
-            logger.info(f'Aprobado')
-            return True
+          asignaturas = []
+          asignaturas = conn.execute("""
+--6.2 Contenido mínimo, letra b.1
+--Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
+-- * día de clases
+-- * mes respectivo
+-- * hora pedagógica
+-- * nombre de la asignatura o sector
+-- * total de estudiantes presentes, atrasados y ausentes
+-- * observaciones de la clase
+-- * Verificador de identidad del docente a cargo
+
+-- Lee desde las organizaciones de tipo asignatura los campos 
+-- FirstInstructionDate y LastInstructionDate y con esa información
+-- crea una lista de días hábiles en los cuales deberían haber tenido clases
+-- los estudiantes del establecimiento.
+WITH RECURSIVE dates(Organizationid, date) AS (
+  SELECT O.Organizationid, FirstInstructionDate
+  --FROM OrganizationCalendarSession ocs
+  FROM Organization O
+  JOIN RefOrganizationType rot
+	ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+	AND O.RefOrganizationTypeId IN (
+	  SELECT RefOrganizationTypeId 
+	  FROM RefOrganizationType
+	  WHERE Description IN ('Course Section')
+	) 
+  JOIN OrganizationCalendar oc
+	--ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+	ON oc.OrganizationId = O.Organizationid--'2000096080'
+  JOIN OrganizationCalendarSession ocs
+	ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+	AND ocs.FirstInstructionDate NOT NULL
+  UNION ALL
+  SELECT Organizationid, date(date, '+1 day')
+  FROM dates
+  WHERE 
+	-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
+		-- Rescata el último día 
+		SELECT LastInstructionDate 
+		FROM OrganizationCalendarSession ocs 
+		JOIN OrganizationCalendar oc 
+			ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId 
+			AND oc.OrganizationId = Organizationid-- '2000096080'
+		WHERE ocs.LastInstructionDate NOT NULL
+		)
+	) 
+	AND
+	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
+)
+SELECT Organizationid, date, result.*
+FROM dates 
+-- con el OrganizationId se hace un cruce con la consulta que calcula los datos a validar
+LEFT JOIN (
+	-- Esta consulta rescata desde la RoleAttendanceEvent los días con asistencia y calcula 
+	-- el total de estudiantes presentes, ausentes y atrasados.
+	-- Además revisa si exiten las firmas del docente en cada registro y si esta cargada la 
+	-- información del leccionario
+	SELECT 
+		O.OrganizationId as 'idAsignatura', -- [idx 0]
+		O.name as 'nombreAsignatura', -- [idx 1]
+		rae.Date as 'fechaClase', -- fecha completa de la clase [idx 2]
+		strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date [idx 3]
+		CASE 
+			WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
+			WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
+			WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
+			WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+			WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
+			WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
+			WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
+		END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 4]	
+		CASE 
+			WHEN strftime('%m', rae.Date) = '1' THEN 'Enero'
+			WHEN strftime('%m', rae.Date) = '2' THEN 'Febrero'
+			WHEN strftime('%m', rae.Date) = '3' THEN 'Marzo'
+			WHEN strftime('%m', rae.Date) = '4' THEN 'Abril'
+			WHEN strftime('%m', rae.Date) = '5' THEN 'Mayo'
+			WHEN strftime('%m', rae.Date) = '6' THEN 'Junio'
+			WHEN strftime('%m', rae.Date) = '7' THEN 'Julio'
+			WHEN strftime('%m', rae.Date) = '8' THEN 'Agosto'
+			WHEN strftime('%m', rae.Date) = '9' THEN 'Septiembre'
+			WHEN strftime('%m', rae.Date) = '10' THEN 'Octubre'
+			WHEN strftime('%m', rae.Date) = '11' THEN 'Noviembre'
+			WHEN strftime('%m', rae.Date) = '12' THEN 'Diciembre'		
+		END as 'Mes', -- rescata solo el mes desde rae.Date [idx 5]
+		strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date [idx 6]
+		count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
+		sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- [idx 8]
+		group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista', -- [idx 9]
+		sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- [idx 10]
+		group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista', -- [idx 11]
+		sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- [idx 12]
+		group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista', -- [idx 13]
+		count(rae.digitalRandomKey) as 'cantidadRegistrosFirmados', -- [idx 14]
+		group_concat(DISTINCT '"' || ocs.description || '"') as 'observacionesLeccionario' -- [idx 15]
+	FROM Organization O
+		JOIN RefOrganizationType rot
+			ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+			AND O.RefOrganizationTypeId IN (
+				SELECT RefOrganizationTypeId 
+				FROM RefOrganizationType
+				WHERE Description IN ('Course Section')
+			) 
+		JOIN OrganizationPersonRole opr 
+			ON O.OrganizationId = opr.OrganizationId
+			AND opr.RecordEndDateTime IS NULL
+		JOIN RoleAttendanceEvent rae
+			ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+			AND rae.RecordEndDateTime IS NULL
+		JOIN PersonIdentifier pid
+			ON opr.personId = pid.personId
+			AND pid.refPersonIdentificationSystemId IN (
+				SELECT refPersonIdentificationSystemId
+				FROM refPersonIdentificationSystem
+				WHERE Code IN ('listNumber')
+			)
+			AND pid.RecordEndDateTime IS NULL
+		JOIN Role rol
+			ON opr.RoleId = rol.RoleId
+			AND opr.RoleId IN (
+				SELECT RoleId
+				FROM Role
+				WHERE Name IN ('Estudiante')
+			)
+		JOIN OrganizationCalendar oc 
+			ON O.OrganizationId = oc.OrganizationId
+			AND oc.RecordEndDateTime IS NULL
+		JOIN OrganizationCalendarSession ocs
+			ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+			AND ocs.RecordEndDateTime IS NULL
+		JOIN CourseSectionSchedule css
+			ON O.OrganizationId = css.OrganizationId
+			AND css.RecordEndDateTime IS NULL
+	--GROUP BY rae.Date
+
+	WHERE 
+		-- Verifica que se encuentre cargado el leccionario
+		rae.RefAttendanceEventTypeId = 2
+		AND
+		-- Verifica que se encuentre cargado el leccionario
+		ocs.Description NOT NULL
+		AND
+		-- Verifica que el indicador sea True, ya que en estos casos corresponde la relación	
+		ocs.AttendanceTermIndicator IN (1)
+		AND
+		-- Verifica que la firma se encuentre cargada en el sistema
+		rae.digitalRandomKey NOT NULL
+		AND
+		-- Verifica que se haya especificado si es estudiante asiste presencialmente o no.
+		rae.VirtualIndicator NOT NULL
+		AND
+		-- Verifica que día y horario de firma corresponda con calendario de la asignatura
+		diaSemana in (css.ClassMeetingDays)
+		AND
+		hora between css.ClassBeginningTime and css.ClassEndingTime
+		AND
+		-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+		rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+		AND
+		-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+		rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+		AND
+		-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+		rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+	GROUP BY rae.Date
+) result 
+	ON result.idAsignatura = OrganizationId
+	AND result.fecha = date
+WHERE 
+	CAST(strftime('%w',date) as INTEGER) between 1 and 5
+	--AND result.idAsignatura NOT NULl
+GROUP BY Organizationid, date
+          """).fetchall()
+        except:
+          pass
+        try:
+          if(not asignaturas):
+            logger.info(f"S/Datos")
+            logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
+            logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+            return False 
+          
+          #define listas de errores
+          workDayWithoutInfo = []
+          courseSectionNameErrors = []
+          totalStudentsErrors = []
+          tokenRegisteredErrors = []
+          descriptionClassErrors = []
+          
+          for asignaturaRow in asignaturas:
+            #define variables a comparar
+            organizationId = asignaturaRow[0]
+            workDay = asignaturaRow[1]
+            CourseSectionId = asignaturaRow[2]
+            courseSectionName = asignaturaRow[3]
+            totalStudents = asignaturaRow[9]
+            presentStudents = asignaturaRow[10]
+            ausentStudents = asignaturaRow[12]
+            Latestudent = asignaturaRow[14]
+            tokenRegistered = asignaturaRow[16]
+            descriptionClass = asignaturaRow[17]
+            
+            #Comienza a validar los datos
+            if(not CourseSectionId): 
+              #se encontraron días hábiles del calendatio sin información registrada
+              workDayWithoutInfo.append(workDay)
+
+            else: #Valida solo si existe información en la fecha
+              if(not courseSectionName):
+                #Se encontraron asignaturas sin ningún nombre registrado
+                courseSectionNameErrors.append(organizationId)
+
+              if(totalStudents != (presentStudents+ausentStudents+Latestudent)):
+                #La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
+                totalStudentsErrors.append(organizationId)
+                
+              if(tokenRegistered != totalStudents):
+                #La cantidad de firmas registradas no coinciden con el número total de estudiantes
+                tokenRegisteredErrors.append(organizationId)
+                
+              if(not descriptionClass):
+                #La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
+                descriptionClassErrors.append(organizationId)
+                
+            if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
+              if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
+              if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
+              if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
+              if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
+              if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
+              return False
+            else:
+              logger.info(f'Validacion aprobada')
+              logger.info(f'Aprobado')
+              return True
         except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+          logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+          logger.error(f"Rechazado")
+          return False
   ## Fin fn5F0 WC ##
 
   ## Inicio fn8F3 WC ##
@@ -4476,15 +4600,19 @@ class check:
                       ,a.personId
                 FROM OrganizationPersonRole a
                 JOIN Organization B
-                ON A.OrganizationId = B.OrganizationId
+                  ON A.OrganizationId = B.OrganizationId
                 JOIN RefOrganizationType D
-                ON B.RefOrganizationTypeId = D.RefOrganizationTypeId
-                WHERE a.RoleId = 6
-                AND a.ExitDate IS NOT NULL
-                AND B.name NOT IN ('03:Educación Básica Adultos'
+                  ON B.RefOrganizationTypeId = D.RefOrganizationTypeId
+                WHERE 
+                  a.RoleId = 6
+                  AND 
+                  a.ExitDate IS NOT NULL
+                  AND 
+                  B.name NOT IN ('03:Educación Básica Adultos'
                                     ,'06:Educación Media Humanístico Científica Adultos'
                                     ,'08:Educación Media Técnico Profesional y Artística, Adultos')
-                AND D.Description = 'K12 School';"""
+                  AND 
+                  D.Description = 'K12 School';"""
 
       _s2 = """SELECT a.OrganizationPersonRoleId
                       ,date(a.ExitDate) as ExitDate
@@ -4515,12 +4643,13 @@ class check:
                       ,a.RoleId
                 FROM OrganizationPersonRole a
                 JOIN Organization B
-                ON A.OrganizationId = B.OrganizationId
+                  ON A.OrganizationId = B.OrganizationId
                 JOIN RefOrganizationType C
-                ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
-                WHERE date(a.ExitDate) = ?
-                AND time(a.ExitDate) = ?
-                AND c.Description = 'K12 School';"""
+                  ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
+                WHERE 
+                  date(a.ExitDate) = ?
+                  AND time(a.ExitDate) = ?
+                  AND c.Description = 'K12 School';"""
 
       _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
                     FROM PersonRelationship A
@@ -4651,7 +4780,7 @@ class check:
       _s2 = """SELECT A.RelatedPersonId ,A.personId
                 FROM PersonRelationship A
                 JOIN OrganizationPersonRole B
-                ON A.RelatedPersonId = B.personId
+                  ON A.RelatedPersonId = B.personId
                 WHERE A.personId = ?
                 AND B.RoleId = 15;"""
 
@@ -4861,13 +4990,15 @@ class check:
       _s2 = """SELECT A.RelatedPersonId,D.RUN
                 FROM PersonRelationship A
                 JOIN OrganizationPersonRole B
-                ON A.RelatedPersonId = B.personId
+                  ON A.RelatedPersonId = B.personId
                 JOIN Role C
-                ON B.RoleId = C.RoleId
+                  ON B.RoleId = C.RoleId
                 JOIN personList D
-                ON A.RelatedPersonId = D.personId
-                WHERE A.personId = ?
-                AND B.RoleId = 15;"""
+                  ON A.RelatedPersonId = D.personId
+                WHERE 
+                  A.personId = ?
+                  AND
+                  B.RoleId = 15;"""
 
       # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
       _s3 = """SELECT A.IncidentId
