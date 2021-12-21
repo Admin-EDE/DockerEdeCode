@@ -3633,7 +3633,7 @@ GROUP BY Organizationid, date
                 #La cantidad de firmas registradas no coinciden con el número total de estudiantes
                 tokenRegisteredErrors.append(organizationId)
                 
-              if(not descriptionClass):
+              if(descriptionClass):
                 #La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
                 descriptionClassErrors.append(organizationId)
                 
