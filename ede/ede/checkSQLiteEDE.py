@@ -3586,7 +3586,8 @@ WHERE
 GROUP BY Organizationid, date
           """).fetchall()
         except:
-          pass
+          logger.info(f"Ocurrió un error el la consulta")
+
         try:
           if(not asignaturas):
             logger.info(f"S/Datos")
