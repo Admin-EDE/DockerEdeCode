@@ -3580,11 +3580,47 @@ LEFT JOIN (
 ) result 
 	ON result.idAsignatura = OrganizationId
 	AND result.fecha = date
+-- Rescata las fechas desde OrganizationCalendarCrisis y las saca de la lista de días hábiles
+JOIN (
+			WITH RECURSIVE dates(Organizationid, date) AS (
+			  SELECT Organizationid, StartDate
+			  FROM OrganizationCalendarCrisis O
+			  UNION ALL
+			  SELECT Organizationid, date(date, '+1 day')
+			  FROM dates
+			  WHERE 
+				-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+				strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
+					-- Rescata el último día 
+					SELECT EndDate 
+					FROM OrganizationCalendarCrisis occ
+					WHERE occ.OrganizationId = Organizationid
+					)
+				) 
+			)
+			SELECT Organizationid as 'org',  group_concat(date) as 'fechasCrisis'
+			FROM dates 		
+) occ 
+	ON occ.org = Organizationid
+	AND (occ.fechasCrisis) NOT LIKE "%" || date || "%"
+-- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
+JOIN (
+	SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
+	FROM OrganizationCalendarEvent oce
+	JOIN OrganizationCalendar oc
+		ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+	JOIN RefCalendarEventType rcet
+		ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+		AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+	GROUP BY oc.Organizationid
+) oce 
+	ON oce.org = Organizationid
+	AND (oce.fechasEventos) NOT LIKE "%" || date || "%"	 
 WHERE 
 	CAST(strftime('%w',date) as INTEGER) between 1 and 5
 	--AND result.idAsignatura NOT NULl
 GROUP BY Organizationid, date
-          """).fetchall()
+""").fetchall()
         except:
           logger.info(f"Ocurrió un error el la consulta")
 
