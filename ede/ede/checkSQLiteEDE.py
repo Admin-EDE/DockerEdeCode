@@ -6278,6 +6278,8 @@ GROUP BY org
 
       if(organizacionesErrors):
         logger.error(f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
+        logger.error(f"Rechazado")
+        return False
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
