@@ -6195,6 +6195,11 @@ where
                 ) DSC
                 GROUP BY org      
       """).fetchall()
+      
+      if(not _data):
+        logger.error(f"S/DATOS")
+        return True        
+        
     except:
       logger.error(f"S/DATOS")
       return True        
