@@ -6271,10 +6271,10 @@ GROUP BY org
           fechasAsistenciasErrors.append(fechasAsistencia)
       
       if(fechasAsistenciasErrors):
-        logger.error(f"Fechas de asistencia de la tabla roleAttendanceEvent en fechas catalogadas como sin clases: {str(fechasAsistenciasErrors)}")
+        logger.error(f"Fechas de asistencia de la tabla roleAttendanceEvent en fechas catalogadas como sin clases: {str(set(fechasAsistenciasErrors))}")
         
       if(fechasSesionesErrors):
-        logger.error(f"Fechas de sesiones de la tabla OrganizationCalendarSession en fechas catalogadas como sin clases: {str(fechasSesionesErrors)}")
+        logger.error(f"Fechas de sesiones de la tabla OrganizationCalendarSession en fechas catalogadas como sin clases: {str(set(fechasSesionesErrors))}")
 
       if(organizacionesErrors):
         logger.error(f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
