@@ -6155,94 +6155,129 @@ where
 
 ### inicio fn6E4 ### 
   def fn6E4(self,conn):
-    arr=[]
-    arr2=[]
-    arr3=[]
-    dias_laborales=[]
-    dias_laborales2=[]
-    numero=0
     try:
-  
-      _S3="""select DISTINCT(strftime('%Y-%m-%d',date)) as date from roleattendanceevent ;"""
+      _result = []
+      _result = conn.execute("""
+--  6.2 Contenido mínimo, letra c.2
+-- verificar que se encuentren bien registrados los cambios de actividades al calendario escolar.
+-- las tablas OrganizationCalendarEvent y OrganizationCalendarCrisis guardan los casos de suspensión
+-- excepcionales de clases, por lo tanto, se debe verificar que existan consistencia entre 
+-- la suspensión de clases y las clases realizadas.
+-- *** Los días de suspensión no deberían existir registros de clases o asistencias ***
 
-      _S4="""select strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarEvent  ;"""
+SELECT 
+	org
+	,group_concat(DISTINCT diasSinClases) as 'diasSinClases'
+	,group_concat(DISTINCT clases.inicioClase) as 'diasInicioClases'
+	,group_concat(DISTINCT clases.finClase) as 'diasfinClases'
+	,group_concat(DISTINCT clases.fechaAsistencia) as 'diasFechaAsistencia'
+FROM (
+	WITH RECURSIVE dates(Organizationid, date) AS (
+	  SELECT Organizationid, StartDate
+	  FROM OrganizationCalendarCrisis O
+	  UNION ALL
+	  SELECT Organizationid, date(date, '+1 day')
+	  FROM dates
+	  WHERE 
+		-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+		strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
+			-- Rescata el último día sin actividades producto de la crisis
+			SELECT EndDate 
+			FROM OrganizationCalendarCrisis occ
+			WHERE occ.OrganizationId = Organizationid
+			)
+		) 
+	)
+	SELECT Organizationid as 'org',  group_concat(date) as 'diasSinClases'
+	FROM dates
+	GROUP BY OrganizationId
 
-      _S5="""select strftime('%Y-%m-%d',StartDate) as StartDate,strftime('%Y-%m-%d',EndDate) as EndDate from organizationcalendarcrisis;"""
+	UNION ALL
 
-      _Trae_fechas= """ WITH RECURSIVE dates(date) AS (
-                      VALUES (?)
-                      UNION ALL
-                      SELECT date(date, '+1 day')
-                      FROM dates
-                      WHERE date < ?
-                      )
-                      SELECT strftime('%Y-%m-%d',date) as date  FROM dates;"""
-      now=datetime.now()
-      _q1 = conn.execute(_S3).fetchall()
-      XX=0
-      if(len(_q1)!=0):
-        for q1 in _q1:
-          fecha_co=datetime.strptime(str(q1[0]),'%Y-%m-%d')
-          _q2 = conn.execute(_S4).fetchall()
-          if(len(_q2)!=0):
-            for q2 in _q2:
-              fecha_eve=datetime.strptime(str(q2[0]),'%Y-%m-%d')
-              if fecha_co==fecha_eve:               
-                  arr.append(str(fecha_co))         
+	SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'diasSinClases'
+	FROM OrganizationCalendarEvent oce
+	JOIN OrganizationCalendar oc
+		ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+	JOIN RefCalendarEventType rcet
+		ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+		AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+	GROUP BY oc.Organizationid
+) DSC
+JOIN Organization O
+	ON org = O.OrganizationId
+JOIN RefOrganizationType rot
+	ON rot.RefOrganizationTypeId = O.RefOrganizationTypeId
+	AND rot.code IN ('CourseSection')
+JOIN (
+	SELECT DISTINCT
+		 O.OrganizationId
+		,ocs.BeginDate||"T"||ifnull(ocs.SessionStartTime,"00:00:00") as 'InicioClase'
+		,ocs.EndDate||"T"||ifnull(ocs.SessionEndTime,"00:00:00") as 'finClase'
+		,rat.Date as 'fechaAsistencia'
+		,rat.digitalRandomKeyDate as 'fechafirma'
+		,CASE WHEN (rat.Date BETWEEN ocs.BeginDate||"T"||ifnull(ocs.SessionStartTime,"00:00:00") AND ocs.EndDate||"T"||ifnull(ocs.SessionEndTime,"00:00:00")) THEN 'True' ELSE 'False' END as 'rangoHorarioCorrecto'
+		,CASE WHEN (rat.digitalRandomKeyDate BETWEEN ocs.BeginDate||"T"||ifnull(ocs.SessionStartTime,"00:00:00") AND ocs.EndDate||"T"||ifnull(ocs.SessionEndTime,"00:00:00")) THEN 'True' ELSE 'False' END as 'rangoFirmaCorrecto'
+	FROM Organization O
+	JOIN RefOrganizationType rot
+		ON rot.RefOrganizationTypeId = O.RefOrganizationTypeId
+		AND rot.code IN ('CourseSection')
+	JOIN OrganizationCalendar oc
+		ON oc.OrganizationId = O.OrganizationId
+		AND oc.RecordEndDateTime IS NULL
+	LEFT JOIN OrganizationCalendarSession ocs
+		ON ocs.OrganizationCalendarId = oc.OrganizationCalendarId
+		AND ocs.AttendanceTermIndicator = 1
+		AND ocs.RecordEndDateTime IS NULL
+	LEFT JOIN OrganizationPersonRole opr
+		ON opr.OrganizationId = O.OrganizationId
+		AND opr.RecordEndDateTime IS NULL
+	LEFT JOIN RoleAttendanceEvent rat
+		ON rat.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
+		AND rat.RecordEndDateTime IS NULL
+) clases 
+	ON clases.OrganizationId = org
+	AND (
+		(DSC.diasSinClases) LIKE "%" || strftime("%Y-%m-%d",clases.InicioClase) || "%"
+		OR
+		(DSC.diasSinClases) LIKE "%" || strftime("%Y-%m-%d",clases.finClase) || "%"
+		OR
+		(DSC.diasSinClases) LIKE "%" || strftime("%Y-%m-%d",clases.fechaAsistencia) || "%"
+	)
 
-              if(len(arr)!=0):
-                logger.error(f"Los siguientes Fechas estan repetidas en la tabla OrganizationCalendarEvent  : {str(arr)} ")
-                logger.error(f"Rechazado")
+GROUP BY org      
+      """).fetchall()
+    except:
+      pass
+    try:
+      if(not _result):
+        logger.error(f"Aprobado")
+        return True  
+      
+      organizacionesErrors = []
+      fechasSesionesErrors = []
+      fechasAsistenciasErrors = []
+      
+      for row in _result:
+        organizacion = row[0]
+        fechasSesion = row[1]
+        fechasAsistencia = row[4]
+        
+        if(fechasSesion):
+          organizacionesErrors.append(organizacion)
+          fechasSesionesErrors.append(fechasSesion)
+          
+        if(fechasAsistencia):
+          organizacionesErrors.append(organizacion)
+          fechasAsistenciasErrors.append(fechasAsistencia)
+      
+      if(fechasAsistenciasErrors):
+        logger.error(f"Fechas de asistencia de la tabla roleAttendanceEvent en fechas catalogadas como sin clases: {str(fechasAsistenciasErrors)}")
+        
+      if(fechasSesionesErrors):
+        logger.error(f"Fechas de sesiones de la tabla OrganizationCalendarSession en fechas catalogadas como sin clases: {str(fechasSesionesErrors)}")
 
-      _q5 = conn.execute(_S5).fetchall()
-      if(len(_q5)!=0):
-        for q5 in _q5:
-        # funcion que sirve para traer de la base datos los dias contados y guardar en un arreglo los dias que no caigan en sabado y domingo#
-          date1=datetime.strptime(str(q5[0]), '%Y-%m-%d')
-          date2=datetime.strptime(str(q5[1]), '%Y-%m-%d')
-
-          _q7 = conn.execute(_Trae_fechas,date1,date2).fetchall()
-          for q7 in _q7:
-            fechaxx=str(q7)
-            fechaxx1=fechaxx.replace(',','')
-            fechaxx2=fechaxx1.replace('(','')
-            fechaxx3=datetime.strptime(fechaxx2[1:11],'%Y-%m-%d')
-            if int(fechaxx3.isoweekday())!=6 : #sabado
-              if int(fechaxx3.isoweekday())!=7: #domingo
-                dias_laborales.append(str(datetime.strftime(fechaxx3,'%Y-%m-%d')))
-
-          arr3=np.array(dias_laborales)  
-          dias_laborales2.append(np.unique(arr3))
-
-          xx1=0
-          for xx in dias_laborales2:
-            fechaxx=str(xx)
-            fechaxx1=fechaxx.replace(',','')
-            fechaxx2=fechaxx1.replace('(','')
-            fecha_crisis=datetime.strptime(fechaxx2[2:12],'%Y-%m-%d')
-            _qx = conn.execute(_S3).fetchall()
-            if(len(_qx)!=0):
-              for q1 in _qx:
-                fechax=str(q1)
-                fechax1=fechax.replace(',','')
-                fechaxx=fechax1.replace('(','')
-                fecha_co=datetime.strptime(fechaxx[1:11],'%Y-%m-%d')
-                if fecha_crisis==fecha_co:
-                  arr2.append(str(datetime.strftime(fecha_crisis,'%Y-%m-%d')))
-          #xx1+xx1+1  
-
-        if(len(arr2)!=0):
-          logger.error(f"Los siguientes Fechas estan repetidas en la tabla organizationcalendarcrisis  : {str(arr2)} \n {fechaxx1} \n {fechaxx2} \n {fechaxx3}")
-          logger.error(f"Rechazado")
-          return False
-        else:
-          logger.error(f"Aprobado")
-          return True  
-
-      else:
-        logger.error(f"No hay registro Numero de lista asociados .")
-        logger.error(f"Rechazado")
-        return False   
+      if(organizacionesErrors):
+        logger.error(f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
