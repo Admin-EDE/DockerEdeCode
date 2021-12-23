@@ -6156,6 +6156,50 @@ where
 ### inicio fn6E4 ### 
   def fn6E4(self,conn):
     try:
+      _data = []
+      _data = conn.execute("""
+                SELECT 
+                  org
+                  ,group_concat(DISTINCT diasSinClases) as 'diasSinClases'
+                FROM (
+                  WITH RECURSIVE dates(Organizationid, date) AS (
+                    SELECT Organizationid, StartDate
+                    FROM OrganizationCalendarCrisis O
+                    UNION ALL
+                    SELECT Organizationid, date(date, '+1 day')
+                    FROM dates
+                    WHERE 
+                    -- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+                    strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
+                      -- Rescata el último día sin actividades producto de la crisis
+                      SELECT EndDate 
+                      FROM OrganizationCalendarCrisis occ
+                      WHERE occ.OrganizationId = Organizationid
+                      )
+                    ) 
+                  )
+                  SELECT Organizationid as 'org',  group_concat(date) as 'diasSinClases'
+                  FROM dates
+                  GROUP BY OrganizationId
+
+                  UNION ALL
+
+                  SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'diasSinClases'
+                  FROM OrganizationCalendarEvent oce
+                  JOIN OrganizationCalendar oc
+                    ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+                  JOIN RefCalendarEventType rcet
+                    ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+                    AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+                  GROUP BY oc.Organizationid
+                ) DSC
+                GROUP BY org      
+      """).fetchall()
+    except:
+      logger.error(f"S/DATOS")
+      return True        
+
+    try:
       _result = []
       _result = conn.execute("""
 --  6.2 Contenido mínimo, letra c.2
