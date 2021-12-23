@@ -6259,7 +6259,7 @@ GROUP BY org
       
       for row in _result:
         organizacion = row[0]
-        fechasSesion = row[1]
+        fechasSesion = row[2]
         fechasAsistencia = row[4]
         
         if(fechasSesion):
