@@ -150,7 +150,7 @@ class check:
       "fn6C1": "No/Verificado",
       "fn6C2": "self.fn6C2(conn)",
       "fn6B0": "self.fn6B0(conn)",
-      "fn6B1": "self.fn6B1(conn)",
+      "fn6B1": "No/Verificado",
       "fn6A0": "No/Verificado",
       "fn6A1": "No/Verificado",
       "fn6A2": "No/Verificado",
@@ -6403,153 +6403,242 @@ GROUP BY org
 
 ### inicio  fn6B0 ###
   def fn6B0(self,conn):
-    arr=[]
-    arr2=[]
-    arr3=[]
-    dias_laborales=[]
-    dias_laborales2=[]
-    numero=0
     try:
-      _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
-      join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
-  
-      _S3_1="""select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
-                where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+      _rightList = []
+      _rightList = conn.execute("""
+	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
+		SELECT 
+			 rae.RoleAttendanceEventId
+			,rae.OrganizationPersonRoleId
+			,pid.Identifier as 'RUN'
+			,rae.Date
+			,rae.RecordEndDateTime
+		FROM RoleAttendanceEvent rae
+		JOIN OrganizationPersonRole opr 
+			on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId 
+		JOIN RefAttendanceEventType raet
+			ON rae.RefAttendanceEventTypeId = raet.RefAttendanceEventTypeId
+			AND raet.Code IN ('DailyAttendance','ClassSectionAttendance')
+		JOIN PersonIdentifier pid
+			ON opr.personid = pid.personid 
+		JOIN RefPersonIdentificationSystem rpis
+			ON pid.RefPersonIdentificationSystemId = rpis.RefPersonIdentificationSystemId
+			AND rpis.Code IN ('RUN')
+		JOIN role rol_e
+			ON opr.RoleId = rol_e.RoleId
+			AND rol_e.Name IN ('Estudiante')
+		WHERE 
+			rae.RecordEndDateTime IS NOT NULL
+			AND
+			rae.RecordStartDateTime IS NOT NULL
+			AND
+			rae.oprIdRatificador IS NULL
+			AND
+			rae.firmaRatificador IS NULL
+			AND 
+			rae.fechaRatificador IS NULL
+			AND
+            -- Agrega a la lista todos los registros que cumplen con la expresión regular
+            rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+            AND
+            -- Agrega a la lista todos los registros que cumplen con la expresión regular
+            rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'			
+		
+		UNION ALL
 
-      _S4_1="""select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
-        on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
+		SELECT 
+			rae.RoleAttendanceEventId
+			,rae.OrganizationPersonRoleId
+			,pid.Identifier as 'RUN'
+			,rae.Date, rae.RecordEndDateTime
+		FROM RoleAttendanceEvent rae
+		JOIN cte_Attendance cte 
+			ON cte.RecordEndDateTime = rae.Date
+			AND cte.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+			AND rae.RecordStartDateTime IS NOT NULL
+		JOIN OrganizationPersonRole opr 
+			on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId 
+		JOIN RefAttendanceEventType raet
+			ON rae.RefAttendanceEventTypeId = raet.RefAttendanceEventTypeId
+			AND raet.Code IN ('DailyAttendance','ClassSectionAttendance')
+		JOIN PersonIdentifier pid
+			ON opr.personid = pid.personid 
+		JOIN RefPersonIdentificationSystem rpis
+			ON pid.RefPersonIdentificationSystemId = rpis.RefPersonIdentificationSystemId
+			AND rpis.Code IN ('RUN')		
+		JOIN role rol_e
+			ON opr.RoleId = rol_e.RoleId
+			AND rol_e.Name IN ('Estudiante')
+		JOIN OrganizationPersonRole opr_ratificador 
+			ON rae.oprIdRatificador = opr_ratificador.OrganizationPersonRoleId 
+		JOIN role rol_ratificador
+			ON opr_ratificador.RoleId = rol_ratificador.RoleId
+			AND rol_ratificador.Name IN ('Encargado de la asistencia','Director(a)')
+		WHERE 
+			-- Agrega a la lista todos los registros que cumplen con la expresión regular
+			rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+			AND
+			-- Agrega a la lista todos los registros que cumplen con la expresión regular
+			rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'			
+            AND
+            -- Agrega a la lista todos los registros que cumplen con la expresión regular
+            rae.fechaRatificador REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'			
+            AND
+			-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+            rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+            AND
+			-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+            rae.firmaRatificador REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'			
 
-      now=datetime.now()
-      rrr=0
-      _q1 = conn.execute(_S1).fetchall()
-      if(len(_q1)!=0): 
-        for q1 in _q1:
-          personid=int(q1[0]) 
-          fecha_asis=datetime.strptime(str(q1[1][:10]),'%Y-%m-%d')
-          fecha_asis=datetime.strftime(fecha_asis,'%d-%m-%Y')
-          if rrr==0:
-            _q3 = conn.execute(_S3_1,personid,fecha_asis).fetchall()
-            if(len(_q3)!=0):
-              for xx in _q3:
-                contador=int(xx[0])
-                if contador>=2:
-                  _q4 = conn.execute(_S4_1,personid,fecha_asis).fetchall()
-                  if(len(_q4)!=0):
-                    for xx in _q4: 
-                      rut=str(xx[0]) 
-                      fecha_cam_start=str(xx[13])
-                      fecha_cam_end=str(xx[14])
-                      obser=str(xx[11])
-                      tipo=int(xx[4])
-                      digital=str(xx[9])
-                      if tipo==1:
-                        if(fecha_cam_start == "None") or (fecha_cam_end == "None") or (obser == "None") or  (digital == "None"):
-                          arr.append(rut)
-                          
-                      if tipo==2:
-                        if(fecha_cam_start == "None") or (fecha_cam_end == "None") or (obser == "None") or  (digital == "None"):
-                          arr2.append(rut)
-        
-        if(len(arr)!=0):
-          logger.error(f"Las siguientes asistencias por dia del alumno no tienen firma digital : {str(arr)} ")
-          logger.error(f"Rechazado")
-          return False
+	)
+	SELECT 
+		group_concat(RoleAttendanceEventId) as 'roleAttendanceEventIds'
+		,OrganizationPersonRoleId
+		,RUN
+		,min(Fecha) as 'PRIMERA_FECHA_REGISTRADA'
+		,max(fecha) as 'ULTIMA_FECHA_REGISTRADA'
+	FROM cte_Attendance 
+      """).fetchall()
+    except:
+      pass
 
-        if(len(arr2)!=0):
-          logger.error(f"Las siguientes asistencias por bloque del alumno no tienen firma digital : {str(arr2)} ")
-          logger.error(f"Rechazado")
-          return False
+    try:
+      _errorsList = []
+      _errorsList = conn.execute("""
+SELECT *
+FROM RoleAttendanceEvent rae
+JOIN (
+	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
+		SELECT 
+			 rae.RoleAttendanceEventId
+			,rae.OrganizationPersonRoleId
+			,pid.Identifier as 'RUN'
+			,rae.Date
+			,rae.RecordEndDateTime
+		FROM RoleAttendanceEvent rae
+		JOIN OrganizationPersonRole opr 
+			on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId 
+		JOIN RefAttendanceEventType raet
+			ON rae.RefAttendanceEventTypeId = raet.RefAttendanceEventTypeId
+			AND raet.Code IN ('DailyAttendance','ClassSectionAttendance')
+		JOIN PersonIdentifier pid
+			ON opr.personid = pid.personid 
+		JOIN RefPersonIdentificationSystem rpis
+			ON pid.RefPersonIdentificationSystemId = rpis.RefPersonIdentificationSystemId
+			AND rpis.Code IN ('RUN')
+		JOIN role rol_e
+			ON opr.RoleId = rol_e.RoleId
+			AND rol_e.Name IN ('Estudiante')
+		WHERE 
+			rae.RecordEndDateTime IS NOT NULL
+			AND
+			rae.RecordStartDateTime IS NOT NULL
+			AND
+			rae.oprIdRatificador IS NULL
+			AND
+			rae.firmaRatificador IS NULL
+			AND 
+			rae.fechaRatificador IS NULL
+			AND
+            -- Agrega a la lista todos los registros que cumplen con la expresión regular
+            rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+            AND
+            -- Agrega a la lista todos los registros que cumplen con la expresión regular
+            rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'			
+		
+		UNION ALL
 
-        else:
-          logger.info(f"Aprobado")
-          return True 
+		SELECT 
+			rae.RoleAttendanceEventId
+			,rae.OrganizationPersonRoleId
+			,pid.Identifier as 'RUN'
+			,rae.Date, rae.RecordEndDateTime
+		FROM RoleAttendanceEvent rae
+		JOIN cte_Attendance cte 
+			ON cte.RecordEndDateTime = rae.Date
+			AND cte.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+			AND rae.RecordStartDateTime IS NOT NULL
+		JOIN OrganizationPersonRole opr 
+			on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId 
+		JOIN RefAttendanceEventType raet
+			ON rae.RefAttendanceEventTypeId = raet.RefAttendanceEventTypeId
+			AND raet.Code IN ('DailyAttendance','ClassSectionAttendance')
+		JOIN PersonIdentifier pid
+			ON opr.personid = pid.personid 
+		JOIN RefPersonIdentificationSystem rpis
+			ON pid.RefPersonIdentificationSystemId = rpis.RefPersonIdentificationSystemId
+			AND rpis.Code IN ('RUN')		
+		JOIN role rol_e
+			ON opr.RoleId = rol_e.RoleId
+			AND rol_e.Name IN ('Estudiante')
+		JOIN OrganizationPersonRole opr_ratificador 
+			ON rae.oprIdRatificador = opr_ratificador.OrganizationPersonRoleId 
+		JOIN role rol_ratificador
+			ON opr_ratificador.RoleId = rol_ratificador.RoleId
+			AND rol_ratificador.Name IN ('Encargado de la asistencia','Director(a)')
+		WHERE 
+			-- Agrega a la lista todos los registros que cumplen con la expresión regular
+			rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+			AND
+			-- Agrega a la lista todos los registros que cumplen con la expresión regular
+			rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'			
+            AND
+            -- Agrega a la lista todos los registros que cumplen con la expresión regular
+            rae.fechaRatificador REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'			
+            AND
+			-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+            rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+            AND
+			-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+            rae.firmaRatificador REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'			
 
-      else:
-        logger.error(f"No hay registro de asistencia de los estudiantes.")
-        logger.error(f"Rechazado")
-        return False   
-    
+	)
+	SELECT 
+		group_concat(RoleAttendanceEventId) as 'roleAttendanceEventIds'
+		,OrganizationPersonRoleId
+		,RUN
+		,min(Fecha) as 'PRIMERA_FECHA_REGISTRADA'
+		,max(fecha) as 'ULTIMA_FECHA_REGISTRADA'
+	FROM cte_Attendance 
+) result ON (result.roleAttendanceEventIds) NOT LIKE '%' || rae.RoleAttendanceEventId || '%'
+LEFT JOIN OrganizationPersonRole opr 
+	on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId 
+LEFT JOIN RefAttendanceEventType raet
+	ON rae.RefAttendanceEventTypeId = raet.RefAttendanceEventTypeId
+	AND raet.Code IN ('DailyAttendance','ClassSectionAttendance')
+LEFT JOIN role rol_e
+	ON opr.RoleId = rol_e.RoleId
+	AND rol_e.Name IN ('Estudiante')
+WHERE
+	rae.RecordEndDateTime IS NOT NULL
+	OR
+	rae.oprIdRatificador IS NOT NULL
+	OR
+	rae.firmaRatificador IS NOT NULL
+	OR
+	rae.fechaRatificador IS NOT NULL
+	OR 
+	rae.RecordStartDateTime != Date	
+      """).fetchall()
+    except:
+      if(not _errorsList and not _rightList):
+        logger.error(f"S/DATOS")
+        return True
+
+      if(not _errorsList and _rightList):
+        logger.error(f"APROBADO")
+        return True
+
+    try:
+      roleAttendanceEventIds = (list([m[0] for m in _errorsList if m[0] is not None]))
+      logger.error(f"Los siguientes roleAttendanceEvent Ids estan con problemas: {str(roleAttendanceEventIds)}")
+      logger.error(f"Rechazado")
+      return False
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
       return False
 ### fin fn6B0 ###
-
-### inicio  fn6B1 ###
-  def fn6B1(self,conn):
-    arr=[]
-    arr2=[]
-    arr3=[]
-    dias_laborales=[]
-    dias_laborales2=[]
-    numero=0
-    try:
-
-      _S1="""select DISTINCT(b.personId),strftime('%Y-%m-%d %H:%M',a.date) as Date from RoleAttendanceEvent a 
-      join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId order by b.personId"""
-  
-      _S3_1=""" select count(*) as contador from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
-                where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
-
-      _S4_1="""     select c.identifier,a.* from RoleAttendanceEvent a join OrganizationPersonRole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId join PersonIdentifier c
-        on b.personid=c.personid where b.personId=? and strftime('%d-%m-%Y',a.Date)=? and (a.RefAttendanceEventTypeId=1 or a.RefAttendanceEventTypeId=2) """
-
-      now=datetime.now()
-      rrr=0
-      _q1 = conn.execute(_S1).fetchall()
-      if(len(_q1)!=0): 
-        for q1 in _q1:
-          personid=int(q1[0]) 
-          fecha_asis=datetime.strptime(str(q1[1][:10]),'%Y-%m-%d')
-          fecha_asis=datetime.strftime(fecha_asis,'%d-%m-%Y')
-          if rrr==0:
-            _q3 = conn.execute(_S3_1,personid,fecha_asis).fetchall()
-            if(len(_q3)!=0):
-              for xx in _q3:
-                contador=int(xx[0])
-                if contador>=3:
-                  _q4 = conn.execute(_S4_1,personid,fecha_asis).fetchall()
-                  if(len(_q4)!=0):
-                    for xx in _q4: 
-                      rut=str(xx[0]) 
-                      fecha_cam_start=str(xx[13])
-                      fecha_cam_end=str(xx[14])
-                      obser=str(xx[11])
-                      tipo=int(xx[4])
-                      digital=str(xx[9])
-                      if tipo==1:
-                        if(fecha_cam_start == "None")  or  (digital == "None"):
-                          arr.append(rut)
-                          
-                      if tipo==2:
-                        if(fecha_cam_start == "None")  or  (digital == "None"):
-                          arr2.append(rut)
-        
-        if(len(arr)!=0):
-          logger.error(f"Las siguientes asistencias por dia del alumno no tienen firma digital por el director : {str(arr)} ")
-          logger.error(f"Rechazado")
-          return False
-          
-
-        if(len(arr2)!=0):
-          logger.error(f"Las siguientes asistencias por bloque del alumno no tienen firma digital por el director  : {str(arr2)} ")
-          logger.error(f"Rechazado")
-          return False
-
-        else:
-          logger.info(f"Aprobado")
-          return True 
-
-      else:
-        logger.error(f"No hay registro de alumnos .")
-        logger.error(f"Rechazado")
-        return False   
-    
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return False
-### fin  fn6B1  ###
 
 # Lista de fechas rango de rango fechas menos sabado y domingo
   def ListaFechasRango(self,fecha_ini,fecha_ter,conn):
