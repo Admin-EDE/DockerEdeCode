@@ -6621,6 +6621,8 @@ WHERE
 	rae.RecordStartDateTime != Date	
       """).fetchall()
     except:
+      pass
+    try:
       if(not _errorsList and not _rightList):
         logger.error(f"S/DATOS")
         return True
@@ -6629,7 +6631,6 @@ WHERE
         logger.error(f"APROBADO")
         return True
 
-    try:
       roleAttendanceEventIds = (list([m[0] for m in _errorsList if m[0] is not None]))
       logger.error(f"Los siguientes roleAttendanceEvent Ids estan con problemas: {str(roleAttendanceEventIds)}")
       logger.error(f"Rechazado")
