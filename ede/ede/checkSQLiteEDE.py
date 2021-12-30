@@ -6623,11 +6623,11 @@ WHERE
     except:
       pass
     try:
-      if(not _errorsList and not _rightList):
+      _ids = (list([m[0] for m in _rightList if m[0] is not None]))      
+      if(not _errorsList and not _ids):
         logger.info(f"S/DATOS")
         return True
 
-      _ids = (list([m[0] for m in _rightList if m[0] is not None]))
       if(not _errorsList and _ids):
         logger.info(f"APROBADO")
         return True
