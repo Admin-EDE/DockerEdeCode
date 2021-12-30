@@ -6624,11 +6624,12 @@ WHERE
       pass
     try:
       if(not _errorsList and not _rightList):
-        logger.error(f"S/DATOS")
+        logger.info(f"S/DATOS")
         return True
 
-      if(not _errorsList and _rightList):
-        logger.error(f"APROBADO")
+      _ids = (list([m[0] for m in _rightList if m[0] is not None]))
+      if(not _errorsList and _ids):
+        logger.info(f"APROBADO")
         return True
 
       roleAttendanceEventIds = (list([m[0] for m in _errorsList if m[0] is not None]))
