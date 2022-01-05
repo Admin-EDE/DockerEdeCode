@@ -4439,32 +4439,32 @@ GROUP BY Organizationid, date
         try:
             i=0
             suplencias_noidoneas = conn.execute("""
-            SELECT
-                FirstName,
-                MiddleName,
-                LastName,
-                OCS.claseRecuperadaId,
-                digitalRandomKey
-            FROM Organization o
-            JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
-            JOIN RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-            JOIN Person P on OPR.PersonId = P.PersonId
-            JOIN PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
-            JOIN Location L on  L.LocationId = o.OrganizationId
-            JOIN Classroom Cr on L.LocationId = Cr.LocationId
-            JOIN CourseSectionLocation CSL on Cr.LocationId = CSL.LocationId
-            JOIN CourseSection CS on CSL.OrganizationId = CS.OrganizationId
-            JOIN OrganizationCalendar OC on CSL.OrganizationId = OC.OrganizationId
-            JOIN OrganizationCalendarSession OCS on OC.OrganizationCalendarId = OCS.OrganizationCalendarId
-            where OPR.RoleId !=6
-            and PDOC.idoneidadDocente != 1
-            and LOWER(RAE.observaciones) like '%falta docente%';
+SELECT
+	FirstName,
+	MiddleName,
+	LastName,
+	OCS.claseRecuperadaId,
+	digitalRandomKey
+FROM Organization o
+JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
+JOIN RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
+JOIN Person P on OPR.PersonId = P.PersonId
+JOIN PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
+JOIN LocationAddress L on  L.LocationId = Cr.LocationId
+JOIN Classroom Cr on CSL.LocationId = Cr.LocationId
+JOIN CourseSectionLocation CSL on Cr.LocationId = CSL.LocationId
+JOIN CourseSection CS on o.OrganizationId = CS.OrganizationId
+JOIN OrganizationCalendar OC on o.OrganizationId = OC.OrganizationId
+JOIN OrganizationCalendarSession OCS on OC.OrganizationCalendarId = OCS.OrganizationCalendarId
+where OPR.RoleId !=6
+and PDOC.idoneidadDocente != 1
+and LOWER(RAE.observaciones) like '%falta docente%';
             """).fetchall()
             a=len(suplencias_noidoneas)
             if (len(suplencias_noidoneas)>0):
                 for fila in suplencias_noidoneas:
                     if fila[3] is None or 0 or fila[4] is None  :
-                        logger.error(f'clase con profesor suplente no idoneo no registrada para recuperar o registrada mas no firmada')
+                        logger.error(f'clase con profesor suplente no idoneo no registrada para recuperar o registrada pero no firmada')
                         logger.error(f'Rechazado')
                         return False
                     else:
