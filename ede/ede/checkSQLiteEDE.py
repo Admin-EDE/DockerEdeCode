@@ -4605,7 +4605,7 @@ and LOWER(RAE.observaciones) like '%falta docente%';
 
         if(c_ >= len(r_)):
           logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
-          logger.info(f"Apobado")
+          logger.info(f"Aprobado")
           return True
         else:
           logger.error(f"No todos los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
@@ -4779,14 +4779,14 @@ and LOWER(RAE.observaciones) like '%falta docente%';
                         _pr = r6[1]
                         if not _pr:
                           logger.info(f"La persona que retira a alumno no figura como autorizado en el sistema.")
-                          logger.info(f"Apobado")
+                          logger.info(f"Aprobado")
                           return True
                     if(_drk is None and _fsb is None):
                       logger.error(f"Falta firma o documento digitalizado de apoderado en registro de retiro de estudiante de establecimiento.")
                       logger.error(f"Rechazado")
                       return False
 
-        logger.info(f"Apobado")
+        logger.info(f"Aprobado")
         return True
       else:
         logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
@@ -5341,7 +5341,7 @@ where
               return False
           else:
               logger.info(f"Ningunos de los registros le falta un dato.")
-              logger.info(f"Apobado")
+              logger.info(f"Aprobado")
               return True
       else:
         logger.error(f"No hay registro Numero de lista asociados .")
@@ -5528,7 +5528,7 @@ where
               for q3 in _q3:
                 _l2.append(_r+"-"+str(q3[0]))
             else:
-              logger.info(f"Apobado")
+              logger.info(f"Aprobado")
               return True
         
         if(len(_l)!=0):
@@ -5543,7 +5543,7 @@ where
 
       else:
         logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
-        logger.info(f"Apobado")
+        logger.info(f"Aprobado")
         return True
 
     except Exception as e:
@@ -5589,12 +5589,12 @@ where
           logger.error(f"Rechazado")
           return False
         else:
-          logger.info(f"Apobado")
+          logger.info(f"Aprobado")
           return True
 
       else:
         logger.info(f"No hay registros de alumnos excedentes sin derecho a subvencion en el establecimiento.")
-        logger.info(f"Apobado")
+        logger.info(f"Aprobado")
         return True
 
     except Exception as e:
