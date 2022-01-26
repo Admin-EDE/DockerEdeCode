@@ -4539,8 +4539,8 @@ and LOWER(RAE.observaciones) like '%falta docente%';
                 join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
                 join Organization O on OPR.OrganizationId = O.OrganizationId
                 join Course C on O.OrganizationId = C.OrganizationId
-                join CourseSection CS on C.OrganizationId = CS.CourseId
-                join CourseSectionSchedule CSS on CSS.OrganizationId = CS.OrganizationId
+                join CourseSection CS on O.OrganizationId = CS.CourseId
+                join CourseSectionSchedule CSS on CSS.OrganizationId = O.OrganizationId
         where OPR.RoleId = 6
           and O.RefOrganizationTypeId = 21;
         """).fetchall()
