@@ -6372,7 +6372,7 @@ GROUP BY org
                 FROM RefPersonIdentificationSystem
                 WHERE RefPersonIdentificationSystem.description IN ('ROL UNICO NACIONAL')
               )
-            OUTER LEFT JOIN RefPersonStatusType rpst
+            JOIN RefPersonStatusType rpst
               ON pst.RefPersonStatusTypeId = rpst.RefPersonStatusTypeId
               AND rpst.RefPersonStatusTypeId IN (
                 SELECT RefPersonStatusTypeId
