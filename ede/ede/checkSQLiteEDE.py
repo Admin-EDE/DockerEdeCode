@@ -5124,6 +5124,11 @@ and LOWER(RAE.observaciones) like '%falta docente%';
       if(_l3 == 1):
         logger.info(f"Aprobado")
         return True
+      
+      if(_l3 == 0):
+        logger.info(f"S/Datos")
+        return True
+        
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
