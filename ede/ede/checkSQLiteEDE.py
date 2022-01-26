@@ -4445,26 +4445,26 @@ GROUP BY Organizationid, date
         try:
             i=0
             suplencias_noidoneas = conn.execute("""
-SELECT
-	FirstName,
-	MiddleName,
-	LastName,
-	OCS.claseRecuperadaId,
-	digitalRandomKey
-FROM Organization o
-JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
-JOIN RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-JOIN Person P on OPR.PersonId = P.PersonId
-JOIN PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
-JOIN LocationAddress L on  L.LocationId = Cr.LocationId
-JOIN Classroom Cr on CSL.LocationId = Cr.LocationId
-JOIN CourseSectionLocation CSL on Cr.LocationId = CSL.LocationId
-JOIN CourseSection CS on o.OrganizationId = CS.OrganizationId
-JOIN OrganizationCalendar OC on o.OrganizationId = OC.OrganizationId
-JOIN OrganizationCalendarSession OCS on OC.OrganizationCalendarId = OCS.OrganizationCalendarId
-where OPR.RoleId !=6
-and PDOC.idoneidadDocente != 1
-and LOWER(RAE.observaciones) like '%falta docente%';
+                SELECT
+                  FirstName,
+                  MiddleName,
+                  LastName,
+                  OCS.claseRecuperadaId,
+                  digitalRandomKey
+                FROM Organization o
+                JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
+                JOIN RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
+                JOIN Person P on OPR.PersonId = P.PersonId
+                JOIN PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
+                JOIN OrganizationCalendar OC on o.OrganizationId = OC.OrganizationId
+                JOIN OrganizationCalendarSession OCS on OC.OrganizationCalendarId = OCS.OrganizationCalendarId
+                JOIN CourseSection CS on o.OrganizationId = CS.OrganizationId
+                JOIN CourseSectionLocation CSL on CS.OrganizationId = CSL.OrganizationId
+                JOIN Classroom Cr on CSL.LocationId = Cr.LocationId
+                JOIN LocationAddress L on  L.LocationId = Cr.LocationId
+                where OPR.RoleId !=6
+                and PDOC.idoneidadDocente != 1
+                and LOWER(RAE.observaciones) like '%falta docente%';
             """).fetchall()
             a=len(suplencias_noidoneas)
             if (len(suplencias_noidoneas)>0):
