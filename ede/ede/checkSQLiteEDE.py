@@ -1117,7 +1117,7 @@ class check:
         ExitDate NOT REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
       """).fetchall()
       logger.info(f"RoleAttendanceEvent.Date con formato errorneo: {len(RoleAttendanceEvent)}, Tabla OrganizationPersonRole.EntryDate o ExitDate con formato errone: {len(OrganizationPersonRole)}")
-      if(len(RoleAttendanceEvent)>0 or OrganizationPersonRole>0):
+      if(len(RoleAttendanceEvent)>0 or len(OrganizationPersonRole)>0):
         data1 = list(set([m[0] for m in RoleAttendanceEvent if m[0] is not None]))
         data2 = list(set([m[0] for m in OrganizationPersonRole if m[0] is not None]))
         _c1 = len(set(data1))
