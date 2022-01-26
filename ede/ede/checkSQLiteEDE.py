@@ -1657,7 +1657,7 @@ class check:
   def fn3C5(self, conn):
     try:
       rows = conn.execute("SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
-      logger.info(f"len(ClaveAleatoriaDocente): {len(rows)}")
+      logger.info(f"len(digitalRandomKey): {len(rows)}")
       if(len(rows)>0):
         # Valida los números de clave aleatoria de los docentes
         data = list(set([m[0] for m in rows if m[0] is not None])) + list(set([m[1] for m in rows if m[1] is not None]))
@@ -2349,7 +2349,8 @@ class check:
                               where OPR.RoleId = 6
                                 and PS.RefPersonStatusTypeId = 27
                           )
-                            and fileScanBase64 is not null
+                          and fileScanBase64 is not null
+                          and RefPersonStatusTypeId = 27
                       );
                   """).fetchall()
                   if(len(_file) == len(_query)):
