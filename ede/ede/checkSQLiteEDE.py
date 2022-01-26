@@ -2116,7 +2116,7 @@ class check:
                 if(len(_scoreQuery)>0):
                     _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
                     for x in _score:
-                        if x < 40:
+                        if x < 4:
                             logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
                             logger.error(f'Rechazado')
                             return False
