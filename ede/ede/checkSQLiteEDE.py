@@ -1261,14 +1261,13 @@ class check:
             FROM (
               -- Agrupando la información por estudiante, se cuenta los días presentes y ausentes de cada uno
               SELECT RoleAttendanceId,PersonId, RefOrganizationType.Description as 'OrganizationType', 
-                CASE RefAttendanceStatus.Description 
-                  WHEN 'Present' 
-                    THEN count(personId)
-                END as 'NumberOfDaysInAttendance',
-                CASE 
-                  WHEN RefAttendanceStatus.Description like '%Absence%' 
-                    THEN count(personId)
-                END as 'NumberOfDaysAbsent',
+                sum(
+                  CASE RefAttendanceStatus.Description 
+                    WHEN 'Present' THEN 1 ELSE 0 END
+                ) as 'NumberOfDaysInAttendance',
+                sum(
+                  CASE WHEN RefAttendanceStatus.Description like '%Absence%' THEN 1 ELSE 0 END
+                ) as 'NumberOfDaysAbsent',
                 count(personId) as 'totalDays'
               FROM RoleAttendance
               OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationPersonRoleId)
