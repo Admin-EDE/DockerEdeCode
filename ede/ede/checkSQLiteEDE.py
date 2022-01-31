@@ -1175,7 +1175,15 @@ class check:
           */
           SELECT OrganizationId, r.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
           FROM (
-            SELECT OrganizationId, RoleAttendanceEventid, AttendanceTermIndicator, OrganizationCalendarSession.OrganizationCalendarSessionId,DATETIME(DATE(BeginDate) || 'T' || TIME(SessionStartTime)) as 'InicioClase', RoleAttendanceEvent.Date, DATETIME(DATE(EndDate) || 'T' || TIME(SessionEndTime)) as 'FinClase', *
+            SELECT 
+                OrganizationId
+              , RoleAttendanceEventid
+              , AttendanceTermIndicator
+              , OrganizationCalendarSession.OrganizationCalendarSessionId
+              , DATETIME(DATE(BeginDate) || 'T' || TIME(SessionStartTime)) as 'InicioClase'
+              , RoleAttendanceEvent.Date
+              , DATETIME(DATE(EndDate) || 'T' || TIME(SessionEndTime)) as 'FinClase'
+              , *
             FROM Organization
             OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
             OUTER LEFT JOIN OrganizationCalendar USING(OrganizationId)
@@ -1451,7 +1459,7 @@ class check:
         AND
         tipoLocalidad IN ('Physical', 'Mailing', 'Shipping')
         AND
-        (ApartmentRoomOrSuiteNumber NOT NULL
+        (ApartmentRoomOrSuiteNumber IS NULL
         OR
         BuildingSiteNumber IS NULL
         OR
@@ -1799,27 +1807,29 @@ class check:
                 , p.personId --39
                 , rprs.description -- 40
               FROM Person p 
-                LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
-                LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
-                LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
-                LEFT JOIN Role on Role.RoleId=opr.RoleId
-                LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
-                LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
-                LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
-                LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
-                LEFT JOIN PersonRelationship prs on p.PersonId=prs.PersonId
-				        LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
-                LEFT JOIN Person p2 on p2.PersonId=prs.RelatedPersonId 
-                LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
-                LEFT JOIN RefCountry RefCountry2 on pa.RefCountryId = RefCountry2.RefCountryId
-                LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
-                LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
-                LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
-                LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
-                LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
-                LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
-                LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
-                JOIN Organization o on o.OrganizationId=opr.OrganizationId
+                JOIN Organization o on o.OrganizationId=opr.OrganizationId			  
+				-- Información del estudiante
+                OUTER LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
+                OUTER LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
+                OUTER LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
+                OUTER LEFT JOIN Role on Role.RoleId=opr.RoleId
+                OUTER LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
+                OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
+                OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
+                OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
+				OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
+				-- Información del Apoderado
+				OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
+                OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
+                OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
+                OUTER LEFT JOIN RefCountry RefCountry2 on pa2.RefCountryId = RefCountry2.RefCountryId
+                OUTER LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
+                OUTER LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
+                OUTER LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
+                OUTER LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
+                OUTER LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
+                OUTER LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
+                OUTER LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
               WHERE 
                 opr.RoleId IN (
                   SELECT RoleId
@@ -1832,7 +1842,7 @@ class check:
                   FROM RefOrganizationType
                   WHERE Description IN ('Course')
                 )
-              GROUP by  p.PersonId
+              GROUP by p.PersonId
             """)#.fetchall()
             
             if(results.returns_rows == 0):
