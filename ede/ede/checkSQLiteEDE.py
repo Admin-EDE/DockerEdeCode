@@ -1758,14 +1758,20 @@ class check:
             results = conn.execute("""
               SELECT 
                 (
-                  select identifier  from PersonIdentifier pi 
-                  JOIN RefPersonIdentificationSystem rfi on pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-                  WHERE Code like '%School%' and pi.PersonId=p.PersonId
+                  SELECT identifier 
+                  FROM PersonIdentifier pi
+                  JOIN RefPersonIdentificationSystem rfi 
+                    ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+                    AND rfi.code IN ('SchoolNumber')
+                  WHERE pi.PersonId = p.PersonId
                 ) as "matricula" -- 0
                 ,(
-                  SELECT identifier from PersonIdentifier pi
-                  join RefPersonIdentificationSystem rfi on pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-                  where (Code like '%IPE%' or Code like '%RUN%') and pi.PersonId=p.PersonId
+                  SELECT identifier 
+                  FROM PersonIdentifier pi
+                  JOIN RefPersonIdentificationSystem rfi 
+                    ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+                    AND rfi.code IN ('RUN', 'IPE')
+                  WHERE pi.PersonId = p.PersonId
                 ) as "cedula" -- 1
                 , p.FirstName as "primer nombre" -- 2
                 , p.MiddleName as "otros nombres" -- 3
