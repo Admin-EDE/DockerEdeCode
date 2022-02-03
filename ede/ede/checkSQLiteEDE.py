@@ -4643,50 +4643,105 @@ GROUP BY Organizationid, date
 
 ### inicio FN0FA ###
   def fn0FA(self, conn):
+    """
+    [
+      7.0 Registro de salidas o retiros (NO Habituales)
+      
+      Verifica que cada estudiante tenga registrado un listado de personas autorizadas para retirarlo.
+      
+      Se considera excepción de estudiantes registrados en educación de adultos.
+      
+        Se agregó el campo RetirarEstudianteIndicador a la tabla personRelatinShip
+      para identificar a las personas autorizadas para retirar estudiantes del establecimiento.
+    ]
+
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+
+    Returns:
+        [Boolean]: [
+          Retorna True y "Aprobado" a través de logger, si cada estudiante tiene al menos una persona autorizada para retirarlo del establecimiento
+          o 
+          Retorna False, "Rechazado" y la lista de RUT a través de logger, si algún estudiante no tiene asignada alguna persona autorizada para retirarlo.
+          o en caso de no encontrar estudiantes.
+          ]
+    """
     try:
-      r_ = []
-      r_ = conn.execute("""
-              SELECT 
-                DISTINCT A.personId
-                , CASE WHEN A.RetirarEstudianteIndicador like '%SI%' THEN 'True' ELSE 'False' END as RetirarEstudianteIndicador
-              FROM PersonList A
-              JOIN OrganizationPersonRole B
-                ON A.personId = B.personId
-              JOIN jerarquiasList C
-                ON B.OrganizationId = C.OrganizationIdDelCurso
-              WHERE
-                A.Role like '%Estudiante%'
-                AND C.nivel NOT IN ('03:Educación Básica Adultos'
+      rows = []
+      rows = conn.execute("""
+SELECT DISTINCT 
+	  pid.Identifier -- Muestra el RUN o IPE del estudiante con problemas
+	, count(prsh.RetirarEstudianteIndicador) as 'cantidadPersonasAutorizadas'
+FROM Person p
+	JOIN PersonIdentifier pid
+		ON p.personId = pid.PersonId
+		AND pid.RecordEndDateTime IS NULL
+	JOIN RefPersonIdentificationSystem rpid
+		ON pid.RefPersonIdentificationSystemId = rpid.RefPersonIdentificationSystemId
+		AND rpid.Code IN ('RUN','IPE')
+	JOIN OrganizationPersonRole opr
+		ON p.personId = opr.personId
+		AND opr.RecordEndDateTime IS NULL
+	-- Esto relación filtra por estudiante
+	JOIN Role r
+		ON r.RoleId = opr.RoleId
+		AND r.name IN ('Estudiante')
+	-- Esta relación obliga al estudiante a estar asignado a un curso
+	JOIN Organization curso
+		ON curso.OrganizationId = opr.OrganizationId
+		AND curso.RecordEndDateTime IS NULL
+		AND curso.RefOrganizationTypeId = (
+			SELECT RefOrganizationTypeId
+			FROM RefOrganizationType
+			WHERE RefOrganizationType.code IN ('Course')
+		)
+	-- La vista jerarquiasList mantiene la relación entre el curso y el nivel
+	JOIN jerarquiasList jer 
+		ON curso.OrganizationId = jer.OrganizationIdDelCurso
+		AND jer.nivel NOT IN ('03:Educación Básica Adultos'
                       ,'06:Educación Media Humanístico Científica Adultos'
                       ,'08:Educación Media Técnico Profesional y Artística, Adultos')
-    """).fetchall()
+	--En PersonRelationship el campo personId identifica al apoderado y el campo RelatedPersonId al estudiante
+	OUTER LEFT JOIN PersonRelationship prsh 
+		ON p.personId = prsh.RelatedPersonId
+		AND prsh.RecordEndDateTime IS NULL
+		AND prsh.RetirarEstudianteIndicador = 1 --Indica que se encuentra habilitado
+GROUP BY pid.Identifier
+            """).fetchall()
     except Exception as e:
-      pass
+      logger.error(f"Error al ejecutar la función: {str(e)}")
+      
     try:
-      logger.info(f"VERIFICA QUE EXISTA LISTADO DE ALUMNOS EN VISTA PERSONLIST Y QUE TENGAN PERSONAS ASOCIADAS Y AUTORIZADAS PARA RETIRO.")
-      if(len(r_)>0):
+      if( len(rows) > 0 ):
         c_ = 0
-        p_ = self.convertirArray2DToList(list([m[0] for m in r_ if m[0] is not None])) 
-        r2_ = self.convertirArray2DToList(list([m[1] for m in r_ if m[1] is not None]))        
+        rutConProblemas = []
+        rutList = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
+        cantidadList = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))        
 
-        for r in r2_:
-          if(r == 'True'):
-            c_ = c_ + 1
+        for i,cantidad in enumerate(cantidadList):
+          if( int(cantidad) > 0 ):
+            c_ += 1
+          else:
+            rutConProblemas.append(rutList[i])
 
-        logger.info(f"Total Alumnos                                     : {len(r_)}")
+        logger.info(f"Total Alumnos                                     : {len(rows)}")
         logger.info(f"Total Personas asociadas y autorizadas para retiro: {c_}")
 
-        if(c_ >= len(r_)):
+        if( c_ >= len(rows) ):
           logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
           logger.info(f"Aprobado")
           return True
         else:
-          logger.error(f"No todos los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
+          logger.error(f"No todos los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro. {rutConProblemas}")
           logger.error(f"Rechazado")
           return False
 
       else:
-        logger.info(f"S/Datos")
+        logger.info(f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
+        logger.info(f"Rechazado")
         return  False
 
     except Exception as e:
