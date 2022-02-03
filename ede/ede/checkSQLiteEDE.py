@@ -228,9 +228,35 @@ class check:
 
   #VERIFICA LA CONEXION A LA BASE DE DATOS
   def fn3F0(self,conn):
-    _r = False
-    rows = conn.execute("SELECT * FROM PersonList;").fetchall()
-    if(len(rows)>0): _r = True
+    """
+    Verifica la conexión con la base de datos SQLcypher
+
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos, retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - desencriptar la base de datos, 
+            - obtener su clave secreta, 
+            - establecer la conexión y 
+            - obtener al menos un registro de la vista personList. 
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """
+    _r = True
+    rows = []
+    try:
+      rows = conn.execute("SELECT * FROM PersonList;").fetchall()
+    except Exception as e:
+      logger.error(f"Error al ejecutar la consulta: {str(e)}")
+
+    if( len(rows) > 0 ): 
+      _r = True
+
     logger.info("Aprobado") if _r else logger.error("Rechazado")
     return _r
 
