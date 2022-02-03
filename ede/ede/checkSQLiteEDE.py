@@ -226,10 +226,10 @@ class check:
     _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
     return xd
 
-  #VERIFICA LA CONEXION A LA BASE DE DATOS
+  # begin fn3F0 
   def fn3F0(self,conn):
     """
-    Verifica la conexión con la base de datos SQLcypher
+    [Verifica la conexión con la base de datos SQLCypher]
 
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -239,7 +239,8 @@ class check:
 
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos, retorna True y “Aprobado” a través de logger, solo si se puede: 
+          Valida la conexión a la base de datos.
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - desencriptar la base de datos, 
             - obtener su clave secreta, 
             - establecer la conexión y 
@@ -252,28 +253,52 @@ class check:
     try:
       rows = conn.execute("SELECT * FROM PersonList;").fetchall()
     except Exception as e:
-      logger.error(f"Error al ejecutar la consulta: {str(e)}")
+      logger.error(f"Error al ejecutar la función: {str(e)}")
 
     if( len(rows) > 0 ): 
       _r = True
 
     logger.info("Aprobado") if _r else logger.error("Rechazado")
     return _r
-
-  #VERIFICA LA INTEGRIDAD REFERENCIAL DE LOS DATOS
+  # end fn3F0
+  
+  # begin fn3F1 
   def fn3F1(self,conn):
-    _r = True; _e = ''
-    rows = conn.execute("PRAGMA foreign_key_check;")
+    """
+    [Verifica la integridad referencial de los datos]
 
-    if(rows.returns_rows):
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+
+    Returns:
+        [Boolean]: [
+          Regresa True y "Aprobado" a través de logger, ssi puede:
+            - No contiene errores de integridad referencial en la BD.
+          
+          En todo otro caso:
+            - Agrega un archivo “_ForenKeyErrors.csv” al “_Data.ZIP” que contiene el resultado final de la revisión y
+            - Regresa False y “Rechazado” a través de logger.
+          ]
+    """
+    _r = True
+    rows = []
+    try:
+      rows = conn.execute("PRAGMA foreign_key_check;")
+    except Exception as e:
+      logger.error(f"Error al ejecutar la función: {str(e)}")
+
+    if( len(rows) > 0 ):
       pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
           self.args._FKErrorsFile,sep=self.args._sep,encoding=self.args._encode,index=False)
-      _e = f"BD con errores, más detallen en {self.args._FKErrorsFile}"
+      logger.error(f"BD con errores de integridad referencial, más detallen en {self.args._FKErrorsFile}")
       _r = False
 
-    logger.info(f"RESULTADO DE LA VERIFICACIÓN DE LA INTEGRIDAD REFERENCIAL: {_r}. {_e}")
-    logger.error("Rechazado") if (_e != '') else logger.info("Aprobado")
+    logger.info("Aprobado") if _r else logger.error("Rechazado")    
     return _r
+  # end fn3F1 
 
   #VERIFICA SI LA VISTA PersonList contiene información
   def fn3F2(self, conn):
