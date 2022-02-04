@@ -4712,19 +4712,19 @@ FROM Person p
 GROUP BY pid.Identifier
             """).fetchall()
     except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
+      logger.error(f"Error al ejecutar la consulta en la función: {str(e)}")
       
     try:
+      c_ = 0
+      rutConProblemas = []      
       if( len(rows) > 0 ):
-        c_ = 0
-        rutConProblemas = []
         rutList = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
         cantidadList = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))        
 
         for i,cantidad in enumerate(cantidadList):
-          if( int(cantidad) > 0 ):
+          if( int(cantidad) > 0 ): 
             c_ += 1
-          else:
+          else: 
             rutConProblemas.append(rutList[i])
 
         logger.info(f"Total Alumnos                                     : {len(rows)}")
@@ -4735,10 +4735,9 @@ GROUP BY pid.Identifier
           logger.info(f"Aprobado")
           return True
         else:
-          logger.error(f"No todos los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro. {rutConProblemas}")
+          logger.error(f"Los siguientes estudiantes no tienen personas autorizadas para retirarlos. {rutConProblemas}")
           logger.error(f"Rechazado")
           return False
-
       else:
         logger.info(f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
         logger.info(f"Rechazado")
@@ -4752,8 +4751,31 @@ GROUP BY pid.Identifier
 
 ### inicio FN0FB ###
   def fn0FB(self, conn):
-    try:
+    """
+    [
+      7.0 Registro de salidas o retiros
+      Verificar, en caso que existan retiros anticipados, que se encuentre registrado el “verificador de identidad” o escaneado el poder simple o la comunicación que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
+      - La firma del apoderado debe estar registrada en el sistema. (ERROR)
+      - Se debe verificar que la persona tenga el registro de habilitado para retirar en el sistema. (WARNING)
+      - Debe existir el registro de retiro del estudiante desde la sala de clases y luego desde el estableciento. (ERROR)
+      - Le fecha, hora y zona horaria de OrganizationPersonRole.ExitDate y RoleAttendanceEvent.Date deben coincidir erntre las tablas. (ERROR)
+      - Todos los registros del roleAttendanceEvent deben estar firmados. (ERROR)
+      - El tipo RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure). (ERROR)
+      - En roleAttendanceEvent debe estar el campo observaciones con el detalle del motivo del retiro anticipado. (ERROR)
 
+      Se puede filtrar por  RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure) y agrupar por Date para obtener el bloque de registros      
+    ]
+
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+
+    Returns:
+        [type]: [description]
+    """
+    try:
       _msg = ""
       _f1 = False
       _drk = 0 #DigitalRandomKey
