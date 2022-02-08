@@ -290,7 +290,7 @@ class check:
     try:
       rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
     except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
+      logger.error(f"Al ejecutar la función: {rows} -> {str(e)}")
     try:
       if( len(rows) > 0 ):
         pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
