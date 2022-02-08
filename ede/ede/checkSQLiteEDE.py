@@ -248,7 +248,7 @@ class check:
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
-    _r = True
+    _r = False
     rows = []
     try:
       rows = conn.execute("SELECT * FROM PersonList;").fetchall()
@@ -257,7 +257,6 @@ class check:
     try:
       if( len(rows) > 0 ): 
         _r = True
-
       logger.info("Aprobado") if _r else logger.error("Rechazado")
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
@@ -286,10 +285,10 @@ class check:
             - Regresa False y “Rechazado” a través de logger.
           ]
     """
-    _r = True
+    _r = False
     rows = []
     try:
-      rows = conn.execute("PRAGMA foreign_key_check;")
+      rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     try:
@@ -297,7 +296,8 @@ class check:
         pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
             self.args._FKErrorsFile,sep=self.args._sep,encoding=self.args._encode,index=False)
         logger.error(f"BD con errores de integridad referencial, más detallen en {self.args._FKErrorsFile}")
-        _r = False
+      else:
+        _r = True
       logger.info("Aprobado") if _r else logger.error("Rechazado")
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
