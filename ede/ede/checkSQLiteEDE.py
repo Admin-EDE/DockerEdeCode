@@ -254,12 +254,15 @@ class check:
       rows = conn.execute("SELECT * FROM PersonList;").fetchall()
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
+    try:
+      if( len(rows) > 0 ): 
+        _r = True
 
-    if( len(rows) > 0 ): 
-      _r = True
-
-    logger.info("Aprobado") if _r else logger.error("Rechazado")
-    return _r
+      logger.info("Aprobado") if _r else logger.error("Rechazado")
+    except Exception as e:
+      logger.error(f"Error al ejecutar la función: {str(e)}")
+    finally:
+      return _r
   # end fn3F0
   
   # begin fn3F1 
@@ -295,11 +298,11 @@ class check:
             self.args._FKErrorsFile,sep=self.args._sep,encoding=self.args._encode,index=False)
         logger.error(f"BD con errores de integridad referencial, más detallen en {self.args._FKErrorsFile}")
         _r = False
-
-      logger.info("Aprobado") if _r else logger.error("Rechazado")    
-      return _r
+      logger.info("Aprobado") if _r else logger.error("Rechazado")
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
+    finally:
+      return _r
   # end fn3F1 
 
   #VERIFICA SI LA VISTA PersonList contiene información
