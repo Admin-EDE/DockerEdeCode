@@ -251,7 +251,7 @@ class check:
     _r = False
     rows = []
     try:
-      rows = conn.execute("SELECT * FROM PersonList;").fetchall()
+      rows = conn.execute("SELECT personId FROM PersonList;").fetchone()
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     try:
@@ -4604,42 +4604,56 @@ GROUP BY Organizationid, date
 
   ## Fin fn9F1 WC ##
   def fn9F1(self,conn):
+    _r = False
+    _query = []
     try:
-        _query = conn.execute("""
-        SELECT
-              P.PersonId,
-              OPR.OrganizationId,
-              C.Description,
-              CSS.ClassMeetingDays,
-              CSS.ClassBeginningTime,
-              CSS.ClassEndingTime
-        from Person P
-                join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
-                join Organization O on OPR.OrganizationId = O.OrganizationId
-                join Course C on O.OrganizationId = C.OrganizationId
-                join CourseSection CS on O.OrganizationId = CS.CourseId
-                join CourseSectionSchedule CSS on CSS.OrganizationId = O.OrganizationId
-        where OPR.RoleId = 6
-          and O.RefOrganizationTypeId = 21;
-        """).fetchall()
-        if (len(_query)>0):
-          for x in _query:
-            for y in x:
-              if y is None:
-                logger.error(f'Se encuentran datos incompletos sobre la formacion del los estudientes')
-                logger.error(f'Rechazado')
-                return False
-          logger.info(f'Todos los registros formativos de los estudiantes se encuentran registrados en el sistema')
-          logger.info(f'Aprobado')
-          return True
-        else:
-          logger.error(f'S/Datos')
-          logger.error(f'Sin datos de la formacion del estudiante')
-          return False
+      _query = conn.execute("""
+          SELECT
+                  P.PersonId
+          , OPR.OrganizationId
+                , C.Description
+                , CSS.ClassMeetingDays
+                , CSS.ClassBeginningTime
+                , CSS.ClassEndingTime
+          FROM Person P
+                  join OrganizationPersonRole OPR on OPR.PersonId = P.PersonId
+                  join Organization O on O.OrganizationId = OPR.OrganizationId
+                  join Course C on C.OrganizationId = O.OrganizationId
+                  join CourseSection CS on CS.CourseId = O.OrganizationId
+                  join CourseSectionSchedule CSS on CSS.OrganizationId = O.OrganizationId
+          WHERE 
+            OPR.RoleId IN (
+        SELECT RoleId
+        FROM Role
+        WHERE Name IN ('Estudiante')
+        )
+            AND
+            O.RefOrganizationTypeId IN (
+        SELECT RefOrganizationTypeId 
+        FROM RefOrganizationType
+        WHERE Code IN ('Course')
+        );
+      """).fetchall()
+    except Exception as e:
+      logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
+    try:
+      if (len(_query)>0):
+        for x in _query:
+          for y in x:
+            if y is None:
+              logger.error(f'Se encuentran datos incompletos sobre la formacion del los estudientes')
+              logger.error(f'Rechazado')
+        logger.info(f'Todos los registros formativos de los estudiantes se encuentran registrados en el sistema')
+        logger.info(f'Aprobado')
+        _r = True
+      else:
+        logger.error(f'S/Datos')
+        logger.error(f'Sin datos de la formacion del estudiante')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return False
+    finally:
+        return _r
   ## Fin fn9F1 WC ##
 
 ### WebClass FIN ###
