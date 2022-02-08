@@ -289,15 +289,17 @@ class check:
       rows = conn.execute("PRAGMA foreign_key_check;")
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
+    try:
+      if( len(rows) > 0 ):
+        pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
+            self.args._FKErrorsFile,sep=self.args._sep,encoding=self.args._encode,index=False)
+        logger.error(f"BD con errores de integridad referencial, más detallen en {self.args._FKErrorsFile}")
+        _r = False
 
-    if( len(rows) > 0 ):
-      pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
-          self.args._FKErrorsFile,sep=self.args._sep,encoding=self.args._encode,index=False)
-      logger.error(f"BD con errores de integridad referencial, más detallen en {self.args._FKErrorsFile}")
-      _r = False
-
-    logger.info("Aprobado") if _r else logger.error("Rechazado")    
-    return _r
+      logger.info("Aprobado") if _r else logger.error("Rechazado")    
+      return _r
+    except Exception as e:
+      logger.error(f"Error al ejecutar la función: {str(e)}")
   # end fn3F1 
 
   #VERIFICA SI LA VISTA PersonList contiene información
@@ -4754,16 +4756,12 @@ GROUP BY pid.Identifier
     """
     [
       7.0 Registro de salidas o retiros
-      Verificar, en caso que existan retiros anticipados, que se encuentre registrado el “verificador de identidad” o escaneado el poder simple o la comunicación que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
-      - La firma del apoderado debe estar registrada en el sistema. (ERROR)
-      - Se debe verificar que la persona tenga el registro de habilitado para retirar en el sistema. (WARNING)
-      - Debe existir el registro de retiro del estudiante desde la sala de clases y luego desde el estableciento. (ERROR)
-      - Le fecha, hora y zona horaria de OrganizationPersonRole.ExitDate y RoleAttendanceEvent.Date deben coincidir erntre las tablas. (ERROR)
-      - Todos los registros del roleAttendanceEvent deben estar firmados. (ERROR)
-      - El tipo RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure). (ERROR)
-      - En roleAttendanceEvent debe estar el campo observaciones con el detalle del motivo del retiro anticipado. (ERROR)
+        Verificar, en caso que existan retiros anticipados, que se encuentre registrado 
+        el “verificador de identidad” o escaneado el poder simple o la comunicación 
+        que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
 
-      Se puede filtrar por  RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure) y agrupar por Date para obtener el bloque de registros      
+        Se puede filtrar por RoleAttendanceEvant.RefAttendanceStatusID == 5 (Early Departure) 
+        y agrupar por Date para obtener el bloque de registros      
     ]
 
     Args:
@@ -4773,7 +4771,20 @@ GROUP BY pid.Identifier
           ]
 
     Returns:
-        [type]: [description]
+        [Boolean]: [
+          Retorna True y "S/Datos" a través de logger, si no existe información en el sistema.
+          o
+          Retorna True y "Aprobado" a través de logger, si cada estudiante cumple con los siguientes criterios:
+            - La firma del apoderado se encuentra registrada en el sistema. (ERROR)
+            - La persona que retiró se encontraba autorizada para hacerlo en el sistema. (WARNING)
+            - El registro de retiro del estudiante desde la sala de clases debe ser anterior al registro de salida del estableciento. (ERROR)
+            - Le fecha, hora y zona horaria de OrganizationPersonRole.ExitDate y RoleAttendanceEvent.Date deben coincidir erntre las tablas. (ERROR)
+            - Todos los registros del roleAttendanceEvent deben estar firmados. (ERROR)
+            - El tipo RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure). (ERROR)
+            - En roleAttendanceEvent debe estar el campo observaciones con el detalle del motivo del retiro anticipado. (ERROR)
+          o 
+          Retorna False, "Rechazado" en cualquier otra caso.
+          ]
     """
     try:
       _msg = ""
@@ -4840,7 +4851,9 @@ GROUP BY pid.Identifier
 
       _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
                     FROM PersonRelationship A
-                    WHERE A.personId = ?"""
+                    WHERE A.personId = ?
+                    
+      """
 
       #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
       logger.info(f"VERIFICA CONSISTENCIA EN FECHA Y HORA DE REGISTROS DE RETIRO Y LA EXISTENCIA DE FIRMA DIGITAL Y/O DOCUMENTO DIGITALIZADO DE AUTORIZACION PARA EL CASO DE QUIEN RETIRA.")
