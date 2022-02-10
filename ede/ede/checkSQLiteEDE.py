@@ -802,9 +802,10 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       return _r
   ### FIN fn3FD ###
   
-  #VERIFICA SI LA VISTA PersonList filtrada por estudiantes contiene información
+  ### INICIO fn3F3 ###
   def fn3FE(self, conn):
-    """ Breve descripción de la función
+    """
+    Integridad: Verifica si la vista PersonList filtrada por estudiantes contiene información
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -812,13 +813,13 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - la vista PersonList filtrada por estudiantes contiene información
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
+    _r = False
+    rows = []
     try:
       rows = conn.execute("""
       SELECT
@@ -829,25 +830,26 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       FROM PersonList
       WHERE Role like '%Estudiante%';
     """).fetchall()
-
-      logger.info(f"len(estudiantes): {len(rows)}")
-
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:
       if(len(rows)>0):
+        logger.info(f"len(estudiantes): {len(rows)}")        
         personId  = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
         cuidadNac = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))
         regionNac = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None]))
         paisNac   = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None]))
         self.comparaEstudiantes = [len(personId) == len(cuidadNac) == len(regionNac) == len(paisNac)]
         logger.info(f"Aprobado")
+        _r = True
       else:
         logger.info(f"S/Datos")
-
-      return True
-
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por estudiantes: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
+### FIN fn3FE ###
 
   #VERIFICA QUE TODOS LOS ESTUDIANTES TENGAN Pais, Región y cuidad de nacimiento
   def fn3FF(self):
