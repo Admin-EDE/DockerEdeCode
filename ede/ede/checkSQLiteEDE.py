@@ -481,10 +481,10 @@ class check:
       return _r
   ### FIN fn3F5 ###  
   
-  #VERIFICA SI LA LISTA DE teléfonos INGRESADOS cumple con el formato E164
   ### INICIO fn3F6 ###
   def fn3F6(self):
-    """ Breve descripción de la función
+    """ 
+    Integridad: Verifica la lista de teléfonos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -492,15 +492,19 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger si no encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Verificar que teléfonos ingresados cumplan con el formato E164
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
+    _r = False
+    _l = [] 
     try:
       _l = self.phoneList
+    except Exception as e:
+      logger.info(f"Resultado: {_l} -> {str(e)}")
+    try:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaFormatoE164Telefono(e)])
         _r   = False if len(_err)>0 else True
@@ -509,11 +513,12 @@ class check:
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
+      _r  = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
   ### FIN fn3F6 ###
   
   #VERIFICA SI EL NUMERO DE LISTA cumple con el formato
