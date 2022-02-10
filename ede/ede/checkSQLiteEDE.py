@@ -364,8 +364,6 @@ class check:
   def fn3F3(self):
     """ 
     Integridad: Verifica que los RUT's ingresados sean válidos
-    Revisa que el dígito verificador del rut corresponda con el 
-    dígito ingresado y que el RUN sea menor a 47 millones.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -374,7 +372,8 @@ class check:
     Returns:
         [Boolean]: [
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Validar correctamente todos los RUT's
+            - Verificar que el dígito verificador del rut corresponda con el ingresado 
+            - y que el RUN sea menor a 47 millones.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
