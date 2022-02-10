@@ -969,6 +969,22 @@ class check:
 
   #VERIFICA SI LA VISTA jerarquiasList contiene información
   def fn3E4(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso  FROM jerarquiasList;").fetchall()
       logger.info(f"len(organizaciones): {len(rows)}")
@@ -996,6 +1012,22 @@ class check:
 
   #VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3E5(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.modalidadList
       if(len(_l)>0):
@@ -1014,6 +1046,22 @@ class check:
 
   #VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3E6(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.jornadaList
       if(len(_l)>0):
@@ -1032,6 +1080,22 @@ class check:
 
   #VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3E7(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.nivelList
       if(len(_l)>0):
@@ -1050,6 +1114,22 @@ class check:
 
   #VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3E8(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.ramaList
       if(len(_l)>0):
@@ -1068,6 +1148,22 @@ class check:
 
   #VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3E9(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.sectorList
       if(len(_l)>0):
@@ -1086,6 +1182,22 @@ class check:
 
   #VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3EA(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.especialidadList
       if(len(_l)>0):
@@ -1104,6 +1216,22 @@ class check:
 
   #VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3EB(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.tipoCursoList
       if(len(_l)>0):
@@ -1122,6 +1250,22 @@ class check:
 
   #VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3EC(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.codigoEnseList
       if(len(_l)>0):
@@ -1140,6 +1284,22 @@ class check:
 
   #VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3ED(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.gradoList
       if(len(_l)>0):
@@ -1158,6 +1318,22 @@ class check:
 
   #VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3EE(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.letraCursoList
       if(len(_l)>0):
@@ -1176,6 +1352,22 @@ class check:
 
   #VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
   def fn3EF(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       courses1 = conn.execute("SELECT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
       courses2 = conn.execute("SELECT OrganizationIdCurso FROM cursoList;").fetchall()
@@ -1201,6 +1393,22 @@ class check:
   # Entrega los organizationID de las asignaturas 
   # que no están asociadas a ningún curso
   def fn3D0(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _ExistData = conn.execute("""
         SELECT count(OrganizationId)
@@ -1273,6 +1481,22 @@ class check:
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3D1(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       MaximumCapacityErrors = []
       MaximumCapacityErrors = conn.execute("""
@@ -1332,6 +1556,22 @@ class check:
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3D2(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _ExistData = conn.execute("""
           SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent
@@ -1370,6 +1610,22 @@ class check:
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3D3(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _ExistData = conn.execute("""
         -- Lista todos los registros de la tabla CourseSectionSchedule
@@ -1433,6 +1689,22 @@ class check:
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
   def fn3C4(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       RoleAttendanceEvent = conn.execute("""
         -- Lista todos los IDs que no cumplan con la empresión regular.
@@ -1484,6 +1756,22 @@ class check:
   # Revisar que los cursos del establecimiento tengan bien 
   # calculada la información de la tabla RoleAttendance.
   def fn3D9(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       listInfoSuccesfull = conn.execute("""
         /*
@@ -1559,6 +1847,22 @@ class check:
   # Revisar que los cursos del establecimiento tengan bien 
   # calculada la información de la tabla RoleAttendance.
   def fn3DA(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       listInfoSuccesfull = conn.execute("""
         SELECT RoleAttendanceId
@@ -1656,6 +1960,22 @@ class check:
   # Revisar que la organización del establecimiento, asignaturas y cursos 
   # tengan asignada una localidad dentro del establecimiento.
   def fn3C3(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _ExistData = conn.execute("""
         SELECT count(OrganizationId)
@@ -1740,6 +2060,22 @@ class check:
   Para la organización del establecimiento OrganizationLocation.RefOrganizationLocationTypeId debe estar definido Mailing [1], Physical [2] y Shipping [3], si es la misma para todos los casos, se debe repetir.
   """
   def fn3DD(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       webSite = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
@@ -1998,6 +2334,22 @@ class check:
 
   # VERIFICA DATOS DE LAS ORGANIZACIONES
   def fn3C5(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       rows = conn.execute("SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
       logger.info(f"len(digitalRandomKey): {len(rows)}")
@@ -2020,6 +2372,22 @@ class check:
   # Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
   # Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento
   def fn3CA(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       rows = conn.execute("""
       SELECT ast.Description as 'RefAttendanceStatus',aet.Description as 'AttendanceEventType', orgt.Description as 'OrganizationType'
@@ -2051,1186 +2419,1727 @@ class check:
 ## WebClass INICIO ##
   ## Inicio fn2FA WC ##
   def fn2FA(self, conn):
-            try:
-                results = conn.execute("""
-                select count(distinct PersonId)-(select count(distinct PersonId) from OrganizationPersonRole
-                where RoleId=6
-                and ExitDate is not null)
-                from OrganizationPersonRole
-                where  EntryDate is not null and RoleId=6  ;
-                """).fetchall()
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        results = conn.execute("""
+        select count(distinct PersonId)-(select count(distinct PersonId) from OrganizationPersonRole
+        where RoleId=6
+        and ExitDate is not null)
+        from OrganizationPersonRole
+        where  EntryDate is not null and RoleId=6  ;
+        """).fetchall()
 
-                resultsTwo = conn.execute("""
-                SELECT count(distinct K12StudentEnrollment.OrganizationPersonRoleId)
-                from K12StudentEnrollment
-                where RefEnrollmentStatusId is not null
-                AND FirstEntryDateIntoUSSchool IS NOT NULL;
-                """).fetchall()
+        resultsTwo = conn.execute("""
+        SELECT count(distinct K12StudentEnrollment.OrganizationPersonRoleId)
+        from K12StudentEnrollment
+        where RefEnrollmentStatusId is not null
+        AND FirstEntryDateIntoUSSchool IS NOT NULL;
+        """).fetchall()
 
-                if(len(results)>0 and len(resultsTwo)>0):
-                    lista = list(set([m[0] for m in results if m[0] is not None]))
-                    listaDos = list(set([m[0] for m in resultsTwo if m[0] is not None]))
-                    if lista == listaDos:
-                        logger.info(f"La cantidad de matriculados corresponder con los alumnos inscritos")
-                        logger.info(f"Aprobado")
-                        return True
-                    else :
-                        logger.error(f'La cantidad de alumnos matriculados no cocincide con los inscritos')
-                        logger.error(f'Rechazado')
-                        return False
-                else:
-                    logger.info(f"S/Datos")
-                    logger.info(f'No hay registros de matriculas')
-                    return False
-            except Exception as e:
-                logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                logger.error(f"Rechazado")
+        if(len(results)>0 and len(resultsTwo)>0):
+            lista = list(set([m[0] for m in results if m[0] is not None]))
+            listaDos = list(set([m[0] for m in resultsTwo if m[0] is not None]))
+            if lista == listaDos:
+                logger.info(f"La cantidad de matriculados corresponder con los alumnos inscritos")
+                logger.info(f"Aprobado")
+                return True
+            else :
+                logger.error(f'La cantidad de alumnos matriculados no cocincide con los inscritos')
+                logger.error(f'Rechazado')
                 return False
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f'No hay registros de matriculas')
+            return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn2FA WC ##
 
   ##Inicio fn2EA WC ##
   def fn2EA(self, conn):
-        try:
-            results = conn.execute("""
-              SELECT 
-                (
-                  SELECT identifier 
-                  FROM PersonIdentifier pi
-                  JOIN RefPersonIdentificationSystem rfi 
-                    ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-                    AND rfi.code IN ('SchoolNumber')
-                  WHERE pi.PersonId = p.PersonId
-                ) as "matricula" -- 0
-                ,(
-                  SELECT identifier 
-                  FROM PersonIdentifier pi
-                  JOIN RefPersonIdentificationSystem rfi 
-                    ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-                    AND rfi.code IN ('RUN', 'IPE')
-                  WHERE pi.PersonId = p.PersonId
-                ) as "cedula" -- 1
-                , p.FirstName as "primer nombre" -- 2
-                , p.MiddleName as "otros nombres" -- 3
-                , p.LastName as "apellidoPaterno" -- 4
-                , p.SecondLastName as "apellidoMaterno" -- 5
-                , case when RTA.Description is null then 'ninguna' else RTA.Description end as "tribalAffiationDescription" -- 6
-                , Role.Name as rol -- 7
-                , rf.Description as sexo -- 8
-                , p.Birthdate as "fechaCumpleaños" -- 9
-                , opr.EntryDate as "fecha de incorporacion" -- 10
-                , RefCountry.Description as pais -- 11
-                , rfs.Description as region -- 12
-                , pa.City -- 13
-                , rfc.Description as comuna -- 14
-                , pa.AddressCountyName -- 15
-                , pa.StreetNumberAndName as direccion -- 16
-                , pa.ApartmentRoomOrSuiteNumber -- 17
-                , pa.PostalCode -- 18
-                , p2.FirstName as "Nombre Apoderado" -- 19
-                , p2.MiddleName as "segundo nombre apoderado" -- 20
-                , p2.LastName as "apellidoPaterno apoderado" -- 21
-                , p2.SecondLastName as "apellidoMaterno apoderado" -- 22
-                , RefCountry2.Description as paisApoderado -- 23
-                , rfs2.Description as regionApoderado -- 24
-                , pa2.City as ciudadapoderado -- 25
-                , rfc2.Description as comunaApoderado -- 26
-                , pa2.AddressCountyName -- 27
-                , pa2.StreetNumberAndName as direccionApoderado -- 28
-                , pa2.ApartmentRoomOrSuiteNumber -- 29
-                , pa2.PostalCode as codigoPostalApoderado -- 30
-                , rfpiv.Description -- 31
-                , pt2.TelephoneNumber as numeroTelefonicoApoderado -- 32
-                , rfptnt.Description as tipoNumeroApoderado -- 33
-                , pt2.PrimaryTelephoneNumberIndicator -- 34
-                , pea2.EmailAddress as emailApoderado -- 35
-                , rfet.Description as tipoEmail -- 36
-                , opr.ExitDate as fechaRetiro -- 37
-                , opr.OrganizationId -- 38
-                , p.personId --39
-                , rprs.description -- 40
-              FROM Person p 
-                JOIN Organization o on o.OrganizationId=opr.OrganizationId			  
-				-- Información del estudiante
-                OUTER LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
-                OUTER LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
-                OUTER LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
-                OUTER LEFT JOIN Role on Role.RoleId=opr.RoleId
-                OUTER LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
-                OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
-                OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
-                OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
-				OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
-				-- Información del Apoderado
-				OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
-                OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
-                OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
-                OUTER LEFT JOIN RefCountry RefCountry2 on pa2.RefCountryId = RefCountry2.RefCountryId
-                OUTER LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
-                OUTER LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
-                OUTER LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
-                OUTER LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
-                OUTER LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
-                OUTER LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
-                OUTER LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
-              WHERE 
-                opr.RoleId IN (
-                  SELECT RoleId
-                  FROM Role
-                  WHERE Name IN ('Estudiante')
-                ) 
-                AND
-                o.RefOrganizationTypeId IN (
-                  SELECT RefOrganizationTypeId
-                  FROM RefOrganizationType
-                  WHERE Description IN ('Course')
-                )
-              GROUP by p.PersonId
-            """)#.fetchall()
-            
-            if(results.returns_rows == 0):
-              logger.error(f"S/DATOS")
-              return True
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        results = conn.execute("""
+          SELECT 
+            (
+              SELECT identifier 
+              FROM PersonIdentifier pi
+              JOIN RefPersonIdentificationSystem rfi 
+                ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+                AND rfi.code IN ('SchoolNumber')
+              WHERE pi.PersonId = p.PersonId
+            ) as "matricula" -- 0
+            ,(
+              SELECT identifier 
+              FROM PersonIdentifier pi
+              JOIN RefPersonIdentificationSystem rfi 
+                ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+                AND rfi.code IN ('RUN', 'IPE')
+              WHERE pi.PersonId = p.PersonId
+            ) as "cedula" -- 1
+            , p.FirstName as "primer nombre" -- 2
+            , p.MiddleName as "otros nombres" -- 3
+            , p.LastName as "apellidoPaterno" -- 4
+            , p.SecondLastName as "apellidoMaterno" -- 5
+            , case when RTA.Description is null then 'ninguna' else RTA.Description end as "tribalAffiationDescription" -- 6
+            , Role.Name as rol -- 7
+            , rf.Description as sexo -- 8
+            , p.Birthdate as "fechaCumpleaños" -- 9
+            , opr.EntryDate as "fecha de incorporacion" -- 10
+            , RefCountry.Description as pais -- 11
+            , rfs.Description as region -- 12
+            , pa.City -- 13
+            , rfc.Description as comuna -- 14
+            , pa.AddressCountyName -- 15
+            , pa.StreetNumberAndName as direccion -- 16
+            , pa.ApartmentRoomOrSuiteNumber -- 17
+            , pa.PostalCode -- 18
+            , p2.FirstName as "Nombre Apoderado" -- 19
+            , p2.MiddleName as "segundo nombre apoderado" -- 20
+            , p2.LastName as "apellidoPaterno apoderado" -- 21
+            , p2.SecondLastName as "apellidoMaterno apoderado" -- 22
+            , RefCountry2.Description as paisApoderado -- 23
+            , rfs2.Description as regionApoderado -- 24
+            , pa2.City as ciudadapoderado -- 25
+            , rfc2.Description as comunaApoderado -- 26
+            , pa2.AddressCountyName -- 27
+            , pa2.StreetNumberAndName as direccionApoderado -- 28
+            , pa2.ApartmentRoomOrSuiteNumber -- 29
+            , pa2.PostalCode as codigoPostalApoderado -- 30
+            , rfpiv.Description -- 31
+            , pt2.TelephoneNumber as numeroTelefonicoApoderado -- 32
+            , rfptnt.Description as tipoNumeroApoderado -- 33
+            , pt2.PrimaryTelephoneNumberIndicator -- 34
+            , pea2.EmailAddress as emailApoderado -- 35
+            , rfet.Description as tipoEmail -- 36
+            , opr.ExitDate as fechaRetiro -- 37
+            , opr.OrganizationId -- 38
+            , p.personId --39
+            , rprs.description -- 40
+          FROM Person p 
+            JOIN Organization o on o.OrganizationId=opr.OrganizationId			  
+    -- Información del estudiante
+            OUTER LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
+            OUTER LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
+            OUTER LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
+            OUTER LEFT JOIN Role on Role.RoleId=opr.RoleId
+            OUTER LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
+            OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
+            OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
+            OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
+    OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
+    -- Información del Apoderado
+    OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
+            OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
+            OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
+            OUTER LEFT JOIN RefCountry RefCountry2 on pa2.RefCountryId = RefCountry2.RefCountryId
+            OUTER LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
+            OUTER LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
+            OUTER LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
+            OUTER LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
+            OUTER LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
+            OUTER LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
+            OUTER LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
+          WHERE 
+            opr.RoleId IN (
+              SELECT RoleId
+              FROM Role
+              WHERE Name IN ('Estudiante')
+            ) 
+            AND
+            o.RefOrganizationTypeId IN (
+              SELECT RefOrganizationTypeId
+              FROM RefOrganizationType
+              WHERE Description IN ('Course')
+            )
+          GROUP by p.PersonId
+        """)#.fetchall()
+        
+        if(results.returns_rows == 0):
+          logger.error(f"S/DATOS")
+          return True
 
-            results = results.fetchall()
-            for fila in results:
-                # seccion=fila[38]
-                # nivel = conn.execute("""select  Nivel.Name
-                #     from Organization Nivel
-                #     join RefOrganizationType rft on Nivel.RefOrganizationTypeId = rft.RefOrganizationTypeId
-                #     join OrganizationRelationship or1 on or1.OrganizationId=Nivel.OrganizationId
-                #     join OrganizationRelationship or2 on or1.OrganizationId=or2.Parent_OrganizationId
-                #     join OrganizationRelationship or3 on or2.OrganizationId=or3.Parent_OrganizationId
-                #     join OrganizationRelationship or4 on or3.OrganizationId=or4.Parent_OrganizationId
-                #     join OrganizationRelationship or5 on or4.OrganizationId=or5.Parent_OrganizationId
-                #     join OrganizationRelationship or6 on or5.OrganizationId=or6.Parent_OrganizationId
-                #     join OrganizationRelationship or7 on or6.OrganizationId = or7.Parent_OrganizationId
-                #     join OrganizationRelationship or8 on or7.OrganizationId = or8.Parent_OrganizationId
-                #     where or8.OrganizationId= ?;""",([seccion])).fetchall()
-                # cursos = conn.execute("""select asi.name from Organization asi join OrganizationRelationship ors on ors.OrganizationId=asi.OrganizationId
-                #     where ors.Parent_OrganizationId = ?;""",([seccion])).fetchall()
-                _response = True
-                if (fila[0] is None):
-                    logger.error(f"alumno sin matricula")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[1] is None):
-                    logger.error(f"alumno sin RUN")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[2] is None ):
-                    logger.error(f"alumno sin nombre")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[4] is None):
-                    logger.error(f"alumno sin apellido paterno")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[5] is None):
-                    logger.error(f"alumno sin apellido materno")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[6] is None):
-                    logger.error(f"alumno sin tribalAffillation")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[7] is None):
-                    logger.error(f"alumno sin rol")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[8] is None):
-                    logger.error(f"alumno sin sexo")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[9] is None):
-                    logger.error(f"alumno sin fecha cumpleaños")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[10] is None):
-                    logger.error(f"alumno sin fecha de entrada")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[11] is None):
-                    logger.error(f"alumno sin pais")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[12] is None):
-                    logger.error(f"alumno sin region")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[13] is None):
-                    logger.error(f"alumno sin ciudad")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[14] is None):
-                    logger.error(f"alumno sin comuna")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[15] is None or fila[16] is None or fila[17] is None):
-                    logger.error(f"alumno sin dirección")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if (fila[18] is None):
-                    logger.error(f"alumno sin codigo postal")
-                    logger.error(f"Rechazado")
-                    _response = False
-                if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
-                  if (fila[19] is None):
-                      logger.error(f"apoderado alumno sin nombre")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[21] is None):
-                      logger.error(f"apoderado alumno sin apellido paterno")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[22] is None):
-                      logger.error(f"apoderado alumno sin apellido materno")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[23] is None):
-                      logger.error(f"apoderado alumno sin pais")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[24] is None):
-                      logger.error(f"apoderado alumno sin region")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[25] is None):
-                      logger.error(f"apoderado alumno sin ciudad")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[26] is None):
-                      logger.error(f"apoderado alumno sin comuma")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[27] is None or fila[28] is None or fila[29] is None):
-                      logger.error(f"apoderado alumno sin direccion")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[30] is None):
-                      logger.error(f"apoderado alumno sin codigo postal")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[32] is None):
-                      logger.error(f"apoderado alumno sin numero telefonico")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[33] is None):
-                      logger.error(f"apoderado alumno sin tipo de numero telefonico")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[34] is None):
-                      logger.error(f"apoderado alumno sin verificador de numero primario")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[35] is None):
-                      logger.error(f"apoderado alumno sin email")
-                      logger.error(f"Rechazado")
-                      _response = False
-                  if (fila[36] is None):
-                      logger.error(f"apoderado alumno sin tipo de email")
-                      logger.error(f"Rechazado")
-                      _response = False
-                else:
-                    logger.error(f"El estudiante no tiene un apoderdo asignado")
-                    logger.error(f"Rechazado")
-                    _response = False                  
-            if(_response):
-              logger.info(f"datos de alumnos validados")
-              logger.error(f"Aprobado")
-            return _response
-        except Exception as e:
-            logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.info(f"Rechazado")
-            return False
+        results = results.fetchall()
+        for fila in results:
+            # seccion=fila[38]
+            # nivel = conn.execute("""select  Nivel.Name
+            #     from Organization Nivel
+            #     join RefOrganizationType rft on Nivel.RefOrganizationTypeId = rft.RefOrganizationTypeId
+            #     join OrganizationRelationship or1 on or1.OrganizationId=Nivel.OrganizationId
+            #     join OrganizationRelationship or2 on or1.OrganizationId=or2.Parent_OrganizationId
+            #     join OrganizationRelationship or3 on or2.OrganizationId=or3.Parent_OrganizationId
+            #     join OrganizationRelationship or4 on or3.OrganizationId=or4.Parent_OrganizationId
+            #     join OrganizationRelationship or5 on or4.OrganizationId=or5.Parent_OrganizationId
+            #     join OrganizationRelationship or6 on or5.OrganizationId=or6.Parent_OrganizationId
+            #     join OrganizationRelationship or7 on or6.OrganizationId = or7.Parent_OrganizationId
+            #     join OrganizationRelationship or8 on or7.OrganizationId = or8.Parent_OrganizationId
+            #     where or8.OrganizationId= ?;""",([seccion])).fetchall()
+            # cursos = conn.execute("""select asi.name from Organization asi join OrganizationRelationship ors on ors.OrganizationId=asi.OrganizationId
+            #     where ors.Parent_OrganizationId = ?;""",([seccion])).fetchall()
+            _response = True
+            if (fila[0] is None):
+                logger.error(f"alumno sin matricula")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[1] is None):
+                logger.error(f"alumno sin RUN")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[2] is None ):
+                logger.error(f"alumno sin nombre")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[4] is None):
+                logger.error(f"alumno sin apellido paterno")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[5] is None):
+                logger.error(f"alumno sin apellido materno")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[6] is None):
+                logger.error(f"alumno sin tribalAffillation")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[7] is None):
+                logger.error(f"alumno sin rol")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[8] is None):
+                logger.error(f"alumno sin sexo")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[9] is None):
+                logger.error(f"alumno sin fecha cumpleaños")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[10] is None):
+                logger.error(f"alumno sin fecha de entrada")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[11] is None):
+                logger.error(f"alumno sin pais")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[12] is None):
+                logger.error(f"alumno sin region")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[13] is None):
+                logger.error(f"alumno sin ciudad")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[14] is None):
+                logger.error(f"alumno sin comuna")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[15] is None or fila[16] is None or fila[17] is None):
+                logger.error(f"alumno sin dirección")
+                logger.error(f"Rechazado")
+                _response = False
+            if (fila[18] is None):
+                logger.error(f"alumno sin codigo postal")
+                logger.error(f"Rechazado")
+                _response = False
+            if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
+              if (fila[19] is None):
+                  logger.error(f"apoderado alumno sin nombre")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[21] is None):
+                  logger.error(f"apoderado alumno sin apellido paterno")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[22] is None):
+                  logger.error(f"apoderado alumno sin apellido materno")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[23] is None):
+                  logger.error(f"apoderado alumno sin pais")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[24] is None):
+                  logger.error(f"apoderado alumno sin region")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[25] is None):
+                  logger.error(f"apoderado alumno sin ciudad")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[26] is None):
+                  logger.error(f"apoderado alumno sin comuma")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[27] is None or fila[28] is None or fila[29] is None):
+                  logger.error(f"apoderado alumno sin direccion")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[30] is None):
+                  logger.error(f"apoderado alumno sin codigo postal")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[32] is None):
+                  logger.error(f"apoderado alumno sin numero telefonico")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[33] is None):
+                  logger.error(f"apoderado alumno sin tipo de numero telefonico")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[34] is None):
+                  logger.error(f"apoderado alumno sin verificador de numero primario")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[35] is None):
+                  logger.error(f"apoderado alumno sin email")
+                  logger.error(f"Rechazado")
+                  _response = False
+              if (fila[36] is None):
+                  logger.error(f"apoderado alumno sin tipo de email")
+                  logger.error(f"Rechazado")
+                  _response = False
+            else:
+                logger.error(f"El estudiante no tiene un apoderdo asignado")
+                logger.error(f"Rechazado")
+                _response = False                  
+        if(_response):
+          logger.info(f"datos de alumnos validados")
+          logger.error(f"Aprobado")
+        return _response
+    except Exception as e:
+        logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.info(f"Rechazado")
+        return False
   ## Fin fn2EA WC ##
 
  ## Inicio fn7F0 WC ##
   def fn7F0(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT A.AssessmentId,
-                  ASSR.PersonId,
-                  A.RefAssessmentTypeId
-             FROM AssessmentResult R
-                    JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
-                    JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                    JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
-                    JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                    JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
-                    JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
-                      WHERE ASSR.RefAssessmentSessionStaffRoleTypeId = 6
-                        AND OPR.RoleId = 6
-                  GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
-            """).fetchall()
-            if(len(_query)>0):
-                _contador = 0
-                _assessment = int(len(_query))
-                _assessmentType = (list([m[2] for m in _query if m[2] is not None]))
-                for x in _assessmentType:
-                    if (x == 28 or x == 29):
-                        _contador += 1
-                if _contador == _assessment:
-                    logger.info(f'Todas las evaluaciones estan ingresadas como sumativas o formativas')
-                    logger.info(f'Aprobado')
-                    return True
-                else:
-                    logger.error(f'No todas las evaluaciones estan ingresadas como sumativas o formativas')
-                    logger.error(f'Rechazado')
-                    return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT A.AssessmentId,
+              ASSR.PersonId,
+              A.RefAssessmentTypeId
+          FROM AssessmentResult R
+                JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+                JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
+                JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
+                  WHERE ASSR.RefAssessmentSessionStaffRoleTypeId = 6
+                    AND OPR.RoleId = 6
+              GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
+        """).fetchall()
+        if(len(_query)>0):
+            _contador = 0
+            _assessment = int(len(_query))
+            _assessmentType = (list([m[2] for m in _query if m[2] is not None]))
+            for x in _assessmentType:
+                if (x == 28 or x == 29):
+                    _contador += 1
+            if _contador == _assessment:
+                logger.info(f'Todas las evaluaciones estan ingresadas como sumativas o formativas')
+                logger.info(f'Aprobado')
+                return True
             else:
-                logger.error(f'S/Datos')
-                logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
+                logger.error(f'No todas las evaluaciones estan ingresadas como sumativas o formativas')
+                logger.error(f'Rechazado')
                 return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn7F0 WC ##
 
   ## Inicio fn7F1 WC ##
   def fn7F1(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT round(R.ScoreValue, 1) AS value,
-                  R.ScoreValue           AS fullValue
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT round(R.ScoreValue, 1) AS value,
+              R.ScoreValue           AS fullValue
+        FROM AssessmentResult R
+                JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+                JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
+                JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
+        WHERE A.RefAssessmentTypeId = 29
+          AND R.RefScoreMetricTypeId IN (1, 2)
+          AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
+          AND OPR.RoleId = 6
+        GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
+        """).fetchall()
+        if(len(_query)>0):
+            _contador = 0
+            _assessment = int(len(_query))
+            _assessmentScoreValue = (list([m[0] for m in _query if m[0] is not None]))
+            _assessmentScoreFullValue = (list([m[1] for m in _query if m[1] is not None]))
+            for y in _assessmentScoreFullValue:
+                if (len(y)>3):
+                    logger.error(f'Se han ingresado calificaciones sumativas con mas de un decimal')
+                    logger.error(f'Rechazado')
+                    return False
+            for x in _assessmentScoreValue:
+                if (x >= 1.0 and x <= 7.0):
+                    _contador += 1
+            if _contador == _assessment:
+                logger.info(f'Todas las evaluaciones sumativas estan ingresadas correctamente')
+                logger.info(f'Aprobado')
+                return True
+            else:
+                logger.error(f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
+                logger.error(f'Rechazado')
+                return False
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
+            return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
+  ## Fin fn7F1 WC ##
+
+  ## Inicio fn7F2 WC ##
+  def fn7F2(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT DISTINCT PS.PersonId
+        FROM OrganizationPersonRole OPR
+                JOIN Person P ON OPR.PersonId = P.PersonId
+                JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+        WHERE OPR.RoleId = 6
+          AND PS.RefPersonStatusTypeId = 28;
+        """).fetchall()
+        if(len(_query)>0):
+            _scoreQuery = conn.execute("""
+            SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0)
             FROM AssessmentResult R
                     JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
                     JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
                     JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
                     JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
                     JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
-                    JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
-            WHERE A.RefAssessmentTypeId = 29
+            WHERE A.RefAssessmentTypeId = 28
               AND R.RefScoreMetricTypeId IN (1, 2)
               AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
-              AND OPR.RoleId = 6
-            GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
+              AND ASSR.PersonId IN (SELECT DISTINCT PS.PersonId
+                                    FROM OrganizationPersonRole OPR
+                                            JOIN Person P ON OPR.PersonId = P.PersonId
+                                            JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+                                    WHERE OPR.RoleId = 6
+                                      AND PS.RefPersonStatusTypeId = 28
+            )
+            GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId, ASSR.PersonId
+            ORDER BY ASSR.PersonId ASC;
             """).fetchall()
-            if(len(_query)>0):
-                _contador = 0
-                _assessment = int(len(_query))
-                _assessmentScoreValue = (list([m[0] for m in _query if m[0] is not None]))
-                _assessmentScoreFullValue = (list([m[1] for m in _query if m[1] is not None]))
-                for y in _assessmentScoreFullValue:
-                    if (len(y)>3):
-                        logger.error(f'Se han ingresado calificaciones sumativas con mas de un decimal')
+            if(len(_scoreQuery)>0):
+                _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
+                for x in _score:
+                    if x < 4:
+                        logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
                         logger.error(f'Rechazado')
                         return False
-                for x in _assessmentScoreValue:
-                    if (x >= 1.0 and x <= 7.0):
-                        _contador += 1
-                if _contador == _assessment:
-                    logger.info(f'Todas las evaluaciones sumativas estan ingresadas correctamente')
-                    logger.info(f'Aprobado')
-                    return True
-                else:
-                    logger.error(f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
-                    logger.error(f'Rechazado')
-                    return False
-            else:
-                logger.error(f'S/Datos')
-                logger.error(f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
-                return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
-  ## Fin fn7F1 WC ##
-
-  ## Inicio fn7F2 WC ##
-  def fn7F2(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT DISTINCT PS.PersonId
-            FROM OrganizationPersonRole OPR
-                    JOIN Person P ON OPR.PersonId = P.PersonId
-                    JOIN PersonStatus PS ON P.PersonId = PS.PersonId
-            WHERE OPR.RoleId = 6
-              AND PS.RefPersonStatusTypeId = 28;
-            """).fetchall()
-            if(len(_query)>0):
-                _scoreQuery = conn.execute("""
-                SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0)
-                FROM AssessmentResult R
-                        JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
-                        JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                        JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
-                        JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                        JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
-                WHERE A.RefAssessmentTypeId = 28
-                  AND R.RefScoreMetricTypeId IN (1, 2)
-                  AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
-                  AND ASSR.PersonId IN (SELECT DISTINCT PS.PersonId
-                                        FROM OrganizationPersonRole OPR
-                                                JOIN Person P ON OPR.PersonId = P.PersonId
-                                                JOIN PersonStatus PS ON P.PersonId = PS.PersonId
-                                        WHERE OPR.RoleId = 6
-                                          AND PS.RefPersonStatusTypeId = 28
-                )
-                GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId, ASSR.PersonId
-                ORDER BY ASSR.PersonId ASC;
-                """).fetchall()
-                if(len(_scoreQuery)>0):
-                    _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
-                    for x in _score:
-                        if x < 4:
-                            logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
-                            logger.error(f'Rechazado')
-                            return False
-                    logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
-                    logger.info(f'Aprobado')
-                    return True
-                else:
-                    logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
-                    logger.error(f'Rechazado')
-                    return False
-            else:
-                logger.error(f'No existen estudiantes promovidos en el establecimiento')
-                logger.error(f'S/Datos')
+                logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
+                logger.info(f'Aprobado')
                 return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+            else:
+                logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
+                logger.error(f'Rechazado')
+                return False
+        else:
+            logger.error(f'No existen estudiantes promovidos en el establecimiento')
+            logger.error(f'S/Datos')
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn7F2 WC ##
 
   ## Inicio fn7F3 WC ##
   def fn7F3(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT LA.LearnerActivityId,
-                LA.PersonId,
-                LA.Weight,
-                R.ScoreValue
-            FROM LearnerActivity LA
-                    JOIN AssessmentRegistration AR ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-                    JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                    JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
-                    JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
-            WHERE A.RefAssessmentTypeId IN (28, 29)
-            AND R.RefScoreMetricTypeId IN (1, 2);
-            """).fetchall()
-            if(len(_query)>0):
-                _weight = (list([m[2] for m in _query if m[2] is not None]))
-                for x in _weight:
-                    if (x is None or x > 100 or x <= 0):
-                        logger.error(f'El peso de la/s calificacion/es esta mal ingresado')
-                        logger.error(f'Rechazado')
-                        return False
-                _scoreValue = (list([m[3] for m in _query if m[3] is not None]))
-                for y in _scoreValue:
-                    if (y is None):
-                        logger.error(f'Existen Calificaciones mal ingresadas en el establecimiento')
-                        logger.error(f'Rechazado')
-                        return False
-                logger.info(f'Calificaciones con su ponderacion ingresadas correctamente')
-                logger.info(f'Aprobado')
-                return True
-            else:
-                logger.error(f'S/Datos')
-                logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
-                return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT LA.LearnerActivityId,
+            LA.PersonId,
+            LA.Weight,
+            R.ScoreValue
+        FROM LearnerActivity LA
+                JOIN AssessmentRegistration AR ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+                JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+                JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+        WHERE A.RefAssessmentTypeId IN (28, 29)
+        AND R.RefScoreMetricTypeId IN (1, 2);
+        """).fetchall()
+        if(len(_query)>0):
+            _weight = (list([m[2] for m in _query if m[2] is not None]))
+            for x in _weight:
+                if (x is None or x > 100 or x <= 0):
+                    logger.error(f'El peso de la/s calificacion/es esta mal ingresado')
+                    logger.error(f'Rechazado')
+                    return False
+            _scoreValue = (list([m[3] for m in _query if m[3] is not None]))
+            for y in _scoreValue:
+                if (y is None):
+                    logger.error(f'Existen Calificaciones mal ingresadas en el establecimiento')
+                    logger.error(f'Rechazado')
+                    return False
+            logger.info(f'Calificaciones con su ponderacion ingresadas correctamente')
+            logger.info(f'Aprobado')
+            return True
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn7F3 WC ##
 
   ## Inicio fn7F4 WC ##
   def fn7F4(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT LearnerActivityId
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT LearnerActivityId
+        FROM LearnerActivity
+        WHERE digitalRandomKey IS NOT NULL
+        """).fetchall()
+        if(len(_query)>0):
+            _digitalRandom = conn.execute("""
+            SELECT digitalRandomKey,
+                  DateDigitalRandomKey,
+                  personIDDigitalRandomKey
             FROM LearnerActivity
-            WHERE digitalRandomKey IS NOT NULL
+            WHERE LearnerActivityId IN (SELECT LearnerActivityId
+                                        FROM LearnerActivity
+                                        WHERE digitalRandomKey IS NOT NULL)
+            AND DateDigitalRandomKey IS NOT NULL
+            AND personIDDigitalRandomKey IS NOT NULL
             """).fetchall()
-            if(len(_query)>0):
-                _digitalRandom = conn.execute("""
-                SELECT digitalRandomKey,
-                      DateDigitalRandomKey,
-                      personIDDigitalRandomKey
-                FROM LearnerActivity
-                WHERE LearnerActivityId IN (SELECT LearnerActivityId
-                                            FROM LearnerActivity
-                                            WHERE digitalRandomKey IS NOT NULL)
+            if(len(_digitalRandom)==len(_query)):
+              _digitalRandomKeyPerson = conn.execute("""
+              SELECT personIDDigitalRandomKey
+              FROM LearnerActivity
+              WHERE LearnerActivityId IN (SELECT LearnerActivityId
+                                          FROM LearnerActivity
+                                          WHERE digitalRandomKey IS NOT NULL)
                 AND DateDigitalRandomKey IS NOT NULL
                 AND personIDDigitalRandomKey IS NOT NULL
-                """).fetchall()
-                if(len(_digitalRandom)==len(_query)):
-                  _digitalRandomKeyPerson = conn.execute("""
-                  SELECT personIDDigitalRandomKey
-                  FROM LearnerActivity
-                  WHERE LearnerActivityId IN (SELECT LearnerActivityId
-                                              FROM LearnerActivity
-                                              WHERE digitalRandomKey IS NOT NULL)
-                    AND DateDigitalRandomKey IS NOT NULL
-                    AND personIDDigitalRandomKey IS NOT NULL
-                    AND personIDDigitalRandomKey IN (SELECT P.PersonId
-                                                    FROM OrganizationPersonRole OPR
-                                                              JOIN Person P ON OPR.PersonId = P.PersonId
-                                                    WHERE OPR.RoleId IN (2, 4, 5));
-                  """).fetchall()
-                  if(len(_digitalRandom) == len(_digitalRandomKeyPerson)):
-                    logger.info(f'Las modificaciones a las ponderaciones cuentan con firma del Docente/UTP')
-                    logger.info(f'Aprobado')
-                    return True
-                  else:
-                    logger.error(f'Las firmas ingresadas no corresponden a las del Docente/UTP')
-                    logger.error(f'Rechazado')
-                    return False
-                else:
-                  logger.error(f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
-                  logger.error(f'Rechazado')
-                  return False
+                AND personIDDigitalRandomKey IN (SELECT P.PersonId
+                                                FROM OrganizationPersonRole OPR
+                                                          JOIN Person P ON OPR.PersonId = P.PersonId
+                                                WHERE OPR.RoleId IN (2, 4, 5));
+              """).fetchall()
+              if(len(_digitalRandom) == len(_digitalRandomKeyPerson)):
+                logger.info(f'Las modificaciones a las ponderaciones cuentan con firma del Docente/UTP')
+                logger.info(f'Aprobado')
+                return True
+              else:
+                logger.error(f'Las firmas ingresadas no corresponden a las del Docente/UTP')
+                logger.error(f'Rechazado')
+                return False
             else:
-              logger.error(f'No existen cambios realizados a las ponderaciones ')
-              logger.error(f'S/Datos')
+              logger.error(f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
+              logger.error(f'Rechazado')
               return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+        else:
+          logger.error(f'No existen cambios realizados a las ponderaciones ')
+          logger.error(f'S/Datos')
+          return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn7F4 WC ##
 
   ## Inicio fn7F5 WC ##
   def fn7F5(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT LA.LearnerActivityId
-            FROM Assessment A
-                    JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                    JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
-                    JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-            ORDER BY LA.LearnerActivityId;
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT LA.LearnerActivityId
+        FROM Assessment A
+                JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
+                JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+        ORDER BY LA.LearnerActivityId;
+        """).fetchall()
+        if(len(_query)>0):
+            _organizationCalendarSession = conn.execute("""
+            SELECT OrganizationCalendarSessionId
+            FROM LearnerActivity
+            WHERE LearnerActivityId IN (
+                SELECT LA.LearnerActivityId
+                FROM Assessment A
+                        JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                        JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
+                        JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                ORDER BY LA.LearnerActivityId)
+              AND OrganizationCalendarSessionId IS NOT NULL
+            GROUP BY OrganizationCalendarSessionId;
             """).fetchall()
-            if(len(_query)>0):
-                _organizationCalendarSession = conn.execute("""
-                SELECT OrganizationCalendarSessionId
-                FROM LearnerActivity
-                WHERE LearnerActivityId IN (
-                    SELECT LA.LearnerActivityId
-                    FROM Assessment A
-                            JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                            JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
-                            JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-                    ORDER BY LA.LearnerActivityId)
-                  AND OrganizationCalendarSessionId IS NOT NULL
-                GROUP BY OrganizationCalendarSessionId;
+            if(len(_organizationCalendarSession)>0):
+                _calendar = conn.execute("""
+                SELECT 'Descripcion' as Descrip
+                FROM OrganizationCalendarSession
+                WHERE Description IS NOT NULL
+                  AND Description <> ''
+                  AND OrganizationCalendarSessionId in (
+                    SELECT OrganizationCalendarSessionId
+                    FROM LearnerActivity
+                    WHERE LearnerActivityId IN (
+                        SELECT LA.LearnerActivityId
+                        FROM Assessment A
+                                JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                                JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
+                                JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                        ORDER BY LA.LearnerActivityId)
+                      AND OrganizationCalendarSessionId IS NOT NULL
+                    GROUP BY OrganizationCalendarSessionId)
                 """).fetchall()
-                if(len(_organizationCalendarSession)>0):
-                    _calendar = conn.execute("""
-                    SELECT 'Descripcion' as Descrip
-                    FROM OrganizationCalendarSession
-                    WHERE Description IS NOT NULL
-                      AND Description <> ''
-                      AND OrganizationCalendarSessionId in (
-                        SELECT OrganizationCalendarSessionId
-                        FROM LearnerActivity
-                        WHERE LearnerActivityId IN (
-                            SELECT LA.LearnerActivityId
-                            FROM Assessment A
-                                    JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                                    JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
-                                    JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-                            ORDER BY LA.LearnerActivityId)
-                          AND OrganizationCalendarSessionId IS NOT NULL
-                        GROUP BY OrganizationCalendarSessionId)
-                    """).fetchall()
-                    if(len(_calendar) == len(_organizationCalendarSession)):
-                      logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
-                      logger.info(f'Aprobado')
-                      return True
-                    else:
-                      logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
-                      logger.error(f'Rechazado')
-                      return False
+                if(len(_calendar) == len(_organizationCalendarSession)):
+                  logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
+                  logger.info(f'Aprobado')
+                  return True
                 else:
-                    logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
-                    logger.error(f'Rechazdo')
-                    return False
+                  logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
+                  logger.error(f'Rechazado')
+                  return False
             else:
-                logger.error(f'No evaluaciones registradas en el establecimiento ')
-                logger.error(f'S/Datos')
+                logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
+                logger.error(f'Rechazdo')
                 return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+        else:
+            logger.error(f'No evaluaciones registradas en el establecimiento ')
+            logger.error(f'S/Datos')
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn7F5 WC ##
 
   ## Inicio fn2DA WC ##
   def fn2DA(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT DISTINCT PS.PersonId
-            FROM OrganizationPersonRole OPR
-                    join Person P on OPR.PersonId = P.PersonId
-                    join PersonStatus PS on P.PersonId = PS.PersonId
-            WHERE OPR.RoleId = 6
-              and PS.RefPersonStatusTypeId = 27
-            """).fetchall()
-            if(len(_query)>0):
-              _personStatusFile = conn.execute("""
-              SELECT fileScanBase64
-              FROM PersonStatus
-              WHERE PersonId in (
-                  SELECT DISTINCT PS.PersonId
-                  FROM OrganizationPersonRole OPR
-                          join Person P on OPR.PersonId = P.PersonId
-                          join PersonStatus PS on P.PersonId = PS.PersonId
-                  WHERE OPR.RoleId = 6
-                    and PS.RefPersonStatusTypeId = 27
-              )
-              AND fileScanBase64 is not null;
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT DISTINCT PS.PersonId
+        FROM OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join PersonStatus PS on P.PersonId = PS.PersonId
+        WHERE OPR.RoleId = 6
+          and PS.RefPersonStatusTypeId = 27
+        """).fetchall()
+        if(len(_query)>0):
+          _personStatusFile = conn.execute("""
+          SELECT fileScanBase64
+          FROM PersonStatus
+          WHERE PersonId in (
+              SELECT DISTINCT PS.PersonId
+              FROM OrganizationPersonRole OPR
+                      join Person P on OPR.PersonId = P.PersonId
+                      join PersonStatus PS on P.PersonId = PS.PersonId
+              WHERE OPR.RoleId = 6
+                and PS.RefPersonStatusTypeId = 27
+          )
+          AND fileScanBase64 is not null;
+          """).fetchall()
+          if (len(_query) == len(_personStatusFile)):
+              _file = conn.execute("""
+              SELECT documentId
+              FROM Document
+              WHERE fileScanBase64 IS NOT NULL
+                  AND fileScanBase64 <> ''
+                  AND documentId IN (
+                      select fileScanBase64
+                      from PersonStatus
+                      where PersonId in (
+                          select DISTINCT PS.PersonId
+                          from OrganizationPersonRole OPR
+                                  join Person P on OPR.PersonId = P.PersonId
+                                  join PersonStatus PS on P.PersonId = PS.PersonId
+                          where OPR.RoleId = 6
+                            and PS.RefPersonStatusTypeId = 27
+                      )
+                      and fileScanBase64 is not null
+                      and RefPersonStatusTypeId = 27
+                  );
               """).fetchall()
-              if (len(_query) == len(_personStatusFile)):
-                  _file = conn.execute("""
-                  SELECT documentId
-                  FROM Document
-                  WHERE fileScanBase64 IS NOT NULL
-                      AND fileScanBase64 <> ''
-                      AND documentId IN (
-                          select fileScanBase64
-                          from PersonStatus
-                          where PersonId in (
-                              select DISTINCT PS.PersonId
-                              from OrganizationPersonRole OPR
-                                      join Person P on OPR.PersonId = P.PersonId
-                                      join PersonStatus PS on P.PersonId = PS.PersonId
-                              where OPR.RoleId = 6
-                                and PS.RefPersonStatusTypeId = 27
-                          )
-                          and fileScanBase64 is not null
-                          and RefPersonStatusTypeId = 27
-                      );
-                  """).fetchall()
-                  if(len(_file) == len(_query)):
-                    logger.info(f'Todos los alumnos nuevos con matricula definitiva poseen documento')
-                    logger.info(f'Aprobado')
-                    return True
-                  else:
-                    logger.error(f'los alumnos nuevos con matricula definitiva no poseen documento')
-                    logger.error(f'Rechazado')
-                    return False
+              if(len(_file) == len(_query)):
+                logger.info(f'Todos los alumnos nuevos con matricula definitiva poseen documento')
+                logger.info(f'Aprobado')
+                return True
               else:
-                logger.error(f'Los alumnos nuevos con matricula definitiva no poseen documento')
+                logger.error(f'los alumnos nuevos con matricula definitiva no poseen documento')
                 logger.error(f'Rechazado')
                 return False
-            else:
-                logger.error(f'No existen alumnos nuevos con matricula definitiva')
-                logger.error(f'S/Datos')
-                return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+          else:
+            logger.error(f'Los alumnos nuevos con matricula definitiva no poseen documento')
+            logger.error(f'Rechazado')
             return False
+        else:
+            logger.error(f'No existen alumnos nuevos con matricula definitiva')
+            logger.error(f'S/Datos')
+            return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn2DA WC ##
 
   ## Inicio fn2DB WC ##
   def fn2DB(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT DISTINCT P.PersonId
-            FROM OrganizationPersonRole OPR
-                    join Person P on OPR.PersonId = P.PersonId
-                    join PersonStatus PS on P.PersonId = PS.PersonId
-            where OPR.RoleId = 6
-              and PS.RefPersonStatusTypeId = 33;
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT DISTINCT P.PersonId
+        FROM OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join PersonStatus PS on P.PersonId = PS.PersonId
+        where OPR.RoleId = 6
+          and PS.RefPersonStatusTypeId = 33;
+        """).fetchall()
+        if(len(_query)>0):
+          _queryType = conn.execute("""
+          SELECT PS.fileScanBase64
+          FROM PersonStatus PS
+          WHERE PS.PersonId in (select DISTINCT P.PersonId
+                                from OrganizationPersonRole OPR
+                                        join Person P on OPR.PersonId = P.PersonId
+                                        join PersonStatus PS on P.PersonId = PS.PersonId
+                                where OPR.RoleId = 6
+                                  and PS.RefPersonStatusTypeId = 33)
+            and PS.fileScanBase64 is not null
+            and PS.RefPersonStatusTypeId = 33
+          """).fetchall
+          if(len(_queryType) == len(_query)):
+            _file = conn.execute("""
+            SELECT documentId
+            FROM Document
+            WHERE fileScanBase64 IS NOT NULL
+              AND fileScanBase64 <> ''
+              AND documentId in (SELECT PS.fileScanBase64
+                                FROM PersonStatus PS
+                                WHERE PS.PersonId in (select DISTINCT P.PersonId
+                                                      from OrganizationPersonRole OPR
+                                                                join Person P on OPR.PersonId = P.PersonId
+                                                                join PersonStatus PS on P.PersonId = PS.PersonId
+                                                      where OPR.RoleId = 6
+                                                        and PS.RefPersonStatusTypeId = 33)
+                                  and PS.fileScanBase64 is not null
+                                  and PS.RefPersonStatusTypeId = 33);
             """).fetchall()
-            if(len(_query)>0):
-              _queryType = conn.execute("""
-              SELECT PS.fileScanBase64
-              FROM PersonStatus PS
-              WHERE PS.PersonId in (select DISTINCT P.PersonId
-                                    from OrganizationPersonRole OPR
-                                            join Person P on OPR.PersonId = P.PersonId
-                                            join PersonStatus PS on P.PersonId = PS.PersonId
-                                    where OPR.RoleId = 6
-                                      and PS.RefPersonStatusTypeId = 33)
-                and PS.fileScanBase64 is not null
-                and PS.RefPersonStatusTypeId = 33
-              """).fetchall
-              if(len(_queryType) == len(_query)):
-                _file = conn.execute("""
-                SELECT documentId
-                FROM Document
-                WHERE fileScanBase64 IS NOT NULL
-                  AND fileScanBase64 <> ''
-                  AND documentId in (SELECT PS.fileScanBase64
-                                    FROM PersonStatus PS
-                                    WHERE PS.PersonId in (select DISTINCT P.PersonId
-                                                          from OrganizationPersonRole OPR
-                                                                    join Person P on OPR.PersonId = P.PersonId
-                                                                    join PersonStatus PS on P.PersonId = PS.PersonId
-                                                          where OPR.RoleId = 6
-                                                            and PS.RefPersonStatusTypeId = 33)
-                                      and PS.fileScanBase64 is not null
-                                      and PS.RefPersonStatusTypeId = 33);
-                """).fetchall()
-                if(len(_file) == len(_query)):
-                  logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
-                  logger.info(f'Aprobado')
-                  return True
-                else:
-                  logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
-                  logger.error(f'Rechazado')
-                  return False
-              else:
-                logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
-                logger.error(f'Rechazado')
-                return False
+            if(len(_file) == len(_query)):
+              logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
+              logger.info(f'Aprobado')
+              return True
             else:
-                logger.info(f"S/Datos")
-                logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+              logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
+              logger.error(f'Rechazado')
+              return False
+          else:
+            logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
+            logger.error(f'Rechazado')
             return False
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn2DB WC ##
 
   ## Inicio fn2CA WC ##
   def fn2CA(self,conn):
-        try:
-            _query = conn.execute("""
-              SELECT DISTINCT p.PersonId
-              FROM OrganizationPersonRole OPR
-              OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
-              OUTER LEFT JOIN PersonStatus PS on P.PersonId = PS.PersonId
-              OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
-              OUTER LEFT JOIN Document USING(fileScanBase64)
-              WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
-            """).fetchall()
-            if(len(_query)>0):
-                _queryOK = conn.execute("""
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+          SELECT DISTINCT p.PersonId
+          FROM OrganizationPersonRole OPR
+          OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
+          OUTER LEFT JOIN PersonStatus PS on P.PersonId = PS.PersonId
+          OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
+          OUTER LEFT JOIN Document USING(fileScanBase64)
+          WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
+        """).fetchall()
+        if(len(_query)>0):
+            _queryOK = conn.execute("""
+                SELECT DISTINCT p.PersonId
+                FROM OrganizationPersonRole OPR
+                OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
+                OUTER LEFT JOIN PersonStatus PS on P.PersonId = PS.PersonId
+                OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
+                OUTER LEFT JOIN Document USING(fileScanBase64)
+                WHERE 
+                  RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
+                  and p.personId NOT IN (
                     SELECT DISTINCT p.PersonId
                     FROM OrganizationPersonRole OPR
-                    OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
-                    OUTER LEFT JOIN PersonStatus PS on P.PersonId = PS.PersonId
-                    OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
-                    OUTER LEFT JOIN Document USING(fileScanBase64)
-                    WHERE 
-                      RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
-                      and p.personId NOT IN (
-                        SELECT DISTINCT p.PersonId
-                        FROM OrganizationPersonRole OPR
-                        JOIN Person P on OPR.PersonId = P.PersonId
-                        JOIN PersonStatus PS on P.PersonId = PS.PersonId
-                        JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
-                        JOIN Document USING(fileScanBase64)
-                        WHERE
-                          OPR.RoleId = 6
-                          and p.RecordEndDateTime IS NULL and PS.RecordEndDateTime IS NULL and OPR.RecordEndDateTime IS NULL
-                          and PS.StatusStartDate IS NOT NULL and PS.StatusEndDate IS NOT NULL and PS.Description IS NOT NULL
-                          and RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')	
-                          and documentId IS NOT NULL and length(Document.fileScanBase64) > 0
-                      )                
-                """).fetchall()              
-                _data =  list(set([m[0] for m in _queryOK if m[0] is not None]))
-                if(len(_query)==len(_data)):
-                  logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
-                  logger.info(f'Aprobado')
-                  return True
-                else:
-                  logger.error(f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
-                  logger.error(f'Rechazado')
-                  return False
+                    JOIN Person P on OPR.PersonId = P.PersonId
+                    JOIN PersonStatus PS on P.PersonId = PS.PersonId
+                    JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
+                    JOIN Document USING(fileScanBase64)
+                    WHERE
+                      OPR.RoleId = 6
+                      and p.RecordEndDateTime IS NULL and PS.RecordEndDateTime IS NULL and OPR.RecordEndDateTime IS NULL
+                      and PS.StatusStartDate IS NOT NULL and PS.StatusEndDate IS NOT NULL and PS.Description IS NOT NULL
+                      and RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')	
+                      and documentId IS NOT NULL and length(Document.fileScanBase64) > 0
+                  )                
+            """).fetchall()              
+            _data =  list(set([m[0] for m in _queryOK if m[0] is not None]))
+            if(len(_query)==len(_data)):
+              logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
+              logger.info(f'Aprobado')
+              return True
             else:
-                logger.error(f'S/Datos')
-                logger.error(f'No existen registros de alumnos retirados del establecimiento')
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+              logger.error(f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
+              logger.error(f'Rechazado')
+              return False
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No existen registros de alumnos retirados del establecimiento')
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn2CA WC ##
 
   ## Inicio fn2CB WC ##
   def fn2CB(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT OPR.OrganizationPersonRoleId
-            FROM OrganizationPersonRole OPR
-                    JOIN Person P on OPR.PersonId = P.PersonId
-                    JOIN PersonStatus PS on P.PersonId = PS.PersonId
-            WHERE OPR.RoleId = 6
-              AND PS.RefPersonStatusTypeId = 30;
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT OPR.OrganizationPersonRoleId
+        FROM OrganizationPersonRole OPR
+                JOIN Person P on OPR.PersonId = P.PersonId
+                JOIN PersonStatus PS on P.PersonId = PS.PersonId
+        WHERE OPR.RoleId = 6
+          AND PS.RefPersonStatusTypeId = 30;
+        """).fetchall()
+        if(len(_query)>0):
+            _queryEntregaDocumentos = conn.execute("""
+            SELECT I.IncidentId
+            from Incident I
+                    join IncidentPerson IP on I.IncidentId = IP.IncidentId
+            where I.RefIncidentBehaviorId = 33
+              and I.OrganizationPersonRoleId in (SELECT OPR.OrganizationPersonRoleId
+                                                from OrganizationPersonRole OPR
+                                                          join Person P on OPR.PersonId = P.PersonId
+                                                          join PersonStatus PS on P.PersonId = PS.PersonId
+                                                where OPR.RoleId = 6
+                                                  and PS.RefPersonStatusTypeId = 30);
             """).fetchall()
-            if(len(_query)>0):
-                _queryEntregaDocumentos = conn.execute("""
-                SELECT I.IncidentId
-                from Incident I
-                        join IncidentPerson IP on I.IncidentId = IP.IncidentId
-                where I.RefIncidentBehaviorId = 33
-                  and I.OrganizationPersonRoleId in (SELECT OPR.OrganizationPersonRoleId
-                                                    from OrganizationPersonRole OPR
-                                                              join Person P on OPR.PersonId = P.PersonId
-                                                              join PersonStatus PS on P.PersonId = PS.PersonId
-                                                    where OPR.RoleId = 6
-                                                      and PS.RefPersonStatusTypeId = 30);
-                """).fetchall()
-                if(len(_query)==len(_queryEntregaDocumentos)):
-                  logger.info(f'Todos los alumnos retirados del establecimiento cuentan con una entrega de documentos respectiva al apoderado')
-                  logger.info(f'Aprobado')
-                  return True
-                else:
-                  logger.error(f'Los alumnos retirados del establecimiento no cuentan con un registro de entrega de documentos al apoderado')
-                  logger.error(f'Rechazado')
-                  return False
+            if(len(_query)==len(_queryEntregaDocumentos)):
+              logger.info(f'Todos los alumnos retirados del establecimiento cuentan con una entrega de documentos respectiva al apoderado')
+              logger.info(f'Aprobado')
+              return True
             else:
-                logger.error(f'S/Datos')
-                logger.error(f'No existen registro de alumnos retirados del establecimiento')
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+              logger.error(f'Los alumnos retirados del establecimiento no cuentan con un registro de entrega de documentos al apoderado')
+              logger.error(f'Rechazado')
+              return False
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No existen registro de alumnos retirados del establecimiento')
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn2CB WC ##
 
    ## Inicio fn2BA WC ##
   def fn2BA(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT DISTINCT P.PersonId
-            from OrganizationPersonRole OPR
-                    join Person P on OPR.PersonId = P.PersonId
-                    join PersonStatus PS on P.PersonId = PS.PersonId
-            where OPR.RoleId = 6
-              and PS.RefPersonStatusTypeId IN (25, 24, 31);
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT DISTINCT P.PersonId
+        from OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join PersonStatus PS on P.PersonId = PS.PersonId
+        where OPR.RoleId = 6
+          and PS.RefPersonStatusTypeId IN (25, 24, 31);
+        """).fetchall()
+        if (len(_query)>0):
+          _queryExcedentes = conn.execute("""
+          SELECT fileScanBase64
+          from PersonStatus
+          where PersonId in (
+              SELECT DISTINCT P.PersonId
+              FROM OrganizationPersonRole OPR
+                      join Person P on OPR.PersonId = P.PersonId
+                      join PersonStatus PS on P.PersonId = PS.PersonId
+              where OPR.RoleId = 6
+                and PS.RefPersonStatusTypeId IN (25, 24, 31))
+            and fileScanBase64 is not null
+            and RefPersonStatusTypeId IN (25, 24, 31);
+          """).fetchall()
+          if (len(_queryExcedentes) == len(_query)):
+            _file = conn.execute("""
+            SELECT documentId
+            FROM Document
+            WHERE fileScanBase64 IS NOT NULL
+              AND fileScanBase64 <> ''
+              AND documentId in (select fileScanBase64
+                                from PersonStatus
+                                where PersonId in (
+                                    select DISTINCT P.PersonId
+                                    from OrganizationPersonRole OPR
+                                              join Person P on OPR.PersonId = P.PersonId
+                                              join PersonStatus PS on P.PersonId = PS.PersonId
+                                    where OPR.RoleId = 6
+                                      and PS.RefPersonStatusTypeId IN (25, 24, 31)
+                                )
+                                  and fileScanBase64 is not null
+                                  and RefPersonStatusTypeId IN (25, 24, 31)
+            )
             """).fetchall()
-            if (len(_query)>0):
-              _queryExcedentes = conn.execute("""
-              SELECT fileScanBase64
-              from PersonStatus
-              where PersonId in (
-                  SELECT DISTINCT P.PersonId
-                  FROM OrganizationPersonRole OPR
-                          join Person P on OPR.PersonId = P.PersonId
-                          join PersonStatus PS on P.PersonId = PS.PersonId
-                  where OPR.RoleId = 6
-                    and PS.RefPersonStatusTypeId IN (25, 24, 31))
-                and fileScanBase64 is not null
-                and RefPersonStatusTypeId IN (25, 24, 31);
-              """).fetchall()
-              if (len(_queryExcedentes) == len(_query)):
-                _file = conn.execute("""
-                SELECT documentId
-                FROM Document
-                WHERE fileScanBase64 IS NOT NULL
-                  AND fileScanBase64 <> ''
-                  AND documentId in (select fileScanBase64
-                                    from PersonStatus
-                                    where PersonId in (
-                                        select DISTINCT P.PersonId
-                                        from OrganizationPersonRole OPR
-                                                  join Person P on OPR.PersonId = P.PersonId
-                                                  join PersonStatus PS on P.PersonId = PS.PersonId
-                                        where OPR.RoleId = 6
-                                          and PS.RefPersonStatusTypeId IN (25, 24, 31)
-                                    )
-                                      and fileScanBase64 is not null
-                                      and RefPersonStatusTypeId IN (25, 24, 31)
-                )
-                """).fetchall()
-                if(len(_file) == len(_query)):
-                  logger.info(f'Todos los alumnos excedentes cuentan con su documento correspondiente')
-                  logger.info(f'Aprobado')
-                  return True
-                else:
-                  logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
-                  logger.error(f'Rechazado')
-                  return False
-              else:
-                logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
-                logger.error(f'Rechazado')
-                return False
+            if(len(_file) == len(_query)):
+              logger.info(f'Todos los alumnos excedentes cuentan con su documento correspondiente')
+              logger.info(f'Aprobado')
+              return True
             else:
-                logger.error(f'S/Datos')
-                logger.error(f'No existen alumnos excedentes en el establecimiento')
-                return True
-        except Exception as e:
-            logger.error(f'NO se pudo ejecutar la verificación en la lista')
+              logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
+              logger.error(f'Rechazado')
+              return False
+          else:
+            logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
             logger.error(f'Rechazado')
             return False
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No existen alumnos excedentes en el establecimiento')
+            return True
+    except Exception as e:
+        logger.error(f'NO se pudo ejecutar la verificación en la lista')
+        logger.error(f'Rechazado')
+        return False
   ## Fin fn2BA WC ##
 
   ## Inicio fn29A WC ##
   def fn29A(self, conn):
-        try:
-            results = conn.execute("""
-            SELECT opr.PersonId,
-                  (SELECT o2.OrganizationId
-                    from OrganizationPersonRole opr2
-                            join Organization o2 on o2.OrganizationId = opr2.OrganizationId
-                    where RefOrganizationTypeId = 21
-                      and opr2.PersonId = opr.PersonId)                              as seccion,
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        results = conn.execute("""
+        SELECT opr.PersonId,
+              (SELECT o2.OrganizationId
+                from OrganizationPersonRole opr2
+                        join Organization o2 on o2.OrganizationId = opr2.OrganizationId
+                where RefOrganizationTypeId = 21
+                  and opr2.PersonId = opr.PersonId)                              as seccion,
 
-                  (SELECT opr3.OrganizationPersonRoleId
-                    from OrganizationPersonRole opr3
-                    where opr3.PersonId = opr.PersonId)                              as personrole,
+              (SELECT opr3.OrganizationPersonRoleId
+                from OrganizationPersonRole opr3
+                where opr3.PersonId = opr.PersonId)                              as personrole,
 
-                  (SELECT grado.OrganizationId
-                    from Organization grado
-                            join RefOrganizationType rft on grado.RefOrganizationTypeId = rft.RefOrganizationTypeId
-                            join OrganizationRelationship or1 on or1.OrganizationId = grado.OrganizationId
-                            join OrganizationRelationship or2 on or1.OrganizationId = or2.Parent_OrganizationId
-                    where or2.OrganizationId = (SELECT o2.OrganizationId
-                                                from OrganizationPersonRole opr2
-                                                        join Organization o2 on o2.OrganizationId = opr2.OrganizationId
-                                                where o2.RefOrganizationTypeId = 21
-                                                  and opr2.PersonId = opr.PersonId)) as grado,
-                  o3.Name
-            FROM OrganizationPersonRole opr
-                    join Organization o on o.OrganizationId = opr.OrganizationId
-                    join K12StudentEnrollment k12se on k12se.OrganizationPersonRoleId = personrole
-                    join Organization o3 on o3.OrganizationId = grado
-                    join PersonStatus ps on opr.PersonId = ps.PersonId
-            where o.RefOrganizationTypeId = 47 /*cambiar a id respectivo, este id hace referencia a el nuevo tipo de organizacion agregado para practicaProfesional*/
-              and k12se.RefEnrollmentStatusId = 2
-              and cast(strftime('%Y', k12se.FirstEntryDateIntoUSSchool) as integer) =
-                  cast(strftime('%Y', current_timestamp) as integer)
-              and ps.RefPersonStatusTypeId = 26;
-            """).fetchall()
-            if(len(results)>0):
-                lista = list(set([m[0] for m in results if m[0] is not None]))
-                lista2 = list(set([m[4] for m in results if m[4] is not None]))
-                con=len(lista)
-                x=0
-                for l1 in lista:
-                    grado=(lista2[x][4])
-                    if (grado[-8:-1].lower()=="3° medio"):
-                        results2 = conn.execute("""
-                        SELECT opr.organizationid
-                        FROM OrganizationPersonRole opr
-                                join K12StudentCourseSection k12cs on opr.OrganizationPersonRoleId = k12cs.OrganizationPersonRoleId
-                                join Organization o on o.OrganizationId = opr.OrganizationId
-                        where PersonId = ?
-                          and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
-                          and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
-                        """,[l1]).fetchall()
-                        if (len(results2))<1:
-                            logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
-                            logger.error(f"Rechazado")
-                            return False
-                    x+=x
-                logger.info(f"todos los alumnos de practica cumplen con los requisitos")
-                logger.info(f"Aprobado")
-                return True
+              (SELECT grado.OrganizationId
+                from Organization grado
+                        join RefOrganizationType rft on grado.RefOrganizationTypeId = rft.RefOrganizationTypeId
+                        join OrganizationRelationship or1 on or1.OrganizationId = grado.OrganizationId
+                        join OrganizationRelationship or2 on or1.OrganizationId = or2.Parent_OrganizationId
+                where or2.OrganizationId = (SELECT o2.OrganizationId
+                                            from OrganizationPersonRole opr2
+                                                    join Organization o2 on o2.OrganizationId = opr2.OrganizationId
+                                            where o2.RefOrganizationTypeId = 21
+                                              and opr2.PersonId = opr.PersonId)) as grado,
+              o3.Name
+        FROM OrganizationPersonRole opr
+                join Organization o on o.OrganizationId = opr.OrganizationId
+                join K12StudentEnrollment k12se on k12se.OrganizationPersonRoleId = personrole
+                join Organization o3 on o3.OrganizationId = grado
+                join PersonStatus ps on opr.PersonId = ps.PersonId
+        where o.RefOrganizationTypeId = 47 /*cambiar a id respectivo, este id hace referencia a el nuevo tipo de organizacion agregado para practicaProfesional*/
+          and k12se.RefEnrollmentStatusId = 2
+          and cast(strftime('%Y', k12se.FirstEntryDateIntoUSSchool) as integer) =
+              cast(strftime('%Y', current_timestamp) as integer)
+          and ps.RefPersonStatusTypeId = 26;
+        """).fetchall()
+        if(len(results)>0):
+            lista = list(set([m[0] for m in results if m[0] is not None]))
+            lista2 = list(set([m[4] for m in results if m[4] is not None]))
+            con=len(lista)
+            x=0
+            for l1 in lista:
+                grado=(lista2[x][4])
+                if (grado[-8:-1].lower()=="3° medio"):
+                    results2 = conn.execute("""
+                    SELECT opr.organizationid
+                    FROM OrganizationPersonRole opr
+                            join K12StudentCourseSection k12cs on opr.OrganizationPersonRoleId = k12cs.OrganizationPersonRoleId
+                            join Organization o on o.OrganizationId = opr.OrganizationId
+                    where PersonId = ?
+                      and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
+                      and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
+                    """,[l1]).fetchall()
+                    if (len(results2))<1:
+                        logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
+                        logger.error(f"Rechazado")
+                        return False
+                x+=x
+            logger.info(f"todos los alumnos de practica cumplen con los requisitos")
+            logger.info(f"Aprobado")
+            return True
 
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"No existen alumnos en practica registrados")
-                return True
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"No existen alumnos en practica registrados")
+            return True
 
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn29A WC ##
 
   ## Inicio fn29B WC ##
   def fn29B(self, conn):
-        try:
-            query = conn.execute("""
-            SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
-            from Person P
-                    join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
-                    join PersonStatus PS on P.PersonId = PS.PersonId
-            where RoleId = 6
-              and ps.RefPersonStatusTypeId = 35
-              and OrganizationPersonRoleId in (select OrganizationId
-                                              from Organization
-                                              where RefOrganizationTypeId = 47)
-            group by OPR.OrganizationId, P.PersonId;
-            """).fetchall()
-            k12StudentEnrollment = conn.execute("""
-            select OrganizationPersonRoleId
-            from K12StudentEnrollment;
-            """).fetchall()
-            if(len(query)>0 and len(k12StudentEnrollment)>0):
-                estudiantes = (list([m[2] for m in query if m[2] is not None]))
-                organizaciones = (list([m[0] for m in query if m[0] is not None]))
-                organizacionesK12 = (list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
-                for x in estudiantes:
-                    if(x == 2):
-                        logger.error(f"Matriculas repetidas")
-                        logger.error(f"Rechazado")
-                        return False
-                    else:
-                        for y in organizacionesK12:
-                            for z in organizaciones:
-                                if(y in z):
-                                    contador = contador + 1
-                                else:
-                                    logger.error(f"Matricula/s no registrada/s")
-                                    logger.error(f"Rechazado")
-                                    return False
-                logger.info(f'Matriculas ingresadas correctamente')
-                logger.info(f'Aprobado')
-                return True
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"No existen alumnos en practica registrados")
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        query = conn.execute("""
+        SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
+        from Person P
+                join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
+                join PersonStatus PS on P.PersonId = PS.PersonId
+        where RoleId = 6
+          and ps.RefPersonStatusTypeId = 35
+          and OrganizationPersonRoleId in (select OrganizationId
+                                          from Organization
+                                          where RefOrganizationTypeId = 47)
+        group by OPR.OrganizationId, P.PersonId;
+        """).fetchall()
+        k12StudentEnrollment = conn.execute("""
+        select OrganizationPersonRoleId
+        from K12StudentEnrollment;
+        """).fetchall()
+        if(len(query)>0 and len(k12StudentEnrollment)>0):
+            estudiantes = (list([m[2] for m in query if m[2] is not None]))
+            organizaciones = (list([m[0] for m in query if m[0] is not None]))
+            organizacionesK12 = (list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
+            for x in estudiantes:
+                if(x == 2):
+                    logger.error(f"Matriculas repetidas")
+                    logger.error(f"Rechazado")
+                    return False
+                else:
+                    for y in organizacionesK12:
+                        for z in organizaciones:
+                            if(y in z):
+                                contador = contador + 1
+                            else:
+                                logger.error(f"Matricula/s no registrada/s")
+                                logger.error(f"Rechazado")
+                                return False
+            logger.info(f'Matriculas ingresadas correctamente')
+            logger.info(f'Aprobado')
+            return True
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"No existen alumnos en practica registrados")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn29B WC ##
 
   ## Inicio fn29C WC ##
   def fn29C(self, conn):
-        try:
-            _queryStud = conn.execute("""
-            SELECT OPR.OrganizationId
-            FROM OrganizationPersonRole OPR
-                    join Person P on OPR.PersonId = P.PersonId
-                    join Organization O on OPR.OrganizationId = O.OrganizationId
-            WHERE OPR.RoleId = 6
-              AND O.RefOrganizationTypeId = 47
-            GROUP by P.PersonId,
-                    OPR.OrganizationId;
-            """).fetchall()
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _queryStud = conn.execute("""
+        SELECT OPR.OrganizationId
+        FROM OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join Organization O on OPR.OrganizationId = O.OrganizationId
+        WHERE OPR.RoleId = 6
+          AND O.RefOrganizationTypeId = 47
+        GROUP by P.PersonId,
+                OPR.OrganizationId;
+        """).fetchall()
 
-            _queryProf = conn.execute("""
-            SELECT OPR.OrganizationId
-            FROM OrganizationPersonRole OPR
-                    join Person P on OPR.PersonId = P.PersonId
-                    join Organization O on OPR.OrganizationId = O.OrganizationId
-            WHERE OPR.RoleId = 17
-              AND O.RefOrganizationTypeId = 47
-            GROUP by P.PersonId,
-                    OPR.OrganizationId;
-            """).fetchall()
-            if((len(_queryStud)>0) and (len(_queryProf)>0)):
-                _organizationStu = (list([m[5] for m in _queryStud if m[0] is not None]))
-                if not _organizationStu :
-                    logger.error(f"Sin Alumnos")
-                    logger.error(f'Rechazado')
-                    return False
-                _organizationProf = (list([m[5] for m in _queryProf if m[0] is not None]))
-                if not _organizationProf :
-                    logger.error(f"Sin profesores")
-                    logger.error(f'Rechazado')
-                    return False
-                _contador = 0
-                z = len(_organizationStu)
-                for x in _organizationStu:
-                    for y in _organizationProf:
-                        if x in y:
-                            _contador += 1
-                if _contador == z:
-                    logger.info(f'Todos los alumnos en practica con profesor')
-                    logger.info(f'Aprobado')
-                    return True
-                else:
-                    logger.error(f'Alumnos en practica sin profesor')
-                    logger.error(f'Rechazado')
-                    return False
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"No existen alumnos en practica registrados")
+        _queryProf = conn.execute("""
+        SELECT OPR.OrganizationId
+        FROM OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join Organization O on OPR.OrganizationId = O.OrganizationId
+        WHERE OPR.RoleId = 17
+          AND O.RefOrganizationTypeId = 47
+        GROUP by P.PersonId,
+                OPR.OrganizationId;
+        """).fetchall()
+        if((len(_queryStud)>0) and (len(_queryProf)>0)):
+            _organizationStu = (list([m[5] for m in _queryStud if m[0] is not None]))
+            if not _organizationStu :
+                logger.error(f"Sin Alumnos")
+                logger.error(f'Rechazado')
+                return False
+            _organizationProf = (list([m[5] for m in _queryProf if m[0] is not None]))
+            if not _organizationProf :
+                logger.error(f"Sin profesores")
+                logger.error(f'Rechazado')
+                return False
+            _contador = 0
+            z = len(_organizationStu)
+            for x in _organizationStu:
+                for y in _organizationProf:
+                    if x in y:
+                        _contador += 1
+            if _contador == z:
+                logger.info(f'Todos los alumnos en practica con profesor')
+                logger.info(f'Aprobado')
                 return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+            else:
+                logger.error(f'Alumnos en practica sin profesor')
+                logger.error(f'Rechazado')
+                return False
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"No existen alumnos en practica registrados")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn29C WC ##
 
   ## Inicio fn5E0 WC ##
   def fn5E0(self, conn):
-        try:
-            _ExistData = conn.execute("""
-                SELECT DISTINCT 
-                  rae.Date, -- fecha completa de la clase
-                  strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
-                  strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date
-                  CASE 
-                    WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
-                    WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
-                    WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-                    WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
-                    WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
-                    WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
-                    WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-                  END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date
-                  count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes
-                  sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', 
-                  group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista',
-                  sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes',
-                  group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista',	
-                  sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados',
-                  group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista',
-                  count(rae.digitalRandomKey) as 'firmadoEnClases'
-                FROM Organization O
-                  OUTER LEFT JOIN RefOrganizationType rot
-                    ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-                    AND O.RefOrganizationTypeId IN (
-                      SELECT RefOrganizationTypeId 
-                      FROM RefOrganizationType
-                      WHERE Description IN ('Course Section')
-                    ) 
-                  OUTER LEFT JOIN OrganizationPersonRole opr 
-                    ON O.OrganizationId = opr.OrganizationId
-                    AND opr.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN RoleAttendanceEvent rae
-                    ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
-                    AND rae.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN PersonIdentifier pid
-                    ON opr.personId = pid.personId
-                    AND pid.refPersonIdentificationSystemId IN (
-                      SELECT refPersonIdentificationSystemId
-                      FROM refPersonIdentificationSystem
-                      WHERE Code IN ('listNumber')
-                    )
-                    AND pid.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN Role rol
-                    ON opr.RoleId = rol.RoleId
-                    AND opr.RoleId IN (
-                      SELECT RoleId
-                      FROM Role
-                      WHERE Name IN ('Estudiante')
-                    )
-                  OUTER LEFT JOIN OrganizationCalendar oc 
-                    ON O.OrganizationId = oc.OrganizationId
-                    AND oc.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN OrganizationCalendarSession ocs
-                    ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-                    AND ocs.RecordEndDateTime IS NULL
-                  OUTER LEFT JOIN CourseSectionSchedule css
-                    ON O.OrganizationId = css.OrganizationId
-                    AND css.RecordEndDateTime IS NULL
-                WHERE 
-                  Date is not NULL
-                GROUP BY rae.Date         
-            """).fetchall()
-            if(not _ExistData):
-              raise Exception("No hay registros de información")
-        except Exception as e:
-            logger.info(f"S/Datos")
-            logger.info(f'Sin asistencia por bloque: {e}')
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _ExistData = conn.execute("""
+            SELECT DISTINCT 
+              rae.Date, -- fecha completa de la clase
+              strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
+              strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date
+              CASE 
+                WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
+                WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
+                WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
+                WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+                WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
+                WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
+                WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
+              END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date
+              count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes
+              sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', 
+              group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista',
+              sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes',
+              group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista',	
+              sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados',
+              group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista',
+              count(rae.digitalRandomKey) as 'firmadoEnClases'
+            FROM Organization O
+              OUTER LEFT JOIN RefOrganizationType rot
+                ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+                AND O.RefOrganizationTypeId IN (
+                  SELECT RefOrganizationTypeId 
+                  FROM RefOrganizationType
+                  WHERE Description IN ('Course Section')
+                ) 
+              OUTER LEFT JOIN OrganizationPersonRole opr 
+                ON O.OrganizationId = opr.OrganizationId
+                AND opr.RecordEndDateTime IS NULL
+              OUTER LEFT JOIN RoleAttendanceEvent rae
+                ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+                AND rae.RecordEndDateTime IS NULL
+              OUTER LEFT JOIN PersonIdentifier pid
+                ON opr.personId = pid.personId
+                AND pid.refPersonIdentificationSystemId IN (
+                  SELECT refPersonIdentificationSystemId
+                  FROM refPersonIdentificationSystem
+                  WHERE Code IN ('listNumber')
+                )
+                AND pid.RecordEndDateTime IS NULL
+              OUTER LEFT JOIN Role rol
+                ON opr.RoleId = rol.RoleId
+                AND opr.RoleId IN (
+                  SELECT RoleId
+                  FROM Role
+                  WHERE Name IN ('Estudiante')
+                )
+              OUTER LEFT JOIN OrganizationCalendar oc 
+                ON O.OrganizationId = oc.OrganizationId
+                AND oc.RecordEndDateTime IS NULL
+              OUTER LEFT JOIN OrganizationCalendarSession ocs
+                ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+                AND ocs.RecordEndDateTime IS NULL
+              OUTER LEFT JOIN CourseSectionSchedule css
+                ON O.OrganizationId = css.OrganizationId
+                AND css.RecordEndDateTime IS NULL
+            WHERE 
+              Date is not NULL
+            GROUP BY rae.Date         
+        """).fetchall()
+        if(not _ExistData):
+          raise Exception("No hay registros de información")
+    except Exception as e:
+        logger.info(f"S/Datos")
+        logger.info(f'Sin asistencia por bloque: {e}')
+        return True
+    try:
+        asistencia = conn.execute("""
+            /*
+            6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
+            Verifica:
+            - Que contenga sea de tipo Asignatura ('Course Section')
+            - Que el rol del estudiante este asignado al registro ('Estudiante')
+            - Que esten registrados los números de lista (pid.refPersonIdentificationSystemId) 
+            de los estudiantes ausentes, atrasados y presentes.
+            - Que este presente el verificador de identidad (rae.digitalRandomKey NOT NULL)
+            de la persona que se encuentre trabajando con el estudiante.
+            - Que se encuentre cargado el indicado de virtualidad (rae.VirtualIndicator).
+            - Que se encuentre cargado la descripción de lo realizado en clases (ocs.Description NOT NULL)
+            - Que la hora de la toma de asistencia se encuentre en el horario de clases
+            (strftime('%H:%M', rae.Date) between ClassBeginningTime and ClassEndingTime) [Aquí no arroja error pero si una advertencia]
+            */
+            SELECT DISTINCT 
+              --group_concat(rae.Date),
+              rae.Date, -- fecha completa de la clase
+              strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
+              strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date
+              CASE 
+                WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
+                WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
+                WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
+                WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+                WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
+                WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
+                WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
+              END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date
+              count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes
+              sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', 
+              group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista',
+              sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes',
+              group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista',	
+              sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados',
+              group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista',
+              count(rae.digitalRandomKey) as 'firmadoEnClases'
+            FROM Organization O
+              JOIN RefOrganizationType rot
+                ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+                AND O.RefOrganizationTypeId IN (
+                  SELECT RefOrganizationTypeId 
+                  FROM RefOrganizationType
+                  WHERE Description IN ('Course Section')
+                ) 
+              JOIN OrganizationPersonRole opr 
+                ON O.OrganizationId = opr.OrganizationId
+                AND opr.RecordEndDateTime IS NULL
+              JOIN RoleAttendanceEvent rae
+                ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+                AND rae.RecordEndDateTime IS NULL
+              JOIN PersonIdentifier pid
+                ON opr.personId = pid.personId
+                AND pid.refPersonIdentificationSystemId IN (
+                  SELECT refPersonIdentificationSystemId
+                  FROM refPersonIdentificationSystem
+                  WHERE Code IN ('listNumber')
+                )
+                AND pid.RecordEndDateTime IS NULL
+              JOIN Role rol
+                ON opr.RoleId = rol.RoleId
+                AND opr.RoleId IN (
+                  SELECT RoleId
+                  FROM Role
+                  WHERE Name IN ('Estudiante')
+                )
+              JOIN OrganizationCalendar oc 
+                ON O.OrganizationId = oc.OrganizationId
+                AND oc.RecordEndDateTime IS NULL
+              JOIN OrganizationCalendarSession ocs
+                ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+                AND ocs.RecordEndDateTime IS NULL
+              JOIN CourseSectionSchedule css
+                ON O.OrganizationId = css.OrganizationId
+                AND css.RecordEndDateTime IS NULL
+            --GROUP BY rae.Date
+
+            WHERE 
+              -- Verifica que se encuentre cargado el leccionario
+              rae.RefAttendanceEventTypeId = 2
+              AND
+              -- Verifica que se encuentre cargado el leccionario
+              ocs.Description NOT NULL
+              AND
+              -- Verifica que el indicador sea True, ya que en estos casos corresponde la relación	
+              ocs.AttendanceTermIndicator IN (1)
+              AND
+              -- Verifica que la firma se encuentre cargada en el sistema
+              rae.digitalRandomKey NOT NULL
+              AND
+              -- Verifica que se haya especificado si es estudiante asiste presencialmente o no.
+              rae.VirtualIndicator NOT NULL
+              AND
+              -- Verifica que día y horario de firma corresponda con calendario de la asignatura
+              css.ClassMeetingDays like '%'||diaSemana||'%'
+              AND
+              hora between css.ClassBeginningTime and css.ClassEndingTime
+              AND
+              -- Agrega a la lista todos los registros que no cumplan con la expresión regular
+              rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND
+              -- Agrega a la lista todos los registros que no cumplan con la expresión regular
+              rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND
+              -- Agrega a la lista todos los registros que no cumplan con la expresión regular
+              rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+              
+            GROUP BY rae.Date
+        """).fetchall()
+    except Exception as e:
+        logger.error(f'Rechazado')
+        logger.info(f'No cumple con los criterios de la consulta: {e}')
+        return True
+    try:
+        if(len(asistencia)>0):
+            totalEstudiantes = list([m[4] for m in asistencia if m[4] is not None])
+            estudiantesPresentes = list([m[5] for m in asistencia if m[5] is not None])
+            estudiantesAusentes = list([m[7] for m in asistencia if m[7] is not None])
+            estudiantesRetrasados = list([m[9] for m in asistencia if m[9] is not None])
+            firmadoEnClases = list([m[11] for m in asistencia if m[11] is not None])
+            
+            for idx_,el_ in enumerate(totalEstudiantes):
+              if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
+                logger.info(f'Rechazado')
+                logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                return False    
+                
+              if(el_ != firmadoEnClases[idx_]):
+                logger.info(f'Rechazado')
+                logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
+                return False
+            
+        logger.info("Aprobado")    
+        return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
+  ## Fin fn5E0 WC ##
+
+  ## Inicio fn8F1 WC ##
+  def fn8F1(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        query = conn.execute("""select * from Incident""").fetchall()
+        if(len(query)>0):
+            Incidentes = (list([m[0] for m in query if m[0] is not None]))
+            for x in Incidentes:
+                querySelect = "SELECT * from K12StudentDiscipline where IncidentId = "
+                queryWhere = str(x)
+                queryComplete = querySelect+queryWhere
+                try:
+                    query = conn.execute(queryComplete).fetchall()
+                    if(len(query)>0):
+                        query = len(query)
+                        logger.info(f'Total de datos: {query}')
+                        logger.info(f'Aprobado')
+                        return True
+                    else:
+                        logger.error(f'S/Datos')
+                        logger.error(f'No se encuentran registradas medidas diciplinarias para los incidentes registrados')
+                        return False
+                except Exception as e:
+                    logger.error(f'No se pudo ejecutar la consulta: {str(e)}')
+                    logger.error(f'Rechazado')
+                    return False
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'Sin incidentes registrados')
             return True
-        try:
-            asistencia = conn.execute("""
-                /*
-                6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
-                Verifica:
-                - Que contenga sea de tipo Asignatura ('Course Section')
-                - Que el rol del estudiante este asignado al registro ('Estudiante')
-                - Que esten registrados los números de lista (pid.refPersonIdentificationSystemId) 
-                de los estudiantes ausentes, atrasados y presentes.
-                - Que este presente el verificador de identidad (rae.digitalRandomKey NOT NULL)
-                de la persona que se encuentre trabajando con el estudiante.
-                - Que se encuentre cargado el indicado de virtualidad (rae.VirtualIndicator).
-                - Que se encuentre cargado la descripción de lo realizado en clases (ocs.Description NOT NULL)
-                - Que la hora de la toma de asistencia se encuentre en el horario de clases
-                (strftime('%H:%M', rae.Date) between ClassBeginningTime and ClassEndingTime) [Aquí no arroja error pero si una advertencia]
-                */
-                SELECT DISTINCT 
-                  --group_concat(rae.Date),
-                  rae.Date, -- fecha completa de la clase
-                  strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
-                  strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date
+    except Exception as e:
+      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
+  ## Fin fn8F1 WC ##
+
+  ## Inicio fn5E4 WC ##
+  def fn5E4(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT RAE.DATE,
+              RAE.RefAttendanceStatusId
+        FROM OrganizationPersonRole OPR
+                join RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
+        where OPR.RoleId = 6
+        and RAE.Date is not null;
+        """).fetchall()
+        if(len(_query)>0):
+          _date = (list(set([m[0] for m in _query if m[0] is not None])))
+          if not _date:
+            logger.error(f"Sin fecha de asistencia ingresada")
+            logger.error(f'Rechazado')
+            return False
+          _status = (list(set([m[1] for m in _query if m[1] is not None])))
+          if not _status:
+            logger.error(f"Sin estado de asistencia asignado")
+            logger.error(f'Rechazado')
+            return False
+          logger.info(f'Aprobado')
+          logger.info(f'Todos los registros de asistencia cuentan con un estado asignado')
+          return True
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"Sin datos de asistencia")
+            return False
+    except Exception as e:
+          logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+          logger.error(f"Rechazado")
+          return False
+  ## Fin fn5E4 WC ##
+
+  ## Inicio fn5E5 WC ##
+  def fn5E5(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+              SELECT 
+                count(rae_.refattendancestatusid) as 'totalEstudiantesCurso', -- Cantidad total de estudiantes [idx 0]
+                sum(CASE WHEN rae_.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesCurso', -- [idx 1]
+                sum(CASE WHEN rae_.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesv', -- [idx 2]
+                sum(CASE WHEN rae_.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosCurso' -- [idx 3]
+                ,a.*
+              FROM Organization O
+                JOIN RefOrganizationType rot
+                  ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+                  AND O.RefOrganizationTypeId IN (
+                    SELECT RefOrganizationTypeId 
+                    FROM RefOrganizationType
+                    WHERE Description IN ('Course')
+                  ) 
+                OUTER LEFT JOIN OrganizationPersonRole opr_
+                  ON O.OrganizationId = opr_.OrganizationId
+                  AND opr_.RecordEndDateTime IS NULL
+                OUTER LEFT JOIN RoleAttendanceEvent rae_
+                  ON opr_.OrganizationPersonRoleId = rae_.OrganizationPersonRoleId
+                  AND rae_.RecordEndDateTime IS NULL
+                OUTER LEFT JOIN
+                (
+                SELECT  
+                  rae.Date, -- fecha completa de la clase [idx 0]
+                  ors.Parent_OrganizationID,		
+                  O.OrganizationId,
+                  strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date [idx 1]
                   CASE 
                     WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
                     WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
@@ -3239,15 +4148,12 @@ class check:
                     WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                     WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                     WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-                  END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date
-                  count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes
-                  sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', 
-                  group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista',
-                  sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes',
-                  group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista',	
-                  sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados',
-                  group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista',
-                  count(rae.digitalRandomKey) as 'firmadoEnClases'
+                  END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 3]
+                  count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 4]
+                  sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura', -- [idx 5]
+                  sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura', -- [idx 6]
+                  sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura' -- [idx 7]
+                  
                 FROM Organization O
                   JOIN RefOrganizationType rot
                     ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
@@ -3256,20 +4162,19 @@ class check:
                       FROM RefOrganizationType
                       WHERE Description IN ('Course Section')
                     ) 
+                  JOIN OrganizationRelationship ors 
+                    ON O.OrganizationId = ors.OrganizationId
+                    AND ors.RefOrganizationRelationShipId IN (
+                      SELECT RefOrganizationRelationShipId 
+                      FROM RefOrganizationRelationShip
+                      WHERE Code IN ('InternalOrganization')
+                      ) 
                   JOIN OrganizationPersonRole opr 
                     ON O.OrganizationId = opr.OrganizationId
                     AND opr.RecordEndDateTime IS NULL
                   JOIN RoleAttendanceEvent rae
                     ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
                     AND rae.RecordEndDateTime IS NULL
-                  JOIN PersonIdentifier pid
-                    ON opr.personId = pid.personId
-                    AND pid.refPersonIdentificationSystemId IN (
-                      SELECT refPersonIdentificationSystemId
-                      FROM refPersonIdentificationSystem
-                      WHERE Code IN ('listNumber')
-                    )
-                    AND pid.RecordEndDateTime IS NULL
                   JOIN Role rol
                     ON opr.RoleId = rol.RoleId
                     AND opr.RoleId IN (
@@ -3305,9 +4210,7 @@ class check:
                   rae.VirtualIndicator NOT NULL
                   AND
                   -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-                  css.ClassMeetingDays like '%'||diaSemana||'%'
-                  AND
-                  hora between css.ClassBeginningTime and css.ClassEndingTime
+                  diaSemana in (css.ClassMeetingDays)
                   AND
                   -- Agrega a la lista todos los registros que no cumplan con la expresión regular
                   rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
@@ -3317,459 +4220,292 @@ class check:
                   AND
                   -- Agrega a la lista todos los registros que no cumplan con la expresión regular
                   rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+                  AND
+                  ClassPeriod in ('Bloque02')
                   
                 GROUP BY rae.Date
-            """).fetchall()
-        except Exception as e:
-            logger.error(f'Rechazado')
-            logger.info(f'No cumple con los criterios de la consulta: {e}')
-            return True
-        try:
-            if(len(asistencia)>0):
-                totalEstudiantes = list([m[4] for m in asistencia if m[4] is not None])
-                estudiantesPresentes = list([m[5] for m in asistencia if m[5] is not None])
-                estudiantesAusentes = list([m[7] for m in asistencia if m[7] is not None])
-                estudiantesRetrasados = list([m[9] for m in asistencia if m[9] is not None])
-                firmadoEnClases = list([m[11] for m in asistencia if m[11] is not None])
                 
-                for idx_,el_ in enumerate(totalEstudiantes):
-                  if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
-                    logger.info(f'Rechazado')
-                    logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
-                    return False    
-                    
-                  if(el_ != firmadoEnClases[idx_]):
-                    logger.info(f'Rechazado')
-                    logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
-                    return False
-                
-            logger.info("Aprobado")    
-            return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
-  ## Fin fn5E0 WC ##
-
-  ## Inicio fn8F1 WC ##
-  def fn8F1(self, conn):
-          try:
-              query = conn.execute("""select * from Incident""").fetchall()
-              if(len(query)>0):
-                  Incidentes = (list([m[0] for m in query if m[0] is not None]))
-                  for x in Incidentes:
-                      querySelect = "SELECT * from K12StudentDiscipline where IncidentId = "
-                      queryWhere = str(x)
-                      queryComplete = querySelect+queryWhere
-                      try:
-                          query = conn.execute(queryComplete).fetchall()
-                          if(len(query)>0):
-                              query = len(query)
-                              logger.info(f'Total de datos: {query}')
-                              logger.info(f'Aprobado')
-                              return True
-                          else:
-                              logger.error(f'S/Datos')
-                              logger.error(f'No se encuentran registradas medidas diciplinarias para los incidentes registrados')
-                              return False
-                      except Exception as e:
-                          logger.error(f'No se pudo ejecutar la consulta: {str(e)}')
-                          logger.error(f'Rechazado')
-                          return False
-              else:
-                  logger.error(f'S/Datos')
-                  logger.error(f'Sin incidentes registrados')
-                  return True
-          except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
-  ## Fin fn8F1 WC ##
-
-  ## Inicio fn5E4 WC ##
-  def fn5E4(self,conn):
-      try:
-          _query = conn.execute("""
-          SELECT RAE.DATE,
-                RAE.RefAttendanceStatusId
-          FROM OrganizationPersonRole OPR
-                  join RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-          where OPR.RoleId = 6
-          and RAE.Date is not null;
-          """).fetchall()
-          if(len(_query)>0):
-            _date = (list(set([m[0] for m in _query if m[0] is not None])))
-            if not _date:
-              logger.error(f"Sin fecha de asistencia ingresada")
-              logger.error(f'Rechazado')
-              return False
-            _status = (list(set([m[1] for m in _query if m[1] is not None])))
-            if not _status:
-              logger.error(f"Sin estado de asistencia asignado")
-              logger.error(f'Rechazado')
-              return False
-            logger.info(f'Aprobado')
-            logger.info(f'Todos los registros de asistencia cuentan con un estado asignado')
-            return True
-          else:
-              logger.info(f"S/Datos")
-              logger.info(f"Sin datos de asistencia")
-              return False
-      except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
-  ## Fin fn5E4 WC ##
-
-  ## Inicio fn5E5 WC ##
-  def fn5E5(self,conn):
-        try:
-            _query = conn.execute("""
-                  SELECT 
-                    count(rae_.refattendancestatusid) as 'totalEstudiantesCurso', -- Cantidad total de estudiantes [idx 0]
-                    sum(CASE WHEN rae_.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesCurso', -- [idx 1]
-                    sum(CASE WHEN rae_.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesv', -- [idx 2]
-                    sum(CASE WHEN rae_.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosCurso' -- [idx 3]
-                    ,a.*
-                  FROM Organization O
-                    JOIN RefOrganizationType rot
-                      ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-                      AND O.RefOrganizationTypeId IN (
-                        SELECT RefOrganizationTypeId 
-                        FROM RefOrganizationType
-                        WHERE Description IN ('Course')
-                      ) 
-                    OUTER LEFT JOIN OrganizationPersonRole opr_
-                      ON O.OrganizationId = opr_.OrganizationId
-                      AND opr_.RecordEndDateTime IS NULL
-                    OUTER LEFT JOIN RoleAttendanceEvent rae_
-                      ON opr_.OrganizationPersonRoleId = rae_.OrganizationPersonRoleId
-                      AND rae_.RecordEndDateTime IS NULL
-                    OUTER LEFT JOIN
-                    (
-                    SELECT  
-                      rae.Date, -- fecha completa de la clase [idx 0]
-                      ors.Parent_OrganizationID,		
-                      O.OrganizationId,
-                      strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date [idx 1]
-                      CASE 
-                        WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
-                        WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
-                        WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-                        WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
-                        WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
-                        WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
-                        WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-                      END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 3]
-                      count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 4]
-                      sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura', -- [idx 5]
-                      sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura', -- [idx 6]
-                      sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura' -- [idx 7]
-                      
-                    FROM Organization O
-                      JOIN RefOrganizationType rot
-                        ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-                        AND O.RefOrganizationTypeId IN (
-                          SELECT RefOrganizationTypeId 
-                          FROM RefOrganizationType
-                          WHERE Description IN ('Course Section')
-                        ) 
-                      JOIN OrganizationRelationship ors 
-                        ON O.OrganizationId = ors.OrganizationId
-                        AND ors.RefOrganizationRelationShipId IN (
-                          SELECT RefOrganizationRelationShipId 
-                          FROM RefOrganizationRelationShip
-                          WHERE Code IN ('InternalOrganization')
-                          ) 
-                      JOIN OrganizationPersonRole opr 
-                        ON O.OrganizationId = opr.OrganizationId
-                        AND opr.RecordEndDateTime IS NULL
-                      JOIN RoleAttendanceEvent rae
-                        ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
-                        AND rae.RecordEndDateTime IS NULL
-                      JOIN Role rol
-                        ON opr.RoleId = rol.RoleId
-                        AND opr.RoleId IN (
-                          SELECT RoleId
-                          FROM Role
-                          WHERE Name IN ('Estudiante')
-                        )
-                      JOIN OrganizationCalendar oc 
-                        ON O.OrganizationId = oc.OrganizationId
-                        AND oc.RecordEndDateTime IS NULL
-                      JOIN OrganizationCalendarSession ocs
-                        ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-                        AND ocs.RecordEndDateTime IS NULL
-                      JOIN CourseSectionSchedule css
-                        ON O.OrganizationId = css.OrganizationId
-                        AND css.RecordEndDateTime IS NULL
-                    --GROUP BY rae.Date
-
-                    WHERE 
-                      -- Verifica que se encuentre cargado el leccionario
-                      rae.RefAttendanceEventTypeId = 2
-                      AND
-                      -- Verifica que se encuentre cargado el leccionario
-                      ocs.Description NOT NULL
-                      AND
-                      -- Verifica que el indicador sea True, ya que en estos casos corresponde la relación	
-                      ocs.AttendanceTermIndicator IN (1)
-                      AND
-                      -- Verifica que la firma se encuentre cargada en el sistema
-                      rae.digitalRandomKey NOT NULL
-                      AND
-                      -- Verifica que se haya especificado si es estudiante asiste presencialmente o no.
-                      rae.VirtualIndicator NOT NULL
-                      AND
-                      -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-                      diaSemana in (css.ClassMeetingDays)
-                      AND
-                      -- Agrega a la lista todos los registros que no cumplan con la expresión regular
-                      rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
-                      AND
-                      -- Agrega a la lista todos los registros que no cumplan con la expresión regular
-                      rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
-                      AND
-                      -- Agrega a la lista todos los registros que no cumplan con la expresión regular
-                      rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
-                      AND
-                      ClassPeriod in ('Bloque02')
-                      
-                    GROUP BY rae.Date
-                    
-                    ) a ON O.OrganizationId = a.Parent_OrganizationID
-                  WHERE
-                    -- Verifica que el tipo de asistencia sea diaria
-                    rae_.RefAttendanceEventTypeId = 1
-            """)#.fetchall()
-            if(_query.returns_rows == 0):
-              logger.info(f"Rechazado")
-              logger.info(f"No hay información para evaluar")
-              return False
+                ) a ON O.OrganizationId = a.Parent_OrganizationID
+              WHERE
+                -- Verifica que el tipo de asistencia sea diaria
+                rae_.RefAttendanceEventTypeId = 1
+        """)#.fetchall()
+        if(_query.returns_rows == 0):
+          logger.info(f"Rechazado")
+          logger.info(f"No hay información para evaluar")
+          return False
+        
+        _query = _query.fetchall()
+        if(len(_query)>0):
+            _totalCurso = (list([m[0] for m in _query if m[0] is not None]))
+            _totalAsign = (list([m[9] for m in _query if m[9] is not None]))
             
-            _query = _query.fetchall()
-            if(len(_query)>0):
-                _totalCurso = (list([m[0] for m in _query if m[0] is not None]))
-                _totalAsign = (list([m[9] for m in _query if m[9] is not None]))
-                
-                _estPresentesCurso = (list([m[1] for m in _query if m[1] is not None]))
-                _estPresentesAsign = (list([m[10] for m in _query if m[10] is not None]))
-                _estAtradadosAsign = (list([m[12] for m in _query if m[12] is not None]))                
+            _estPresentesCurso = (list([m[1] for m in _query if m[1] is not None]))
+            _estPresentesAsign = (list([m[10] for m in _query if m[10] is not None]))
+            _estAtradadosAsign = (list([m[12] for m in _query if m[12] is not None]))                
 
-                _estAusentesCurso = (list([m[2] for m in _query if m[2] is not None]))
-                _estAusentesAsign = (list([m[11] for m in _query if m[11] is not None]))
-                
-                for idx_,el_ in enumerate(_totalCurso):
-                    if el_ != _totalAsign[idx_]:
-                        logger.error(f'Rechazado')
-                        logger.error(f'Totales de estudiantes no coinciden')                        
+            _estAusentesCurso = (list([m[2] for m in _query if m[2] is not None]))
+            _estAusentesAsign = (list([m[11] for m in _query if m[11] is not None]))
+            
+            for idx_,el_ in enumerate(_totalCurso):
+                if el_ != _totalAsign[idx_]:
+                    logger.error(f'Rechazado')
+                    logger.error(f'Totales de estudiantes no coinciden')                        
 
-                    if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
-                        logger.error(f'Rechazado')
-                        logger.error(f'Total de estudiantes presentes no coinciden')
+                if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
+                    logger.error(f'Rechazado')
+                    logger.error(f'Total de estudiantes presentes no coinciden')
 
-                    if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
-                        logger.error(f'Rechazado')
-                        logger.error(f'Total de estudiantes ausentes no coinciden')
+                if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
+                    logger.error(f'Rechazado')
+                    logger.error(f'Total de estudiantes ausentes no coinciden')
 
-                    return False                      
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+                return False                      
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn5E5 WC ##
 
   ## Inicio fn5D0 WC ##
   def fn5D0(self, conn):
-        try:
-            _oPR = conn.execute("""
-                SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
-                FROM OrganizationPersonRole OPR
-                        JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-                WHERE OPR.RoleId in(4,5)
-                AND RAE.RefAttendanceEventTypeId = 1
-                group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
-                """
-                ).fetchall()
-            if(len(_oPR)>0):
-                _count = (list([m[0] for m in _oPR if m[0] is not None]))
-                _contador = 0
-                for x in _count:
-                    if(x > 1):
-                        _contador += 1
-                if(_contador > 0):
-                    logger.error('Duplicados')
-                    logger.error('Rechazado')
-                    return False
-                else:
-                    logger.info('No hay duplicados')
-                    logger.info('Aprobado')
-                    return True
-            else:
-                logger.error(f'No existen Firmas')
-                logger.error(f'S/Datos')
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _oPR = conn.execute("""
+            SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
+            FROM OrganizationPersonRole OPR
+                    JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
+            WHERE OPR.RoleId in(4,5)
+            AND RAE.RefAttendanceEventTypeId = 1
+            group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
+            """
+            ).fetchall()
+        if(len(_oPR)>0):
+            _count = (list([m[0] for m in _oPR if m[0] is not None]))
+            _contador = 0
+            for x in _count:
+                if(x > 1):
+                    _contador += 1
+            if(_contador > 0):
+                logger.error('Duplicados')
+                logger.error('Rechazado')
                 return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+            else:
+                logger.info('No hay duplicados')
+                logger.info('Aprobado')
+                return True
+        else:
+            logger.error(f'No existen Firmas')
+            logger.error(f'S/Datos')
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## fin fn5D0 WC ##
 
   ## Inicio fn4FA WC ##
   def fn4FA(self, conn):
-            try:
-            #trae todos los datos bases del alumno y de su apoderado por curso
-                idorga = conn.execute("""
-                SELECT
-                    organizationId,
-                    name
-                from Organization
-                where RefOrganizationTypeId = 21
-                """).fetchall()
-                x=0
-                for org in idorga:
-                    listaAlumno = conn.execute("""
-                    SELECT op.personid,
-                          op.organizationpersonroleid,
-                          StudentListNumber                                                                        as "numero de lista",
-                          Identifier                                                                               as rut,
-                          p.Birthdate                                                                              as "fecha de nacimiento",
-                          k12SE.FirstEntryDateIntoUSSchool,
-                          rf.Definition                                                                            as sexo,
-                          pad.StreetNumberAndName                                                                  as direccion
-                            ,
-                          (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName)     as "nombre completo"
-                            ,
-                          (p2.FirstName || ' ' || p2.MiddleName || ' ' || p2.LastName || ' ' || p2.SecondLastName) as "apoderado",
-                          pad2.StreetNumberAndName                                                                 as "domicilio Apoderado"
-                            ,
-                          pt2.TelephoneNumber                                                                      as "fono apoderado",
-                          pea2.EmailAddress                                                                        as "email apoderado"
-                            ,
-                          k12SE.FirstEntryDateIntoUSSchool                                                         as "fecha de inicio"
-                    FROM K12StudentEnrollment k12SE
-                            JOIN OrganizationPersonRole op 
-								on k12SE.OrganizationPersonRoleId = op.OrganizationPersonRoleId
-								and op.RoleId IN (
-									SELECT RoleId
-									from Role
-									WHERE role.Name IN ('Estudiante')
-								)
-                            JOIN PersonIdentifier PI 
-								on op.PersonId = PI.PersonId
-								  and PI.RefPersonIdentificationSystemId IN (
-									Select RefPersonIdentificationSystemId
-									from RefPersonIdentificationSystem rpi
-									where rpi.Description IN ('ROL UNICO NACIONAL')
-								  )
-							JOIN Person p on op.PersonId = p.PersonId
-                            JOIN RefSex rf on p.RefSexId = rf.RefSexId
-                            LEFT join PersonAddress pad on p.PersonId = pad.PersonId
-                            JOIN PersonRelationship pr 
-                              on p.PersonId = pr.RelatedPersonId
-                              and pr.RefPersonRelationshipId IN (
-                                Select RefPersonRelationshipId
-                                from RefPersonRelationship
-                                where RefPersonRelationship.Description IN ('Apoderado(a)/Tutor(a)')
-                              )
-                            LEFT join Person p2 on p2.PersonId = pr.PersonId -- Datos Apoderado
-                            LEFT join PersonAddress pad2 on pad2.PersonId = p2.PersonId  -- Datos Apoderado
-                            LEFT join PersonTelephone pt2 on pt2.PersonId = p2.PersonId  -- Datos Apoderado
-                            LEFT join PersonEmailAddress pea2 on pea2.PersonId = p2.PersonId  -- Datos Apoderado
-                    WHERE
-                      op.organizationid = ?
-                    GROUP by op.PersonId;
-                    """,([org[0]])).fetchall()
-                    if(len(listaAlumno)> 0):
-                        x=x+1
-                        for alumno in listaAlumno:
-                            #por cada alumno trae a los profesorees que interactuan con el
-                            idAlumno=alumno[0]
-                            idAlumnorole=alumno[1]
-                            listaProfesionales = conn.execute("""
-                            SELECT (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo"
-                            FROM OrganizationPersonRole op
-                                    join OrganizationPersonRole op2 on op.OrganizationId = op2.OrganizationId
-                                    join Person p on op.PersonId = p.PersonId
-                            WHERE op.roleid != 6
-                              AND op2.PersonId = ?
-                              AND op2.OrganizationID = ?
-                            GROUP by op.PersonId
-                            """,(idAlumno,org[0])).fetchall()
-                            #lista de becas e identificacion de estudiante preferente, prioritario, etc de ser requerido
-                            listaPrograma = conn.execute("""
-                            SELECT rpt.description
-                            FROM RefParticipationType rpt
-                                    join PersonProgramParticipation ppp on rpt.RefParticipationTypeId = ppp.RefParticipationTypeId
-                            WHERE ppp.OrganizationPersonRoleId = ?;
-                            """,([idAlumnorole])).fetchall()
-                            #trae las asignaturas en las que se encuentra el alumno
-                            organizacion = conn.execute("""
-                            SELECT op.OrganizationId, personid
-                            FROM OrganizationPersonRole op
-                                    join Organization o on op.OrganizationId = o.OrganizationId
-                            WHERE personid in (?);""",([idAlumno])).fetchall()
-                            organi=[]
-                            evalua_=[]
-                            for org2 in organizacion:
-                                #por cada asignatura trae el calendario
-                                calendario = conn.execute("""
-                                SELECT
-                                    BeginDate,
-                                    EndDate,
-                                    SessionStartTime,
-                                    SessionEndTime
-                                FROM calendarList
-                                WHERE OrganizationId = ?
-                                and "RefSessionType.Description" like '%Semester%';
-                                    """,([org2[0]])).fetchall()
-                                if(calendario):
-                                    organi.append(calendario)
-                                # por cada asignatura trae las evaluaciones
-                                evaluaciones = conn.execute("""
-                                select aao.OrganizationId
-                                from AssessmentAdministration_Organization aao
-                                join CourseSection cs on aao.OrganizationId=cs.OrganizationId
-                                where CourseId= ?;
-                                """,([org2[0]])).fetchall()
-                                if (evaluaciones):
-                                    evalua_.append(evaluaciones)
-                        becasprogramas=(list([m[0] for m in listaPrograma if m[0] is not None]))
-                        evalua=(list([m[0] for m in evalua_ if m[0] is not None]))
-                        profe=(list([m[0] for m in listaProfesionales if m[0] is not None]))
-                        calenda=(list([m[0] for m in organi if m[0] is not None]))
-                        print(profe)
-                        if not profe:
-                            logger.error(f"Sin profesor jefe, o profesor de asignaturas")
-                            logger.error(f"Rechazado")
-                            return False
-                        elif not calenda:
-                            logger.error(f"Sin calendario")
-                            logger.error(f"Rechazado")
-                            return False
-                        elif not evalua:
-                            logger.error(f"Sin evaluaciones")
-                            logger.error(f"Rechazado")
-                            return False
-                    else:
-                        logger.error(f"Sin Datos de alumnos: {org}")
-                if x==0:
-                  logger.info(f"S/Datos")
-                  return False
-                logger.info("Se validaron todos los datos")
-                logger.info(f"Aprobado")
-                return True
-            except Exception as e:
-                logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                logger.error(f"Rechazado")
-                return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+    #trae todos los datos bases del alumno y de su apoderado por curso
+        idorga = conn.execute("""
+        SELECT
+            organizationId,
+            name
+        from Organization
+        where RefOrganizationTypeId = 21
+        """).fetchall()
+        x=0
+        for org in idorga:
+            listaAlumno = conn.execute("""
+            SELECT op.personid,
+                  op.organizationpersonroleid,
+                  StudentListNumber                                                                        as "numero de lista",
+                  Identifier                                                                               as rut,
+                  p.Birthdate                                                                              as "fecha de nacimiento",
+                  k12SE.FirstEntryDateIntoUSSchool,
+                  rf.Definition                                                                            as sexo,
+                  pad.StreetNumberAndName                                                                  as direccion
+                    ,
+                  (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName)     as "nombre completo"
+                    ,
+                  (p2.FirstName || ' ' || p2.MiddleName || ' ' || p2.LastName || ' ' || p2.SecondLastName) as "apoderado",
+                  pad2.StreetNumberAndName                                                                 as "domicilio Apoderado"
+                    ,
+                  pt2.TelephoneNumber                                                                      as "fono apoderado",
+                  pea2.EmailAddress                                                                        as "email apoderado"
+                    ,
+                  k12SE.FirstEntryDateIntoUSSchool                                                         as "fecha de inicio"
+            FROM K12StudentEnrollment k12SE
+                    JOIN OrganizationPersonRole op 
+        on k12SE.OrganizationPersonRoleId = op.OrganizationPersonRoleId
+        and op.RoleId IN (
+          SELECT RoleId
+          from Role
+          WHERE role.Name IN ('Estudiante')
+        )
+                    JOIN PersonIdentifier PI 
+        on op.PersonId = PI.PersonId
+          and PI.RefPersonIdentificationSystemId IN (
+          Select RefPersonIdentificationSystemId
+          from RefPersonIdentificationSystem rpi
+          where rpi.Description IN ('ROL UNICO NACIONAL')
+          )
+      JOIN Person p on op.PersonId = p.PersonId
+                    JOIN RefSex rf on p.RefSexId = rf.RefSexId
+                    LEFT join PersonAddress pad on p.PersonId = pad.PersonId
+                    JOIN PersonRelationship pr 
+                      on p.PersonId = pr.RelatedPersonId
+                      and pr.RefPersonRelationshipId IN (
+                        Select RefPersonRelationshipId
+                        from RefPersonRelationship
+                        where RefPersonRelationship.Description IN ('Apoderado(a)/Tutor(a)')
+                      )
+                    LEFT join Person p2 on p2.PersonId = pr.PersonId -- Datos Apoderado
+                    LEFT join PersonAddress pad2 on pad2.PersonId = p2.PersonId  -- Datos Apoderado
+                    LEFT join PersonTelephone pt2 on pt2.PersonId = p2.PersonId  -- Datos Apoderado
+                    LEFT join PersonEmailAddress pea2 on pea2.PersonId = p2.PersonId  -- Datos Apoderado
+            WHERE
+              op.organizationid = ?
+            GROUP by op.PersonId;
+            """,([org[0]])).fetchall()
+            if(len(listaAlumno)> 0):
+                x=x+1
+                for alumno in listaAlumno:
+                    #por cada alumno trae a los profesorees que interactuan con el
+                    idAlumno=alumno[0]
+                    idAlumnorole=alumno[1]
+                    listaProfesionales = conn.execute("""
+                    SELECT (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo"
+                    FROM OrganizationPersonRole op
+                            join OrganizationPersonRole op2 on op.OrganizationId = op2.OrganizationId
+                            join Person p on op.PersonId = p.PersonId
+                    WHERE op.roleid != 6
+                      AND op2.PersonId = ?
+                      AND op2.OrganizationID = ?
+                    GROUP by op.PersonId
+                    """,(idAlumno,org[0])).fetchall()
+                    #lista de becas e identificacion de estudiante preferente, prioritario, etc de ser requerido
+                    listaPrograma = conn.execute("""
+                    SELECT rpt.description
+                    FROM RefParticipationType rpt
+                            join PersonProgramParticipation ppp on rpt.RefParticipationTypeId = ppp.RefParticipationTypeId
+                    WHERE ppp.OrganizationPersonRoleId = ?;
+                    """,([idAlumnorole])).fetchall()
+                    #trae las asignaturas en las que se encuentra el alumno
+                    organizacion = conn.execute("""
+                    SELECT op.OrganizationId, personid
+                    FROM OrganizationPersonRole op
+                            join Organization o on op.OrganizationId = o.OrganizationId
+                    WHERE personid in (?);""",([idAlumno])).fetchall()
+                    organi=[]
+                    evalua_=[]
+                    for org2 in organizacion:
+                        #por cada asignatura trae el calendario
+                        calendario = conn.execute("""
+                        SELECT
+                            BeginDate,
+                            EndDate,
+                            SessionStartTime,
+                            SessionEndTime
+                        FROM calendarList
+                        WHERE OrganizationId = ?
+                        and "RefSessionType.Description" like '%Semester%';
+                            """,([org2[0]])).fetchall()
+                        if(calendario):
+                            organi.append(calendario)
+                        # por cada asignatura trae las evaluaciones
+                        evaluaciones = conn.execute("""
+                        select aao.OrganizationId
+                        from AssessmentAdministration_Organization aao
+                        join CourseSection cs on aao.OrganizationId=cs.OrganizationId
+                        where CourseId= ?;
+                        """,([org2[0]])).fetchall()
+                        if (evaluaciones):
+                            evalua_.append(evaluaciones)
+                becasprogramas=(list([m[0] for m in listaPrograma if m[0] is not None]))
+                evalua=(list([m[0] for m in evalua_ if m[0] is not None]))
+                profe=(list([m[0] for m in listaProfesionales if m[0] is not None]))
+                calenda=(list([m[0] for m in organi if m[0] is not None]))
+                print(profe)
+                if not profe:
+                    logger.error(f"Sin profesor jefe, o profesor de asignaturas")
+                    logger.error(f"Rechazado")
+                    return False
+                elif not calenda:
+                    logger.error(f"Sin calendario")
+                    logger.error(f"Rechazado")
+                    return False
+                elif not evalua:
+                    logger.error(f"Sin evaluaciones")
+                    logger.error(f"Rechazado")
+                    return False
+            else:
+                logger.error(f"Sin Datos de alumnos: {org}")
+        if x==0:
+          logger.info(f"S/Datos")
+          return False
+        logger.info("Se validaron todos los datos")
+        logger.info(f"Aprobado")
+        return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn4FA WC ##
 
   ## Inicio fn5F0 WC ##
   def fn5F0(self, conn):
-        try:
-          asignaturas = []
-          asignaturas = conn.execute("""
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+      asignaturas = []
+      asignaturas = conn.execute("""
 --6.2 Contenido mínimo, letra b.1
 --Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
 -- * día de clases
@@ -3785,1105 +4521,1313 @@ class check:
 -- crea una lista de días hábiles en los cuales deberían haber tenido clases
 -- los estudiantes del establecimiento.
 WITH RECURSIVE dates(Organizationid, date) AS (
-  SELECT O.Organizationid, FirstInstructionDate
-  --FROM OrganizationCalendarSession ocs
-  FROM Organization O
-  JOIN RefOrganizationType rot
-	ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-	AND O.RefOrganizationTypeId IN (
-	  SELECT RefOrganizationTypeId 
-	  FROM RefOrganizationType
-	  WHERE Description IN ('Course Section')
-	) 
-  JOIN OrganizationCalendar oc
-	--ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-	ON oc.OrganizationId = O.Organizationid--'2000096080'
-  JOIN OrganizationCalendarSession ocs
-	ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-	AND ocs.FirstInstructionDate NOT NULL
-  UNION ALL
-  SELECT Organizationid, date(date, '+1 day')
-  FROM dates
-  WHERE 
-	-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
-	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
-		-- Rescata el último día 
-		SELECT LastInstructionDate 
-		FROM OrganizationCalendarSession ocs 
-		JOIN OrganizationCalendar oc 
-			ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId 
-			AND oc.OrganizationId = Organizationid-- '2000096080'
-		WHERE ocs.LastInstructionDate NOT NULL
-		)
-	) 
-	AND
-	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
+SELECT O.Organizationid, FirstInstructionDate
+--FROM OrganizationCalendarSession ocs
+FROM Organization O
+JOIN RefOrganizationType rot
+ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+AND O.RefOrganizationTypeId IN (
+SELECT RefOrganizationTypeId 
+FROM RefOrganizationType
+WHERE Description IN ('Course Section')
+) 
+JOIN OrganizationCalendar oc
+--ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+ON oc.OrganizationId = O.Organizationid--'2000096080'
+JOIN OrganizationCalendarSession ocs
+ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+AND ocs.FirstInstructionDate NOT NULL
+UNION ALL
+SELECT Organizationid, date(date, '+1 day')
+FROM dates
+WHERE 
+-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
+-- Rescata el último día 
+SELECT LastInstructionDate 
+FROM OrganizationCalendarSession ocs 
+JOIN OrganizationCalendar oc 
+  ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId 
+  AND oc.OrganizationId = Organizationid-- '2000096080'
+WHERE ocs.LastInstructionDate NOT NULL
+)
+) 
+AND
+strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
 )
 SELECT Organizationid, date, result.*
 FROM dates 
 -- con el OrganizationId se hace un cruce con la consulta que calcula los datos a validar
 LEFT JOIN (
-	-- Esta consulta rescata desde la RoleAttendanceEvent los días con asistencia y calcula 
-	-- el total de estudiantes presentes, ausentes y atrasados.
-	-- Además revisa si exiten las firmas del docente en cada registro y si esta cargada la 
-	-- información del leccionario
-	SELECT 
-		O.OrganizationId as 'idAsignatura', -- [idx 0]
-		O.name as 'nombreAsignatura', -- [idx 1]
-		rae.Date as 'fechaClase', -- fecha completa de la clase [idx 2]
-		strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date [idx 3]
-		CASE 
-			WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
-			WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
-			WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-			WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
-			WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
-			WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
-			WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-		END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 4]	
-		CASE 
-			WHEN strftime('%m', rae.Date) = '1' THEN 'Enero'
-			WHEN strftime('%m', rae.Date) = '2' THEN 'Febrero'
-			WHEN strftime('%m', rae.Date) = '3' THEN 'Marzo'
-			WHEN strftime('%m', rae.Date) = '4' THEN 'Abril'
-			WHEN strftime('%m', rae.Date) = '5' THEN 'Mayo'
-			WHEN strftime('%m', rae.Date) = '6' THEN 'Junio'
-			WHEN strftime('%m', rae.Date) = '7' THEN 'Julio'
-			WHEN strftime('%m', rae.Date) = '8' THEN 'Agosto'
-			WHEN strftime('%m', rae.Date) = '9' THEN 'Septiembre'
-			WHEN strftime('%m', rae.Date) = '10' THEN 'Octubre'
-			WHEN strftime('%m', rae.Date) = '11' THEN 'Noviembre'
-			WHEN strftime('%m', rae.Date) = '12' THEN 'Diciembre'		
-		END as 'Mes', -- rescata solo el mes desde rae.Date [idx 5]
-		strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date [idx 6]
-		count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
-		sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- [idx 8]
-		group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista', -- [idx 9]
-		sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- [idx 10]
-		group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista', -- [idx 11]
-		sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- [idx 12]
-		group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista', -- [idx 13]
-		count(rae.digitalRandomKey) as 'cantidadRegistrosFirmados', -- [idx 14]
-		group_concat(DISTINCT '"' || ocs.description || '"') as 'observacionesLeccionario' -- [idx 15]
-	FROM Organization O
-		JOIN RefOrganizationType rot
-			ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-			AND O.RefOrganizationTypeId IN (
-				SELECT RefOrganizationTypeId 
-				FROM RefOrganizationType
-				WHERE Description IN ('Course Section')
-			) 
-		JOIN OrganizationPersonRole opr 
-			ON O.OrganizationId = opr.OrganizationId
-			AND opr.RecordEndDateTime IS NULL
-		JOIN RoleAttendanceEvent rae
-			ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
-			AND rae.RecordEndDateTime IS NULL
-		JOIN PersonIdentifier pid
-			ON opr.personId = pid.personId
-			AND pid.refPersonIdentificationSystemId IN (
-				SELECT refPersonIdentificationSystemId
-				FROM refPersonIdentificationSystem
-				WHERE Code IN ('listNumber')
-			)
-			AND pid.RecordEndDateTime IS NULL
-		JOIN Role rol
-			ON opr.RoleId = rol.RoleId
-			AND opr.RoleId IN (
-				SELECT RoleId
-				FROM Role
-				WHERE Name IN ('Estudiante')
-			)
-		JOIN OrganizationCalendar oc 
-			ON O.OrganizationId = oc.OrganizationId
-			AND oc.RecordEndDateTime IS NULL
-		JOIN OrganizationCalendarSession ocs
-			ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-			AND ocs.RecordEndDateTime IS NULL
-		JOIN CourseSectionSchedule css
-			ON O.OrganizationId = css.OrganizationId
-			AND css.RecordEndDateTime IS NULL
-	--GROUP BY rae.Date
+-- Esta consulta rescata desde la RoleAttendanceEvent los días con asistencia y calcula 
+-- el total de estudiantes presentes, ausentes y atrasados.
+-- Además revisa si exiten las firmas del docente en cada registro y si esta cargada la 
+-- información del leccionario
+SELECT 
+O.OrganizationId as 'idAsignatura', -- [idx 0]
+O.name as 'nombreAsignatura', -- [idx 1]
+rae.Date as 'fechaClase', -- fecha completa de la clase [idx 2]
+strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date [idx 3]
+CASE 
+  WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
+  WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
+  WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
+  WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+  WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
+  WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
+  WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
+END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 4]	
+CASE 
+  WHEN strftime('%m', rae.Date) = '1' THEN 'Enero'
+  WHEN strftime('%m', rae.Date) = '2' THEN 'Febrero'
+  WHEN strftime('%m', rae.Date) = '3' THEN 'Marzo'
+  WHEN strftime('%m', rae.Date) = '4' THEN 'Abril'
+  WHEN strftime('%m', rae.Date) = '5' THEN 'Mayo'
+  WHEN strftime('%m', rae.Date) = '6' THEN 'Junio'
+  WHEN strftime('%m', rae.Date) = '7' THEN 'Julio'
+  WHEN strftime('%m', rae.Date) = '8' THEN 'Agosto'
+  WHEN strftime('%m', rae.Date) = '9' THEN 'Septiembre'
+  WHEN strftime('%m', rae.Date) = '10' THEN 'Octubre'
+  WHEN strftime('%m', rae.Date) = '11' THEN 'Noviembre'
+  WHEN strftime('%m', rae.Date) = '12' THEN 'Diciembre'		
+END as 'Mes', -- rescata solo el mes desde rae.Date [idx 5]
+strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date [idx 6]
+count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
+sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- [idx 8]
+group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista', -- [idx 9]
+sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- [idx 10]
+group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista', -- [idx 11]
+sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- [idx 12]
+group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista', -- [idx 13]
+count(rae.digitalRandomKey) as 'cantidadRegistrosFirmados', -- [idx 14]
+group_concat(DISTINCT '"' || ocs.description || '"') as 'observacionesLeccionario' -- [idx 15]
+FROM Organization O
+JOIN RefOrganizationType rot
+  ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+  AND O.RefOrganizationTypeId IN (
+    SELECT RefOrganizationTypeId 
+    FROM RefOrganizationType
+    WHERE Description IN ('Course Section')
+  ) 
+JOIN OrganizationPersonRole opr 
+  ON O.OrganizationId = opr.OrganizationId
+  AND opr.RecordEndDateTime IS NULL
+JOIN RoleAttendanceEvent rae
+  ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+  AND rae.RecordEndDateTime IS NULL
+JOIN PersonIdentifier pid
+  ON opr.personId = pid.personId
+  AND pid.refPersonIdentificationSystemId IN (
+    SELECT refPersonIdentificationSystemId
+    FROM refPersonIdentificationSystem
+    WHERE Code IN ('listNumber')
+  )
+  AND pid.RecordEndDateTime IS NULL
+JOIN Role rol
+  ON opr.RoleId = rol.RoleId
+  AND opr.RoleId IN (
+    SELECT RoleId
+    FROM Role
+    WHERE Name IN ('Estudiante')
+  )
+JOIN OrganizationCalendar oc 
+  ON O.OrganizationId = oc.OrganizationId
+  AND oc.RecordEndDateTime IS NULL
+JOIN OrganizationCalendarSession ocs
+  ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+  AND ocs.RecordEndDateTime IS NULL
+JOIN CourseSectionSchedule css
+  ON O.OrganizationId = css.OrganizationId
+  AND css.RecordEndDateTime IS NULL
+--GROUP BY rae.Date
 
-	WHERE 
-		-- Verifica que se encuentre cargado el leccionario
-		rae.RefAttendanceEventTypeId = 2
-		AND
-		-- Verifica que se encuentre cargado el leccionario
-		ocs.Description NOT NULL
-		AND
-		-- Verifica que el indicador sea True, ya que en estos casos corresponde la relación	
-		ocs.AttendanceTermIndicator IN (1)
-		AND
-		-- Verifica que la firma se encuentre cargada en el sistema
-		rae.digitalRandomKey NOT NULL
-		AND
-		-- Verifica que se haya especificado si es estudiante asiste presencialmente o no.
-		rae.VirtualIndicator NOT NULL
-		AND
-		-- Verifica que día y horario de firma corresponda con calendario de la asignatura
-		diaSemana in (css.ClassMeetingDays)
-		AND
-		hora between css.ClassBeginningTime and css.ClassEndingTime
-		AND
-		-- Agrega a la lista todos los registros que no cumplan con la expresión regular
-		rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
-		AND
-		-- Agrega a la lista todos los registros que no cumplan con la expresión regular
-		rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
-		AND
-		-- Agrega a la lista todos los registros que no cumplan con la expresión regular
-		rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
-	GROUP BY rae.Date
+WHERE 
+-- Verifica que se encuentre cargado el leccionario
+rae.RefAttendanceEventTypeId = 2
+AND
+-- Verifica que se encuentre cargado el leccionario
+ocs.Description NOT NULL
+AND
+-- Verifica que el indicador sea True, ya que en estos casos corresponde la relación	
+ocs.AttendanceTermIndicator IN (1)
+AND
+-- Verifica que la firma se encuentre cargada en el sistema
+rae.digitalRandomKey NOT NULL
+AND
+-- Verifica que se haya especificado si es estudiante asiste presencialmente o no.
+rae.VirtualIndicator NOT NULL
+AND
+-- Verifica que día y horario de firma corresponda con calendario de la asignatura
+diaSemana in (css.ClassMeetingDays)
+AND
+hora between css.ClassBeginningTime and css.ClassEndingTime
+AND
+-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+AND
+-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+rae.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\\+|-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+AND
+-- Agrega a la lista todos los registros que no cumplan con la expresión regular
+rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+GROUP BY rae.Date
 ) result 
-	ON result.idAsignatura = OrganizationId
-	AND result.fecha = date
+ON result.idAsignatura = OrganizationId
+AND result.fecha = date
 -- Rescata las fechas desde OrganizationCalendarCrisis y las saca de la lista de días hábiles
 JOIN (
-			WITH RECURSIVE dates(Organizationid, date) AS (
-			  SELECT Organizationid, StartDate
-			  FROM OrganizationCalendarCrisis O
-			  UNION ALL
-			  SELECT Organizationid, date(date, '+1 day')
-			  FROM dates
-			  WHERE 
-				-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
-				strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
-					-- Rescata el último día 
-					SELECT EndDate 
-					FROM OrganizationCalendarCrisis occ
-					WHERE occ.OrganizationId = Organizationid
-					)
-				) 
-			)
-			SELECT Organizationid as 'org',  group_concat(date) as 'fechasCrisis'
-			FROM dates 		
+  WITH RECURSIVE dates(Organizationid, date) AS (
+    SELECT Organizationid, StartDate
+    FROM OrganizationCalendarCrisis O
+    UNION ALL
+    SELECT Organizationid, date(date, '+1 day')
+    FROM dates
+    WHERE 
+    -- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+    strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', ( 
+      -- Rescata el último día 
+      SELECT EndDate 
+      FROM OrganizationCalendarCrisis occ
+      WHERE occ.OrganizationId = Organizationid
+      )
+    ) 
+  )
+  SELECT Organizationid as 'org',  group_concat(date) as 'fechasCrisis'
+  FROM dates 		
 ) occ 
-	ON occ.org = Organizationid
-	AND (occ.fechasCrisis) NOT LIKE "%" || date || "%"
+ON occ.org = Organizationid
+AND (occ.fechasCrisis) NOT LIKE "%" || date || "%"
 -- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
 JOIN (
-	SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
-	FROM OrganizationCalendarEvent oce
-	JOIN OrganizationCalendar oc
-		ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
-	JOIN RefCalendarEventType rcet
-		ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
-		AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
-	GROUP BY oc.Organizationid
+SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
+FROM OrganizationCalendarEvent oce
+JOIN OrganizationCalendar oc
+ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+JOIN RefCalendarEventType rcet
+ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+GROUP BY oc.Organizationid
 ) oce 
-	ON oce.org = Organizationid
-	AND (oce.fechasEventos) NOT LIKE "%" || date || "%"	 
+ON oce.org = Organizationid
+AND (oce.fechasEventos) NOT LIKE "%" || date || "%"	 
 WHERE 
-	CAST(strftime('%w',date) as INTEGER) between 1 and 5
-	--AND result.idAsignatura NOT NULl
+CAST(strftime('%w',date) as INTEGER) between 1 and 5
+--AND result.idAsignatura NOT NULl
 GROUP BY Organizationid, date
 """).fetchall()
-        except:
-          logger.info(f"Ocurrió un error el la consulta")
+    except:
+      logger.info(f"Ocurrió un error el la consulta")
 
-        try:
-          if(not asignaturas):
-            logger.info(f"S/Datos")
-            logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
-            logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
-            return False 
-          
-          #define listas de errores
-          workDayWithoutInfo = []
-          courseSectionNameErrors = []
-          totalStudentsErrors = []
-          tokenRegisteredErrors = []
-          descriptionClassErrors = []
-          
-          for asignaturaRow in asignaturas:
-            #define variables a comparar
-            organizationId = asignaturaRow[0]
-            workDay = asignaturaRow[1]
-            CourseSectionId = asignaturaRow[2]
-            courseSectionName = asignaturaRow[3]
-            totalStudents = asignaturaRow[9]
-            presentStudents = asignaturaRow[10]
-            ausentStudents = asignaturaRow[12]
-            Latestudent = asignaturaRow[14]
-            tokenRegistered = asignaturaRow[16]
-            descriptionClass = asignaturaRow[17]
+    try:
+      if(not asignaturas):
+        logger.info(f"S/Datos")
+        logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
+        logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+        return False 
+      
+      #define listas de errores
+      workDayWithoutInfo = []
+      courseSectionNameErrors = []
+      totalStudentsErrors = []
+      tokenRegisteredErrors = []
+      descriptionClassErrors = []
+      
+      for asignaturaRow in asignaturas:
+        #define variables a comparar
+        organizationId = asignaturaRow[0]
+        workDay = asignaturaRow[1]
+        CourseSectionId = asignaturaRow[2]
+        courseSectionName = asignaturaRow[3]
+        totalStudents = asignaturaRow[9]
+        presentStudents = asignaturaRow[10]
+        ausentStudents = asignaturaRow[12]
+        Latestudent = asignaturaRow[14]
+        tokenRegistered = asignaturaRow[16]
+        descriptionClass = asignaturaRow[17]
+        
+        #Comienza a validar los datos
+        if(not CourseSectionId): 
+          #se encontraron días hábiles del calendatio sin información registrada
+          workDayWithoutInfo.append(workDay)
+
+        else: #Valida solo si existe información en la fecha
+          if(not courseSectionName):
+            #Se encontraron asignaturas sin ningún nombre registrado
+            courseSectionNameErrors.append(organizationId)
+
+          if(totalStudents != (presentStudents+ausentStudents+Latestudent)):
+            #La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
+            totalStudentsErrors.append(organizationId)
             
-            #Comienza a validar los datos
-            if(not CourseSectionId): 
-              #se encontraron días hábiles del calendatio sin información registrada
-              workDayWithoutInfo.append(workDay)
-
-            else: #Valida solo si existe información en la fecha
-              if(not courseSectionName):
-                #Se encontraron asignaturas sin ningún nombre registrado
-                courseSectionNameErrors.append(organizationId)
-
-              if(totalStudents != (presentStudents+ausentStudents+Latestudent)):
-                #La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
-                totalStudentsErrors.append(organizationId)
-                
-              if(tokenRegistered != totalStudents):
-                #La cantidad de firmas registradas no coinciden con el número total de estudiantes
-                tokenRegisteredErrors.append(organizationId)
-                
-              if(not descriptionClass):
-                #La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
-                descriptionClassErrors.append(organizationId)
-                
-          if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
-            if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
-            if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
-            if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
-            if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
-            if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
-            return False
-          else:
-            logger.info(f'Validacion aprobada')
-            logger.info(f'Aprobado')
-            return True
-        except Exception as e:
-          logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-          logger.error(f"Rechazado")
-          return False
+          if(tokenRegistered != totalStudents):
+            #La cantidad de firmas registradas no coinciden con el número total de estudiantes
+            tokenRegisteredErrors.append(organizationId)
+            
+          if(not descriptionClass):
+            #La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
+            descriptionClassErrors.append(organizationId)
+            
+      if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
+        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
+        if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
+        if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
+        if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
+        if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
+        return False
+      else:
+        logger.info(f'Validacion aprobada')
+        logger.info(f'Aprobado')
+        return True
+    except Exception as e:
+      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+      return False
   ## Fin fn5F0 WC ##
 
   ## Inicio fn8F3 WC ##
   def fn8F3(self, conn):
-        try:
-          queryTwo = conn.execute("""
-          SELECT K12StudentDisciplineId,
-                OrganizationPersonRoleId,
-                DisciplinaryActionStartDate,
-                IncidentId
-          FROM K12StudentDiscipline
-          WHERE RefDisciplinaryActionTakenId = 8;
-          """).fetchall()
-          if(len(queryTwo)>0):
-              for fila in queryTwo:
-                  for dato in fila:
-                      if dato is None:
-                          a = 0
-                      else:
-                          logger.error(f'Datos incompletos')
-                          logger.error(f'Rechazado')
-                          return False
-          else:
-              logger.error(f'S/Datos')
-              logger.error(f'Sin reuniones con los apoderado/s')
-              return True
-          logger.info(f'Datos Validados')
-          logger.info(f'Aprobado')
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+      queryTwo = conn.execute("""
+      SELECT K12StudentDisciplineId,
+            OrganizationPersonRoleId,
+            DisciplinaryActionStartDate,
+            IncidentId
+      FROM K12StudentDiscipline
+      WHERE RefDisciplinaryActionTakenId = 8;
+      """).fetchall()
+      if(len(queryTwo)>0):
+          for fila in queryTwo:
+              for dato in fila:
+                  if dato is None:
+                      a = 0
+                  else:
+                      logger.error(f'Datos incompletos')
+                      logger.error(f'Rechazado')
+                      return False
+      else:
+          logger.error(f'S/Datos')
+          logger.error(f'Sin reuniones con los apoderado/s')
           return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+      logger.info(f'Datos Validados')
+      logger.info(f'Aprobado')
+      return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn8F3 WC ##
 
   ## Inicio fn8F2 WC ##
   def fn8F2(self,conn):
-        try:
-            _queryIncident = conn.execute("""
-            SELECT DISTINCT
-                I.IncidentId,
-                I.IncidentDate,
-                I.IncidentTime,
-                I.RefIncidentTimeDescriptionCodeId,
-                I.IncidentDescription,
-                I.OrganizationPersonRoleId,
-                OPR.RoleId
-                FROM Incident I
-                JOIN OrganizationPersonRole OPR on I.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-                WHERE OPR.RoleId = 6;
-                """).fetchall()
-            if(len(_queryIncident)>0):
-                _incidentId = (list([m[0] for m in _queryIncident if m[0] is not None]))
-                if not _incidentId:
-                    logger.error(f"Sin Incidentes")
-                    logger.error(f'Rechazado')
-                    return False
-                _incidentDate = (list([m[1] for m in _queryIncident if m[1] is not None]))
-                if not _incidentDate:
-                    logger.error(f"Sin Fecha registrada para los incidentes")
-                    logger.error(f'Rechazado')
-                    return False
-                _incidentTime = (list([m[2] for m in _queryIncident if m[2] is not None]))
-                if not _incidentTime:
-                    logger.error(f"Sin Time registrada para los incidentes")
-                    logger.error(f'Rechazado')
-                    return False
-                _incidentTimeDescriptionCodeId = (list([m[3] for m in _queryIncident if m[3] is not None]))
-                if not _incidentTimeDescriptionCodeId:
-                    logger.error(f"Sin time code en el incidente")
-                    logger.error(f'Rechazado')
-                    return False
-                _incidentDescription = (list([m[4] for m in _queryIncident if m[4] is not None]))
-                if not _incidentDescription:
-                    logger.error(f"Sin descripcion para el incidente")
-                    logger.error(f'Rechazado')
-                    return False
-                _organizationPersonRoleId = (list([m[5] for m in _queryIncident if m[5] is not None]))
-                if not _organizationPersonRoleId:
-                    logger.error(f"Sin estudiante en incidente")
-                    logger.error(f'Rechazado')
-                    return False
-                _roleId = (list([m[6] for m in _queryIncident if m[6] is not None]))
-                if _roleId[0] != 6:
-                    logger.error(f"Sin estudiante en incidente")
-                    logger.error(f'Rechazado')
-                    return False
-                for x in _incidentId:
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _queryIncident = conn.execute("""
+        SELECT DISTINCT
+            I.IncidentId,
+            I.IncidentDate,
+            I.IncidentTime,
+            I.RefIncidentTimeDescriptionCodeId,
+            I.IncidentDescription,
+            I.OrganizationPersonRoleId,
+            OPR.RoleId
+            FROM Incident I
+            JOIN OrganizationPersonRole OPR on I.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+            WHERE OPR.RoleId = 6;
+            """).fetchall()
+        if(len(_queryIncident)>0):
+            _incidentId = (list([m[0] for m in _queryIncident if m[0] is not None]))
+            if not _incidentId:
+                logger.error(f"Sin Incidentes")
+                logger.error(f'Rechazado')
+                return False
+            _incidentDate = (list([m[1] for m in _queryIncident if m[1] is not None]))
+            if not _incidentDate:
+                logger.error(f"Sin Fecha registrada para los incidentes")
+                logger.error(f'Rechazado')
+                return False
+            _incidentTime = (list([m[2] for m in _queryIncident if m[2] is not None]))
+            if not _incidentTime:
+                logger.error(f"Sin Time registrada para los incidentes")
+                logger.error(f'Rechazado')
+                return False
+            _incidentTimeDescriptionCodeId = (list([m[3] for m in _queryIncident if m[3] is not None]))
+            if not _incidentTimeDescriptionCodeId:
+                logger.error(f"Sin time code en el incidente")
+                logger.error(f'Rechazado')
+                return False
+            _incidentDescription = (list([m[4] for m in _queryIncident if m[4] is not None]))
+            if not _incidentDescription:
+                logger.error(f"Sin descripcion para el incidente")
+                logger.error(f'Rechazado')
+                return False
+            _organizationPersonRoleId = (list([m[5] for m in _queryIncident if m[5] is not None]))
+            if not _organizationPersonRoleId:
+                logger.error(f"Sin estudiante en incidente")
+                logger.error(f'Rechazado')
+                return False
+            _roleId = (list([m[6] for m in _queryIncident if m[6] is not None]))
+            if _roleId[0] != 6:
+                logger.error(f"Sin estudiante en incidente")
+                logger.error(f'Rechazado')
+                return False
+            for x in _incidentId:
 
-                    _queryIncidentPerson = conn.execute("""
-                    SELECT DISTINCT
-                    I.IncidentId,
-                    I.PersonId,
-                    I.RefIncidentPersonRoleTypeId,
-                    OPR.RoleId
-                    FROM IncidentPerson I
-                            JOIN Person P on I.PersonId = P.PersonId
-                            JOIN OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
-                    WHERE I.IncidentId =?
-                    """,x ).fetchall()
-                    if (len(_queryIncidentPerson)>0):
-                        _personId = (list([m[1] for m in _queryIncidentPerson if m[1] is not None]))
-                        _refRoleType = (list([m[2] for m in _queryIncidentPerson if m[2] is not None]))
-                        _role = (list([m[3] for m in _queryIncidentPerson if m[3] is not None]))
-                        if not _personId:
-                            logger.error(f"Sin personas registradas para el incidente")
-                            logger.error(f'Rechazado')
-                            return False
-                        _profe = 0 #4,5
-                        _apoderado = 0 #15
-                        _entrevistado = 0  #5
-                        _entrevistador = 0 #6
-                        for y in _refRoleType:
-                            for z in _role:
-                                if y == 5:
-                                    _entrevistado += 1
-                                if y == 6:
-                                    _entrevistador += 1
-                                if z == 4 or z == 5:
-                                    _profe += 1
-                                if z == 15:
-                                    _apoderado += 1
-                        if _entrevistado == 0:
-                            logger.error(f'Sin entrevistado en reunion de incidente')
-                            logger.error(f'Rechazado')
-                            return False
-                        if _entrevistador == 0:
-                            logger.error(f'Sin entrevistador en reunion de incidente')
-                            logger.error(f'Rechazado')
-                            return False
-                        if _profe == 0:
-                            logger.error(f'Sin profesor asignado a incidente')
-                            logger.error(f'Rechazado')
-                            return False
-                        if _apoderado == 0:
-                            logger.error(f'Sin apoderado en incidente')
-                            logger.error(f'Rechazado')
-                            return False
-                    else:
+                _queryIncidentPerson = conn.execute("""
+                SELECT DISTINCT
+                I.IncidentId,
+                I.PersonId,
+                I.RefIncidentPersonRoleTypeId,
+                OPR.RoleId
+                FROM IncidentPerson I
+                        JOIN Person P on I.PersonId = P.PersonId
+                        JOIN OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
+                WHERE I.IncidentId =?
+                """,x ).fetchall()
+                if (len(_queryIncidentPerson)>0):
+                    _personId = (list([m[1] for m in _queryIncidentPerson if m[1] is not None]))
+                    _refRoleType = (list([m[2] for m in _queryIncidentPerson if m[2] is not None]))
+                    _role = (list([m[3] for m in _queryIncidentPerson if m[3] is not None]))
+                    if not _personId:
                         logger.error(f"Sin personas registradas para el incidente")
-                        logger.error(f"Rechazado")
+                        logger.error(f'Rechazado')
                         return False
-                logger.info(f'Incidentes validados')
-                logger.info(f'Aprobado')
-                return True
-            else:
-                logger.error(f"S/Datos ")
-                logger.error(f"Sin incidentes registrados")
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+                    _profe = 0 #4,5
+                    _apoderado = 0 #15
+                    _entrevistado = 0  #5
+                    _entrevistador = 0 #6
+                    for y in _refRoleType:
+                        for z in _role:
+                            if y == 5:
+                                _entrevistado += 1
+                            if y == 6:
+                                _entrevistador += 1
+                            if z == 4 or z == 5:
+                                _profe += 1
+                            if z == 15:
+                                _apoderado += 1
+                    if _entrevistado == 0:
+                        logger.error(f'Sin entrevistado en reunion de incidente')
+                        logger.error(f'Rechazado')
+                        return False
+                    if _entrevistador == 0:
+                        logger.error(f'Sin entrevistador en reunion de incidente')
+                        logger.error(f'Rechazado')
+                        return False
+                    if _profe == 0:
+                        logger.error(f'Sin profesor asignado a incidente')
+                        logger.error(f'Rechazado')
+                        return False
+                    if _apoderado == 0:
+                        logger.error(f'Sin apoderado en incidente')
+                        logger.error(f'Rechazado')
+                        return False
+                else:
+                    logger.error(f"Sin personas registradas para el incidente")
+                    logger.error(f"Rechazado")
+                    return False
+            logger.info(f'Incidentes validados')
+            logger.info(f'Aprobado')
+            return True
+        else:
+            logger.error(f"S/Datos ")
+            logger.error(f"Sin incidentes registrados")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn8F2 WC ##
 
   ## Inicio fn2AA WC ##
   def fn2AA(self, conn):
-        try:
-            results = conn.execute("""
-            SELECT p.personId
-            FROM Person p
-                    JOIN PersonStatus ps on p.PersonId = ps.PersonId
-            WHERE p.RefVisaTypeId = 6
-              AND ps.StatusValue = 1
-              AND ps.RefPersonStatusTypeId = 25;
-            """).fetchall()
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        results = conn.execute("""
+        SELECT p.personId
+        FROM Person p
+                JOIN PersonStatus ps on p.PersonId = ps.PersonId
+        WHERE p.RefVisaTypeId = 6
+          AND ps.StatusValue = 1
+          AND ps.RefPersonStatusTypeId = 25;
+        """).fetchall()
 
-            resultsTwo = conn.execute("""
-            SELECT p.personId
-            FROM Person p
-                    JOIN PersonStatus ps on p.PersonId = ps.PersonId
-            WHERE p.RefVisaTypeId = 6
-              and ps.RefPersonStatusTypeId = 25;
-            """).fetchall()
+        resultsTwo = conn.execute("""
+        SELECT p.personId
+        FROM Person p
+                JOIN PersonStatus ps on p.PersonId = ps.PersonId
+        WHERE p.RefVisaTypeId = 6
+          and ps.RefPersonStatusTypeId = 25;
+        """).fetchall()
 
-            if(len(results)>0 and len(resultsTwo)>0):
-                lista = list(set([m[0] for m in results if m[0] is not None]))
-                listaDos = list(set([m[0] for m in resultsTwo if m[0] is not None]))
+        if(len(results)>0 and len(resultsTwo)>0):
+            lista = list(set([m[0] for m in results if m[0] is not None]))
+            listaDos = list(set([m[0] for m in resultsTwo if m[0] is not None]))
 
-                if lista == listaDos:
-                    logger.info(f"todos los alumnos de intercambios fueron aprobados")
-                    logger.info(f"Aprobado")
-                    return True
-                else :
-                    logger.error(f'No todos los alumnos de intercambio han sido aprobados')
-                    logger.error(f'Rechazado')
-                    return False
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"No hay alumnos de intercambio registrados en el establecimiento")
+            if lista == listaDos:
+                logger.info(f"todos los alumnos de intercambios fueron aprobados")
+                logger.info(f"Aprobado")
                 return True
+            else :
+                logger.error(f'No todos los alumnos de intercambio han sido aprobados')
+                logger.error(f'Rechazado')
+                return False
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"No hay alumnos de intercambio registrados en el establecimiento")
+            return True
 
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn2AA WC ##
 
   ## Inicio fn28A WC ##
   def fn28A(self, conn):
-            try:
-                _query = conn.execute("""
-                SELECT DISTINCT P.PersonId
-                FROM OrganizationPersonRole OPR
-                        JOIN Person P on OPR.PersonId = P.PersonId
-                        JOIN PersonIdentifier PI on P.PersonId = PI.PersonId
-                where PI.RefPersonIdentificationSystemId = 52
-                  and OPR.RoleId = 6
-                  and PI.Identifier is not null;
-                """).fetchall()
-                if(len(_query)>0):
-                  _personStatus = conn.execute("""
-                  SELECT fileScanBase64
-                  FROM PersonStatus
-                  WHERE PersonId in (SELECT DISTINCT P.PersonId
-                                    FROM OrganizationPersonRole OPR
-                                              join Person P on OPR.PersonId = P.PersonId
-                                              join PersonIdentifier PI on P.PersonId = PI.PersonId
-                                    WHERE PI.RefPersonIdentificationSystemId = 52
-                                      and OPR.RoleId = 6
-                                      and PI.Identifier is not null)
-                    and RefPersonStatusTypeId = 34
-                    and fileScanBase64 is not null;
-                  """).fetchall()
-                  if(len(_personStatus) == len(_query)):
-                    _file = conn.execute("""
-                    SELECT
-                          documentId
-                    FROM Document
-                    WHERE fileScanBase64 IS NOT NULL
-                      AND fileScanBase64 <> ''
-                      AND documentId in (
-                        select fileScanBase64
-                        from PersonStatus
-                        where PersonId in (select DISTINCT P.PersonId
-                                          from OrganizationPersonRole OPR
-                                                    join Person P on OPR.PersonId = P.PersonId
-                                                    join PersonIdentifier PI on P.PersonId = PI.PersonId
-                                          where PI.RefPersonIdentificationSystemId = 52
-                                            and OPR.RoleId = 6
-                                            and PI.Identifier is not null)
-                          and RefPersonStatusTypeId = 34
-                          and fileScanBase64 is not null);
-                    """).fetchall()
-                    if(len(_query) == len(_file)):
-                      logger.info(f'Todos los alumnos extranjeros poseen documento de convalidacion de estudios')
-                      logger.info(f'Aprobado')
-                      return True
-                    else:
-                      logger.error(f'Existen documentos de convalidacion de ramos incompletos')
-                      logger.error(f'Rechazado')
-                      return False
-                  else:
-                    logger.error(f'No todos los alumnos extranjeros no poseen documento de convalidacion de estudios')
-                    logger.error(f'Rechazado')
-                    return False
-                else:
-                    logger.info(f"S/Datos")
-                    logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
-                    return True
-            except Exception as e:
-                logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                logger.error(f"Rechazado")
-                return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT DISTINCT P.PersonId
+        FROM OrganizationPersonRole OPR
+                JOIN Person P on OPR.PersonId = P.PersonId
+                JOIN PersonIdentifier PI on P.PersonId = PI.PersonId
+        where PI.RefPersonIdentificationSystemId = 52
+          and OPR.RoleId = 6
+          and PI.Identifier is not null;
+        """).fetchall()
+        if(len(_query)>0):
+          _personStatus = conn.execute("""
+          SELECT fileScanBase64
+          FROM PersonStatus
+          WHERE PersonId in (SELECT DISTINCT P.PersonId
+                            FROM OrganizationPersonRole OPR
+                                      join Person P on OPR.PersonId = P.PersonId
+                                      join PersonIdentifier PI on P.PersonId = PI.PersonId
+                            WHERE PI.RefPersonIdentificationSystemId = 52
+                              and OPR.RoleId = 6
+                              and PI.Identifier is not null)
+            and RefPersonStatusTypeId = 34
+            and fileScanBase64 is not null;
+          """).fetchall()
+          if(len(_personStatus) == len(_query)):
+            _file = conn.execute("""
+            SELECT
+                  documentId
+            FROM Document
+            WHERE fileScanBase64 IS NOT NULL
+              AND fileScanBase64 <> ''
+              AND documentId in (
+                select fileScanBase64
+                from PersonStatus
+                where PersonId in (select DISTINCT P.PersonId
+                                  from OrganizationPersonRole OPR
+                                            join Person P on OPR.PersonId = P.PersonId
+                                            join PersonIdentifier PI on P.PersonId = PI.PersonId
+                                  where PI.RefPersonIdentificationSystemId = 52
+                                    and OPR.RoleId = 6
+                                    and PI.Identifier is not null)
+                  and RefPersonStatusTypeId = 34
+                  and fileScanBase64 is not null);
+            """).fetchall()
+            if(len(_query) == len(_file)):
+              logger.info(f'Todos los alumnos extranjeros poseen documento de convalidacion de estudios')
+              logger.info(f'Aprobado')
+              return True
+            else:
+              logger.error(f'Existen documentos de convalidacion de ramos incompletos')
+              logger.error(f'Rechazado')
+              return False
+          else:
+            logger.error(f'No todos los alumnos extranjeros no poseen documento de convalidacion de estudios')
+            logger.error(f'Rechazado')
+            return False
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn28A WC ##
 
   ## Inicio fn5E1 WC ##
   def fn5E1(self,conn):
-        try:
-            _query = conn.execute("""
-            SELECT OPR.OrganizationPersonRoleId,
-                (SELECT count(OPR.PersonId)
-                    from OrganizationPersonRole OPR
-                            join Organization O on OPR.OrganizationId = O.OrganizationId
-                            join Course C on O.OrganizationId = C.OrganizationId
-                    where OPR.RoleId = 6
-                    and O.RefOrganizationTypeId = 21) as MatriculasTotales
-            FROM OrganizationPersonRole OPR
-                    join Organization O on OPR.OrganizationId = O.OrganizationId
-                    join Course C on O.OrganizationId = C.OrganizationId
-            WHERE OPR.RoleId = 6
-            AND O.RefOrganizationTypeId = 21
-            GROUP by OPR.OrganizationPersonRoleId;
-            """).fetchall()
-            if(len(_query)>0):
-                _alumnos = (list([m[0] for m in _query if m[0] is not None]))
-                if not _alumnos :
-                    logger.error(f"Sin alumnos registrados")
-                    logger.error(f'Rechazado')
-                    return False
-                _matriculasTotales = (list([m[1] for m in _query if m[1] is not None]))
-                if not _matriculasTotales :
-                    logger.error(f"Sin matriculas registradas")
-                    logger.error(f'Rechazado')
-                    return False
-                _totalAlumnos = int(len(_alumnos))
-                if int(_matriculasTotales[0]) == _totalAlumnos:
-                        _queryRegistroAsistencia = conn.execute("""
-                        SELECT DISTINCT RoleAttendanceEventId,
-                                        Date,
-                                        RefAttendanceEventTypeId
-                        FROM RoleAttendanceEvent
-                        WHERE RefAttendanceEventTypeId = 1 and Date is not null
-                        GROUP by date;
-                        """).fetchall()
-                        if(len(_queryRegistroAsistencia)>0):
-                            logger.info(f'Matriculas registradas y asistencia diaria realizada')
-                            logger.info(f'Aprobado')
-                            return True
-                        else:
-                            logger.error(f'Asistencia diaria no realizada por el establecimiento')
-                            logger.error(f'Rechazado')
-                            return False
-                else:
-                    logger.error(f"Sin matriculas no coinciden con total de alumnos registrados")
-                    logger.error(f'Rechazado')
-                    return False
-            else:
-                logger.error(f'S/Datos')
-                logger.error(f'No existen alumnos matriculados en el establecimiento')
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT OPR.OrganizationPersonRoleId,
+            (SELECT count(OPR.PersonId)
+                from OrganizationPersonRole OPR
+                        join Organization O on OPR.OrganizationId = O.OrganizationId
+                        join Course C on O.OrganizationId = C.OrganizationId
+                where OPR.RoleId = 6
+                and O.RefOrganizationTypeId = 21) as MatriculasTotales
+        FROM OrganizationPersonRole OPR
+                join Organization O on OPR.OrganizationId = O.OrganizationId
+                join Course C on O.OrganizationId = C.OrganizationId
+        WHERE OPR.RoleId = 6
+        AND O.RefOrganizationTypeId = 21
+        GROUP by OPR.OrganizationPersonRoleId;
+        """).fetchall()
+        if(len(_query)>0):
+            _alumnos = (list([m[0] for m in _query if m[0] is not None]))
+            if not _alumnos :
+                logger.error(f"Sin alumnos registrados")
+                logger.error(f'Rechazado')
                 return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+            _matriculasTotales = (list([m[1] for m in _query if m[1] is not None]))
+            if not _matriculasTotales :
+                logger.error(f"Sin matriculas registradas")
+                logger.error(f'Rechazado')
+                return False
+            _totalAlumnos = int(len(_alumnos))
+            if int(_matriculasTotales[0]) == _totalAlumnos:
+                    _queryRegistroAsistencia = conn.execute("""
+                    SELECT DISTINCT RoleAttendanceEventId,
+                                    Date,
+                                    RefAttendanceEventTypeId
+                    FROM RoleAttendanceEvent
+                    WHERE RefAttendanceEventTypeId = 1 and Date is not null
+                    GROUP by date;
+                    """).fetchall()
+                    if(len(_queryRegistroAsistencia)>0):
+                        logger.info(f'Matriculas registradas y asistencia diaria realizada')
+                        logger.info(f'Aprobado')
+                        return True
+                    else:
+                        logger.error(f'Asistencia diaria no realizada por el establecimiento')
+                        logger.error(f'Rechazado')
+                        return False
+            else:
+                logger.error(f"Sin matriculas no coinciden con total de alumnos registrados")
+                logger.error(f'Rechazado')
+                return False
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'No existen alumnos matriculados en el establecimiento')
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn531 WC ##
 
   ## Inicio fn28B WC ##
   def fn28B(self, conn):
-        try:
-            _query = conn.execute("""
-            SELECT DISTINCT PI.PersonId
-            FROM OrganizationPersonRole OPR
-                    join Person P on OPR.PersonId = P.PersonId
-                    join PersonIdentifier PI on P.PersonId = PI.PersonId
-            WHERE PI.RefPersonIdentificationSystemId = 52
-              AND OPR.RoleId = 6
-              AND PI.Identifier is not null;
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        _query = conn.execute("""
+        SELECT DISTINCT PI.PersonId
+        FROM OrganizationPersonRole OPR
+                join Person P on OPR.PersonId = P.PersonId
+                join PersonIdentifier PI on P.PersonId = PI.PersonId
+        WHERE PI.RefPersonIdentificationSystemId = 52
+          AND OPR.RoleId = 6
+          AND PI.Identifier is not null;
+        """).fetchall()
+        if(len(_query)>0):
+          _queryDocuments = conn.execute("""
+          SELECT PS.fileScanBase64
+          FROM PersonStatus PS
+          WHERE PS.PersonId in (select DISTINCT PI.PersonId
+                                from OrganizationPersonRole OPR
+                                        join Person P on OPR.PersonId = P.PersonId
+                                        join PersonIdentifier PI on P.PersonId = PI.PersonId
+                                where PI.RefPersonIdentificationSystemId = 52
+                                  and OPR.RoleId = 6
+                                  and PI.Identifier is not null)
+            AND PS.docNumber IS NOT NULL
+            AND PS.docNumber <> ''
+            AND PS.Description IS NOT NULL
+            AND PS.Description <> ''
+            and PS.fileScanBase64 is not null
+            and PS.RefPersonStatusTypeId = 34
+          """).fetchall()
+          if (len(_queryDocuments) == len(_query)):
+            _file = conn.execute("""
+            SELECT documentId
+            FROM Document
+            WHERE fileScanBase64 IS NOT NULL
+              AND fileScanBase64 <> ''
+              AND documentId in (SELECT PS.fileScanBase64
+                                FROM PersonStatus PS
+                                WHERE PS.PersonId in (select DISTINCT PI.PersonId
+                                                      from OrganizationPersonRole OPR
+                                                                join Person P on OPR.PersonId = P.PersonId
+                                                                join PersonIdentifier PI on P.PersonId = PI.PersonId
+                                                      where PI.RefPersonIdentificationSystemId = 52
+                                                        and OPR.RoleId = 6
+                                                        and PI.Identifier is not null)
+                                  AND PS.docNumber IS NOT NULL
+                                  AND PS.docNumber <> ''
+                                  AND PS.Description IS NOT NULL
+                                  AND PS.Description <> ''
+                                  and PS.fileScanBase64 is not null
+                                  and PS.RefPersonStatusTypeId = 34);
             """).fetchall()
-            if(len(_query)>0):
-              _queryDocuments = conn.execute("""
-              SELECT PS.fileScanBase64
-              FROM PersonStatus PS
-              WHERE PS.PersonId in (select DISTINCT PI.PersonId
-                                    from OrganizationPersonRole OPR
-                                            join Person P on OPR.PersonId = P.PersonId
-                                            join PersonIdentifier PI on P.PersonId = PI.PersonId
-                                    where PI.RefPersonIdentificationSystemId = 52
-                                      and OPR.RoleId = 6
-                                      and PI.Identifier is not null)
-                AND PS.docNumber IS NOT NULL
-                AND PS.docNumber <> ''
-                AND PS.Description IS NOT NULL
-                AND PS.Description <> ''
-                and PS.fileScanBase64 is not null
-                and PS.RefPersonStatusTypeId = 34
-              """).fetchall()
-              if (len(_queryDocuments) == len(_query)):
-                _file = conn.execute("""
-                SELECT documentId
-                FROM Document
-                WHERE fileScanBase64 IS NOT NULL
-                  AND fileScanBase64 <> ''
-                  AND documentId in (SELECT PS.fileScanBase64
-                                    FROM PersonStatus PS
-                                    WHERE PS.PersonId in (select DISTINCT PI.PersonId
-                                                          from OrganizationPersonRole OPR
-                                                                    join Person P on OPR.PersonId = P.PersonId
-                                                                    join PersonIdentifier PI on P.PersonId = PI.PersonId
-                                                          where PI.RefPersonIdentificationSystemId = 52
-                                                            and OPR.RoleId = 6
-                                                            and PI.Identifier is not null)
-                                      AND PS.docNumber IS NOT NULL
-                                      AND PS.docNumber <> ''
-                                      AND PS.Description IS NOT NULL
-                                      AND PS.Description <> ''
-                                      and PS.fileScanBase64 is not null
-                                      and PS.RefPersonStatusTypeId = 34);
-                """).fetchall()
-                if(len(_file) == len(_query)):
-                  logger.info(f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')
-                  logger.info(f'Aprobado')
-                  return True
-                else:
-                  logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
-                  logger.error(f'Rechazado')
-                  return False
-              else:
-                logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
-                logger.error(f'Rechazado')
-                return False
+            if(len(_file) == len(_query)):
+              logger.info(f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')
+              logger.info(f'Aprobado')
+              return True
             else:
-                logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
-                logger.info(f"S/Datos")
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+              logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
+              logger.error(f'Rechazado')
+              return False
+          else:
+            logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
+            logger.error(f'Rechazado')
             return False
+        else:
+            logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
+            logger.info(f"S/Datos")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn28B WC ##
 
   ## Inicio fn9F2 WC ##
   def fn9F2(self, conn):
-        try:
-            queryEstudiantes = conn.execute("""
-                SELECT DISTINCT o.OrganizationId, o.Name
-                FROM Person p
-                        join OrganizationPersonRole opr
-                              on p.PersonId = opr.PersonId
-                        join Organization O on opr.OrganizationId = O.OrganizationId
-                WHERE opr.RoleId = 6
-                  AND O.RefOrganizationTypeId = 21;
-                  """).fetchall()
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        queryEstudiantes = conn.execute("""
+            SELECT DISTINCT o.OrganizationId, o.Name
+            FROM Person p
+                    join OrganizationPersonRole opr
+                          on p.PersonId = opr.PersonId
+                    join Organization O on opr.OrganizationId = O.OrganizationId
+            WHERE opr.RoleId = 6
+              AND O.RefOrganizationTypeId = 21;
+              """).fetchall()
 
-            if (len(queryEstudiantes)>0):
-                organizations = (list([m[0] for m in queryEstudiantes if m[0] is not None]))
-                organizations = str(organizations)
-                organizations = organizations.replace('[','(')
-                organizations = organizations.replace(']',')')
-                querySelect = "select CourseId from CourseSection where CourseId in"
-                queryComplete = querySelect+organizations
-                try:
-                    queryAsignaturas = conn.execute(queryComplete).fetchall()
-                    if (len(queryAsignaturas)>0):
-                        cursos = (list([m[0] for m in queryAsignaturas if m[0] is not None]))
-                        cursos = str(cursos)
-                        cursos = cursos.replace('[','(')
-                        cursos = cursos.replace(']',')')
-                        querySelectCalendar = "select * from OrganizationCalendar where OrganizationId in"
-                        queryCalendarComplete = querySelectCalendar+cursos
-                        try:
-                            queryCalendarios = conn.execute(queryCalendarComplete).fetchall()
-                            if (len(queryCalendarios)>0):
-                                organizationId = (list([m[1] for m in queryCalendarios if m[0] is not None]))
-                                calendarCode = (list([m[2] for m in queryCalendarios if m[0] is not None]))
-                                calendarDescripction = (list([m[3] for m in queryCalendarios if m[0] is not None]))
-                                calendarYear = (list([m[4] for m in queryCalendarios if m[0] is not None]))
-
-                                if not organizationId :
-                                    logger.error(f"Sin OrganizationId")
-                                    logger.error(f'Rechazado')
-                                    return False
-                                if not calendarCode :
-                                    logger.error(f"Sin CalendarCode")
-                                    logger.error(f'Rechazado')
-                                    return False
-                                if not calendarDescripction :
-                                    logger.error(f"Sin CaldendarDescription")
-                                    logger.error(f'Rechazado')
-                                    return False
-                                if not calendarYear :
-                                    logger.error(f"Sin CalendarYear")
-                                    logger.error(f'Rechazado')
-                                    return False
-                                logger.info(f'Calendarios ingresados correctamente')
-                                logger.info(f'Aprobado')
-                                return True
-                            else:
-                                logger.info(f"S/Datos")
-                                logger.info(f"Rechazado")
-                                return False
-                        except Exception as e:
-                            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                            logger.error(f"Rechazado")
-                            return False
-                    else:
-                        logger.info(f"S/Datos")
-                        logger.info(f"Rechazado")
-                        return False
-                except Exception as e:
-                    logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                    logger.error(f"Rechazado")
-                    return False
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
-                return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
-  ## Fin fn9F2 WC ##
-
-  ## Inicio fn9F3 WC ##
-  def fn9F3(self, conn):
-        try:
-            incident = conn.execute("""
-              SELECT IncidentId
-              from Incident
-              WHERE
-                RefIncidentBehaviorId IN (
-                  SELECT RefIncidentBehaviorId
-                  FROM RefIncidentBehavior
-                  WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
-                );
-            """).fetchall()
-            if(len(incident)>0):
-                listIncident = (list([m[0] for m in incident if m[0] is not None]))
-                for x in listIncident:
+        if (len(queryEstudiantes)>0):
+            organizations = (list([m[0] for m in queryEstudiantes if m[0] is not None]))
+            organizations = str(organizations)
+            organizations = organizations.replace('[','(')
+            organizations = organizations.replace(']',')')
+            querySelect = "select CourseId from CourseSection where CourseId in"
+            queryComplete = querySelect+organizations
+            try:
+                queryAsignaturas = conn.execute(queryComplete).fetchall()
+                if (len(queryAsignaturas)>0):
+                    cursos = (list([m[0] for m in queryAsignaturas if m[0] is not None]))
+                    cursos = str(cursos)
+                    cursos = cursos.replace('[','(')
+                    cursos = cursos.replace(']',')')
+                    querySelectCalendar = "select * from OrganizationCalendar where OrganizationId in"
+                    queryCalendarComplete = querySelectCalendar+cursos
                     try:
-                        x = str(x)
-                        incidentParent = conn.execute("""
-                          SELECT IncidentId 
-                          FROM IncidentPerson 
-                          where 
-                          IncidentId = """+x+"""
-                          and 
-                          (
-                            IncidentPerson.RefIncidentPersonRoleTypeId IN (
-                              SELECT RefIncidentPersonRoleTypeId
-                              FROM RefIncidentPersonRoleType
-                              WHERE RefIncidentPersonRoleType.description IN ('Asiste a reunión de apoderados')
-                            )
-                            and 
-                            IncidentPerson.RefIncidentPersonTypeId IN (
-                              SELECT RefIncidentPersonTypeId
-                              FROM RefIncidentPersonType
-                              WHERE RefIncidentPersonType.description IN ('Apoderado')
-                            )
-                            OR
-                            IncidentPerson.RefIncidentPersonRoleTypeId IN (
-                              SELECT RefIncidentPersonRoleTypeId
-                              FROM RefIncidentPersonRoleType
-                              WHERE RefIncidentPersonRoleType.description IN ('Entrevistado')
-                            )
-                            and 
-                            IncidentPerson.RefIncidentPersonTypeId IN (
-                              SELECT RefIncidentPersonTypeId
-                              FROM RefIncidentPersonType
-                              WHERE RefIncidentPersonType.description IN ('Apoderado')
-                            )	
-                          )                                                      
-                        """).fetchall()
-                        incidentProfessor = conn.execute("""
-                            SELECT IncidentId 
-                            FROM IncidentPerson 
-                            where 
-                            IncidentId = """+x+"""
-                            and 
-                            (
-                              IncidentPerson.RefIncidentPersonRoleTypeId IN (
-                                SELECT RefIncidentPersonRoleTypeId
-                                FROM RefIncidentPersonRoleType
-                                WHERE RefIncidentPersonRoleType.description IN ('Dirige reunión de apoderados')
-                              )
-                              and 
-                              IncidentPerson.RefIncidentPersonTypeId IN (
-                                SELECT RefIncidentPersonTypeId
-                                FROM RefIncidentPersonType
-                                WHERE RefIncidentPersonType.description IN ('Docente')
-                              )
-                              OR
-                              IncidentPerson.RefIncidentPersonRoleTypeId IN (
-                                SELECT RefIncidentPersonRoleTypeId
-                                FROM RefIncidentPersonRoleType
-                                WHERE RefIncidentPersonRoleType.description IN ('Entrevistador')
-                              )
-                              and 
-                              IncidentPerson.RefIncidentPersonTypeId IN (
-                                SELECT RefIncidentPersonTypeId
-                                FROM RefIncidentPersonType
-                                WHERE RefIncidentPersonType.description IN ('Docente')
-                              )	
-                            )                                                         
-                        """).fetchall()
-                        parent = 0
-                        professor = 0
-                        if (len(incidentParent)>0):
-                            parent +=1
+                        queryCalendarios = conn.execute(queryCalendarComplete).fetchall()
+                        if (len(queryCalendarios)>0):
+                            organizationId = (list([m[1] for m in queryCalendarios if m[0] is not None]))
+                            calendarCode = (list([m[2] for m in queryCalendarios if m[0] is not None]))
+                            calendarDescripction = (list([m[3] for m in queryCalendarios if m[0] is not None]))
+                            calendarYear = (list([m[4] for m in queryCalendarios if m[0] is not None]))
+
+                            if not organizationId :
+                                logger.error(f"Sin OrganizationId")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not calendarCode :
+                                logger.error(f"Sin CalendarCode")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not calendarDescripction :
+                                logger.error(f"Sin CaldendarDescription")
+                                logger.error(f'Rechazado')
+                                return False
+                            if not calendarYear :
+                                logger.error(f"Sin CalendarYear")
+                                logger.error(f'Rechazado')
+                                return False
+                            logger.info(f'Calendarios ingresados correctamente')
+                            logger.info(f'Aprobado')
+                            return True
                         else:
                             logger.info(f"S/Datos")
-                            logger.info(f"Sin registros de actividades familiares o comunitarias")
-                            return False
-                        if (len(incidentProfessor)>0):
-                            professor += 1
-                        else:
-                            logger.info(f"S/Datos")
-                            logger.info(f"Sin registros de actividades familiares o comunitarias")
+                            logger.info(f"Rechazado")
                             return False
                     except Exception as e:
                         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                         logger.error(f"Rechazado")
                         return False
-                logger.info(f'Reuniones validas')
-                logger.info(f'Aprobado')
-                return True
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"Sin registros de actividades familiares o comunitarias")
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+                else:
+                    logger.info(f"S/Datos")
+                    logger.info(f"Rechazado")
+                    return False
+            except Exception as e:
+                logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                logger.error(f"Rechazado")
+                return False
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
+  ## Fin fn9F2 WC ##
+
+  ## Inicio fn9F3 WC ##
+  def fn9F3(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        incident = conn.execute("""
+          SELECT IncidentId
+          from Incident
+          WHERE
+            RefIncidentBehaviorId IN (
+              SELECT RefIncidentBehaviorId
+              FROM RefIncidentBehavior
+              WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
+            );
+        """).fetchall()
+        if(len(incident)>0):
+            listIncident = (list([m[0] for m in incident if m[0] is not None]))
+            for x in listIncident:
+                try:
+                    x = str(x)
+                    incidentParent = conn.execute("""
+                      SELECT IncidentId 
+                      FROM IncidentPerson 
+                      where 
+                      IncidentId = """+x+"""
+                      and 
+                      (
+                        IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                          SELECT RefIncidentPersonRoleTypeId
+                          FROM RefIncidentPersonRoleType
+                          WHERE RefIncidentPersonRoleType.description IN ('Asiste a reunión de apoderados')
+                        )
+                        and 
+                        IncidentPerson.RefIncidentPersonTypeId IN (
+                          SELECT RefIncidentPersonTypeId
+                          FROM RefIncidentPersonType
+                          WHERE RefIncidentPersonType.description IN ('Apoderado')
+                        )
+                        OR
+                        IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                          SELECT RefIncidentPersonRoleTypeId
+                          FROM RefIncidentPersonRoleType
+                          WHERE RefIncidentPersonRoleType.description IN ('Entrevistado')
+                        )
+                        and 
+                        IncidentPerson.RefIncidentPersonTypeId IN (
+                          SELECT RefIncidentPersonTypeId
+                          FROM RefIncidentPersonType
+                          WHERE RefIncidentPersonType.description IN ('Apoderado')
+                        )	
+                      )                                                      
+                    """).fetchall()
+                    incidentProfessor = conn.execute("""
+                        SELECT IncidentId 
+                        FROM IncidentPerson 
+                        where 
+                        IncidentId = """+x+"""
+                        and 
+                        (
+                          IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                            SELECT RefIncidentPersonRoleTypeId
+                            FROM RefIncidentPersonRoleType
+                            WHERE RefIncidentPersonRoleType.description IN ('Dirige reunión de apoderados')
+                          )
+                          and 
+                          IncidentPerson.RefIncidentPersonTypeId IN (
+                            SELECT RefIncidentPersonTypeId
+                            FROM RefIncidentPersonType
+                            WHERE RefIncidentPersonType.description IN ('Docente')
+                          )
+                          OR
+                          IncidentPerson.RefIncidentPersonRoleTypeId IN (
+                            SELECT RefIncidentPersonRoleTypeId
+                            FROM RefIncidentPersonRoleType
+                            WHERE RefIncidentPersonRoleType.description IN ('Entrevistador')
+                          )
+                          and 
+                          IncidentPerson.RefIncidentPersonTypeId IN (
+                            SELECT RefIncidentPersonTypeId
+                            FROM RefIncidentPersonType
+                            WHERE RefIncidentPersonType.description IN ('Docente')
+                          )	
+                        )                                                         
+                    """).fetchall()
+                    parent = 0
+                    professor = 0
+                    if (len(incidentParent)>0):
+                        parent +=1
+                    else:
+                        logger.info(f"S/Datos")
+                        logger.info(f"Sin registros de actividades familiares o comunitarias")
+                        return False
+                    if (len(incidentProfessor)>0):
+                        professor += 1
+                    else:
+                        logger.info(f"S/Datos")
+                        logger.info(f"Sin registros de actividades familiares o comunitarias")
+                        return False
+                except Exception as e:
+                    logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+                    logger.error(f"Rechazado")
+                    return False
+            logger.info(f'Reuniones validas')
+            logger.info(f'Aprobado')
+            return True
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"Sin registros de actividades familiares o comunitarias")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn9F3 WC ##
 
   ## Inicio fn8F0 WC ##
   def fn8F0(self, conn):
-        try:
-            #Reconocimientos
-            _queryStudentAcademicHonor = conn.execute("""
-            SELECT
-                K12S.HonorDescription
-            FROM K12StudentAcademicHonor K12S
-                    join OrganizationPersonRole OPR on K12S.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-            WHERE length(trim(K12S.HonorDescription)) > 0
-            and trim(K12S.HonorDescription) is not null
-            and OPR.RoleId = 6
-            and K12S.RefAcademicHonorTypeId = 9;
-            """).fetchall()
-            #Medidas diciplinarias aplicadas al estudiantes
-            _k12StudentDiscipline = conn.execute("""
-            SELECT K12SD.K12StudentDisciplineId,
-                K12SD.OrganizationPersonRoleId,
-                K12SD.RefDisciplineReasonId,
-                K12SD.RefDisciplinaryActionTakenId,
-                K12SD.DisciplinaryActionStartDate,
-                K12SD.personId,
-                K12SD.IncidentId
-            FROM K12StudentDiscipline K12SD
-                    join OrganizationPersonRole OPR on K12SD.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-            WHERE OPR.OrganizationPersonRoleId = 6;
-            """).fetchall()
-            #Anotaciones negativas
-            _negative = conn.execute("""
-            SELECT IncidentId,
-                IncidentIdentifier,
-                IncidentDate,
-                IncidentTime,
-                IncidentDescription,
-                RefIncidentBehaviorId,
-                OrganizationPersonRoleId
-            FROM Incident
-            WHERE RefIncidentBehaviorId = 34;
-            """).fetchall()
-            #Reuniones con el apoderado
-            _mettings = conn.execute("""
-            SELECT K12StudentDisciplineId,
-                  OrganizationPersonRoleId,
-                  DisciplinaryActionStartDate,
-                  IncidentId
-            FROM K12StudentDiscipline
-            WHERE RefDisciplinaryActionTakenId = 8;
-            """).fetchall()
-            if(len(_queryStudentAcademicHonor) == 0 and len(_k12StudentDiscipline) == 0 and len(_negative) == 0 and len(_mettings) == 0):
-                logger.info(f"S/Datos")
-                logger.info(f"Rechazado")
-                return False
-            else:
-                for a in _queryStudentAcademicHonor:
-                    for b in a:
-                        if b is None:
-                            logger.error(f"Reconocimientos por el cumplimiento del reglamento interno mal ingresados en el sistema")
-                            logger.error(f"Rechazado")
-                            return False
-                for c in _k12StudentDiscipline:
-                    for d in c:
-                        if d is None:
-                            logger.error(f"Medidas diciplinarias ingresadas erroneamente en el sistema")
-                            logger.error(f"Rechazado")
-                            return False
-                for e in _negative:
-                    for f in e:
-                        if f is None:
-                            logger.error(f"Anotaciones negativas ingresadas erroneamente en el sistema")
-                            logger.error(f"Rechazado")
-                            return False
-                for g in _mettings:
-                    for h in g:
-                        if h is None:
-                            logger.error(f"Reuniones con los apoderados mal ingresadas en el sistema")
-                            logger.error(f"Rechazado")
-                            return False
-                logger.info(f'Los datos sobre: Anotaciones positivas y negativas, citaciones a apoderados, medidas diciplinarias y reconocimientos por cumplimiento de reglamento interno estan ingresados correctamente')
-                logger.info(f'Aprobado')
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        #Reconocimientos
+        _queryStudentAcademicHonor = conn.execute("""
+        SELECT
+            K12S.HonorDescription
+        FROM K12StudentAcademicHonor K12S
+                join OrganizationPersonRole OPR on K12S.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+        WHERE length(trim(K12S.HonorDescription)) > 0
+        and trim(K12S.HonorDescription) is not null
+        and OPR.RoleId = 6
+        and K12S.RefAcademicHonorTypeId = 9;
+        """).fetchall()
+        #Medidas diciplinarias aplicadas al estudiantes
+        _k12StudentDiscipline = conn.execute("""
+        SELECT K12SD.K12StudentDisciplineId,
+            K12SD.OrganizationPersonRoleId,
+            K12SD.RefDisciplineReasonId,
+            K12SD.RefDisciplinaryActionTakenId,
+            K12SD.DisciplinaryActionStartDate,
+            K12SD.personId,
+            K12SD.IncidentId
+        FROM K12StudentDiscipline K12SD
+                join OrganizationPersonRole OPR on K12SD.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+        WHERE OPR.OrganizationPersonRoleId = 6;
+        """).fetchall()
+        #Anotaciones negativas
+        _negative = conn.execute("""
+        SELECT IncidentId,
+            IncidentIdentifier,
+            IncidentDate,
+            IncidentTime,
+            IncidentDescription,
+            RefIncidentBehaviorId,
+            OrganizationPersonRoleId
+        FROM Incident
+        WHERE RefIncidentBehaviorId = 34;
+        """).fetchall()
+        #Reuniones con el apoderado
+        _mettings = conn.execute("""
+        SELECT K12StudentDisciplineId,
+              OrganizationPersonRoleId,
+              DisciplinaryActionStartDate,
+              IncidentId
+        FROM K12StudentDiscipline
+        WHERE RefDisciplinaryActionTakenId = 8;
+        """).fetchall()
+        if(len(_queryStudentAcademicHonor) == 0 and len(_k12StudentDiscipline) == 0 and len(_negative) == 0 and len(_mettings) == 0):
+            logger.info(f"S/Datos")
+            logger.info(f"Rechazado")
             return False
+        else:
+            for a in _queryStudentAcademicHonor:
+                for b in a:
+                    if b is None:
+                        logger.error(f"Reconocimientos por el cumplimiento del reglamento interno mal ingresados en el sistema")
+                        logger.error(f"Rechazado")
+                        return False
+            for c in _k12StudentDiscipline:
+                for d in c:
+                    if d is None:
+                        logger.error(f"Medidas diciplinarias ingresadas erroneamente en el sistema")
+                        logger.error(f"Rechazado")
+                        return False
+            for e in _negative:
+                for f in e:
+                    if f is None:
+                        logger.error(f"Anotaciones negativas ingresadas erroneamente en el sistema")
+                        logger.error(f"Rechazado")
+                        return False
+            for g in _mettings:
+                for h in g:
+                    if h is None:
+                        logger.error(f"Reuniones con los apoderados mal ingresadas en el sistema")
+                        logger.error(f"Rechazado")
+                        return False
+            logger.info(f'Los datos sobre: Anotaciones positivas y negativas, citaciones a apoderados, medidas diciplinarias y reconocimientos por cumplimiento de reglamento interno estan ingresados correctamente')
+            logger.info(f'Aprobado')
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn8F0 WC ##
 
   ## Inicio fn5E2 WC ##
   def fn5E2(self, conn):
-        try:
-            rows= conn.execute("""
-            select Pi.Identifier,
-                  (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
-                  pdc.DegreeOrCertificateTitleOrSubject,
-                  pdc.AwardDate,
-                  pdc.NameOfInstitution,
-                  rae.RefAttendanceStatusId
-                    ,
-                  rae.observaciones
-            from Person P
-                    join OrganizationPersonRole opr on p.PersonId = Opr.PersonId
-                    join PersonDegreeOrCertificate pdc on p.PersonId = pdc.PersonId
-                    join RoleAttendanceEvent rae on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
-                    join PersonIdentifier pi on pi.PersonId = p.PersonId
-            where RoleId != 6
-              and rae.observaciones like '%Falta docente%';
-                    """).fetchall()
-            if(len(rows)>0):
-                identificador = (list(set([m[0] for m in rows if m[0] is not None])))
-                if not identificador:
-                    logger.error(f"Sin identificador")
-                    logger.error(f'Rechazado')
-                    return False
-                nombre = (list(set([m[1] for m in rows if m[1] is not None])))
-                if not nombre:
-                    logger.error(f"Sin nombre")
-                    logger.error(f'Rechazado')
-                    return False
-                titulo = (list(set([m[2] for m in rows if m[2] is not None])))
-                if not titulo:
-                    logger.error(f"Sin titulo")
-                    logger.error(f'Rechazado')
-                    return False
-                fechatitulo = (list(set([m[3] for m in rows if m[3] is not None])))
-                if not fechatitulo:
-                    logger.error(f"Sin fecha de titulo")
-                    logger.error(f'Rechazado')
-                    return False
-                institucion = (list(set([m[4] for m in rows if m[4] is not None])))
-                if not institucion:
-                    logger.error(f"Sin institucion")
-                    logger.error(f'Rechazado')
-                    return False
-                observacion = (list(set([m[5] for m in rows if m[5] is not None])))
-                if not observacion:
-                    logger.error(f"Sin observacion")
-                    logger.error(f'Rechazado')
-                    return False
-                logger.info(f"Docentes validados")
-                logger.info(f"Aprobado")
-                return True
-            else:
-                logger.info(f"S/Datos")
-                logger.info(f"Sin clases en las que no hay docente/s")
-                return True
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
-            return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        rows= conn.execute("""
+        select Pi.Identifier,
+              (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
+              pdc.DegreeOrCertificateTitleOrSubject,
+              pdc.AwardDate,
+              pdc.NameOfInstitution,
+              rae.RefAttendanceStatusId
+                ,
+              rae.observaciones
+        from Person P
+                join OrganizationPersonRole opr on p.PersonId = Opr.PersonId
+                join PersonDegreeOrCertificate pdc on p.PersonId = pdc.PersonId
+                join RoleAttendanceEvent rae on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
+                join PersonIdentifier pi on pi.PersonId = p.PersonId
+        where RoleId != 6
+          and rae.observaciones like '%Falta docente%';
+                """).fetchall()
+        if(len(rows)>0):
+            identificador = (list(set([m[0] for m in rows if m[0] is not None])))
+            if not identificador:
+                logger.error(f"Sin identificador")
+                logger.error(f'Rechazado')
+                return False
+            nombre = (list(set([m[1] for m in rows if m[1] is not None])))
+            if not nombre:
+                logger.error(f"Sin nombre")
+                logger.error(f'Rechazado')
+                return False
+            titulo = (list(set([m[2] for m in rows if m[2] is not None])))
+            if not titulo:
+                logger.error(f"Sin titulo")
+                logger.error(f'Rechazado')
+                return False
+            fechatitulo = (list(set([m[3] for m in rows if m[3] is not None])))
+            if not fechatitulo:
+                logger.error(f"Sin fecha de titulo")
+                logger.error(f'Rechazado')
+                return False
+            institucion = (list(set([m[4] for m in rows if m[4] is not None])))
+            if not institucion:
+                logger.error(f"Sin institucion")
+                logger.error(f'Rechazado')
+                return False
+            observacion = (list(set([m[5] for m in rows if m[5] is not None])))
+            if not observacion:
+                logger.error(f"Sin observacion")
+                logger.error(f'Rechazado')
+                return False
+            logger.info(f"Docentes validados")
+            logger.info(f"Aprobado")
+            return True
+        else:
+            logger.info(f"S/Datos")
+            logger.info(f"Sin clases en las que no hay docente/s")
+            return True
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn5E2 WC ##
 
   ## Inicio fn5E3 WC ##
   def fn5E3(self,conn):
-        try:
-            i=0
-            suplencias_noidoneas = conn.execute("""
-                SELECT
-                  FirstName,
-                  MiddleName,
-                  LastName,
-                  OCS.claseRecuperadaId,
-                  digitalRandomKey
-                FROM Organization o
-                JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
-                JOIN RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-                JOIN Person P on OPR.PersonId = P.PersonId
-                JOIN PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
-                JOIN OrganizationCalendar OC on o.OrganizationId = OC.OrganizationId
-                JOIN OrganizationCalendarSession OCS on OC.OrganizationCalendarId = OCS.OrganizationCalendarId
-                JOIN CourseSection CS on o.OrganizationId = CS.OrganizationId
-                JOIN CourseSectionLocation CSL on CS.OrganizationId = CSL.OrganizationId
-                JOIN Classroom Cr on CSL.LocationId = Cr.LocationId
-                JOIN LocationAddress L on  L.LocationId = Cr.LocationId
-                where OPR.RoleId !=6
-                and PDOC.idoneidadDocente != 1
-                and LOWER(RAE.observaciones) like '%falta docente%';
-            """).fetchall()
-            a=len(suplencias_noidoneas)
-            if (len(suplencias_noidoneas)>0):
-                for fila in suplencias_noidoneas:
-                    if fila[3] is None or 0 or fila[4] is None  :
-                        logger.error(f'clase con profesor suplente no idoneo no registrada para recuperar o registrada pero no firmada')
-                        logger.error(f'Rechazado')
-                        return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        i=0
+        suplencias_noidoneas = conn.execute("""
+            SELECT
+              FirstName,
+              MiddleName,
+              LastName,
+              OCS.claseRecuperadaId,
+              digitalRandomKey
+            FROM Organization o
+            JOIN OrganizationPersonRole OPR on O.OrganizationId = OPR.OrganizationId
+            JOIN RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
+            JOIN Person P on OPR.PersonId = P.PersonId
+            JOIN PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
+            JOIN OrganizationCalendar OC on o.OrganizationId = OC.OrganizationId
+            JOIN OrganizationCalendarSession OCS on OC.OrganizationCalendarId = OCS.OrganizationCalendarId
+            JOIN CourseSection CS on o.OrganizationId = CS.OrganizationId
+            JOIN CourseSectionLocation CSL on CS.OrganizationId = CSL.OrganizationId
+            JOIN Classroom Cr on CSL.LocationId = Cr.LocationId
+            JOIN LocationAddress L on  L.LocationId = Cr.LocationId
+            where OPR.RoleId !=6
+            and PDOC.idoneidadDocente != 1
+            and LOWER(RAE.observaciones) like '%falta docente%';
+        """).fetchall()
+        a=len(suplencias_noidoneas)
+        if (len(suplencias_noidoneas)>0):
+            for fila in suplencias_noidoneas:
+                if fila[3] is None or 0 or fila[4] is None  :
+                    logger.error(f'clase con profesor suplente no idoneo no registrada para recuperar o registrada pero no firmada')
+                    logger.error(f'Rechazado')
+                    return False
+                else:
+                    if i == a and fila[a][3] is not None or 0 and fila[a][4] is not None:
+                        logger.info(f'verificacion aprobada,Todas las suplencias tienen indicada la recuperacion y estan firmadas')
+                        logger.infor(f'Aprobado')
+                        return True
                     else:
-                        if i == a and fila[a][3] is not None or 0 and fila[a][4] is not None:
-                            logger.info(f'verificacion aprobada,Todas las suplencias tienen indicada la recuperacion y estan firmadas')
-                            logger.infor(f'Aprobado')
-                            return True
-                        else:
-                            i+=1
-            else:
-                logger.error(f'S/Datos')
-                logger.error(f"Sin clases en las que no hay docente/s")
-                return True
-        except Exception as e:
-            logger.error(f'NO se pudo ejecutar la verificación en la lista')
-            logger.error(f'Rechazado')
-            return False
+                        i+=1
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f"Sin clases en las que no hay docente/s")
+            return True
+    except Exception as e:
+        logger.error(f'NO se pudo ejecutar la verificación en la lista')
+        logger.error(f'Rechazado')
+        return False
   ## fin fn5E3 WC ##
 
   ## Inicio fn9F0 WC ##
   def fn9F0(self,conn):
-        try:
-            i=0
-            docentes = conn.execute("""
-            SELECT
-                  P.PersonId,
-                  PDOC.DegreeOrCertificateTitleOrSubject
-            from Organization o
-                    join OrganizationPersonRole OPR on o.OrganizationId = OPR.OrganizationId
-                    join Person P on OPR.PersonId = P.PersonId
-                    join PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
-            where OPR.RoleId = 5
-            group by P.PersonId
-            """).fetchall()
-            a=len(docentes)
-            if(len(docentes)):
-                for fila in docentes:
-                    for column in fila:
-                        if column is None:
-                            logger.info(f'informacion incompleta del profesor')
-                            logger.info(f'Rechazado')
-                            return False
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
+    try:
+        i=0
+        docentes = conn.execute("""
+        SELECT
+              P.PersonId,
+              PDOC.DegreeOrCertificateTitleOrSubject
+        from Organization o
+                join OrganizationPersonRole OPR on o.OrganizationId = OPR.OrganizationId
+                join Person P on OPR.PersonId = P.PersonId
+                join PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
+        where OPR.RoleId = 5
+        group by P.PersonId
+        """).fetchall()
+        a=len(docentes)
+        if(len(docentes)):
+            for fila in docentes:
+                for column in fila:
+                    if column is None:
+                        logger.info(f'informacion incompleta del profesor')
+                        logger.info(f'Rechazado')
+                        return False
+                    else:
+                        if i == a:
+                            logger.info(f'Informacion de profesores completa')
+                            logger.info(f'Aprobado')
+                            return True
                         else:
-                            if i == a:
-                                logger.info(f'Informacion de profesores completa')
-                                logger.info(f'Aprobado')
-                                return True
-                            else:
-                                i+=1
-            else:
-                logger.error(f'S/Datos')
-                logger.error(f'Sin datos de docentes')
-                return False
-        except Exception as e:
-            logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-            logger.error(f"Rechazado")
+                            i+=1
+        else:
+            logger.error(f'S/Datos')
+            logger.error(f'Sin datos de docentes')
             return False
+    except Exception as e:
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        return False
   ## Fin fn9F0 WC ##
 
   ## Fin fn9F1 WC ##
   def fn9F1(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     _r = False
     _query = []
     try:
@@ -5470,6 +6414,22 @@ GROUP BY pid.Identifier
 
 ### inicio fn1FC ###
   def fn1FC(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = []
       _l2 = []
@@ -5598,6 +6558,22 @@ GROUP BY pid.Identifier
 
 ### inicio fn6F0  ##
   def fn6F0(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     try:
       """
@@ -5751,6 +6727,22 @@ WHERE
 
 ### inicio fn6F1 ###
   def fn6F1(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     try:
            
@@ -5821,6 +6813,22 @@ where
 
 ### inicio fn6E2  ###
   def fn6E2(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l1 = []
       logger.info(f"fn6E2 - Valida que no exista asistencia registrada para los dias definidos con suspension de clases.")
@@ -5857,6 +6865,22 @@ where
  
 ### inicio fn6D0 ###
   def fn6D0(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     logger.info(f"fn6D0 - Valida que las altas y bajas de los alumnos esten registradas en el sistema. El registro debe estar en las tablas PersonStatus y OrganizationPersonRole, y sus fechas deben ser las mismas.")
     try:
       _l = []
@@ -5945,6 +6969,22 @@ where
 
 ### inicio fn6D1 ###
   def fn6D1(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     logger.info(f"fn6D0 - Valida que no exista asistencia anterior al ingreso o posterior al retiro de un alumno en el establecimiento.")
     try:
       _l = []
@@ -6019,6 +7059,22 @@ where
 
 ### inicio fn6C0 ###
   def fn6C0(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       logger.info(f"fn6C0 - Valida que los alumnos excedentes SIN derecho a pago solo tengan asistencia a nivel de asignatura y NO de curso.")
       _l1 = []
@@ -6070,6 +7126,22 @@ where
 
 ### inicio fn6E0 ###
   def fn6E0(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     diaSemana=[]
     numero=0
@@ -6157,6 +7229,22 @@ where
 
 ### inicio  fn681 ###
   def fn681(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     arr2=[]
     arr3=[]
@@ -6241,6 +7329,22 @@ where
 
 ### inicio  fn680 ###
   def fn680(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     #arr=[]
     #arr2=[]
     #arr3=[]
@@ -6419,6 +7523,22 @@ where
 
 ### inicio fn682 ###
   def fn682(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     arr2=[]
     arr3=[]
@@ -6532,6 +7652,22 @@ where
 
 ### inicio fn6E1 ###
   def fn6E1(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     diaSemana=[]
     numero=0
@@ -6620,6 +7756,22 @@ where
 
 ### inicio fn6E4 ### 
   def fn6E4(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _data = []
       _data = conn.execute("""
@@ -6803,6 +7955,22 @@ GROUP BY org
 
 ### inicio  fn6C2 ###
   def fn6C2(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     arr=[]
     arr2=[]
     arr3=[]
@@ -6868,6 +8036,22 @@ GROUP BY org
 
 ### inicio  fn6B0 ###
   def fn6B0(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _rightList = []
       _rightList = conn.execute("""
@@ -7192,6 +8376,22 @@ WHERE
 
 ### inicio fn6E3 ###
   def fn6E3(self,conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     _flag1 = 0
     _flag2 = 0
     try:
