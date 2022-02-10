@@ -377,6 +377,7 @@ class check:
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
+    _r = False
     try:
       _l = self.rutList
       if(len(_l)>0):
