@@ -354,16 +354,18 @@ class check:
       else:
         logger.info(f"S/Datos")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista personList: {str(e)}")
+      logger.error(f"No se pudo ejecutar la consulta a la vista personList: {str(e)}")
       logger.error(f"Rechazado")
     finally:
       return _r
   ### FIN fn3F2 ###
 
-  #VERIFICA SI LA LISTA DE RUN INGRESADAS EN EL SISTEMA ES VALIDA
   ### INICIO fn3F3 ###
   def fn3F3(self):
-    """ Breve descripción de la función
+    """ 
+    Integridad: Verifica que los RUT's ingresados sean válidos
+    Revisa que el dígito verificador del rut corresponda con el 
+    dígito ingresado y que el RUN sea menor a 47 millones.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -371,13 +373,12 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Validar correctamente todos los RUT's
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
     try:
       _l = self.rutList
       if(len(_l)>0):
@@ -388,11 +389,11 @@ class check:
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+        return _r
   ### FIN fn3F3 ###
   
   #VERIFICA SI LA LISTA DE IPE INGRESADOS EN EL SISTEMA ES VALIDA
