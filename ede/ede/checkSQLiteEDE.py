@@ -235,7 +235,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - desencriptar la base de datos, 
             - obtener su clave secreta, 
@@ -307,7 +306,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -370,7 +368,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -404,7 +401,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -438,7 +434,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -472,7 +467,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -506,7 +500,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -540,7 +533,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -574,7 +566,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -608,7 +599,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -642,7 +632,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -675,7 +664,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -708,7 +696,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -741,7 +728,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -789,7 +775,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -822,7 +807,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -876,7 +860,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -909,7 +892,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -943,7 +925,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -977,7 +958,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1020,7 +1000,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1054,7 +1033,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1088,7 +1066,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1122,7 +1099,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1156,7 +1132,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1190,7 +1165,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1224,7 +1198,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1258,7 +1231,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1292,7 +1264,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1326,7 +1297,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1360,7 +1330,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1401,7 +1370,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1489,7 +1457,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1564,7 +1531,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1618,7 +1584,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1697,7 +1662,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1764,7 +1728,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1855,7 +1818,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -1968,7 +1930,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2068,7 +2029,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2342,7 +2302,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2380,7 +2339,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2427,7 +2385,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2482,7 +2439,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2754,7 +2710,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2813,7 +2768,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2879,7 +2833,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -2952,7 +2905,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3010,7 +2962,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3082,7 +3033,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3164,7 +3114,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3248,7 +3197,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3327,7 +3275,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3399,7 +3346,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3457,7 +3403,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3540,7 +3485,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3630,7 +3574,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3696,7 +3639,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -3771,7 +3713,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4001,7 +3942,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4052,7 +3992,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4103,7 +4042,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4277,7 +4215,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4329,7 +4266,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4495,7 +4431,6 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4794,7 +4729,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4843,7 +4777,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -4979,7 +4912,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5038,7 +4970,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5122,7 +5053,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5199,7 +5129,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5289,7 +5218,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5387,7 +5315,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5516,7 +5443,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5618,7 +5544,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5698,7 +5623,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5764,7 +5688,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -5820,7 +5743,6 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -6422,7 +6344,6 @@ GROUP BY pid.Identifier
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -6566,7 +6487,6 @@ GROUP BY pid.Identifier
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -6735,7 +6655,6 @@ WHERE
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -6821,7 +6740,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -6873,7 +6791,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -6977,7 +6894,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7067,7 +6983,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7134,7 +7049,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7237,7 +7151,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7337,7 +7250,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7531,7 +7443,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7660,7 +7571,6 @@ where
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -7763,9 +7673,7 @@ where
           Creado previamente a través de la función execute(self)
           ]
     Returns:
-        [Boolean]: [
-          Valida la conexión a la base de datos.
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+        [Boolean]: [          Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - A
@@ -7963,7 +7871,6 @@ GROUP BY org
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
@@ -8043,9 +7950,7 @@ GROUP BY org
           Creado previamente a través de la función execute(self)
           ]
     Returns:
-        [Boolean]: [
-          Valida la conexión a la base de datos.
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+        [Boolean]: [          Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - A
@@ -8384,7 +8289,6 @@ WHERE
           ]
     Returns:
         [Boolean]: [
-          Valida la conexión a la base de datos.
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
