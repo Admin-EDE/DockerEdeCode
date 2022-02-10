@@ -414,6 +414,7 @@ class check:
             - Revisa que el dígito verificador del campo corresponda
           con el número del dígito de verificación
             - y que el RUN sea mayor a 100 millones.
+          Retorna True y “S/DATOS” a través de logger si no encuentra información.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
@@ -432,6 +433,7 @@ class check:
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+        _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
@@ -442,7 +444,8 @@ class check:
   #VERIFICA SI LA LISTA DE e-mails INGRESADOS EN EL SISTEMA CUMPLE CON EL FORMATO
   ### INICIO fn3F5 ###  
   def fn3F5(self):
-    """ Breve descripción de la función
+    """ 
+    Integridad: Verifica si los e-mails ingresados cumplen con el formato
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
