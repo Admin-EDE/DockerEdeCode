@@ -225,7 +225,7 @@ class check:
     _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
     return xd
 
-  # begin fn3F0 
+  ### INICIO fn3F0 ###
   def fn3F0(self,conn):
     """Verifica la conexión con la base de datos SQLCypher
     Args:
@@ -257,9 +257,9 @@ class check:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
       return _r
-  # end fn3F0
+  ### FIN fn3F0 ###
   
-  # begin fn3F1 
+  ### INICIO fn3F1 ###
   def fn3F1(self,conn):
     """Verifica la integridad referencial de los datos
     Args:
@@ -294,11 +294,12 @@ class check:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
       return _r
-  # end fn3F1 
+  # FIN fn3F1 ###
 
-  #VERIFICA SI LA VISTA PersonList contiene información
+  ### INICIO fn3F2 ###
   def fn3F2(self, conn):
-    """ Breve descripción de la función
+    """
+    Integridad: Verifica que lista personList contenga información
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -306,13 +307,13 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - encontrar la información mínima solicitada en la BD
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """    
+    """ 
+    _r = False
+    rows = []
     try:
       rows = conn.execute("""
         SELECT
@@ -330,9 +331,10 @@ class check:
           ,TribalAffiliationDescription
         FROM PersonList;
       """).fetchall()
-
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:
       logger.info(f"len(personList): {len(rows)}")
-
       if(len(rows)>0):
         self.rutList = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD
         self.ipeList = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None])) # Valida lista de IPE ingresados a la BD
@@ -348,17 +350,18 @@ class check:
         self.AllDatesList = self.fechaIncorporacionEstudianteList+self.fechaRetiroEstudianteList+self.fechaCumpleanosList # Valida que las fechas cumplan con el formato de fecha
         self.TribalList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None]))) # Valida que las afiliaciones tribales sean las permitidas en Chile
         logger.info(f"Aprobado")
+        _r = True        
       else:
         logger.info(f"S/Datos")
-
-      return True
-
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
+  ### FIN fn3F2 ###
 
   #VERIFICA SI LA LISTA DE RUN INGRESADAS EN EL SISTEMA ES VALIDA
+  ### INICIO fn3F3 ###
   def fn3F3(self):
     """ Breve descripción de la función
     Args:
@@ -390,8 +393,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F3 ###
+  
   #VERIFICA SI LA LISTA DE IPE INGRESADOS EN EL SISTEMA ES VALIDA
+  ### INICIO fn3F4 ###
   def fn3F4(self):
     """ Breve descripción de la función
     Args:
@@ -423,8 +428,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F4 ###
+  
   #VERIFICA SI LA LISTA DE e-mails INGRESADOS EN EL SISTEMA CUMPLE CON EL FORMATO
+  ### INICIO fn3F5 ###  
   def fn3F5(self):
     """ Breve descripción de la función
     Args:
@@ -456,8 +463,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F5 ###  
+  
   #VERIFICA SI LA LISTA DE teléfonos INGRESADOS cumple con el formato E164
+  ### INICIO fn3F6 ###
   def fn3F6(self):
     """ Breve descripción de la función
     Args:
@@ -489,8 +498,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F6 ###
+  
   #VERIFICA SI EL NUMERO DE LISTA cumple con el formato
+  ### INICIO fn3F7 ###
   def fn3F7(self):
     """ Breve descripción de la función
     Args:
@@ -522,8 +533,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F7 ###
+  
   #VERIFICA SI EL NUMERO DE MATRICULA cumple con el formato
+  ### INICIO fn3F8 ###
   def fn3F8(self):
     """ Breve descripción de la función
     Args:
@@ -555,8 +568,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F8 ###
+  
   #VERIFICA SI LA LISTA DE FECHAS INGRESADAS cumple con el formato
+  ### INICIO fn3F9 ###
   def fn3F9(self):
     """ Breve descripción de la función
     Args:
@@ -588,8 +603,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3F9 ###
+  
   #VERIFICA SI LA LISTA DE afiliaciones tribales se encuentra dentro de la lista permitida
+  ### INICIO fn3FA ###
   def fn3FA(self):
     """ Breve descripción de la función
     Args:
@@ -621,8 +638,10 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3FA ###
+  
   #Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes
+  ### INICIO fn3FB ###
   def fn3FB(self):
     """ Breve descripción de la función
     Args:
@@ -653,8 +672,10 @@ class check:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3FB ###
+  
   #VERIFICA que la cantidad de emails corresponda con los tipos de emails ingresados
+  ### INICIO fn3FC ###
   def fn3FC(self):
     """ Breve descripción de la función
     Args:
@@ -685,7 +706,8 @@ class check:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
       return False
-
+  ### FIN fn3FC ###
+  
   #VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados
   def fn3FD(self):
     """ Breve descripción de la función
