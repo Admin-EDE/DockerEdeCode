@@ -13,7 +13,6 @@ import numpy as np
 import requests
 from sqlalchemy import create_engine
 
-
 from sqlalchemy import event, func
 from sqlalchemy.sql import label
 from sqlalchemy.engine import Engine
@@ -228,15 +227,12 @@ class check:
 
   # begin fn3F0 
   def fn3F0(self,conn):
-    """
-    [Verifica la conexión con la base de datos SQLCypher]
-
+    """Verifica la conexión con la base de datos SQLCypher
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
           Creado previamente a través de la función execute(self)
           ]
-
     Returns:
         [Boolean]: [
           Valida la conexión a la base de datos.
@@ -266,20 +262,16 @@ class check:
   
   # begin fn3F1 
   def fn3F1(self,conn):
-    """
-    [Verifica la integridad referencial de los datos]
-
+    """Verifica la integridad referencial de los datos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
           Creado previamente a través de la función execute(self)
           ]
-
     Returns:
         [Boolean]: [
           Regresa True y "Aprobado" a través de logger, ssi puede:
             - No contiene errores de integridad referencial en la BD.
-          
           En todo otro caso:
             - Agrega un archivo “_ForenKeyErrors.csv” al “_Data.ZIP” que contiene el resultado final de la revisión y
             - Regresa False y “Rechazado” a través de logger.
@@ -307,6 +299,22 @@ class check:
 
   #VERIFICA SI LA VISTA PersonList contiene información
   def fn3F2(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """    
     try:
       rows = conn.execute("""
         SELECT
@@ -354,6 +362,22 @@ class check:
 
   #VERIFICA SI LA LISTA DE RUN INGRESADAS EN EL SISTEMA ES VALIDA
   def fn3F3(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """      
     try:
       _l = self.rutList
       if(len(_l)>0):
@@ -372,6 +396,22 @@ class check:
 
   #VERIFICA SI LA LISTA DE IPE INGRESADOS EN EL SISTEMA ES VALIDA
   def fn3F4(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """     
     try:
       _l = self.ipeList
       if(len(_l)>0):
@@ -390,6 +430,22 @@ class check:
 
   #VERIFICA SI LA LISTA DE e-mails INGRESADOS EN EL SISTEMA CUMPLE CON EL FORMATO
   def fn3F5(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """    
     try:
       _l = self.emailList
       if(len(_l)>0):
@@ -408,6 +464,22 @@ class check:
 
   #VERIFICA SI LA LISTA DE teléfonos INGRESADOS cumple con el formato E164
   def fn3F6(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.phoneList
       if(len(_l)>0):
@@ -426,6 +498,22 @@ class check:
 
   #VERIFICA SI EL NUMERO DE LISTA cumple con el formato
   def fn3F7(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.numListaList
       if(len(_l)>0):
@@ -444,6 +532,22 @@ class check:
 
   #VERIFICA SI EL NUMERO DE MATRICULA cumple con el formato
   def fn3F8(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.numMatriculaList
       if(len(_l)>0):
@@ -462,6 +566,22 @@ class check:
 
   #VERIFICA SI LA LISTA DE FECHAS INGRESADAS cumple con el formato
   def fn3F9(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.AllDatesList
       if(len(_l)>0):
@@ -480,6 +600,22 @@ class check:
 
   #VERIFICA SI LA LISTA DE afiliaciones tribales se encuentra dentro de la lista permitida
   def fn3FA(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.TribalList
       if(len(_l)>0):
@@ -498,6 +634,22 @@ class check:
 
   #Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes
   def fn3FB(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l1 = self.numListaList;_l2 = self.numMatriculaList;_l3 = self.fechaIncorporacionEstudianteList
       if(len(_l1)>0 and len(_l2)>0 and len(_l3)>0):
@@ -515,6 +667,22 @@ class check:
 
   #VERIFICA que la cantidad de emails corresponda con los tipos de emails ingresados
   def fn3FC(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l1 = self.emailList;_l2 = self.emailTypeList
       if(len(_l1)>0 and len(_l2)>0):
@@ -532,6 +700,22 @@ class check:
 
   #VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados
   def fn3FD(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l1 = self.phoneList;_l2 = self.phoneTypeList
       if(len(_l1)>0 and len(_l2)>0):
@@ -549,6 +733,22 @@ class check:
 
   #VERIFICA SI LA VISTA PersonList filtrada por estudiantes contiene información
   def fn3FE(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       rows = conn.execute("""
       SELECT
@@ -581,6 +781,22 @@ class check:
 
   #VERIFICA QUE TODOS LOS ESTUDIANTES TENGAN Pais, Región y cuidad de nacimiento
   def fn3FF(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.comparaEstudiantes
       if(len(_l)>0):
@@ -598,6 +814,22 @@ class check:
 
   #VERIFICA SI LA VISTA PersonList filtrada por docentes contiene información
   def fn3E0(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       rows = conn.execute("""
       SELECT
@@ -636,6 +868,22 @@ class check:
 
   #VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema
   def fn3E1(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.comparaDocentes
       if(len(_l)>0):
@@ -653,6 +901,22 @@ class check:
 
   #VERIFICA SI LA TABLA k12schoolList unida a organizationList contiene información
   def fn3E2(self, conn):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       rows = conn.execute("SELECT Identifier FROM k12schoolList INNER JOIN organizationList USING(OrganizationId);").fetchall()
       logger.info(f"len(establecimientos): {len(rows)}")
@@ -671,6 +935,22 @@ class check:
 
   #VERIFICA QUE EL FORMATO DEL RBD CORRESPONDA
   def fn3E3(self):
+    """ Breve descripción de la función
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Valida la conexión a la base de datos.
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """       
     try:
       _l = self.formatoRBD
       if(len(_l)>0):
@@ -4612,15 +4892,15 @@ GROUP BY Organizationid, date
                   P.PersonId
           , OPR.OrganizationId
                 , C.Description
-                , CSS.ClassMeetingDays
-                , CSS.ClassBeginningTime
-                , CSS.ClassEndingTime
+                --, CSS.ClassMeetingDays
+                --, CSS.ClassBeginningTime
+                --, CSS.ClassEndingTime
           FROM Person P
                   join OrganizationPersonRole OPR on OPR.PersonId = P.PersonId
                   join Organization O on O.OrganizationId = OPR.OrganizationId
                   join Course C on C.OrganizationId = O.OrganizationId
-                  join CourseSection CS on CS.CourseId = O.OrganizationId
-                  join CourseSectionSchedule CSS on CSS.OrganizationId = O.OrganizationId
+                  --join CourseSection CS on CS.CourseId = O.OrganizationId
+                  --join CourseSectionSchedule CSS on CSS.OrganizationId = O.OrganizationId
           WHERE 
             OPR.RoleId IN (
         SELECT RoleId
