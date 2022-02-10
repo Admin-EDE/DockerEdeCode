@@ -635,10 +635,10 @@ class check:
       return _r
   ### FIN fn3F9 ###
   
-  #VERIFICA SI LA LISTA DE afiliaciones tribales se encuentra dentro de la lista permitida
   ### INICIO fn3FA ###
   def fn3FA(self):
-    """ Breve descripción de la función
+    """
+    Integridad: Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -646,15 +646,19 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True/False y "S/Datos" a través de logger si no encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """       
+    """
+    _r = False
+    _l = []
     try:
       _l = self.TribalList
+    except Exception as e:
+      logger.info(f"Resultado: {_l} -> {str(e)}")
+    try:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validaTribalAffiliation(e)])
         _r   = False if len(_err)>0 else True
@@ -663,11 +667,12 @@ class check:
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
+      _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
   ### FIN fn3FA ###
   
   #Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes
