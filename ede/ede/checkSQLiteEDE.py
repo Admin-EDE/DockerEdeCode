@@ -379,7 +379,7 @@ class check:
     """
     _r = False
     try:
-      _l = self.rutList
+      _l = self.get("rutList",[])
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validarRUN(e)])
         _r   = False if len(_err)>0 else True
