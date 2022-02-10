@@ -609,7 +609,8 @@ class check:
     Returns:
         [Boolean]: [
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Verifica que el campo cumpla con la siguiente expresión regular:
+^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
@@ -648,7 +649,8 @@ class check:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger si no encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Verifica que el texto del campo se encuentre dentro de la lista de asignación disponibles.
+Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s/edit?usp=drive_open&ouid=116365379129523371463 para más detalles.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
@@ -675,10 +677,10 @@ class check:
       return _r
   ### FIN fn3FA ###
   
-  #Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes
   ### INICIO fn3FB ###
   def fn3FB(self):
-    """ Breve descripción de la función
+    """
+    Integridad: Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -686,27 +688,34 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - verifica que la cantidad de números de matrícula, números de lista y fechas de incorporación sean iguales.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
+    _r = False
+    _l1 = []
+    _l2 = []
+    _l3 = []
     try:
-      _l1 = self.numListaList;_l2 = self.numMatriculaList;_l3 = self.fechaIncorporacionEstudianteList
-      if(len(_l1)>0 and len(_l2)>0 and len(_l3)>0):
+      _l1 = self.numListaList
+      _l2 = self.numMatriculaList
+      _l3 = self.fechaIncorporacionEstudianteList      
+    except Exception as e:
+      logger.info(f"Resultado: {_l1},{_l2},{_l3} -> {str(e)}")
+    try:
+      if( len(_l1) > 0 and len(_l2) > 0 and len(_l3) > 0):
         _r   = len(_l1) == len(_l2) == len(_l3)
         _t = f"Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes: {_r}.  NumLista:{len(_l1)}, NumMat:{len(_l2)}, FechaIncorporación:{len(_l3)}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
   ### FIN fn3FB ###
   
   #VERIFICA que la cantidad de emails corresponda con los tipos de emails ingresados
