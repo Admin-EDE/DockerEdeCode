@@ -378,9 +378,12 @@ class check:
           ]
     """
     _r = False
+    _l = []
     try:
-      logger.info(f"type(self): {type(self)}")
-      _l = self.get("rutList",[])
+      _l = self.rutList
+    except Exception as e:
+      logger.info(f"Resultado: {_l} -> {str(e)}")
+    try:
       if(len(_l)>0):
         _err = set([e for e in _l if not self.validarRUN(e)])
         _r   = False if len(_err)>0 else True
