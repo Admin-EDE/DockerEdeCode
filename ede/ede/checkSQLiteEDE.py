@@ -334,8 +334,8 @@ class check:
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
-      logger.info(f"len(personList): {len(rows)}")
       if(len(rows)>0):
+        logger.info(f"len(personList): {len(rows)}")
         self.rutList = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD
         self.ipeList = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None])) # Valida lista de IPE ingresados a la BD
         self.emailList = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None])) #Valida que los email tengan el formato correcto
@@ -414,7 +414,7 @@ class check:
             - Revisa que el dígito verificador del campo corresponda
           con el número del dígito de verificación
             - y que el RUN sea mayor a 100 millones.
-          Retorna True y “S/DATOS” a través de logger si no encuentra información.
+          Retorna True y “S/Datos” a través de logger si no encuentra información.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
@@ -441,7 +441,6 @@ class check:
         return _r
   ### FIN fn3F4 ###
   
-  #VERIFICA SI LA LISTA DE e-mails INGRESADOS EN EL SISTEMA CUMPLE CON EL FORMATO
   ### INICIO fn3F5 ###  
   def fn3F5(self):
     """ 
@@ -453,15 +452,19 @@ class check:
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger si no encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - validar el formato del correo electrónico
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """    
+    """   
+    _r = False
+    _l = [] 
     try:
       _l = self.emailList
+    except Exception as e:
+      logger.info(f"Resultado: {_l} -> {str(e)}")
+    try:
       if(len(_l)>0):
         _err = set([e for e in _l if not validate_email(e)])
         _r   = False if len(_err)>0 else True
@@ -470,11 +473,12 @@ class check:
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
+      _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
   ### FIN fn3F5 ###  
   
   #VERIFICA SI LA LISTA DE teléfonos INGRESADOS cumple con el formato E164
