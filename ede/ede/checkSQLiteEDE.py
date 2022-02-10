@@ -718,10 +718,10 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       return _r
   ### FIN fn3FB ###
   
-  #VERIFICA que la cantidad de emails corresponda con los tipos de emails ingresados
   ### INICIO fn3FC ###
   def fn3FC(self):
-    """ Breve descripción de la función
+    """
+    Integridad: Verifica que la cantidad de emails corresponda con los tipos de emails ingresados
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -729,27 +729,35 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger si no encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Verifica que cada e-mail tenga su asignación de tipo
+            - Verifica que las comparaciones realizadas se cumplan.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
+    _r = False
+    _l1 = []
+    _l2 = []
     try:
-      _l1 = self.emailList;_l2 = self.emailTypeList
-      if(len(_l1)>0 and len(_l2)>0):
+      _l1 = self.emailList
+      _l2 = self.emailTypeList
+    except Exception as e:
+      logger.info(f"Resultado: {_l1},{_l2} -> {str(e)}")
+    try:
+      if( len(_l1) > 0 and len(_l2) > 0 ):
         _r   = len(_l1) == len(_l2)
         _t = f"VERIFICA que la cantidad de e-mails corresponda con los tipos de e-mails ingresados en las personas: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
+      _r = True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
   ### FIN fn3FC ###
   
   #VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados
