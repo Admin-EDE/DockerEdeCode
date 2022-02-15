@@ -6063,7 +6063,6 @@ GROUP BY pid.Identifier
             - La firma del apoderado se encuentra registrada en el sistema. (ERROR)
             - La persona que retiró se encontraba autorizada para hacerlo en el sistema. (WARNING)
             - El registro de retiro del estudiante desde la sala de clases debe ser anterior al registro de salida del estableciento. (ERROR)
-            - Le fecha, hora y zona horaria de OrganizationPersonRole.ExitDate y RoleAttendanceEvent.Date deben coincidir erntre las tablas. (ERROR)
             - Todos los registros del roleAttendanceEvent deben estar firmados. (ERROR)
             - El tipo RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure). (ERROR)
             - En roleAttendanceEvent debe estar el campo observaciones con el detalle del motivo del retiro anticipado. (ERROR)
@@ -6074,10 +6073,8 @@ GROUP BY pid.Identifier
     Allrows = []
     try:
       rows = conn.execute("""
-            SELECT *
-
+            SELECT rae.RoleAttendanceEventId
             FROM RoleAttendanceEvent rae
-
             -- Antes de realizar cualquier acción se revisa que el estudiante tengan
             -- registrada alguna salida anticipada
             JOIN RefAttendanceStatus ras
@@ -6090,171 +6087,184 @@ GROUP BY pid.Identifier
         logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
         logger.info(f"S/DATOS")
         return True #si no hay registros de salida anticipada, no continúa la revisión 
-
     try:
       if( len(Allrows) > 0 ):
-        _msg = ""
-        _f1 = False
-        _drk = 0 #DigitalRandomKey
-        _pr = 0 #PersonId autorizada para retiro
+        rows = conn.execute("""
+            SELECT 
+                raeAlumnoAsignatura.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoAsignatura'
+                ,raeAlumnoEstablecimieto.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoEstablecimiento'
+                ,raeApoderado.RoleAttendanceEventId as 'AlumnoAsignaturaApoderado'
+            --	, raeAlumnoEstablecimieto.*
+            --	, raeApoderado.*
 
-        _s1 = """SELECT a.OrganizationPersonRoleId
-                        ,date(a.ExitDate) as ExitDate
-                        ,time(a.ExitDate) as ExitTime
-                        ,a.personId
-                  FROM OrganizationPersonRole a
-                  JOIN Organization B
-                    ON A.OrganizationId = B.OrganizationId
-                  JOIN RefOrganizationType D
-                    ON B.RefOrganizationTypeId = D.RefOrganizationTypeId
-                  WHERE 
-                    a.RoleId = 6
-                    AND 
-                    a.ExitDate IS NOT NULL
-                    AND 
-                    B.name NOT IN ('03:Educación Básica Adultos'
-                                      ,'06:Educación Media Humanístico Científica Adultos'
-                                      ,'08:Educación Media Técnico Profesional y Artística, Adultos')
-                    AND 
-                    D.Description = 'K12 School';"""
+            FROM RoleAttendanceEvent raeAlumnoAsignatura
 
-        _s2 = """SELECT a.OrganizationPersonRoleId
-                        ,date(a.ExitDate) as ExitDate
-                        ,time(a.ExitDate) as ExitTime
-                        ,a.personId
-                  FROM OrganizationPersonRole a
-                  JOIN Organization B
-                  ON A.OrganizationId = B.OrganizationId
-                  JOIN RefOrganizationType C
-                  ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
-                  WHERE date(a.ExitDate) = ?
-                  AND (c.Description = 'Course Section' or c.Description = 'Course');"""
+            -- Antes de realizar cualquier acción se revisa que el estudiante tenga
+            -- Registrada una salida anticipada
+            JOIN RefAttendanceStatus ras
+              ON ras.RefAttendanceStatusId = raeAlumnoAsignatura.RefAttendanceStatusId
+              AND ras.Code IN ('EarlyDeparture')
+            -- Esta relación obliga que el registro sea de tipo asignatura en la tabla RoleAttendanceEvent
+            JOIN RefAttendanceEventType raet
+              ON raet.RefAttendanceEventTypeId IN (
+                SELECT RefAttendanceEventTypeId
+                FROM RefAttendanceEventType
+                WHERE Code IN ('ClassSectionAttendance')
+              )
 
-        _s3 = """SELECT digitalRandomKey,
-                        fileScanBase64,
-                        observaciones
-                  FROM RoleAttendanceEvent
-                WHERE OrganizationPersonRoleId = ?
-                  AND (RefAttendanceEventTypeId = 2 OR RefAttendanceEventTypeId = 5)
-                  AND RefAttendanceStatusId = 5
-                  AND date(Date) = ?
-                  and time(Date) = ?;"""
+            -- Establece la relación con la tabla OrganizationPersonRole
+            JOIN OrganizationPersonRole oprAlumnoAsignatura
+              ON oprAlumnoAsignatura.OrganizationPersonRoleId = raeAlumnoAsignatura.OrganizationPersonRoleId
+              AND oprAlumnoAsignatura.RecordEndDateTime IS NULL
 
-        _s4 = """SELECT a.OrganizationPersonRoleId
-                        ,date(a.ExitDate) as ExitDate
-                        ,time(a.ExitDate) as ExitTime
-                        ,a.personId
-                        ,a.RoleId
-                  FROM OrganizationPersonRole a
-                  JOIN Organization B
-                    ON A.OrganizationId = B.OrganizationId
-                  JOIN RefOrganizationType C
-                    ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
-                  WHERE 
-                    date(a.ExitDate) = ?
-                    AND time(a.ExitDate) = ?
-                    AND c.Description = 'K12 School';"""
+            -- Esta relación obliga que el registro sea hecho utilizando el rol de estudiante
+            JOIN Role rol
+              ON rol.RoleId = oprAlumnoAsignatura.RoleId
+              AND rol.Name IN ('Estudiante')
+            -- verifica que el rol se encuentre vigente
+            JOIN RoleStatus rst
+              ON rst.OrganizationPersonRoleId = oprAlumnoAsignatura.OrganizationPersonRoleId
+              AND rst.StatusEndDate IS NULL
+              AND rst.RecordEndDateTime IS NULL
+              AND rst.RefRoleStatusId IN (
+                SELECT RefRoleStatusId
+                FROM RefRoleStatus
+                WHERE code IN ('Enrolled')
+              )
+              
+            -- Esta relación obliga al estudiante a estar asignado a una asignatura
+            JOIN Organization asignatura
+              ON asignatura.OrganizationId = oprAlumnoAsignatura.OrganizationId
+              AND asignatura.RecordEndDateTime IS NULL
+              AND asignatura.RefOrganizationTypeId IN (
+                SELECT RefOrganizationTypeId
+                FROM RefOrganizationType
+                WHERE code IN ('CourseSection')
+              )	
+              
+            -- Esta relación verifica que la asignatura no se encuentre asignada a un Nivel de Adultos
+            JOIN OrganizationRelationship ors
+              ON ors.OrganizationId = oprAlumnoAsignatura.OrganizationId
+            JOIN jerarquiasList jer 
+              ON ors.Parent_OrganizationId = jer.OrganizationIdDelCurso
+              AND jer.nivel NOT IN ('03:Educación Básica Adultos'
+                      ,'06:Educación Media Humanístico Científica Adultos'
+                      ,'08:Educación Media Técnico Profesional y Artística, Adultos')
 
-        _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
-                      FROM PersonRelationship A
-                      WHERE A.personId = ?
-        """
+            ------------------------------------------------------------------------------------------
+            -- Revisa que exista el registro de salida del alumno a nivel del establecimiento
+            JOIN OrganizationPersonRole oprAlumnoEstablecimiento
+              ON oprAlumnoEstablecimiento.personId = oprAlumnoAsignatura.personId
+              AND oprAlumnoEstablecimiento.OrganizationId IN (
+                -- Esta relación obliga al estudiante a estar asignado a un establecimiento
+                SELECT Organizationid
+                FROM Organization 
+                WHERE 
+                  Organization.OrganizationId = oprAlumnoEstablecimiento.OrganizationId
+                  AND RecordEndDateTime IS NULL
+                  AND RefOrganizationTypeId IN (
+                    SELECT RefOrganizationTypeId
+                    FROM RefOrganizationType
+                    WHERE code IN ('K12School')
+                  )		
+              )
 
-        #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
-        logger.info(f"VERIFICA CONSISTENCIA EN FECHA Y HORA DE REGISTROS DE RETIRO Y LA EXISTENCIA DE FIRMA DIGITAL Y/O DOCUMENTO DIGITALIZADO DE AUTORIZACION PARA EL CASO DE QUIEN RETIRA.")
-        rows = conn.execute(_s1).fetchall()
+            JOIN RoleAttendanceEvent raeAlumnoEstablecimieto
+              ON raeAlumnoEstablecimieto.OrganizationPersonRoleId = oprAlumnoEstablecimiento.OrganizationPersonRoleId
+              AND raeAlumnoEstablecimieto.RefAttendanceStatusId IN (
+                SELECT RefAttendanceStatusId
+                FROM RefAttendanceStatus
+                WHERE Code IN ('EarlyDeparture')	
+              )
+              AND raeAlumnoEstablecimieto.RefAttendanceEventTypeId IN (
+                SELECT RefAttendanceEventTypeId
+                FROM RefAttendanceEventType
+                WHERE Code IN ('AsistenciaEstablecimiento')	
+              )
+              -- Verifica que los eventos ocurran el mismo día
+              AND strftime('%Y-%m-%d',raeAlumnoEstablecimieto.Date) = strftime('%Y-%m-%d',raeAlumnoAsignatura.Date)	
+
+            ------------------------------------------------------------------------------------------
+                      
+
+            --En PersonRelationship el campo personId identifica al apoderado y el campo RelatedPersonId al estudiante
+            JOIN PersonRelationship prsh 
+              ON oprAlumnoAsignatura.personId = prsh.RelatedPersonId
+              AND prsh.RecordEndDateTime IS NULL
+              AND prsh.RetirarEstudianteIndicador = 1 --Indica que se encuentra habilitado
+
+            -- Verifica que el rol del la persona se encuentre dentro de las permitidas par retirara al estudiante
+            JOIN OrganizationPersonRole oprApoderado
+              ON oprApoderado.personId = prsh.personId
+              AND oprApoderado.RoleId IN (
+                SELECT RoleId
+                FROM Role 
+                WHERE Name IN ('Padre, madre o apoderado','Transportista','Persona que retira al estudiante')
+              )
+            -- Ahora relaciona el registro de oprApoderado con el de raeApoderado
+            JOIN RoleAttendanceEvent raeApoderado
+              ON raeApoderado.OrganizationPersonRoleId = oprApoderado.OrganizationPersonRoleId
+              AND raeApoderado.RefAttendanceStatusId IN (
+                SELECT RefAttendanceStatusId
+                FROM RefAttendanceStatus
+                WHERE Code IN ('EarlyDeparture')
+              )
+              AND raeApoderado.RefAttendanceEventTypeId IN (
+                SELECT RefAttendanceEventTypeId
+                FROM RefAttendanceEventType
+                WHERE Code IN ('AsistenciaEstablecimiento')
+              )	
+              AND raeApoderado.RecordEndDateTime IS NULL
+              -- Verifica que los eventos ocurran el mismo día
+              AND strftime('%Y-%m-%d',raeApoderado.Date) = strftime('%Y-%m-%d',raeAlumnoAsignatura.Date)
+              AND raeApoderado.observaciones IS NOT NULL
+              AND raeApoderado.oprIdRatificador IS NOT NULL
+              AND raeApoderado.firmaRatificador REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+              AND raeApoderado.fechaRatificador REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND raeApoderado.Date  REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'		
+              
+            WHERE 
+              raeAlumnoAsignatura.observaciones IS NOT NULL
+              AND
+              raeAlumnoAsignatura.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+              AND
+              raeAlumnoAsignatura.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND
+              raeAlumnoEstablecimieto.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
+              AND
+              raeAlumnoEstablecimieto.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND
+              raeAlumnoAsignatura.Date  REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND
+              raeAlumnoEstablecimieto.Date  REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+              AND
+              (
+                raeApoderado.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$' AND raeApoderado.digitalRandomKeyDate REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
+                OR 
+                raeApoderado.fileScanBase64 IS NOT NULL
+              )
+              AND 
+              --Verifica que el registro de salida de la sala de clases haya sido anterior a la salida del establecimiento
+              strftime('%H:%M:%f',raeAlumnoAsignatura.Date) <= strftime('%H:%M:%f',raeAlumnoEstablecimieto.Date)
+              AND 
+              strftime('%H:%M:%f',raeAlumnoAsignatura.Date) <= strftime('%H:%M:%f',raeApoderado.Date)
+        """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
     try:      
       if( len( rows ) > 0 ):
-        for r in rows:
-          _o = r[0]
-          _f = r[1]
-          _t = r[2]
-          _p = r[3]
-          #VERIFICA SI EXISTE REGISTRO DE RETIRO DE CLASES PREVIO AL RETIRO DEL ESTABLECIMIENTO EN LA MISMA FECHA (OrganizationPersonRole)
-          _v = (str(_f))
-          _r2 = conn.execute(_s2, _v).fetchall()
-          if (len(_r2)>0):
-            for r2 in _r2:
-              _o2 = r2[0]
-              _f2 = r2[1]
-              _t2 = r2[2]
-              _p2 = r2[3]
+        for row in rows:
+          Allrows.remove(row[0])
+          Allrows.remove(row[1])
+          Allrows.remove(row[2])
 
-              if(_p == _p2):
-                _v2 = (str(_o2),str(_f2),str(_t2))
-                _r3 = conn.execute(_s3, _v2).fetchall()
-                if(len(_r3)>0):
-                  for r3 in _r3:
-                    _drk = r3[0]
-                    if _drk is None:
-                      logger.error(f"Registro de salida de clases no tiene firma de docente (OrganizationPersonRole).")
-                      logger.error(f"Rechazado")
-                else:
-                  logger.error(f"No hay registro de retiro de clases (RoleAttendanceEvent)")
-                  logger.error(f"Rechazado")
-
-              else:
-                _v2 = (str(_o2),str(_f2),str(_t2))
-                _r3 = conn.execute(_s3, _v2).fetchall()
-                if(len(_r3)>0):
-                  for r3 in _r3:
-                    _drk2 = r3[0]
-
-                    if _drk2 is None:
-                      logger.error(f"Registro de salida de clases no tiene firma de docente (RoleAttendanceEvent).")
-                      logger.error(f"Rechazado")
-          else:
-            logger.error(f"NO existe registro de salida de clases previo al retiro del establecimiento del alumno.")
-            logger.error(f"Rechazado")
-
-          #VERIFICA SI EXISTE REGISTRO DE RETIRO DE ESTABLECIMIENTO Y QUE COINCIDA CON FECHA Y HORA (RoleAttendanceEvent)
-          _v4 = (str(_f),str(_t))
-          _r4 = conn.execute(_s4, _v4).fetchall()
-          if(len(_r4)>0):
-            for r4 in _r4:
-              _o4 = r4[0]
-              _f4 = r4[1]
-              _t4 = r4[2]
-              _p4 = r4[3]
-              _rl4 = r4[4]
-
-              _v5 = (str(_o4),str(_f4),str(_t4))
-              _r5 = conn.execute(_s3, _v5).fetchall()
-              #logger.info(f"_o4 {str(_o4)},_f4 {str(_f4)},_t4 {str(_t4)},_rl {str(_rl4)}")
-              if(len(_r5)>0):
-                for r5 in _r5:
-                  _drk = r5[0]
-                  _fsb = r5[1]
-                  _obs = r5[2]
-                  if(_rl4 == 6):
-                    if(_drk is None and _obs is None):
-                      logger.error(f"Falta firma y observacion en registro de retiro de estudiante de establecimiento.")
-                      logger.error(f"Rechazado")
-                  elif(_rl4 == 11):
-                    if _drk is None:
-                      logger.error(f"Falta firma de administrativo en registro de retiro de estudiante de establecimiento.")
-                      logger.error(f"Rechazado")
-                  else:
-                    _v6 = (_p4)
-                    _r6 = conn.execute(_s5, _v6).fetchall()
-                    if(len(_r6)>0):
-                      for r6 in _r6:
-                        _pr = r6[1]
-                        if not _pr:
-                          logger.info(f"La persona que retira a alumno no figura como autorizado en el sistema.")
-                          logger.info(f"Aprobado")
-                          _r = True
-                    if(_drk is None and _fsb is None):
-                      logger.error(f"Falta firma o documento digitalizado de apoderado en registro de retiro de estudiante de establecimiento.")
-                      logger.error(f"Rechazado")
-        logger.info(f"Aprobado")
-        _r = True
+        if(len(Allrows) == 0):
+          _r = True
+        else:
+          logger.info(f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
       else:
-        logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
-        logger.info(f"S/DATOS")
-        _r = True
+        logger.info(f"Rechazado")
+        logger.info(f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
       logger.error(f"Rechazado")
