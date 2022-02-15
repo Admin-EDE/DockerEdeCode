@@ -6072,7 +6072,7 @@ GROUP BY pid.Identifier
     _r = False
     Allrows = []
     try:
-      Allrows = conn.execute("""
+      rows = conn.execute("""
             SELECT rae.RoleAttendanceEventId
             FROM RoleAttendanceEvent rae
             -- Antes de realizar cualquier acción se revisa que el estudiante tengan
@@ -6081,6 +6081,7 @@ GROUP BY pid.Identifier
               ON ras.RefAttendanceStatusId = rae.RefAttendanceStatusId
               AND ras.Code IN ('EarlyDeparture')
       """).fetchall()
+      Allrows = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
     except Exception as e:
       logger.info(f"Resultado: {Allrows} -> {str(e)}")
 
