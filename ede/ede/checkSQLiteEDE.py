@@ -6256,9 +6256,6 @@ GROUP BY pid.Identifier
     try:      
       if( len( rows ) > 0 ):
         for row in rows:
-          print(Allrows)
-          print(row[0],row[1],row[2])
-          
           Allrows.remove(row[0])
           Allrows.remove(row[1])
           Allrows.remove(row[2])
