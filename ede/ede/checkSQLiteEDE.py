@@ -6083,10 +6083,11 @@ GROUP BY pid.Identifier
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {Allrows} -> {str(e)}")
-      if( len(Allrows) == 0 ):
-        logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
-        logger.info(f"S/DATOS")
-        return True #si no hay registros de salida anticipada, no continúa la revisión 
+
+    if( len(Allrows) == 0 ):
+      logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
+      logger.info(f"S/DATOS")
+      return True #si no hay registros de salida anticipada, no continúa la revisión 
     try:
       if( len(Allrows) > 0 ):
         rows = conn.execute("""
