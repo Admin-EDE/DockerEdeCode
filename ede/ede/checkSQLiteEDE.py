@@ -6072,7 +6072,7 @@ GROUP BY pid.Identifier
     _r = False
     Allrows = []
     try:
-      rows = conn.execute("""
+      Allrows = conn.execute("""
             SELECT rae.RoleAttendanceEventId
             FROM RoleAttendanceEvent rae
             -- Antes de realizar cualquier acción se revisa que el estudiante tengan
