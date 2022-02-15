@@ -920,10 +920,10 @@ GROUP BY p.personId
       return _r
   ### FIN fn3FF ###
   
-  
-  #VERIFICA SI LA VISTA PersonList filtrada por docentes contiene información
+  ### INICIO fn3E0 ###
   def fn3E0(self, conn):
-    """ Breve descripción de la función
+    """
+    Integridad: VERIFICA SI LA VISTA PersonList filtrada por docentes contiene información
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -937,7 +937,9 @@ GROUP BY p.personId
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """       
+    """
+    _r = False
+    rows = []
     try:
       rows = conn.execute("""
       SELECT
@@ -951,10 +953,12 @@ GROUP BY p.personId
       FROM PersonList
       WHERE Role like '%Docente%';
     """).fetchall()
-
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:
       logger.info(f"len(docentes): {len(rows)}")
 
-      if(len(rows)>0):
+      if( len( rows ) > 0 ):
         personId            = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
         title               = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))
         Type                = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None]))
@@ -966,17 +970,17 @@ GROUP BY p.personId
         logger.info(f"Aprobado")
       else:
         logger.info(f"S/Datos")
-
-      return True
-
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por docentes: {str(e)}")
-      logger.error(f"Rechazado")
-      return False
+      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
+      logger.error(f"Rechazado")        
+    finally:
+      return _r
+  ### FIN fn3E0 ###
 
-  #VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema
+  ### INICIO fn3E1 ###
   def fn3E1(self):
-    """ Breve descripción de la función
+    """ 
+    Integridad: VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -991,8 +995,13 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
+    _r = False
+    _l = []
     try:
       _l = self.comparaDocentes
+    except Exception as e:
+      logger.info(f"Resultado: {_l} -> {str(e)}")
+    try:      
       if(len(_l)>0):
         _r   = _l
         _t = f"VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema: {_r}."
@@ -1000,11 +1009,13 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return True
+        _r = True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
+  ### FIN fn3E1 ###
 
   #VERIFICA SI LA TABLA k12schoolList unida a organizationList contiene información
   def fn3E2(self, conn):
@@ -3944,7 +3955,7 @@ GROUP BY p.personId
                 WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                 WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                 WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-              END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date
+              END as 'diaSemana', -- rescata solo el dia de la semana desde rae.Date
               count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes
               sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', 
               group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista',
@@ -5930,36 +5941,32 @@ GROUP BY Organizationid, date
 
 ### MIAULA INICIO ###
 
-### inicio FN0FA ###
+### INICIO FN0FA ###
   def fn0FA(self, conn):
     """
-    [
-      7.0 Registro de salidas o retiros (NO Habituales)
-      
-      Verifica que cada estudiante tenga registrado un listado de personas autorizadas para retirarlo.
-      
+    SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
+      Verifica que cada estudiante tenga registrado un listado de personas
+    autorizadas para retirarlo.
       Se considera excepción de estudiantes registrados en educación de adultos.
-      
-        Se agregó el campo RetirarEstudianteIndicador a la tabla personRelatinShip
-      para identificar a las personas autorizadas para retirar estudiantes del establecimiento.
-    ]
-
+      Se agregó el campo RetirarEstudianteIndicador a la tabla PersonRelationship
+      para identificar a las personas autorizadas para retirar estudiantes 
+      desde el establecimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
           Creado previamente a través de la función execute(self)
           ]
-
     Returns:
         [Boolean]: [
-          Retorna True y "Aprobado" a través de logger, si cada estudiante tiene al menos una persona autorizada para retirarlo del establecimiento
-          o 
-          Retorna False, "Rechazado" y la lista de RUT a través de logger, si algún estudiante no tiene asignada alguna persona autorizada para retirarlo.
-          o en caso de no encontrar estudiantes.
+          Retorna True y "Aprobado" a través de logger, si:
+            - Cada estudiante tiene al menos una persona autorizada para 
+          retirarlo del establecimiento
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
+    _r = False
+    rows = []    
     try:
-      rows = []
       rows = conn.execute("""
 SELECT DISTINCT 
 	  pid.Identifier -- Muestra el RUN o IPE del estudiante con problemas
@@ -6001,8 +6008,7 @@ FROM Person p
 GROUP BY pid.Identifier
             """).fetchall()
     except Exception as e:
-      logger.error(f"Error al ejecutar la consulta en la función: {str(e)}")
-      
+      logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
       c_ = 0
       rutConProblemas = []      
@@ -6022,45 +6028,37 @@ GROUP BY pid.Identifier
         if( c_ >= len(rows) ):
           logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
           logger.info(f"Aprobado")
-          return True
+          _r = True
         else:
           logger.error(f"Los siguientes estudiantes no tienen personas autorizadas para retirarlos. {rutConProblemas}")
           logger.error(f"Rechazado")
-          return False
       else:
         logger.info(f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
         logger.info(f"Rechazado")
-        return  False
-
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
       logger.error(f"Rechazado")
-      return False
-### fin FN0FA ###
+    finally:
+      return _r
+### FIN FN0FA ###
 
-### inicio FN0FB ###
+### INICIO FN0FB ###
   def fn0FB(self, conn):
     """
-    [
-      7.0 Registro de salidas o retiros
+    SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
         Verificar, en caso que existan retiros anticipados, que se encuentre registrado 
-        el “verificador de identidad” o escaneado el poder simple o la comunicación 
-        que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
-
-        Se puede filtrar por RoleAttendanceEvant.RefAttendanceStatusID == 5 (Early Departure) 
-        y agrupar por Date para obtener el bloque de registros      
-    ]
-
+      el “verificador de identidad” o escaneado el poder simple o la comunicación 
+      que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
+        Se puede filtrar por RoleAttendanceEvent.RefAttendanceStatusID == 5 (Early Departure) 
+      y agrupar por Date para obtener el bloque de registros      
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
           Creado previamente a través de la función execute(self)
           ]
-
     Returns:
         [Boolean]: [
           Retorna True y "S/Datos" a través de logger, si no existe información en el sistema.
-          o
           Retorna True y "Aprobado" a través de logger, si cada estudiante cumple con los siguientes criterios:
             - La firma del apoderado se encuentra registrada en el sistema. (ERROR)
             - La persona que retiró se encontraba autorizada para hacerlo en el sistema. (WARNING)
@@ -6069,84 +6067,107 @@ GROUP BY pid.Identifier
             - Todos los registros del roleAttendanceEvent deben estar firmados. (ERROR)
             - El tipo RoleAttendanceEvant.RefAttendanceStatusID debe ser == 5 (Early Departure). (ERROR)
             - En roleAttendanceEvent debe estar el campo observaciones con el detalle del motivo del retiro anticipado. (ERROR)
-          o 
-          Retorna False, "Rechazado" en cualquier otra caso.
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
+    _r = False
+    Allrows = []
     try:
-      _msg = ""
-      _f1 = False
-      _drk = 0 #DigitalRandomKey
-      _pr = 0 #PersonId autorizada para retiro
+      rows = conn.execute("""
+            SELECT *
 
-      _s1 = """SELECT a.OrganizationPersonRoleId
-                      ,date(a.ExitDate) as ExitDate
-                      ,time(a.ExitDate) as ExitTime
-                      ,a.personId
-                FROM OrganizationPersonRole a
-                JOIN Organization B
+            FROM RoleAttendanceEvent rae
+
+            -- Antes de realizar cualquier acción se revisa que el estudiante tengan
+            -- registrada alguna salida anticipada
+            JOIN RefAttendanceStatus ras
+              ON ras.RefAttendanceStatusId = rae.RefAttendanceStatusId
+              AND ras.Code IN ('EarlyDeparture')
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {Allrows} -> {str(e)}")
+      if( len(Allrows) == 0 ):
+        logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
+        logger.info(f"S/DATOS")
+        return True #si no hay registros de salida anticipada, no continúa la revisión 
+
+    try:
+      if( len(Allrows) > 0 ):
+        _msg = ""
+        _f1 = False
+        _drk = 0 #DigitalRandomKey
+        _pr = 0 #PersonId autorizada para retiro
+
+        _s1 = """SELECT a.OrganizationPersonRoleId
+                        ,date(a.ExitDate) as ExitDate
+                        ,time(a.ExitDate) as ExitTime
+                        ,a.personId
+                  FROM OrganizationPersonRole a
+                  JOIN Organization B
+                    ON A.OrganizationId = B.OrganizationId
+                  JOIN RefOrganizationType D
+                    ON B.RefOrganizationTypeId = D.RefOrganizationTypeId
+                  WHERE 
+                    a.RoleId = 6
+                    AND 
+                    a.ExitDate IS NOT NULL
+                    AND 
+                    B.name NOT IN ('03:Educación Básica Adultos'
+                                      ,'06:Educación Media Humanístico Científica Adultos'
+                                      ,'08:Educación Media Técnico Profesional y Artística, Adultos')
+                    AND 
+                    D.Description = 'K12 School';"""
+
+        _s2 = """SELECT a.OrganizationPersonRoleId
+                        ,date(a.ExitDate) as ExitDate
+                        ,time(a.ExitDate) as ExitTime
+                        ,a.personId
+                  FROM OrganizationPersonRole a
+                  JOIN Organization B
                   ON A.OrganizationId = B.OrganizationId
-                JOIN RefOrganizationType D
-                  ON B.RefOrganizationTypeId = D.RefOrganizationTypeId
-                WHERE 
-                  a.RoleId = 6
-                  AND 
-                  a.ExitDate IS NOT NULL
-                  AND 
-                  B.name NOT IN ('03:Educación Básica Adultos'
-                                    ,'06:Educación Media Humanístico Científica Adultos'
-                                    ,'08:Educación Media Técnico Profesional y Artística, Adultos')
-                  AND 
-                  D.Description = 'K12 School';"""
-
-      _s2 = """SELECT a.OrganizationPersonRoleId
-                      ,date(a.ExitDate) as ExitDate
-                      ,time(a.ExitDate) as ExitTime
-                      ,a.personId
-                FROM OrganizationPersonRole a
-                JOIN Organization B
-                ON A.OrganizationId = B.OrganizationId
-                JOIN RefOrganizationType C
-                ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
-                WHERE date(a.ExitDate) = ?
-                AND (c.Description = 'Course Section' or c.Description = 'Course');"""
-
-      _s3 = """SELECT digitalRandomKey,
-                      fileScanBase64,
-                      observaciones
-                FROM RoleAttendanceEvent
-              WHERE OrganizationPersonRoleId = ?
-                AND (RefAttendanceEventTypeId = 2 OR RefAttendanceEventTypeId = 5)
-                AND RefAttendanceStatusId = 5
-                AND date(Date) = ?
-                and time(Date) = ?;"""
-
-      _s4 = """SELECT a.OrganizationPersonRoleId
-                      ,date(a.ExitDate) as ExitDate
-                      ,time(a.ExitDate) as ExitTime
-                      ,a.personId
-                      ,a.RoleId
-                FROM OrganizationPersonRole a
-                JOIN Organization B
-                  ON A.OrganizationId = B.OrganizationId
-                JOIN RefOrganizationType C
+                  JOIN RefOrganizationType C
                   ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
-                WHERE 
-                  date(a.ExitDate) = ?
-                  AND time(a.ExitDate) = ?
-                  AND c.Description = 'K12 School';"""
+                  WHERE date(a.ExitDate) = ?
+                  AND (c.Description = 'Course Section' or c.Description = 'Course');"""
 
-      _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
-                    FROM PersonRelationship A
-                    WHERE A.personId = ?
-                    
-      """
+        _s3 = """SELECT digitalRandomKey,
+                        fileScanBase64,
+                        observaciones
+                  FROM RoleAttendanceEvent
+                WHERE OrganizationPersonRoleId = ?
+                  AND (RefAttendanceEventTypeId = 2 OR RefAttendanceEventTypeId = 5)
+                  AND RefAttendanceStatusId = 5
+                  AND date(Date) = ?
+                  and time(Date) = ?;"""
 
-      #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
-      logger.info(f"VERIFICA CONSISTENCIA EN FECHA Y HORA DE REGISTROS DE RETIRO Y LA EXISTENCIA DE FIRMA DIGITAL Y/O DOCUMENTO DIGITALIZADO DE AUTORIZACION PARA EL CASO DE QUIEN RETIRA.")
-      _r = conn.execute(_s1).fetchall()
-      if(len(_r)>0):
-        for r in _r:
+        _s4 = """SELECT a.OrganizationPersonRoleId
+                        ,date(a.ExitDate) as ExitDate
+                        ,time(a.ExitDate) as ExitTime
+                        ,a.personId
+                        ,a.RoleId
+                  FROM OrganizationPersonRole a
+                  JOIN Organization B
+                    ON A.OrganizationId = B.OrganizationId
+                  JOIN RefOrganizationType C
+                    ON B.RefOrganizationTypeId = C.RefOrganizationTypeId
+                  WHERE 
+                    date(a.ExitDate) = ?
+                    AND time(a.ExitDate) = ?
+                    AND c.Description = 'K12 School';"""
+
+        _s5 = """SELECT A.RelatedPersonId ,A.RetirarEstudianteIndicador
+                      FROM PersonRelationship A
+                      WHERE A.personId = ?
+        """
+
+        #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
+        logger.info(f"VERIFICA CONSISTENCIA EN FECHA Y HORA DE REGISTROS DE RETIRO Y LA EXISTENCIA DE FIRMA DIGITAL Y/O DOCUMENTO DIGITALIZADO DE AUTORIZACION PARA EL CASO DE QUIEN RETIRA.")
+        rows = conn.execute(_s1).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:      
+      if( len( rows ) > 0 ):
+        for r in rows:
           _o = r[0]
           _f = r[1]
           _t = r[2]
@@ -6170,11 +6191,9 @@ GROUP BY pid.Identifier
                     if _drk is None:
                       logger.error(f"Registro de salida de clases no tiene firma de docente (OrganizationPersonRole).")
                       logger.error(f"Rechazado")
-                      return False
                 else:
                   logger.error(f"No hay registro de retiro de clases (RoleAttendanceEvent)")
                   logger.error(f"Rechazado")
-                  return False
 
               else:
                 _v2 = (str(_o2),str(_f2),str(_t2))
@@ -6186,11 +6205,9 @@ GROUP BY pid.Identifier
                     if _drk2 is None:
                       logger.error(f"Registro de salida de clases no tiene firma de docente (RoleAttendanceEvent).")
                       logger.error(f"Rechazado")
-                      return False
           else:
             logger.error(f"NO existe registro de salida de clases previo al retiro del establecimiento del alumno.")
             logger.error(f"Rechazado")
-            return False
 
           #VERIFICA SI EXISTE REGISTRO DE RETIRO DE ESTABLECIMIENTO Y QUE COINCIDA CON FECHA Y HORA (RoleAttendanceEvent)
           _v4 = (str(_f),str(_t))
@@ -6215,12 +6232,10 @@ GROUP BY pid.Identifier
                     if(_drk is None and _obs is None):
                       logger.error(f"Falta firma y observacion en registro de retiro de estudiante de establecimiento.")
                       logger.error(f"Rechazado")
-                      return False
                   elif(_rl4 == 11):
                     if _drk is None:
                       logger.error(f"Falta firma de administrativo en registro de retiro de estudiante de establecimiento.")
                       logger.error(f"Rechazado")
-                      return False
                   else:
                     _v6 = (_p4)
                     _r6 = conn.execute(_s5, _v6).fetchall()
@@ -6230,26 +6245,24 @@ GROUP BY pid.Identifier
                         if not _pr:
                           logger.info(f"La persona que retira a alumno no figura como autorizado en el sistema.")
                           logger.info(f"Aprobado")
-                          return True
+                          _r = True
                     if(_drk is None and _fsb is None):
                       logger.error(f"Falta firma o documento digitalizado de apoderado en registro de retiro de estudiante de establecimiento.")
                       logger.error(f"Rechazado")
-                      return False
-
         logger.info(f"Aprobado")
-        return True
+        _r = True
       else:
         logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
         logger.info(f"S/DATOS")
-        return True
-
+        _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
       logger.error(f"Rechazado")
-      return False
-### fin FN0FB ###
+    finally:
+      return _r
+### FIN FN0FB ###
 
-### inicio fn1FA ###
+### INICIO fn1FA ###
   def fn1FA(self, conn):
     _Apo=[]
     try:
