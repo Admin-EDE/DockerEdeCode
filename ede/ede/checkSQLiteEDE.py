@@ -6256,9 +6256,11 @@ GROUP BY pid.Identifier
     try:      
       if( len( rows ) > 0 ):
         for row in rows:
-          Allrows.remove(row[0])
-          Allrows.remove(row[1])
-          Allrows.remove(row[2])
+          for i in range(3)
+            try:
+              Allrows.remove(row[i])
+            except:
+              pass
 
         if(len(Allrows) == 0):
           _r = True
