@@ -4317,15 +4317,23 @@ GROUP BY p.personId
       logger.info(f"No hay información para evaluar")
     try:
       if( len(_query) > 0 ):
+        print(_query)
         _totalCurso = self.convertirArray2DToList(list([m[0] for m in _query if m[0] is not None]))
+        print(_totalCurso)
         _totalAsign = self.convertirArray2DToList(list([m[9] for m in _query if m[9] is not None]))
+        print(_totalAsign)
         
         _estPresentesCurso = self.convertirArray2DToList(list([m[1] for m in _query if m[1] is not None]))
+        print(_estPresentesCurso)
         _estPresentesAsign = self.convertirArray2DToList(list([m[10] for m in _query if m[10] is not None]))
+        print(_estPresentesAsign)
         _estAtradadosAsign = self.convertirArray2DToList(list([m[12] for m in _query if m[12] is not None]))                
+        print(_estAtradadosAsign)
 
         _estAusentesCurso = self.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
+        print(_estAusentesCurso)
         _estAusentesAsign = self.convertirArray2DToList(list([m[11] for m in _query if m[11] is not None]))
+        print(_estAusentesAsign)
           
         for idx_,el_ in enumerate(_totalCurso):
           print(idx_,el_)
