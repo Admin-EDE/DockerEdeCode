@@ -1786,10 +1786,10 @@ GROUP BY p.personId
       logger.error(f"Rechazado")
       return False
 
-  # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
-  #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+### INICIO fn3C4 ###
   def fn3C4(self, conn):
-    """ Breve descripción de la función
+    """
+    Integridad
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -1797,13 +1797,14 @@ GROUP BY p.personId
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+            y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    RoleAttendanceEvent = []
     try:
       RoleAttendanceEvent = conn.execute("""
         -- Lista todos los IDs que no cumplan con la empresión regular.
@@ -1815,6 +1816,10 @@ GROUP BY p.personId
 		    AND
 		    Date NOT NUll        
       """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {RoleAttendanceEvent} -> {str(e)}")
+    OrganizationPersonRole = []
+    try:      
       OrganizationPersonRole = conn.execute("""
         -- Lista todos los IDs que no cumplan con la empresión regular.
         SELECT OrganizationPersonRoleId, EntryDate, ExitDate
@@ -1829,6 +1834,9 @@ GROUP BY p.personId
       AND
       ( EntryDate NOT NULL OR ExitDate NOT NULL )
       """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {OrganizationPersonRole} -> {str(e)}")
+    try:      
       logger.info(f"RoleAttendanceEvent.Date con formato errorneo: {len(RoleAttendanceEvent)}, Tabla OrganizationPersonRole.EntryDate o ExitDate con formato errone: {len(OrganizationPersonRole)}")
       if(len(RoleAttendanceEvent)>0 or len(OrganizationPersonRole)>0):
         data1 = list(set([m[0] for m in RoleAttendanceEvent if m[0] is not None]))
@@ -1846,11 +1854,13 @@ GROUP BY p.personId
           return False          
       else:
         logger.info(f"Aprobado")
-        return True
+        _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
+### FIN fn3C4 ###    
 
   # Revisar que los cursos del establecimiento tengan bien 
   # calculada la información de la tabla RoleAttendance.
