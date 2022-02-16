@@ -2147,16 +2147,10 @@ GROUP BY p.personId
       logger.error(f"Rechazado")
       return False
 
-  """ 
-  El campo OrganizationWebsite.Website debe estar definido para la organización del establecimiento
-  El campo Organizationemail.addressElectronicMailAddress debe estar definido para la organización del establecimiento
-  El campo Organizationemail.RefEmailTypeId debe estar definido para la organización del establecimiento, al menos, el tipo Organizational (school) address [3]
-  Debe estar definido el número del establecimiento OrganizationTelephone.TelephoneNumber. Para la organización del establecimiento OrganizationTelephone.RefInstitutionTelephoneTypeId debe estar definido, al menos, los códigos Main phone number (2) y Administrative phone number (3), si son iguales se repite. 
-  El primer código es para comunicarse directamente con La Dirección del establecimiento, el otro es para los llamados administrativos.
-  Para la organización del establecimiento OrganizationLocation.RefOrganizationLocationTypeId debe estar definido Mailing [1], Physical [2] y Shipping [3], si es la misma para todos los casos, se debe repetir.
-  """
+### INICIO fn3DD ###
   def fn3DD(self, conn):
-    """ Breve descripción de la función
+    """
+    Integridad: Verifica la información mínima del establecimiento
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -2164,13 +2158,25 @@ GROUP BY p.personId
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - El campo OrganizationWebsite.Website debe estar definido para la organización del establecimiento
+            - El campo Organizationemail.addressElectronicMailAddress debe estar definido para la organización 
+            del establecimiento
+            - El campo Organizationemail.RefEmailTypeId debe estar definido para la organización del establecimiento, 
+            al menos, el tipo Organizational (school) address [3]
+            - Debe estar definido el número del establecimiento OrganizationTelephone.TelephoneNumber. 
+            Para la organización del establecimiento OrganizationTelephone.RefInstitutionTelephoneTypeId debe 
+            estar definido, al menos, los códigos Main phone number (2) y Administrative phone number (3), 
+            si son iguales se repite. 
+            - El primer código es para comunicarse directamente con La Dirección del establecimiento, el otro es para 
+            los llamados administrativos.
+            - Para la organización del establecimiento OrganizationLocation.RefOrganizationLocationTypeId debe estar 
+            definido Mailing [1], Physical [2] y Shipping [3], si es la misma para todos los casos, se debe repetir.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    webSite = []
     try:
       webSite = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
@@ -2183,6 +2189,10 @@ GROUP BY p.personId
         AND
         Website NOT REGEXP '^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})$'
       """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {webSite} -> {str(e)}")
+    ElectronicMailAddress = []
+    try:
       ElectronicMailAddress = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrado su email de contacto
         SELECT OrganizationId, ElectronicMailAddress
@@ -2197,6 +2207,10 @@ GROUP BY p.personId
         AND
         RefEmailType.Description IN ('Organizational (school) address')
       """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {ElectronicMailAddress} -> {str(e)}")
+    phoneNumbers = []
+    try:
       phoneNumbers = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrados sus teléfonos de contacto
         SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', TelephoneNumber, RefInstitutionTelephoneType.Description as 'phoneType'--, LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
@@ -2211,6 +2225,10 @@ GROUP BY p.personId
         AND 
         phoneType IN ('Main phone number','Administrative phone number')
       """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {phoneNumbers} -> {str(e)}")
+    locations = []
+    try:
       locations = conn.execute("""
         -- Revisa que las ubicaciones del establecimiento se encuentren bien definidas.
         SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
@@ -2243,8 +2261,11 @@ GROUP BY p.personId
         LocationAddress.Longitude IS NULL
         )
       """).fetchall()
-
+    except Exception as e:
+      logger.info(f"Resultado: {locations} -> {str(e)}")
+    try:
       if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
+        _err = False
         data = list(set([m[0] for m in webSite if m[0] is not None]))
         if (len(set(data)) > 0): 
           logger.error(f"Website con formato erroneo: {data}")
@@ -2265,16 +2286,17 @@ GROUP BY p.personId
           logger.error(f"locations con formato erroneo: {data}")
           _err = True
 
-        if (_err):
-          logger.error(f"Rechazado")
-          return False
+        if (not _err):
+          logger.error(f"Aprobado")
+          _r = True
       else:
-        logger.info(f"Aprobado")
-        return True
+        logger.info(f"S/Datos")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
+### FIN fn3DD ###    
 
   def separaRUT(self, *args):
     if (len(args) > 0) and (args[0] is not None):
@@ -2650,9 +2672,9 @@ GROUP BY p.personId
             OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
             OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
             OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
-    OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
+            OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
     -- Información del Apoderado
-    OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
+            OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
             OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
             OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
             OUTER LEFT JOIN RefCountry RefCountry2 on pa2.RefCountryId = RefCountry2.RefCountryId
@@ -4237,7 +4259,7 @@ GROUP BY p.personId
                   WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                   WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                   WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-                END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 3]
+                END as 'diaSemana', -- rescata solo el dia de la semana desde rae.Date [idx 3]
                 count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 4]
                 sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura', -- [idx 5]
                 sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura', -- [idx 6]
