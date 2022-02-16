@@ -4200,14 +4200,14 @@ GROUP BY p.personId
               sum(CASE WHEN rae_.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesv', -- [idx 2]
               sum(CASE WHEN rae_.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosCurso' -- [idx 3]
               ,a.Date -- [idx 4]
-			  ,a.Parent_OrganizationID -- [idx 5]
-			  ,a.OrganizationId -- [idx 6]
-			  ,a.fecha -- [idx 7]
-			  ,a.diaSemana -- [idx 8]
-			  ,ifnull(a.totalEstudiantes,0) totalEstudiantes -- [idx 9]
-			  ,ifnull(a.estudiantesPresentesAsignatura,0) estudiantesPresentesAsignatura -- [idx 10]
-			  ,ifnull(a.estudiantesAusentesAsignatura,0) estudiantesAusentesAsignatura -- [idx 11]
-			  ,ifnull(a.estudiantesRetrasadosAsignatura,0) estudiantesRetrasadosAsignatura -- [idx 12]
+              ,a.Parent_OrganizationID -- [idx 5]
+              ,a.OrganizationId -- [idx 6]
+              ,a.fecha -- [idx 7]
+              ,a.diaSemana -- [idx 8]
+              ,ifnull(a.totalEstudiantes,0) totalEstudiantes -- [idx 9]
+              ,ifnull(a.estudiantesPresentesAsignatura,0) estudiantesPresentesAsignatura -- [idx 10]
+              ,ifnull(a.estudiantesAusentesAsignatura,0) estudiantesAusentesAsignatura -- [idx 11]
+              ,ifnull(a.estudiantesRetrasadosAsignatura,0) estudiantesRetrasadosAsignatura -- [idx 12]
             FROM Organization O
               JOIN RefOrganizationType rot
                 ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
@@ -4325,38 +4325,48 @@ GROUP BY p.personId
       logger.info(f"No hay información para evaluar")
     try:
       if( len(_query) > 0 ):
-        print(_query)
+        #print(_query)
         _totalCurso = self.convertirArray2DToList(list([m[0] for m in _query if m[0] is not None]))
-        print(_totalCurso)
+        #print(_totalCurso)
         _totalAsign = self.convertirArray2DToList(list([m[9] for m in _query if m[9] is not None]))
-        print(_totalAsign)
+        #print(_totalAsign)
         
         _estPresentesCurso = self.convertirArray2DToList(list([m[1] for m in _query if m[1] is not None]))
-        print(_estPresentesCurso)
+        #print(_estPresentesCurso)
         _estPresentesAsign = self.convertirArray2DToList(list([m[10] for m in _query if m[10] is not None]))
-        print(_estPresentesAsign)
+        #print(_estPresentesAsign)
         _estAtradadosAsign = self.convertirArray2DToList(list([m[12] for m in _query if m[12] is not None]))                
-        print(_estAtradadosAsign)
+        #print(_estAtradadosAsign)
 
         _estAusentesCurso = self.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
-        print(_estAusentesCurso)
+        #print(_estAusentesCurso)
         _estAusentesAsign = self.convertirArray2DToList(list([m[11] for m in _query if m[11] is not None]))
-        print(_estAusentesAsign)
+        #print(_estAusentesAsign)
           
+        _result = []
         for idx_,el_ in enumerate(_totalCurso):
-          print(idx_,el_)
+          #print(idx_,el_)
           if el_ != _totalAsign[idx_]:
               logger.error(f'Rechazado')
-              logger.error(f'Totales de estudiantes no coinciden')                        
+              logger.error(f'Totales de estudiantes no coinciden')
+              _result.append(False)
+          else:
+              _result.append(True)
 
           if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
               logger.error(f'Rechazado')
               logger.error(f'Total de estudiantes presentes no coinciden')
+              _result.append(False)
+          else:
+              _result.append(True)              
 
           if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
               logger.error(f'Rechazado')
               logger.error(f'Total de estudiantes ausentes no coinciden')
-        _r = True
+              _result.append(False)
+          else:
+              _result.append(True)              
+        _r = len([e for e in _result if e]) == len(_result)
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
