@@ -4167,9 +4167,13 @@ GROUP BY p.personId
           return False
   ## Fin fn5E4 WC ##
 
-  ## Inicio fn5E5 WC ##
+  ## INICIO fn5E5 WC ##
   def fn5E5(self,conn):
-    """ Breve descripción de la función
+    """
+    REGISTRO DE CONTROL DE ASIGNATURA
+      6.2 Contenido mínimo, letra b.2
+      Validar que la hora del registro de control de subvenciones corresponda 
+      con la segunda hora del registro de control de asignatura.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -4177,13 +4181,17 @@ GROUP BY p.personId
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - La Tabla RoleAttendanceEvent mantiene el registro de las asistencias. 
+            Se debe filtrar las asistencias de las organizaciones que son de tipo curso y 
+            verificar que existan las firmas de los docentes.
+            - Hecho lo anterior, se debe verificar que la asistencia corresponda a la ingresada 
+            en la segunda hora y en caso de haber discrepancias informar a través del LOG.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    _query = []
     try:
         _query = conn.execute("""
               SELECT 
@@ -4302,43 +4310,41 @@ GROUP BY p.personId
               WHERE
                 -- Verifica que el tipo de asistencia sea diaria
                 rae_.RefAttendanceEventTypeId = 1
-        """)#.fetchall()
-        if(_query.returns_rows == 0):
-          logger.info(f"Rechazado")
-          logger.info(f"No hay información para evaluar")
-          return False
+        """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {_query} -> {str(e)}")
+      logger.info(f"Rechazado")
+      logger.info(f"No hay información para evaluar")
+    try:
+      if(len(_query)>0):
+        _totalCurso = (list([m[0] for m in _query if m[0] is not None]))
+        _totalAsign = (list([m[9] for m in _query if m[9] is not None]))
         
-        _query = _query.fetchall()
-        if(len(_query)>0):
-            _totalCurso = (list([m[0] for m in _query if m[0] is not None]))
-            _totalAsign = (list([m[9] for m in _query if m[9] is not None]))
-            
-            _estPresentesCurso = (list([m[1] for m in _query if m[1] is not None]))
-            _estPresentesAsign = (list([m[10] for m in _query if m[10] is not None]))
-            _estAtradadosAsign = (list([m[12] for m in _query if m[12] is not None]))                
+        _estPresentesCurso = (list([m[1] for m in _query if m[1] is not None]))
+        _estPresentesAsign = (list([m[10] for m in _query if m[10] is not None]))
+        _estAtradadosAsign = (list([m[12] for m in _query if m[12] is not None]))                
 
-            _estAusentesCurso = (list([m[2] for m in _query if m[2] is not None]))
-            _estAusentesAsign = (list([m[11] for m in _query if m[11] is not None]))
-            
-            for idx_,el_ in enumerate(_totalCurso):
-                if el_ != _totalAsign[idx_]:
-                    logger.error(f'Rechazado')
-                    logger.error(f'Totales de estudiantes no coinciden')                        
+        _estAusentesCurso = (list([m[2] for m in _query if m[2] is not None]))
+        _estAusentesAsign = (list([m[11] for m in _query if m[11] is not None]))
+          
+        for idx_,el_ in enumerate(_totalCurso):
+          if el_ != _totalAsign[idx_]:
+              logger.error(f'Rechazado')
+              logger.error(f'Totales de estudiantes no coinciden')                        
 
-                if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
-                    logger.error(f'Rechazado')
-                    logger.error(f'Total de estudiantes presentes no coinciden')
+          if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
+              logger.error(f'Rechazado')
+              logger.error(f'Total de estudiantes presentes no coinciden')
 
-                if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
-                    logger.error(f'Rechazado')
-                    logger.error(f'Total de estudiantes ausentes no coinciden')
-
-                return False                      
+          if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
+              logger.error(f'Rechazado')
+              logger.error(f'Total de estudiantes ausentes no coinciden')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return False
-  ## Fin fn5E5 WC ##
+    finally:
+        return _r
+   ## FIN fn5E5 WC ##
 
   ## Inicio fn5D0 WC ##
   def fn5D0(self, conn):
@@ -7586,7 +7592,13 @@ where
 
 ### inicio fn682 ###
   def fn682(self,conn):
-    """ Breve descripción de la función
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+      6.2 Contenido mínimo, letra c.8
+      Verificar que los estudiantes de formación dual se encuentren identificados
+      en el registro de control de asistencia y asignatura.
+      Verificar que la asistencia de práctica profesional se encuentre cargada en 
+      roleAttendanceEvent y que en ella, todos los estudiantes tengan cargada su asistencia.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -7594,24 +7606,16 @@ where
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger si no encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
     arr=[]
-    arr2=[]
-    arr3=[]
     arr4=[]
-    dias_laborales=[]
-    dias_laborales2=[]
-    dias_laborales3=[]
-    dias_laborales4=[]
-    numero=0
     try:
-  
       _S1=""" SELECT OrganizationId
                 FROM Organization
                 WHERE RefOrganizationTypeId = 47;"""
@@ -7636,10 +7640,7 @@ where
       _S7=""" select * from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
             where strftime('%Y-%m-%d',a.Date)=? and  a.RefAttendanceEventTypeId=1 and b.personId=? ;"""
       
-      
-      now=datetime.now()
       _q1 = conn.execute(_S1).fetchall()
-      XX=0
       if(len(_q1)!=0):
         for q1 in _q1:
           parent=str(q1)
@@ -7687,29 +7688,24 @@ where
                           if(len(arr4)!=0):
                             logger.error(f"Los siguientes alumnos no tienen asistencia:{str(arr4)}")
                             logger.error(f"Rechazado")
-                            return False
                           else:
                             logger.info(f"Aprobado")
-                            return True
+                            _r = True
                   else:
                     logger.error(f"No tiene alumnos en la asignatura ")
                     logger.error(f"Rechazado")
-                    return False  
-
               else:
                 logger.error(f"La asignatura no esta enlazada para que sea de partica profesional")
                 logger.error(f"Rechazado")
-                return False  
-                    
       else:
-        logger.error(f"En el colegio no asignaturas de pratica profesional    .")
-        logger.error(f"Rechazado")
-        return False   
-    
+        logger.error(f"En el colegio no asignaturas de pratica profesional.")
+        logger.error(f"S/Datos")
+        _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
 ### fin  fn682  ###
 
 ### inicio fn6E1 ###
