@@ -1837,7 +1837,6 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {OrganizationPersonRole} -> {str(e)}")
     try:      
-      logger.info(f"RoleAttendanceEvent.Date con formato errorneo: {len(RoleAttendanceEvent)}, Tabla OrganizationPersonRole.EntryDate o ExitDate con formato errone: {len(OrganizationPersonRole)}")
       if(len(RoleAttendanceEvent)>0 or len(OrganizationPersonRole)>0):
         data1 = list(set([m[0] for m in RoleAttendanceEvent if m[0] is not None]))
         data2 = list(set([m[0] for m in OrganizationPersonRole if m[0] is not None]))
@@ -6696,7 +6695,11 @@ GROUP BY pid.Identifier
 
 ### inicio fn6F0  ##
   def fn6F0(self,conn):
-    """ Breve descripción de la función
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+      6.2 Contenido mínimo, letra c
+      Verificar que exista el registro de asistencia en aquellos casos en los cuales 
+      se realizó la clase al estudiante.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
