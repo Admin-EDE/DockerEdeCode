@@ -7763,7 +7763,7 @@ where
                 logger.error(f"La asignatura no esta enlazada para que sea de partica profesional")
                 logger.error(f"Rechazado")
       else:
-        logger.error(f"En el colegio no asignaturas de pratica profesional.")
+        logger.error(f"En el colegio no hay asignaturas de pratica profesional.")
         logger.error(f"S/Datos")
         _r = True
     except Exception as e:
