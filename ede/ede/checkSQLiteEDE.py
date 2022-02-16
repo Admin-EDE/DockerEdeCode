@@ -4318,15 +4318,15 @@ GROUP BY p.personId
     try:
       if( len(_query) > 0 ):
         print(_query)
-        _totalCurso = (list([m[0] for m in _query if m[0] is not None]))
-        _totalAsign = (list([m[9] for m in _query if m[9] is not None]))
+        _totalCurso = self.convertirArray2DToList(list([m[0] for m in _query if m[0] is not None]))
+        _totalAsign = self.convertirArray2DToList(list([m[9] for m in _query if m[9] is not None]))
         
-        _estPresentesCurso = (list([m[1] for m in _query if m[1] is not None]))
-        _estPresentesAsign = (list([m[10] for m in _query if m[10] is not None]))
-        _estAtradadosAsign = (list([m[12] for m in _query if m[12] is not None]))                
+        _estPresentesCurso = self.convertirArray2DToList(list([m[1] for m in _query if m[1] is not None]))
+        _estPresentesAsign = self.convertirArray2DToList(list([m[10] for m in _query if m[10] is not None]))
+        _estAtradadosAsign = self.convertirArray2DToList(list([m[12] for m in _query if m[12] is not None]))                
 
-        _estAusentesCurso = (list([m[2] for m in _query if m[2] is not None]))
-        _estAusentesAsign = (list([m[11] for m in _query if m[11] is not None]))
+        _estAusentesCurso = self.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
+        _estAusentesAsign = self.convertirArray2DToList(list([m[11] for m in _query if m[11] is not None]))
           
         for idx_,el_ in enumerate(_totalCurso):
           if el_ != _totalAsign[idx_]:
