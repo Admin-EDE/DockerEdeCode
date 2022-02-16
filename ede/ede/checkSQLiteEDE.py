@@ -4199,7 +4199,15 @@ GROUP BY p.personId
               sum(CASE WHEN rae_.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesCurso', -- [idx 1]
               sum(CASE WHEN rae_.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesv', -- [idx 2]
               sum(CASE WHEN rae_.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosCurso' -- [idx 3]
-              ,a.*
+              ,a.Date -- [idx 4]
+			  ,a.Parent_OrganizationID -- [idx 5]
+			  ,a.OrganizationId -- [idx 6]
+			  ,a.fecha -- [idx 7]
+			  ,a.diaSemana -- [idx 8]
+			  ,ifnull(a.totalEstudiantes,0) totalEstudiantes -- [idx 9]
+			  ,ifnull(a.estudiantesPresentesAsignatura,0) estudiantesPresentesAsignatura -- [idx 10]
+			  ,ifnull(a.estudiantesAusentesAsignatura,0) estudiantesAusentesAsignatura -- [idx 11]
+			  ,ifnull(a.estudiantesRetrasadosAsignatura,0) estudiantesRetrasadosAsignatura -- [idx 12]
             FROM Organization O
               JOIN RefOrganizationType rot
                 ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
