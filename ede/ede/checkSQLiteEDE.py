@@ -3538,8 +3538,10 @@ GROUP BY p.personId
                                                 from OrganizationPersonRole OPR
                                                           join Person P on OPR.PersonId = P.PersonId
                                                           join PersonStatus PS on P.PersonId = PS.PersonId
-                                                where OPR.RoleId = 6
-                                                  and PS.RefPersonStatusTypeId = 30);
+                                                where 
+                                                  OPR.RoleId = 6
+                                                  and PS.RefPersonStatusTypeId = 30)
+                                                GROUP BY I.IncidentId;
             """).fetchall()
             if(len(_query)==len(_queryEntregaDocumentos)):
               logger.info(f'Todos los alumnos retirados del establecimiento cuentan con una entrega de documentos respectiva al apoderado')
