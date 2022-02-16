@@ -3391,7 +3391,7 @@ GROUP BY p.personId
                                   and PS.RefPersonStatusTypeId = 33)
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 33
-          """).fetchall
+          """).fetchall()
           if(len(_queryType) == len(_query)):
             _file = conn.execute("""
             SELECT documentId
