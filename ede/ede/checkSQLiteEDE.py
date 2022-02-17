@@ -6518,7 +6518,7 @@ GROUP BY pid.Identifier
       logger.info(f"Resultado: {FineRows} -> {str(e)}")
 
     try:
-      if( len(rows) > 0 ):
+      if( len(FineRows) > 0 ):
         resultList  = [item for item in Allrows if item not in FineRows]
       
       if( len(resultList) > 0):
