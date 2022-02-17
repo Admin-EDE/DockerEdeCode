@@ -6520,7 +6520,7 @@ GROUP BY pid.Identifier
     resultList = []
     try:
       if( len(Allrows) > 0 ):
-        resultList  = [item for item in Allrows if item not in FineRows]
+        resultList  = [item[0] for item in Allrows if item not in FineRows]
       
       if( len(resultList) > 0):
         logger.info(f"Rechazado")
