@@ -3888,6 +3888,7 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
     try:
         _ExistData = conn.execute("""
             SELECT DISTINCT 
@@ -4097,7 +4098,8 @@ GROUP BY p.personId
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return False
+    finally:
+        return _r
   ## Fin fn5E0 WC ##
 
   ## Inicio fn8F1 WC ##
@@ -6154,7 +6156,7 @@ GROUP BY pid.Identifier
 
     if( len(Allrows) == 0 ):
       logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
-      logger.info(f"S/DATOS")
+      logger.info(f"S/Datos")
       return True #si no hay registros de salida anticipada, no continúa la revisión 
     try:
       if( len(Allrows) > 0 ):
