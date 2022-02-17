@@ -6444,6 +6444,11 @@ GROUP BY pid.Identifier
 
 ### inicio fn1FB ###
   def fn1FB(self, conn):
+    """
+    
+    """
+    _r = False
+    rows = []
     try:
       _l = []
       _l2 = []
@@ -6492,7 +6497,7 @@ GROUP BY pid.Identifier
               _p1 = str(q2[0])
               _r2 = str(q2[1])
               _q3 = conn.execute(_s3,_p1).fetchall()
-              logger.info(len(_q3))
+              #logger.info(len(_q3))
               if(len(_q3)!=0):
                 for q3 in _q3:
                   _i = str(q3[0])
@@ -6551,7 +6556,8 @@ GROUP BY pid.Identifier
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
-      return False
+    finally:
+      return _r
 ### fin fn1FB ###
 
 ### inicio fn1FC ###
