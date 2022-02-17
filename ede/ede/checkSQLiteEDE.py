@@ -6517,6 +6517,7 @@ GROUP BY pid.Identifier
     except Exception as e:
       logger.info(f"Resultado: {FineRows} -> {str(e)}")
 
+    resultList = []
     try:
       if( len(FineRows) > 0 ):
         resultList  = [item for item in Allrows if item not in FineRows]
