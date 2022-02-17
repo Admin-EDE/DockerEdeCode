@@ -6445,113 +6445,87 @@ GROUP BY pid.Identifier
 ### inicio fn1FB ###
   def fn1FB(self, conn):
     """
-    
+    REGISTRO DE LA ENTREGA DE INFORMACIÓN
+      8.0 De la entrega de información
+      verifica que exista cargado en la base de datos el documento digital o verificador de identidad que acredite la entrega al 
+      apoderado información de interés general, tal como:
+      - Reglamento interno
+      - Reglamento de evaluación y promoción
+      - Proyecto Educativo
+      - Programa de seguridad escolar
+      - entre otros, salvo aquellos de carácter confidencial o de uso personal.
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Retorna True y "S/Datos" a través de logger, si no existe información en el sistema.
+          Retorna True y "Aprobado" a través de logger, si cada estudiante cumple con los siguientes criterios:
+            - Revisar que la entrega de documentos se encuentre cargada en las incidencias como un tipo de reunión con el apoderado.
+            - En tabla Indicent.RefIncidentBehaviorId == 35 (Entrega de documentos de interés general) y }
+            IncidentPerson.digitalRandomKey OR fileScanBase64 según sea el caso
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
     """
-    _r = False
-    rows = []
+    Allrows = []
     try:
-      _l = []
-      _l2 = []
-      # OBTENGO LISTADO DE ALUMNOS
-      _s1 = """SELECT personId,run
-                FROM personList
-                WHERE Role like 'Estudiante';"""
+      Allrows = conn.execute("""
+        SELECT *
+        FROM Incident inc
+        JOIN RefIncidentBehavior rib
+          ON rib.RefIncidentBehaviorId = inc.RefIncidentBehaviorId
+          AND rib.Description IN ('Entrega de documentos de interés general')
+      """).fetchall()      
+    except Exception as e:
+      logger.info(f"Resultado: {Allrows} -> {str(e)}")
 
-      # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
-      _s2 = """SELECT A.RelatedPersonId,D.RUN
-                FROM PersonRelationship A
-                  JOIN OrganizationPersonRole B
-                    ON A.RelatedPersonId = B.personId
-                  JOIN Role C
-                    ON B.RoleId = C.RoleId
-                  JOIN personList D
-                    ON A.RelatedPersonId = D.personId
-                WHERE 
-                A.personId = ?
-                AND
-                B.RoleId = 15;"""
+    if( len(Allrows) == 0 ):
+      logger.info("S/Datos")
+      return True
+    
+    _r = False
+    FineRows = []
+    try:
+      FineRows = conn.execute("""
+          SELECT inc.IncidentId
+          FROM Incident inc
+          JOIN RefIncidentBehavior rib
+            ON rib.RefIncidentBehaviorId = inc.RefIncidentBehaviorId
+            AND rib.Description IN ('Entrega de documentos de interés general')
+          JOIN IncidentPerson iper
+            ON iper.IncidentId = inc.IncidentId
+            --AND iper.fileScanBase64 IS NOT NULL
+          OUTER LEFT JOIN Document doc
+            ON doc.documentId = iper.fileScanBase64
+          JOIN RefIncidentPersonType ript
+            ON ript.RefIncidentPersonTypeId = iper.RefIncidentPersonTypeId
+            AND ript.Description IN ('Apoderado')
+          JOIN PersonRelationship prsh
+            ON prsh.personId = iper.personId
+          JOIN RefPersonRelationship rprsh
+            ON rprsh.RefPersonRelationshipId = prsh.RefPersonRelationshipId
+            AND rprsh.Code IN ('Apoderado(a)/Tutor(a)')
+          JOIN OrganizationPersonRole opr
+            ON opr.personId = iper.personId
+          JOIN Role rol
+            ON rol.RoleId = opr.RoleId
+            AND rol.Name IN ('Padre, madre o apoderado')
+          GROUP BY inc.IncidentId
+      """).fetchall()      
+    except Exception as e:
+      logger.info(f"Resultado: {FineRows} -> {str(e)}")
 
-      # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
-      _s3 = """SELECT A.IncidentId
-                FROM IncidentPerson A
-                JOIN Incident B
-                ON A.IncidentId = B.IncidentId
-                WHERE A.personId = ?
-                AND B.RefIncidentBehaviorId = 35;"""
-
-      # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
-      _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
-                FROM IncidentPerson A
-                JOIN personList C
-                ON A.personId = C.personId
-                WHERE A.IncidentId = ?;"""
-
-      _q1 = conn.execute(_s1).fetchall()
-      if(len(_q1)!=0):
-        for q1 in _q1:
-          _p = str(q1[0])
-          _r = str(q1[0])
-          _q2 = conn.execute(_s2,_p).fetchall()
-          if(len(_q2)!=0):
-            for q2 in _q2:
-              _p1 = str(q2[0])
-              _r2 = str(q2[1])
-              _q3 = conn.execute(_s3,_p1).fetchall()
-              #logger.info(len(_q3))
-              if(len(_q3)!=0):
-                for q3 in _q3:
-                  _i = str(q3[0])
-                  if(_i is None):
-                    _l2.append(_r2)
-                  else:                  
-                    _q4 = conn.execute(_s4,_i).fetchall()
-                    if(len(_q4)!=0):
-                      _lst = self.convertirArray2DToList(list([str(m[0]) for m in _q4 if m[0] is not None]))
-                      if '44' in _lst and '43' in _lst:
-                        for q4 in _q4:
-                          _pr = q4[0]
-                          if(str(_pr)=="44"): #docente
-                            _rdk = str(q4[1])
-                            if(_rdk is None):
-                              logger.error(f"No hay registro de firma de docente para evento de entrega de informacion de interes.")
-                              logger.error(f"Rechazado")
-                              return False
-                          elif(str(_pr)=="43"): #apoderado
-                              _fsb = str(q4[2])
-                              if(_fsb is None):
-                                logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento de entrega de informacion de interes.")
-                                logger.error(f"Rechazado1")
-                                return False
-                      else:
-                        logger.error(f"No hay registro de docente y/o apoderado para evento de entrega de informacion de interes.")
-                        logger.error(f"Rechazado")
-                        return False
-
-                    else:
-                      logger.error(f"No hay registro de personas asociadas al evento de entrega de informacion de interes.")
-                      logger.error(f"Rechazado")
-                      return False
-
-                if(len(_l2)>0):
-                  logger.error(f"Los siguientes apoderados no tienen registro de entrega de informacion de interes por parte del establecimiento: {str(_l2)}")
-                  logger.error(f"Rechazado")
-                  return False
-
-              else:
-                logger.error(f"No hay registro de entrega de informacion de interes del establecimiento al apoderado.")
-                logger.error(f"Rechazado")
-                return False
-
-          else:
-            _l.append(_r)           
-
-        if(len(_l)>0):
-          logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
-          logger.error(f"Rechazado")
-          return False
-        else:
-          logger.info(f"Aprobado")
-          return True        
+    try:
+      if( len(rows) > 0 ):
+        resultList  = [item for item in Allrows if item not in FineRows]
+      
+      if( len(resultList) > 0):
+        logger.info(f"Rechazado")
+      else:
+        logger.info(f"Aprobado")
+        _r = True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
