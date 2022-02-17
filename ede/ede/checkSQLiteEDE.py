@@ -6472,7 +6472,7 @@ GROUP BY pid.Identifier
     Allrows = []
     try:
       Allrows = conn.execute("""
-        SELECT *
+        SELECT inc.IncidentId
         FROM Incident inc
         JOIN RefIncidentBehavior rib
           ON rib.RefIncidentBehaviorId = inc.RefIncidentBehaviorId
