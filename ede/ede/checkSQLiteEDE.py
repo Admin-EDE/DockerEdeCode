@@ -6015,7 +6015,7 @@ GROUP BY Organizationid, date
     except Exception as e:
       logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:
-      courseSections = self.convertirArray2DToList(list([m[0] for m in courseSections if m[0] is not None]))
+      courseSections = list([m[0] for m in courseSections if m[0] is not None])
       if( len( _query ) > 0 ):
         logger.info(f"primer registro encontrado: {_query[0]} de {len(_query)}")        
         for row in _query:
