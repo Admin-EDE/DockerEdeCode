@@ -5976,6 +5976,7 @@ GROUP BY Organizationid, date
       logger.info(f"S/Datos")
       return False
     _query = []
+    logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     try:
       _query = conn.execute("""
           SELECT
@@ -6016,6 +6017,7 @@ GROUP BY Organizationid, date
     try:
       courseSections = self.convertirArray2DToList(list([m[0] for m in courseSections if m[0] is not None]))
       if( len( _query ) > 0 ):
+        logger.info(f"primer registro encontrado: {_query[0]} de {len(_query)}")        
         for row in _query:
           try:
             courseSections.remove(row[0])
