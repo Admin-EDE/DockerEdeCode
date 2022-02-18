@@ -5976,6 +5976,7 @@ GROUP BY Organizationid, date
       logger.info(f"S/Datos")
       return False
     _query = []
+    courseSections = self.convertirArray2DToList(list([m[0] for m in courseSections if m[0] is not None]))
     try:
       _query = conn.execute("""
           SELECT
