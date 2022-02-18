@@ -3899,7 +3899,7 @@ GROUP BY p.personId
                 WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
                 WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
                 WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-                WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+                WHEN strftime('%w', rae.Date) = '3' THEN 'Miércoles'
                 WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                 WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                 WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
@@ -3985,7 +3985,7 @@ GROUP BY p.personId
                 WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
                 WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
                 WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-                WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+                WHEN strftime('%w', rae.Date) = '3' THEN 'Miércoles'
                 WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                 WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                 WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
@@ -4268,7 +4268,7 @@ GROUP BY p.personId
                   WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
                   WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
                   WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-                  WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+                  WHEN strftime('%w', rae.Date) = '3' THEN 'Miércoles'
                   WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                   WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                   WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
@@ -4711,7 +4711,7 @@ CASE
   WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
   WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
   WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-  WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+  WHEN strftime('%w', rae.Date) = '3' THEN 'Miércoles'
   WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
   WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
   WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
@@ -5939,7 +5939,11 @@ GROUP BY Organizationid, date
 
   ## Fin fn9F1 WC ##
   def fn9F1(self,conn):
-    """ Breve descripción de la función
+    """
+    REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
+      6.2 Contenido mínimo, letra f
+      Verificar que la planificación del proceso formativo del estudiante se encuentre registrada
+      en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -5947,58 +5951,81 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna False y "S/Datos" a través de logger si no se encuentra información
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
     _r = False
+    courseSections = []
+    try:
+      courseSections = conn.execute("""
+        SELECT
+          O.OrganizationId
+        FROM Organization O
+        WHERE
+          O.RefOrganizationTypeId IN (
+            SELECT RefOrganizationTypeId 
+            FROM RefOrganizationType
+            WHERE Code IN ('CourseSection')
+          )                              
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {courseSections} -> {str(e)}")
+      logger.info(f"S/Datos")
+      return False
     _query = []
     try:
       _query = conn.execute("""
           SELECT
-                  P.PersonId
-          , OPR.OrganizationId
-                , C.Description
-                --, CSS.ClassMeetingDays
-                --, CSS.ClassBeginningTime
-                --, CSS.ClassEndingTime
-          FROM Person P
-                  join OrganizationPersonRole OPR on OPR.PersonId = P.PersonId
-                  join Organization O on O.OrganizationId = OPR.OrganizationId
-                  join Course C on C.OrganizationId = O.OrganizationId
-                  --join CourseSection CS on CS.CourseId = O.OrganizationId
-                  --join CourseSectionSchedule CSS on CSS.OrganizationId = O.OrganizationId
-          WHERE 
-            OPR.RoleId IN (
-        SELECT RoleId
-        FROM Role
-        WHERE Name IN ('Estudiante')
-        )
-            AND
+              O.OrganizationId
+            , group_concat(CSS.ClassMeetingDays) ClassMeetingDays
+            , group_concat(CSS.ClassBeginningTime) ClassBeginningTime
+            , group_concat(CSS.ClassEndingTime) ClassEndingTime
+            , group_concat(CSS.ClassPeriod) ClassPeriod
+          FROM Organization O
+            JOIN CourseSection CS 
+              ON CS.OrganizationId = O.OrganizationId
+              AND CS.RecordEndDateTime IS NULL
+            JOIN CourseSectionSchedule CSS
+              ON CSS.OrganizationId = O.OrganizationId
+              AND CSS.RecordEndDateTime IS NULL
+            JOIN OrganizationRelationship ors
+              ON ors.OrganizationId = O.OrganizationId		
+          WHERE
             O.RefOrganizationTypeId IN (
-        SELECT RefOrganizationTypeId 
-        FROM RefOrganizationType
-        WHERE Code IN ('Course')
-        );
+              SELECT RefOrganizationTypeId 
+              FROM RefOrganizationType
+              WHERE Code IN ('CourseSection')
+            )
+            AND ClassMeetingDays REGEXP '^[(Lunes|Martes|Miércoles|Jueves|Viernes|,)]+$'
+            AND ClassPeriod REGEXP '^[(Bloque|,|\d{2})]+$'
+            AND ClassBeginningTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
+            AND ClassEndingTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
+            AND CS.CourseId = ors.Parent_OrganizationId
+            AND CS.MaximumCapacity IS NOT NULL
+            AND CS.VirtualIndicator IS NOT NULL
+            AND CS.OrganizationCalendarSessionId IS NOT NULL
+            AND CS.RefInstructionLanguageId IS NOT NULL
+            
+          GROUP BY O.OrganizationId
       """).fetchall()
     except Exception as e:
       logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:
-      if (len(_query)>0):
-        for x in _query:
-          for y in x:
-            if y is None:
-              logger.error(f'Se encuentran datos incompletos sobre la formacion del los estudientes')
-              logger.error(f'Rechazado')
-        logger.info(f'Todos los registros formativos de los estudiantes se encuentran registrados en el sistema')
-        logger.info(f'Aprobado')
-        _r = True
+      if( len( _query ) > 0 ):
+        for row in _query:
+          try:
+            courseSections.remove(row[0])
+          except:
+            pass
+
+        if(len(courseSections) == 0):
+          _r = True
       else:
-        logger.error(f'S/Datos')
-        logger.error(f'Sin datos de la formacion del estudiante')
+        logger.error(f"Las siguientes asignaturas no estan tienen su planificación completa: {courseSections}")
+        logger.error(f"Rechazado")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
@@ -7310,7 +7337,7 @@ where
                         numero=0
                       elif str(aa.lower())=='martes':
                         numero=1
-                      elif str(aa.lower())=='miercoles': 
+                      elif str(aa.lower())=='miércoles': 
                         numero=2
                       elif str(aa.lower())=='jueves':
                         numero=3
@@ -7487,7 +7514,7 @@ where
               WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
               WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
               WHEN strftime('%w', rae.Date) = '2' THEN 'Martes'
-              WHEN strftime('%w', rae.Date) = '3' THEN 'Miercoles'
+              WHEN strftime('%w', rae.Date) = '3' THEN 'Miércoles'
               WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
               WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
               WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
@@ -7821,7 +7848,7 @@ where
                         numero=0
                       elif str(aa.lower())=='martes':
                         numero=1
-                      elif str(aa.lower())=='miercoles': 
+                      elif str(aa.lower())=='miércoles': 
                         numero=2
                       elif str(aa.lower())=='jueves':
                         numero=3
