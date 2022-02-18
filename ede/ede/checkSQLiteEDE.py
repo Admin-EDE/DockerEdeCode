@@ -6024,12 +6024,12 @@ GROUP BY Organizationid, date
           except:
             print(f"no se pudo eliminar {row[0]}")
         
-        if(len(courseSections) == 0):
-          logger.error(f"Aprobado")  
-          _r = True
-        else:
-          logger.error(f"{len({courseSections})} Asignaturas tienen problemas con su planificación: {courseSections}")
-          logger.error(f"Rechazado")
+      if(len(courseSections) == 0):
+        logger.error(f"Aprobado")  
+        _r = True
+      else:
+        logger.error(f"{len({courseSections})} Asignaturas tienen problemas con su planificación: {courseSections}")
+        logger.error(f"Rechazado")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
