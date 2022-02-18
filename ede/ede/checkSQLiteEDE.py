@@ -6016,6 +6016,7 @@ GROUP BY Organizationid, date
       logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:
       courseSections = list([m[0] for m in courseSections if m[0] is not None])
+      logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
       if( len( _query ) > 0 ):
         logger.info(f"primer registro encontrado: {_query[0]} de {len(_query)}")        
         for row in _query:
@@ -6023,7 +6024,7 @@ GROUP BY Organizationid, date
             courseSections.remove(row[0])
           except:
             print(f"no se pudo eliminar {row[0]}")
-        
+      logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")  
       if(len(courseSections) == 0):
         logger.error(f"Aprobado")  
         _r = True
