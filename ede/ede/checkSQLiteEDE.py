@@ -6006,9 +6006,9 @@ GROUP BY Organizationid, date
             AND ClassEndingTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
             AND CS.CourseId = ors.Parent_OrganizationId
             AND CS.MaximumCapacity IS NOT NULL
-            --AND CS.VirtualIndicator IS NOT NULL
-            --AND CS.OrganizationCalendarSessionId IS NOT NULL
-            --AND CS.RefInstructionLanguageId IS NOT NULL
+            AND CS.VirtualIndicator IS NOT NULL
+            AND CS.OrganizationCalendarSessionId IS NOT NULL
+            AND CS.RefInstructionLanguageId IS NOT NULL
             
           GROUP BY O.OrganizationId
       """).fetchall()
