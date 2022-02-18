@@ -4950,33 +4950,65 @@ GROUP BY Organizationid, date
           ]
     """
     _r = False
-    rows = []
+    allRows = []
     try:
-      rows = conn.execute("""
-      SELECT K12StudentDisciplineId,
-            OrganizationPersonRoleId,
-            DisciplinaryActionStartDate,
-            IncidentId
-      FROM K12StudentDiscipline
-      WHERE RefDisciplinaryActionTakenId = 8;
+      allRows = conn.execute("""
+          SELECT inc.IncidentId
+          FROM Incident inc
+          JOIN RefIncidentBehavior rib
+            ON rib.RefIncidentBehaviorId = inc.RefIncidentBehaviorId
+            AND rib.Description IN ('Entrevista','Reunión con apoderados') 
     """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
+      logger.info(f"Resultado: {allRows} -> {str(e)}")
+    
+    if( len(allRows) == 0):
+      logger.error(f'S/Datos')
+      logger.error(f'No hay entrevistas o reuniones con apoderados registradas en el sistema')
+      return True
+    FineRows = []
     try:
-      if( len(rows) > 0 ):
-        for fila in rows:
-          for dato in fila:
-            if dato is None:
-              logger.error(f'Datos incompletos')
-              logger.error(f'Rechazado')
-              return False
-        logger.info(f'Datos Validados')
-        logger.info(f'Aprobado')
-        _r = True
+      FineRows = conn.execute("""
+          SELECT inc.IncidentId
+          FROM Incident inc
+          JOIN RefIncidentBehavior rib
+            ON rib.RefIncidentBehaviorId = inc.RefIncidentBehaviorId
+            AND rib.Description IN ('Entrevista','Reunión con apoderados')
+          JOIN IncidentPerson iper
+            ON iper.IncidentId = inc.IncidentId
+            AND iper.fileScanBase64 IS NOT NULL
+          JOIN Document doc
+            ON doc.documentId = iper.fileScanBase64
+          JOIN RefIncidentPersonType ript
+            ON ript.RefIncidentPersonTypeId = iper.RefIncidentPersonTypeId
+            AND ript.Description IN ('Apoderado')
+          JOIN PersonRelationship prsh
+            ON prsh.personId = iper.personId
+          JOIN RefPersonRelationship rprsh
+            ON rprsh.RefPersonRelationshipId = prsh.RefPersonRelationshipId
+            AND rprsh.Code IN ('Apoderado(a)/Tutor(a)')
+          JOIN OrganizationPersonRole opr
+            ON opr.personId = iper.personId
+          JOIN Role rol
+            ON rol.RoleId = opr.RoleId
+            AND rol.Name IN ('Padre, madre o apoderado')
+          GROUP BY inc.IncidentId
+    """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {FineRows} -> {str(e)}")
+
+    resultList = []
+    try:
+      if( len(allRows) > 0 ):
+        resultList  = [item[0] for item in allRows if item not in FineRows]
+      
+      if( len(resultList) > 0):
+        logger.info(f"Rechazado")
+        logger.info(f"Los incidentId con problemas son: {resultList}")
       else:
-        logger.error(f'S/Datos')
-        logger.error(f'Sin reuniones con los apoderado/s')
+        logger.info(f"Aprobado")
         _r = True
+
     except Exception as e:
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
