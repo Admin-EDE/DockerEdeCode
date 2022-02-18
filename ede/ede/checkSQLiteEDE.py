@@ -6025,7 +6025,7 @@ GROUP BY Organizationid, date
         if(len(courseSections) == 0):
           _r = True
       else:
-        logger.error(f"Las siguientes asignaturas no estan tienen su planificación completa: {courseSections}")
+        logger.error(f"Las siguientes asignaturas no tienen su planificación: {courseSections}")
         logger.error(f"Rechazado")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
