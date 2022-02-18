@@ -6021,7 +6021,6 @@ GROUP BY Organizationid, date
             courseSections.remove(row[0])
           except:
             print(f"no se pudo eliminar {row[0]}")
-            pass
         
         if(len(courseSections) == 0):
           _r = True
