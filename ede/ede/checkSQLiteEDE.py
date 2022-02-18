@@ -6023,6 +6023,7 @@ GROUP BY Organizationid, date
             print(f"no se pudo eliminar {row[0]}")
         
         if(len(courseSections) == 0):
+          logger.error(f"Aprobado")  
           _r = True
       else:
         logger.error(f"Las siguientes asignaturas no tienen su planificación: {courseSections}")
