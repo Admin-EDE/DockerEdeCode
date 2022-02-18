@@ -4925,7 +4925,11 @@ GROUP BY Organizationid, date
 
   ## Inicio fn8F3 WC ##
   def fn8F3(self, conn):
-    """ Breve descripción de la función
+    """ 
+    REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
+      6.2 Contenido mínimo, letra e
+      Verificar que las entrevistas con el apoderado y su contenido se 
+      encuentre cargado en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -4933,42 +4937,51 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger si no encuentra información.
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - La Tabla Incident debería almacenar las entrevistas con los apoderados. 
+            Si éstas requieren firma, deberiamos incluir el campo para el scaneo y el 
+            verificador de identidad, según corresponda.
+            - Verificar si es necesario incluir un código especial para las entrevistas, 
+            de modo que sea más sencillo filtrarlas.
+            - Incident.RefIncidentBehaviorId == 31 (Entrevista) OR 
+            Incident.RefIncidentBehaviorId == 32 (Reunión con apoderados)
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    rows = []
     try:
-      queryTwo = conn.execute("""
+      rows = conn.execute("""
       SELECT K12StudentDisciplineId,
             OrganizationPersonRoleId,
             DisciplinaryActionStartDate,
             IncidentId
       FROM K12StudentDiscipline
       WHERE RefDisciplinaryActionTakenId = 8;
-      """).fetchall()
-      if(len(queryTwo)>0):
-          for fila in queryTwo:
-              for dato in fila:
-                  if dato is None:
-                      a = 0
-                  else:
-                      logger.error(f'Datos incompletos')
-                      logger.error(f'Rechazado')
-                      return False
-      else:
-          logger.error(f'S/Datos')
-          logger.error(f'Sin reuniones con los apoderado/s')
-          return True
-      logger.info(f'Datos Validados')
-      logger.info(f'Aprobado')
-      return True
+    """).fetchall()
     except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
-        return False
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:
+      if( len(rows) > 0 ):
+        for fila in rows:
+          for dato in fila:
+            if dato is None:
+              logger.error(f'Datos incompletos')
+              logger.error(f'Rechazado')
+              return False
+        logger.info(f'Datos Validados')
+        logger.info(f'Aprobado')
+        _r = True
+      else:
+        logger.error(f'S/Datos')
+        logger.error(f'Sin reuniones con los apoderado/s')
+        _r = True
+    except Exception as e:
+      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+    finally:
+      return _r
   ## Fin fn8F3 WC ##
 
   ## Inicio fn8F2 WC ##
@@ -6528,8 +6541,8 @@ GROUP BY pid.Identifier
             AND rib.Description IN ('Entrega de documentos de interés general')
           JOIN IncidentPerson iper
             ON iper.IncidentId = inc.IncidentId
-            --AND iper.fileScanBase64 IS NOT NULL
-          OUTER LEFT JOIN Document doc
+            AND iper.fileScanBase64 IS NOT NULL
+          JOIN Document doc
             ON doc.documentId = iper.fileScanBase64
           JOIN RefIncidentPersonType ript
             ON ript.RefIncidentPersonTypeId = iper.RefIncidentPersonTypeId
