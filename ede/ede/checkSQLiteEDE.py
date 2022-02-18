@@ -4963,8 +4963,8 @@ GROUP BY Organizationid, date
       logger.info(f"Resultado: {allRows} -> {str(e)}")
     
     if( len(allRows) == 0):
-      logger.error(f'S/Datos')
-      logger.error(f'No hay entrevistas o reuniones con apoderados registradas en el sistema')
+      logger.info(f'S/Datos')
+      logger.info(f'No hay entrevistas o reuniones con apoderados registradas en el sistema')
       return True
     FineRows = []
     try:
