@@ -6028,7 +6028,7 @@ GROUP BY Organizationid, date
           logger.error(f"Aprobado")  
           _r = True
         else:
-          logger.error(f"Las siguientes asignaturas no tienen su planificación: {courseSections}")
+          logger.error(f"{len({courseSections})} Asignaturas tienen problemas con su planificación: {courseSections}")
           logger.error(f"Rechazado")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
