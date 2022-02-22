@@ -24,6 +24,13 @@ def sqlite_engine_connect(dbapi_connection, connection_record):
     dbapi_connection.create_function("regexp", 2, sqlite_regexp)
     dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
 
+def validateJSON(jsonData):
+  print(jsonData)    
+  try:
+    json.loads(jsonData)
+  except ValueError as err:
+    return False
+  return True
 
 def sqlite_regexp(expr, item):
     if(not item): return False
@@ -5682,14 +5689,6 @@ GROUP BY Organizationid, date
         return False
   ## Fin fn9F3 WC ##
 
-  def validateJSON(jsonData):
-    print(jsonData)    
-    try:
-      json.loads(jsonData)
-    except ValueError as err:
-      return False
-    return True
-
   ## Inicio fn8F0 WC ##
   def fn8F0(self, conn):
     """
@@ -5756,8 +5755,8 @@ GROUP BY Organizationid, date
         for incident in allIncidents:
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
-          isJsonValid = self.validateJSON(incident[2])
-          print(incidentId,RefIncidentBehaviorDescription)
+          isJsonValid = validateJSON(incident[2])
+          print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           if(RefIncidentBehaviorDescription not in (
                'Entrevista'
               ,'Reunión con apoderados'
