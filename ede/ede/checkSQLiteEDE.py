@@ -25,10 +25,9 @@ def sqlite_engine_connect(dbapi_connection, connection_record):
     dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
 
 def validateJSON(jsonData):
-  print(jsonData)    
   try:
     json.loads(jsonData)
-  except ValueError as err:
+  except:
     return False
   return True
 
