@@ -4,6 +4,7 @@ logger = logging.getLogger('root')
 
 from validate_email import validate_email
 import re
+import json
 from itertools import cycle
 from datetime import datetime
 from pytz import timezone
@@ -5681,6 +5682,13 @@ GROUP BY Organizationid, date
         return False
   ## Fin fn9F3 WC ##
 
+  def validateJSON(jsonData):
+      try:
+          json.loads(jsonData)
+      except ValueError as err:
+          return False
+      return True
+
   ## Inicio fn8F0 WC ##
   def fn8F0(self, conn):
     """
@@ -5719,7 +5727,7 @@ GROUP BY Organizationid, date
                   SELECT 
                      I.IncidentId
                     ,rInBh.Description
-	                  ,json_valid(RegulationViolatedDescription) as jsonValid                    
+	                  ,RegulationViolatedDescription
                     ,*
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
@@ -5747,7 +5755,7 @@ GROUP BY Organizationid, date
         for incident in allIncidents:
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
-          isJsonValid = incident[1]
+          isJsonValid = self.validateJSON(incident[2])
           print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           if(RefIncidentBehaviorDescription not in (
                'Entrevista'
