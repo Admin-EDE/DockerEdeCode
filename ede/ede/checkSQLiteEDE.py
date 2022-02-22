@@ -5683,11 +5683,12 @@ GROUP BY Organizationid, date
   ## Fin fn9F3 WC ##
 
   def validateJSON(jsonData):
-      try:
-          json.loads(jsonData)
-      except ValueError as err:
-          return False
-      return True
+    print(jsonData)    
+    try:
+      json.loads(jsonData)
+    except ValueError as err:
+      return False
+    return True
 
   ## Inicio fn8F0 WC ##
   def fn8F0(self, conn):
@@ -5753,10 +5754,9 @@ GROUP BY Organizationid, date
     try:
       if(len(allIncidents) > 0):
         for incident in allIncidents:
-          print(incident)
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
-          #isJsonValid = self.validateJSON(incident[2])
+          isJsonValid = self.validateJSON(incident[2])
           print(incidentId,RefIncidentBehaviorDescription)
           if(RefIncidentBehaviorDescription not in (
                'Entrevista'
