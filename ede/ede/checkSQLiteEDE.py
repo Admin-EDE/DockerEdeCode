@@ -968,6 +968,7 @@ GROUP BY p.personId
         VerificationMethod  = self.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None]))
         self.comparaDocentes = [len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod)]
         logger.info(f"Aprobado")
+        _r = True
       else:
         logger.info(f"S/Datos")
     except Exception as e:
