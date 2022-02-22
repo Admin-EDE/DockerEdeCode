@@ -27,11 +27,13 @@ def sqlite_engine_connect(dbapi_connection, connection_record):
 def validateJSON(jsonData):
   try:
     dictData = json.loads(jsonData)
-    if(dictData.get("ArtículoProtocolo",None) and dictData.get("Severidad",None) and dictData.get("Procedimiento",None)):
+    if(    dictData.get("ArtículoProtocolo",None) is not None 
+       and dictData.get("Severidad",None) is not None 
+       and dictData.get("Procedimiento",None) is not None):
       return True
   except:
-    return False
-  return True
+    pass
+  return False
 
 def sqlite_regexp(expr, item):
     if(not item): return False
