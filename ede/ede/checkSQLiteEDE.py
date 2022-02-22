@@ -26,7 +26,9 @@ def sqlite_engine_connect(dbapi_connection, connection_record):
 
 def validateJSON(jsonData):
   try:
-    json.loads(jsonData)
+    dictData = json.loads(jsonData)
+    if(dictData.get("ArtículoProtocolo",None) and dictData.get("Severidad",None) and dictData.get("Procedimiento",None)):
+      return True
   except:
     return False
   return True
