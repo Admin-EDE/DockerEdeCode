@@ -931,10 +931,8 @@ GROUP BY p.personId
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - encuentra información en la vista
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
