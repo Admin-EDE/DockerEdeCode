@@ -5755,11 +5755,20 @@ GROUP BY Organizationid, date
     FineRows = []
     try:
       if(len(allIncidents) > 0):
+        columnNames = [column[0] for column in allIncidents.description]
+        print(columnNames)
         for incident in allIncidents:
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
           isJsonValid = validateJSON(incident[2])
           print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
+          
+          if(     RefIncidentBehaviorDescription in ('Anotación positiva')
+             and     
+             
+             ):
+            pass
+          
           if(RefIncidentBehaviorDescription not in (
                'Entrevista'
               ,'Reunión con apoderados'
@@ -5767,6 +5776,8 @@ GROUP BY Organizationid, date
               ,'Anotación positiva'
               ,'Entrega de documentos de interés general'
               ,'Entrega de información para continuidad de estudios')):
+            pass
+          if(not isJsonValid):
             pass
             
           
