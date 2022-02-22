@@ -905,7 +905,7 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {_lCL} y {_lEX} -> {str(e)}")
     try:
-      if( len(_lCL) > 0 and len(_lEX) > 0 ):
+      if( len(_lCL) > 0 or len(_lEX) > 0 ):
         studentNumber = len( self.personIdEX ) + len( self.personIdCL )
         _t = f"Se encontraron {studentNumber} estudiantes con información de Pais, Región y cuidad de nacimiento: {_r}."
         logger.info(_t) if _lCL else logger.error(_t)
@@ -5683,7 +5683,14 @@ GROUP BY Organizationid, date
 
   ## Inicio fn8F0 WC ##
   def fn8F0(self, conn):
-    """ Breve descripción de la función
+    """
+    REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
+      6.2 Contenido mínimo, letra e
+      Verificar que exista registro de la siguiente información
+        - Anotaciones negativas de su comportamiento
+        - Citaciones a los apoderados sobre temas relativos a sus pupilos.
+        - Medidas disciplinarias que sean aplicadas al estudiante.
+        - Reconocimientos por destacado cumplimiento del reglamento interno (positivas).      
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -5691,95 +5698,78 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger si no encuentra información.
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - encontrar un JSON en el campo RegulationViolatedDescription con este formato
+              {
+              "ArtículoProtocolo":"Titulo II, articulo 5",
+              "Severidad":"Leve",
+              "Procedimiento":"",
+              }
+            - Las anotaciones negativas debería clasificarse según la tabla 
+            refIncidentBehavior, para el caso de anotaciones positivas usar 
+            Incident.RefIncidentBehaviorId == 34 (Anotación Positiva).
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    allIncidents = []
     try:
-        #Reconocimientos
-        _queryStudentAcademicHonor = conn.execute("""
-        SELECT
-            K12S.HonorDescription
-        FROM K12StudentAcademicHonor K12S
-                join OrganizationPersonRole OPR on K12S.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-        WHERE length(trim(K12S.HonorDescription)) > 0
-        and trim(K12S.HonorDescription) is not null
-        and OPR.RoleId = 6
-        and K12S.RefAcademicHonorTypeId = 9;
-        """).fetchall()
-        #Medidas diciplinarias aplicadas al estudiantes
-        _k12StudentDiscipline = conn.execute("""
-        SELECT K12SD.K12StudentDisciplineId,
-            K12SD.OrganizationPersonRoleId,
-            K12SD.RefDisciplineReasonId,
-            K12SD.RefDisciplinaryActionTakenId,
-            K12SD.DisciplinaryActionStartDate,
-            K12SD.personId,
-            K12SD.IncidentId
-        FROM K12StudentDiscipline K12SD
-                join OrganizationPersonRole OPR on K12SD.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-        WHERE OPR.OrganizationPersonRoleId = 6;
-        """).fetchall()
-        #Anotaciones negativas
-        _negative = conn.execute("""
-        SELECT IncidentId,
-            IncidentIdentifier,
-            IncidentDate,
-            IncidentTime,
-            IncidentDescription,
-            RefIncidentBehaviorId,
-            OrganizationPersonRoleId
-        FROM Incident
-        WHERE RefIncidentBehaviorId = 34;
-        """).fetchall()
-        #Reuniones con el apoderado
-        _mettings = conn.execute("""
-        SELECT K12StudentDisciplineId,
-              OrganizationPersonRoleId,
-              DisciplinaryActionStartDate,
-              IncidentId
-        FROM K12StudentDiscipline
-        WHERE RefDisciplinaryActionTakenId = 8;
-        """).fetchall()
-        if(len(_queryStudentAcademicHonor) == 0 and len(_k12StudentDiscipline) == 0 and len(_negative) == 0 and len(_mettings) == 0):
-            logger.info(f"S/Datos")
-            logger.info(f"Rechazado")
-            return False
+      allIncidents = conn.execute("""
+                  SELECT 
+                     I.IncidentId
+                    ,rInBh.Description
+                    ,*
+                  FROM Incident I
+                    OUTER LEFT JOIN K12StudentDiscipline K12SD 
+                      ON K12SD.IncidentId = I.IncidentId
+                    OUTER LEFT JOIN OrganizationPersonRole OPR
+                      ON K12SD.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+                    OUTER LEFT JOIN Role rol
+                      ON rol.RoleId = OPR.RoleId
+                    OUTER LEFT JOIN K12StudentAcademicHonor K12SA
+                      ON K12SA.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
+                    OUTER LEFT JOIN RefIncidentBehavior rInBh
+                      ON rInBh.RefIncidentBehaviorId = I.RefIncidentBehaviorId                      
+                  GROUP BY I.IncidentId    
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {allIncidents} -> {str(e)}")
+      
+    if(len(allIncidents) == 0):
+        logger.info(f"S/Datos")
+        _r = True
+    
+    FineRows = []
+    try:
+      if(len(allIncidents) > 0):
+        for incident in allIncidents:
+          incidentId = incident[0]
+          RefIncidentBehaviorDescription = incident[1]
+          if(RefIncidentBehaviorDescription not in (
+               'Entrevista'
+              ,'Reunión con apoderados'
+              ,'Entrega de documentos retiro de un estudiante'
+              ,'Anotación positiva'
+              ,'Entrega de documentos de interés general'
+              ,'Entrega de información para continuidad de estudios')):
+            
+            print(RefIncidentBehaviorDescription)
+          
+          
+        resultList  = [item[0] for item in allIncidents if item not in FineRows]
+
+        if( len(resultList) > 0):
+          logger.info(f"Rechazado")
+          logger.info(f"Los incidentId con problemas son: {resultList}")
         else:
-            for a in _queryStudentAcademicHonor:
-                for b in a:
-                    if b is None:
-                        logger.error(f"Reconocimientos por el cumplimiento del reglamento interno mal ingresados en el sistema")
-                        logger.error(f"Rechazado")
-                        return False
-            for c in _k12StudentDiscipline:
-                for d in c:
-                    if d is None:
-                        logger.error(f"Medidas diciplinarias ingresadas erroneamente en el sistema")
-                        logger.error(f"Rechazado")
-                        return False
-            for e in _negative:
-                for f in e:
-                    if f is None:
-                        logger.error(f"Anotaciones negativas ingresadas erroneamente en el sistema")
-                        logger.error(f"Rechazado")
-                        return False
-            for g in _mettings:
-                for h in g:
-                    if h is None:
-                        logger.error(f"Reuniones con los apoderados mal ingresadas en el sistema")
-                        logger.error(f"Rechazado")
-                        return False
-            logger.info(f'Los datos sobre: Anotaciones positivas y negativas, citaciones a apoderados, medidas diciplinarias y reconocimientos por cumplimiento de reglamento interno estan ingresados correctamente')
-            logger.info(f'Aprobado')
-            return True
+          logger.info(f"Aprobado")
+          _r = True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return False
+    finally:
+        return _r
   ## Fin fn8F0 WC ##
 
   ## Inicio fn5E2 WC ##
