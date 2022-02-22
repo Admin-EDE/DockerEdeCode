@@ -5719,6 +5719,7 @@ GROUP BY Organizationid, date
                   SELECT 
                      I.IncidentId
                     ,rInBh.Description
+	                  ,json_valid(RegulationViolatedDescription) as jsonValid                    
                     ,*
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
@@ -5746,6 +5747,8 @@ GROUP BY Organizationid, date
         for incident in allIncidents:
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
+          isJsonValid = incident[1]
+          print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           if(RefIncidentBehaviorDescription not in (
                'Entrevista'
               ,'Reunión con apoderados'
@@ -5753,8 +5756,8 @@ GROUP BY Organizationid, date
               ,'Anotación positiva'
               ,'Entrega de documentos de interés general'
               ,'Entrega de información para continuidad de estudios')):
+            pass
             
-            print(RefIncidentBehaviorDescription)
           
           
         resultList  = [item[0] for item in allIncidents if item not in FineRows]
