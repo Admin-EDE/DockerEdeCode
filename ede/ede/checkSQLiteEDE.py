@@ -5753,10 +5753,11 @@ GROUP BY Organizationid, date
     try:
       if(len(allIncidents) > 0):
         for incident in allIncidents:
+          print(incident)
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
-          isJsonValid = self.validateJSON(incident[2])
-          print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
+          #isJsonValid = self.validateJSON(incident[2])
+          print(incidentId,RefIncidentBehaviorDescription)
           if(RefIncidentBehaviorDescription not in (
                'Entrevista'
               ,'Reunión con apoderados'
