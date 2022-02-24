@@ -2283,8 +2283,8 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {locations} -> {str(e)}")
     try:
+      _err = False      
       if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
-        _err = False
         data = list(set([m[0] for m in webSite if m[0] is not None]))
         if (len(set(data)) > 0): 
           logger.error(f"Website con formato erroneo: {data}")
@@ -2305,11 +2305,9 @@ GROUP BY p.personId
           logger.error(f"locations con formato erroneo: {data}")
           _err = True
 
-        if (not _err):
-          logger.error(f"Aprobado")
-          _r = True
-      else:
-        logger.info(f"S/Datos")
+      if (not _err):
+        logger.error(f"Aprobado")
+        _r = True        
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
