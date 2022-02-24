@@ -4368,7 +4368,7 @@ GROUP BY p.personId
               AND rae_.RecordEndDateTime IS NULL
 			  AND fechaAsistencia = a.fechaAsistenciaAsignatura
 			GROUP BY O.OrganizationId, fechaAsistencia
-   """).fetchall()
+    """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {_query} -> {str(e)}")
       logger.info(f"Rechazado")
