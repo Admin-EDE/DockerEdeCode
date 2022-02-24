@@ -7,6 +7,7 @@ __pycache__/
 /ede/ede/__pycache__/
 !/csv/
 /csv/*.csv
+BDs/
 
 
 #exclude *.pyc files
@@ -15,3 +16,4 @@ __pycache__/
 #exclude *.txt and *.zip
 *.txt
 *.zip
+*.sh
