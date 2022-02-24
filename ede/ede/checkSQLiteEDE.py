@@ -4422,6 +4422,7 @@ GROUP BY p.personId
         logger.info('Aprobado')
       else:
         logger.error('Rechazado')
+        _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
