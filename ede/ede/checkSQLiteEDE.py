@@ -2201,8 +2201,8 @@ GROUP BY p.personId
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
         SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
         FROM Organization
-        OUTER LEFT JOIN OrganizationWebsite USING(OrganizationId)
-        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        JOIN OrganizationWebsite USING(OrganizationId)
+        JOIN RefOrganizationType USING(RefOrganizationTypeId)
         WHERE 
         RefOrganizationType.Description IN ('K12 School')
       """).fetchall()
