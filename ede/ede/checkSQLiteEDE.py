@@ -2021,7 +2021,7 @@ GROUP BY p.personId
           OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
           LEFT JOIN (
           -- Calcula el campo AttendanceRate a partir de la información de la tabla RoleAttendanceEvent
-          SELECT *, CASE WHEN NumberOfDaysInAttendance NOT NULL THEN CAST(NumberOfDaysInAttendance / totalDays AS REAL) * 100 ELSE 0.00 END as 'AttendanceRate'
+          SELECT *, CASE WHEN NumberOfDaysInAttendance NOT NULL THEN CAST(NumberOfDaysInAttendance as real) / cast(totalDays AS REAL) * 100 ELSE 0.00 END as 'AttendanceRate'
             FROM (
               -- Agrupando la información por estudiante, se cuenta los días presentes y ausentes de cada uno
               SELECT RoleAttendanceId,PersonId, RefOrganizationType.Description as 'OrganizationType', 
