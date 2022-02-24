@@ -4240,14 +4240,16 @@ GROUP BY p.personId
     try:
       _query = conn.execute("""
             SELECT 
-              count(rae_.refattendancestatusid) as 'totalEstudiantesCurso', -- Cantidad total de estudiantes [idx 0]
-              sum(CASE WHEN rae_.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesCurso', -- [idx 1]
-              sum(CASE WHEN rae_.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesv', -- [idx 2]
-              sum(CASE WHEN rae_.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosCurso' -- [idx 3]
+			   O.OrganizationId as 'Curso'
+			  ,strftime('%Y-%m-%d', rae_.Date) as 'fechaAsistencia'
+              ,count(rae_.refattendancestatusid) as 'totalEstudiantesCurso' -- Cantidad total de estudiantes [idx 0]
+              ,sum(CASE WHEN rae_.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesCurso' -- [idx 1]
+              ,sum(CASE WHEN rae_.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesv' -- [idx 2]
+              ,sum(CASE WHEN rae_.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosCurso' -- [idx 3]
               ,a.Date -- [idx 4]
               ,a.Parent_OrganizationID -- [idx 5]
               ,a.OrganizationId -- [idx 6]
-              ,a.fecha -- [idx 7]
+              ,a.fechaAsistenciaAsignatura -- [idx 7]
               ,a.diaSemana -- [idx 8]
               ,ifnull(a.totalEstudiantes,0) totalEstudiantes -- [idx 9]
               ,ifnull(a.estudiantesPresentesAsignatura,0) estudiantesPresentesAsignatura -- [idx 10]
@@ -4263,17 +4265,15 @@ GROUP BY p.personId
                 ) 
               OUTER LEFT JOIN OrganizationPersonRole opr_
                 ON O.OrganizationId = opr_.OrganizationId
-                AND opr_.RecordEndDateTime IS NULL
               OUTER LEFT JOIN RoleAttendanceEvent rae_
                 ON opr_.OrganizationPersonRoleId = rae_.OrganizationPersonRoleId
-                AND rae_.RecordEndDateTime IS NULL
               OUTER LEFT JOIN
               (
               SELECT  
                 rae.Date, -- fecha completa de la clase [idx 0]
                 ors.Parent_OrganizationID,		
                 O.OrganizationId,
-                strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date [idx 1]
+                strftime('%Y-%m-%d', rae.Date) as 'fechaAsistenciaAsignatura', -- rescata solo la fecha desde rae.Date [idx 1]
                 CASE 
                   WHEN strftime('%w', rae.Date) = '0' THEN 'Domingo'
                   WHEN strftime('%w', rae.Date) = '1' THEN 'Lunes'
@@ -4357,13 +4357,18 @@ GROUP BY p.personId
                 AND
                 ClassPeriod in ('Bloque02')
                 
-              GROUP BY rae.Date
+              GROUP BY rae.Date, O.OrganizationId
               
-              ) a ON O.OrganizationId = a.Parent_OrganizationID
+              ) a 
+				ON O.OrganizationId = a.Parent_OrganizationID
             WHERE
               -- Verifica que el tipo de asistencia sea diaria
               rae_.RefAttendanceEventTypeId = 1
-      """).fetchall()
+			  AND opr_.RecordEndDateTime IS NULL
+              AND rae_.RecordEndDateTime IS NULL
+			  AND fechaAsistencia = a.fechaAsistenciaAsignatura
+			GROUP BY O.OrganizationId, fechaAsistencia
+   """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {_query} -> {str(e)}")
       logger.info(f"Rechazado")
