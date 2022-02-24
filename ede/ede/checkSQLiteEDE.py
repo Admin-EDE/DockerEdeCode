@@ -3337,7 +3337,8 @@ GROUP BY p.personId
               WHERE OPR.RoleId = 6
                 and PS.RefPersonStatusTypeId = 27
           )
-          AND fileScanBase64 is not null;
+          AND fileScanBase64 is not null
+          and RefPersonStatusTypeId = 27
           """).fetchall()
           if (len(_query) == len(_personStatusFile)):
               _file = conn.execute("""
