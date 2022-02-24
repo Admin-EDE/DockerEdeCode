@@ -5739,13 +5739,14 @@ GROUP BY Organizationid, date
     try:
       allIncidents = conn.execute("""
                   SELECT 
-                     I.* 
+                     I.*
                     ,K12SD.*
                     ,OPR.*
                     ,rol.*
                     ,K12SA.*
                     ,rInBh.*
 	                  ,IncPer.*
+          					,rdat.*
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
                       ON K12SD.IncidentId = I.IncidentId
@@ -5759,6 +5760,8 @@ GROUP BY Organizationid, date
                       ON rInBh.RefIncidentBehaviorId = I.RefIncidentBehaviorId                      
                     OUTER LEFT JOIN IncidentPerson IncPer
                       ON IncPer.IncidentId = I.IncidentId
+                    OUTER LEFT JOIN RefDisciplinaryActionTaken rdat					
+                      ON K12SD.RefDisciplinaryActionTakenId = rdat.RefDisciplinaryActionTakenId
                   GROUP BY I.IncidentId    
       """).fetchall()
     except Exception as e:
