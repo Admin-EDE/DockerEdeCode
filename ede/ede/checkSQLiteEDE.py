@@ -205,15 +205,6 @@ class check:
     engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000")
     try:
       conn = engine.connect()
-      try:
-        conn.execute("""
-                     PRAGMA cache_size=-100000;
-                     PRAGMA temp_store=2;
-                     PRAGMA synchronous=0;
-                     PRAGMA query_only=True;
-                     """).fetchone()
-      except:
-        pass
 
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
