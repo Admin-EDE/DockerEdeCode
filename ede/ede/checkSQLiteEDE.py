@@ -4395,8 +4395,8 @@ GROUP BY p.personId
         #print(_estAusentesAsign)
 
         for idx_,el_ in enumerate(_totalCurso):
-          logger.info(idx_)
-          logger.info(el_)
+          #logger.info(idx_)
+          #logger.info(el_)
           if el_ != _totalAsign[idx_]:
               logger.error(f'Rechazado')
               logger.error(f'Totales de estudiantes no coinciden')
