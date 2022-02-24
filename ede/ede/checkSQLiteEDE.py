@@ -209,6 +209,7 @@ class check:
         conn.execute("""
                      PRAGMA cache_size=-100000;
                      PRAGMA temp_store=2;
+                     PRAGMA synchronous=0;
                      """).fetchone()
       except:
         pass
