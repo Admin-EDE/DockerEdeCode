@@ -4374,6 +4374,7 @@ GROUP BY p.personId
       logger.info(f"Rechazado")
       logger.info(f"No hay información para evaluar, pero debería por eso no aplica S/Datos")
     try:
+      _result = []      
       if( len(_query) > 0 ):
         #print(_query)
         _totalCurso = self.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
@@ -4392,8 +4393,7 @@ GROUP BY p.personId
         #print(_estAusentesCurso)
         _estAusentesAsign = self.convertirArray2DToList(list([m[13] for m in _query if m[13] is not None]))
         #print(_estAusentesAsign)
-          
-        _result = []
+
         for idx_,el_ in enumerate(_totalCurso):
           logger.info(idx_)
           logger.info(el_)
