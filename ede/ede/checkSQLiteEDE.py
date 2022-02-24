@@ -4403,7 +4403,7 @@ GROUP BY p.personId
           else:
               _result.append(True)
 
-          if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
+          if _estPresentesCurso[idx_] != (int(_estPresentesAsign[idx_])+int(_estAtradadosAsign[idx_])):
               logger.error(f'Rechazado')
               logger.error(f'Total de estudiantes presentes no coinciden')
               _result.append(False)
