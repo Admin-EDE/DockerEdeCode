@@ -5778,9 +5778,7 @@ GROUP BY Organizationid, date
           print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           
           if(RefIncidentBehaviorDescription in ('Anotación positiva')
-             and
-             
-             
+                          
              ):
             pass
           
