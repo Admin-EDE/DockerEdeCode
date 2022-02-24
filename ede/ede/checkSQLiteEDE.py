@@ -5669,7 +5669,7 @@ GROUP BY Organizationid, date
                           IncidentPerson.RefIncidentPersonTypeId IN (
                             SELECT RefIncidentPersonTypeId
                             FROM RefIncidentPersonType
-                            WHERE RefIncidentPersonType.description IN ('Docente')
+                            WHERE RefIncidentPersonType.description IN ('Docente','Profesional de la educación','Personal Administrativo')
                           )
                           OR
                           IncidentPerson.RefIncidentPersonRoleTypeId IN (
@@ -5681,7 +5681,7 @@ GROUP BY Organizationid, date
                           IncidentPerson.RefIncidentPersonTypeId IN (
                             SELECT RefIncidentPersonTypeId
                             FROM RefIncidentPersonType
-                            WHERE RefIncidentPersonType.description IN ('Docente')
+                            WHERE RefIncidentPersonType.description IN ('Docente','Profesional de la educación','Personal Administrativo')
                           )	
                         )                                                         
                     """).fetchall()
