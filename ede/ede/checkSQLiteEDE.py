@@ -5739,14 +5739,13 @@ GROUP BY Organizationid, date
     try:
       allIncidents = conn.execute("""
                   SELECT 
-                     I.IncidentId
+                     I.* 
                     ,K12SD.*
                     ,OPR.*
                     ,rol.*
                     ,K12SA.*
                     ,rInBh.*
 	                  ,IncPer.*
-                    ,RegulationViolatedDescription
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
                       ON K12SD.IncidentId = I.IncidentId
@@ -5772,43 +5771,54 @@ GROUP BY Organizationid, date
     FineRows = []
     try:
       if(len(allIncidents) > 0):
-        columnNames = [column[0] for column in allIncidents.description]
-        print(columnNames)
         for incident in allIncidents:
           incidentId = incident[0]
-          RefIncidentBehaviorDescription = incident[1]
-          isJsonValid = validateJSON(incident[2])
-          incidentDate = incident[5]
-          incidentTime = incident[6]
-          incidentDesc = incident[8]
-          print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
+          incidentIdentifier = incident[1]
+          incidentDate = incident[2]
+          incidentTime = incident[3]
+          incidentDesc = incident[5]
+          RefIncidentBehaviorId = incident[6]
+          isJsonValidRegulationViolatedDesc = validateJSON(incident[16])
+          refIncidentBehaviorDesc = incident[64]
+          PersonId = incident[70]
+          refIncidentPersonId = incident[72]
+          incidentPersonDate = incident[74]
+          refDisciplinaryActionTaken = incident[80]
+          #print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           
-          if(RefIncidentBehaviorDescription in ('Anotación positiva')
-                          
-             ):
-            pass
-          
-          if(RefIncidentBehaviorDescription not in (
+          if(     incidentId is None
+             or  incidentIdentifier is None
+             or  incidentTime is None
+             or  incidentDate is None
+             or  incidentDesc is None
+             or  RefIncidentBehaviorId is None
+             or  isJsonValidRegulationViolatedDesc is None
+             or  PersonId is None
+             or  refIncidentPersonId is None
+             or  incidentPersonDate is None
+             or   isJsonValidRegulationViolatedDesc == False):
+            logger.error("Rechazado")
+            return False
+                   
+          if(refIncidentBehaviorDesc not in (
                'Entrevista'
               ,'Reunión con apoderados'
               ,'Entrega de documentos retiro de un estudiante'
               ,'Anotación positiva'
               ,'Entrega de documentos de interés general'
-              ,'Entrega de información para continuidad de estudios')):
-            pass
-          if(not isJsonValid):
-            pass
-            
+              ,'Entrega de información para continuidad de estudios')
+             and refDisciplinaryActionTaken is None):
+            logger.error("Rechazado")
+            return False
           
-          
-        resultList  = [item[0] for item in allIncidents if item not in FineRows]
+        #resultList  = [item[0] for item in allIncidents if item not in FineRows]
 
-        if( len(resultList) > 0):
-          logger.info(f"Rechazado")
-          logger.info(f"Los incidentId con problemas son: {resultList}")
-        else:
-          logger.info(f"Aprobado")
-          _r = True
+        #if( len(resultList) > 0):
+        #  logger.info(f"Rechazado")
+          #logger.info(f"Los incidentId con problemas son: {resultList}")
+        #else:
+      logger.info(f"Aprobado")
+      _r = True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
