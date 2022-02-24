@@ -2195,7 +2195,20 @@ GROUP BY p.personId
           ]
     """
     _r = False
-    webSite = []
+    school = []
+    try:
+      school = conn.execute("""
+        -- Revisa que la organización tipo Establecimiento tenga registrada su página web
+        SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
+        FROM Organization
+        OUTER LEFT JOIN OrganizationWebsite USING(OrganizationId)
+        OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
+        WHERE 
+        RefOrganizationType.Description IN ('K12 School')
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {school} -> {str(e)}")
+    
     try:
       webSite = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
@@ -2283,7 +2296,7 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {locations} -> {str(e)}")
     try:
-      if(len(webSite)==0 and len(ElectronicMailAddress)==0 and len(phoneNumbers)==0 and len(locations)==0):
+      if(len(school)==0 and len(webSite)==0 and len(ElectronicMailAddress)==0 and len(phoneNumbers)==0 and len(locations)==0):
         logger.error(f"S/Datos")
         return False
       _err = False      
