@@ -206,7 +206,10 @@ class check:
     try:
       conn = engine.connect()
       try:
-        conn.execute("PRAGMA CACHE_SIZE=-100000").fetchone()
+        conn.execute("""
+                     PRAGMA CACHE_SIZE=-100000;
+                     PRAGMA SYNCHRONOUS=NORMAL;
+                     """).fetchone()
       except:
         pass
 
