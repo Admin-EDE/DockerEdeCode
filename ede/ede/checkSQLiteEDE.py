@@ -4166,8 +4166,8 @@ JOIN RefIncidentBehavior rInBh
                     logger.error(f'Rechazado')
                     return False
         else:
-            logger.error(f'S/Datos')
-            logger.error(f'Sin incidentes registrados')
+            logger.info(f'S/Datos')
+            logger.info(f'Sin incidentes registrados')
             return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
