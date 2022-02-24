@@ -4418,7 +4418,7 @@ GROUP BY p.personId
           else:
               _result.append(True)              
       _r = all(_result)
-      if(_r):
+      if(_r and len(_result) > 0):
         logger.info('Aprobado')
       else:
         logger.error('Rechazado')
