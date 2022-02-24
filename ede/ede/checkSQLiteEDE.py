@@ -2283,6 +2283,9 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {locations} -> {str(e)}")
     try:
+      if(len(webSite)==0 and len(ElectronicMailAddress)==0 and len(phoneNumbers)==0 and len(locations)==0):
+        logger.error(f"S/Datos")
+        return False
       _err = False      
       if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
         data = list(set([m[0] for m in webSite if m[0] is not None]))
