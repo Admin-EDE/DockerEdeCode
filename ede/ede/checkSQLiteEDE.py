@@ -4239,7 +4239,8 @@ GROUP BY p.personId
     _query = []
     try:
       _query = conn.execute("""
-            SELECT 
+--EXPLAIN QUERY PLAN     
+SELECT 
 			   O.OrganizationId as 'Curso'
 			  ,strftime('%Y-%m-%d', rae_.Date) as 'fechaAsistencia'
               ,count(rae_.refattendancestatusid) as 'totalEstudiantesCurso' -- Cantidad total de estudiantes [idx 0]
@@ -4269,7 +4270,7 @@ GROUP BY p.personId
                 ON opr_.OrganizationPersonRoleId = rae_.OrganizationPersonRoleId
               OUTER LEFT JOIN
               (
-              SELECT  
+SELECT  
                 rae.Date, -- fecha completa de la clase [idx 0]
                 ors.Parent_OrganizationID,		
                 O.OrganizationId,
@@ -4282,50 +4283,26 @@ GROUP BY p.personId
                   WHEN strftime('%w', rae.Date) = '4' THEN 'Jueves'
                   WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                   WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
-                END as 'diaSemana', -- rescata solo el dia de la semana desde rae.Date [idx 3]
-                count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 4]
-                sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura', -- [idx 5]
-                sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura', -- [idx 6]
-                sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura' -- [idx 7]
+                END as 'diaSemana' -- rescata solo el dia de la semana desde rae.Date [idx 3]
+                ,count(refattendancestatusid) as 'totalEstudiantes' -- Cantidad total de estudiantes [idx 4]
+                ,sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura' -- [idx 5]
+                ,sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura' -- [idx 6]
+                ,sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura' -- [idx 7]
                 
-              FROM Organization O
-                JOIN RefOrganizationType rot
-                  ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-                  AND O.RefOrganizationTypeId IN (
-                    SELECT RefOrganizationTypeId 
-                    FROM RefOrganizationType
-                    WHERE Description IN ('Course Section')
-                  ) 
+              --FROM Organization O
+			  FROM RoleAttendanceEvent rae
+                JOIN OrganizationPersonRole opr 
+                  ON opr.OrganizationPersonRoleid = rae.OrganizationPersonRoleid
+                JOIN Organization O
+                  ON o.OrganizationId = opr.OrganizationId
                 JOIN OrganizationRelationship ors 
                   ON O.OrganizationId = ors.OrganizationId
-                  AND ors.RefOrganizationRelationShipId IN (
-                    SELECT RefOrganizationRelationShipId 
-                    FROM RefOrganizationRelationShip
-                    WHERE Code IN ('InternalOrganization')
-                    ) 
-                JOIN OrganizationPersonRole opr 
-                  ON O.OrganizationId = opr.OrganizationId
-                  AND opr.RecordEndDateTime IS NULL
-                JOIN RoleAttendanceEvent rae
-                  ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
-                  AND rae.RecordEndDateTime IS NULL
-                JOIN Role rol
-                  ON opr.RoleId = rol.RoleId
-                  AND opr.RoleId IN (
-                    SELECT RoleId
-                    FROM Role
-                    WHERE Name IN ('Estudiante')
-                  )
                 JOIN OrganizationCalendar oc 
                   ON O.OrganizationId = oc.OrganizationId
-                  AND oc.RecordEndDateTime IS NULL
                 JOIN OrganizationCalendarSession ocs
                   ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-                  AND ocs.RecordEndDateTime IS NULL
                 JOIN CourseSectionSchedule css
                   ON O.OrganizationId = css.OrganizationId
-                  AND css.RecordEndDateTime IS NULL
-              --GROUP BY rae.Date
 
               WHERE 
                 -- Verifica que se encuentre cargado el leccionario
@@ -4354,10 +4331,29 @@ GROUP BY p.personId
                 AND
                 -- Agrega a la lista todos los registros que no cumplan con la expresión regular
                 rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
-                AND
-                ClassPeriod in ('Bloque02')
-                
-              GROUP BY rae.Date, O.OrganizationId
+                AND ClassPeriod in ('Bloque02')
+                AND rae.RecordEndDateTime IS NULL
+                  AND O.RefOrganizationTypeId IN (
+                    SELECT RefOrganizationTypeId 
+                    FROM RefOrganizationType
+                    WHERE Description IN ('Course Section')
+                  ) 
+                  AND ors.RefOrganizationRelationShipId IN (
+                    SELECT RefOrganizationRelationShipId 
+                    FROM RefOrganizationRelationShip
+                    WHERE Code IN ('InternalOrganization')
+                    ) 
+                  AND opr.RoleId IN (
+                    SELECT RoleId
+                    FROM Role
+                    WHERE Name IN ('Estudiante')
+                  )					
+                  AND css.RecordEndDateTime IS NULL				
+                  AND opr.RecordEndDateTime IS NULL
+                  AND oc.RecordEndDateTime IS NULL
+                  AND ocs.RecordEndDateTime IS NULL
+				  
+              GROUP BY rae.Date
               
               ) a 
 				ON O.OrganizationId = a.Parent_OrganizationID
