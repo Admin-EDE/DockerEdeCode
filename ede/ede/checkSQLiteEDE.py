@@ -2208,7 +2208,15 @@ GROUP BY p.personId
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {school} -> {str(e)}")
+      logger.error(f"Rechazado")
+      logger.error(f"La organización tipo school es obligatoria")
+      return False
+
+    if(len(school)==0):
+      logger.error(f"S/Datos")
+      return False
     
+    webSite = []
     try:
       webSite = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
@@ -2296,9 +2304,6 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {locations} -> {str(e)}")
     try:
-      if(len(school)==0 and len(webSite)==0 and len(ElectronicMailAddress)==0 and len(phoneNumbers)==0 and len(locations)==0):
-        logger.error(f"S/Datos")
-        return False
       _err = False      
       if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
         data = list(set([m[0] for m in webSite if m[0] is not None]))
