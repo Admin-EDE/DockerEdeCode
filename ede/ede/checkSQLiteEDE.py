@@ -4130,7 +4130,20 @@ GROUP BY p.personId
           ]
     """      
     try:
-        query = conn.execute("""select * from Incident""").fetchall()
+        query = conn.execute("""
+SELECT
+	 Inc.incidentId
+FROM Incident Inc
+JOIN RefIncidentBehavior rInBh
+	ON rInBh.RefIncidentBehaviorId = Inc.RefIncidentBehaviorId
+	AND rInBh.description not in (
+               'Entrevista'
+              ,'Reunión con apoderados'
+              ,'Entrega de documentos retiro de un estudiante'
+              ,'Anotación positiva'
+              ,'Entrega de documentos de interés general'
+              ,'Entrega de información para continuidad de estudios')
+                             """).fetchall()
         if(len(query)>0):
             Incidentes = (list([m[0] for m in query if m[0] is not None]))
             for x in Incidentes:
