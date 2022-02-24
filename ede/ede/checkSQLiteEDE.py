@@ -4344,7 +4344,7 @@ GROUP BY p.personId
                 rae.VirtualIndicator NOT NULL
                 AND
                 -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-                diaSemana in (css.ClassMeetingDays)
+                css.ClassMeetingDays like '%'||diaSemana||'%'
                 AND
                 -- Agrega a la lista todos los registros que no cumplan con la expresión regular
                 rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
@@ -4807,7 +4807,7 @@ AND
 rae.VirtualIndicator NOT NULL
 AND
 -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-diaSemana in (css.ClassMeetingDays)
+css.ClassMeetingDays like '%'||diaSemana||'%'
 AND
 hora between css.ClassBeginningTime and css.ClassEndingTime
 AND
@@ -5729,9 +5729,13 @@ GROUP BY Organizationid, date
       allIncidents = conn.execute("""
                   SELECT 
                      I.IncidentId
-                    ,rInBh.Description
-	                  ,RegulationViolatedDescription
-                    ,*
+                    ,K12SD.*
+                    ,OPR.*
+                    ,rol.*
+                    ,K12SA.*
+                    ,rInBh.*
+	                  ,IncPer.*
+                    ,RegulationViolatedDescription
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
                       ON K12SD.IncidentId = I.IncidentId
@@ -5743,6 +5747,8 @@ GROUP BY Organizationid, date
                       ON K12SA.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
                     OUTER LEFT JOIN RefIncidentBehavior rInBh
                       ON rInBh.RefIncidentBehaviorId = I.RefIncidentBehaviorId                      
+                    OUTER LEFT JOIN IncidentPerson IncPer
+                      ON IncPer.IncidentId = I.IncidentId
                   GROUP BY I.IncidentId    
       """).fetchall()
     except Exception as e:
@@ -5761,9 +5767,14 @@ GROUP BY Organizationid, date
           incidentId = incident[0]
           RefIncidentBehaviorDescription = incident[1]
           isJsonValid = validateJSON(incident[2])
+          incidentDate = incident[5]
+          incidentTime = incident[6]
+          incidentDesc = incident[8]
           print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           
-          if(     RefIncidentBehaviorDescription in ('Anotación positiva')
+          if(RefIncidentBehaviorDescription in ('Anotación positiva')
+             and
+             
              
              ):
             pass
@@ -7653,7 +7664,7 @@ where
             rae.VirtualIndicator NOT NULL
             AND
             -- Verifica que día y horario de firma corresponda con calendario de la asignatura
-            diaSemana in (css.ClassMeetingDays)
+            css.ClassMeetingDays like '%'||diaSemana||'%'
             AND
             hora between css.ClassBeginningTime and css.ClassEndingTime
             AND
