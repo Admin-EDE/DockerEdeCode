@@ -6708,13 +6708,13 @@ GROUP BY pid.Identifier
       _s2 = """SELECT A.RelatedPersonId,D.RUN
                 FROM PersonRelationship A
                 JOIN OrganizationPersonRole B
-                  ON A.RelatedPersonId = B.personId
+                  ON A.personId = B.personId
                 JOIN Role C
                   ON B.RoleId = C.RoleId
                 JOIN personList D
                   ON A.RelatedPersonId = D.personId
                 WHERE 
-                  A.personId = ?
+                  A.RelatedPersonId = ?
                   AND
                   B.RoleId = 15;"""
 
