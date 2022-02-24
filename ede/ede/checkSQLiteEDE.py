@@ -4395,7 +4395,8 @@ GROUP BY p.personId
           
         _result = []
         for idx_,el_ in enumerate(_totalCurso):
-          #logger.info(idx_,el_)
+          logger.info(idx_)
+          logger.info(el_)
           if el_ != _totalAsign[idx_]:
               logger.error(f'Rechazado')
               logger.error(f'Totales de estudiantes no coinciden')
@@ -4416,7 +4417,7 @@ GROUP BY p.personId
               _result.append(False)
           else:
               _result.append(True)              
-        _r = len([e for e in _result if e]) == len(_result)
+        _r = all(_result)
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
