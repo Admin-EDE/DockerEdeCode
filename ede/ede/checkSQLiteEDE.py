@@ -4372,7 +4372,7 @@ GROUP BY p.personId
     except Exception as e:
       logger.info(f"Resultado: {_query} -> {str(e)}")
       logger.info(f"Rechazado")
-      logger.info(f"No hay información para evaluar")
+      logger.info(f"No hay información para evaluar, pero debería por eso no aplica S/Datos")
     try:
       if( len(_query) > 0 ):
         #print(_query)
@@ -4417,7 +4417,11 @@ GROUP BY p.personId
               _result.append(False)
           else:
               _result.append(True)              
-        _r = all(_result)
+      _r = all(_result)
+      if(_r):
+        logger.info('Aprobado')
+      else:
+        logger.error('Rechazado')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
