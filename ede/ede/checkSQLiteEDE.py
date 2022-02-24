@@ -5801,6 +5801,7 @@ GROUP BY Organizationid, date
              or  incidentPersonDate is None
              or   isJsonValidRegulationViolatedDesc == False):
             logger.error("Rechazado")
+            logger.error("Los campos obligatorios no pueden ser nulos")
             return False
                    
           if(refIncidentBehaviorDesc not in (
@@ -5812,6 +5813,7 @@ GROUP BY Organizationid, date
               ,'Entrega de información para continuidad de estudios')
              and refDisciplinaryActionTaken is None):
             logger.error("Rechazado")
+            logger.error("Las anotaciones negativas deben tener acciones asociadas")
             return False
           
         #resultList  = [item[0] for item in allIncidents if item not in FineRows]
