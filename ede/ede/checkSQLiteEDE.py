@@ -213,6 +213,9 @@ class check:
       logger.error(_t)
       return False 
     try:
+      manager = multiprocessing.Manager()
+      return_dict = manager.dict({"response": False})
+      jobs = []
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
@@ -220,9 +223,11 @@ class check:
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
           #  try:
             #eval_ = eval(value)
-            p = multiprocessing.Process(target=eval(value), name=value, args=(conn,))
+            p = multiprocessing.Process(target=eval(value), name=value, args=(conn,return_dict,))
+            jobs.append[p]
             p.start()
             p.join(self.args.time)
+            eval_ = return_dict.get("response",False)
             # If thread is active
             if p.is_alive():
                 print(f"{value} is running... Se termina proceso por exceder tiempo máximo...")
