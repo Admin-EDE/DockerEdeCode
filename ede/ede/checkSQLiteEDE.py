@@ -351,7 +351,7 @@ class check:
             #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
             argumentos = formatargspec(*getfullargspec(fnTarget))
-            print(argumentos, 'conn' in argumentos)
+            logger.info(f"{type(argumentos)}, {'conn' in argumentos}")
             p = multiprocessing.Process(target=fnTarget, name=value, args=(conn,))
             jobs.append(p)
             p.start()
