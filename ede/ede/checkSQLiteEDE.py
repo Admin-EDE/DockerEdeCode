@@ -360,6 +360,7 @@ class check:
             p.start()
             p.join(self.args.time)
             if('return_dict' in argsList):
+              logger.info(return_dict.get("response",None))
               eval_ = return_dict.get("response",False)
             else:
               eval_ = False
