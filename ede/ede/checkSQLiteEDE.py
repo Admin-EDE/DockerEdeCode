@@ -344,34 +344,31 @@ class check:
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
+          fnTarget = self.functionsMultiProcess[key]
+
+          p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
+          jobs.append(p)
+          p.start()
 
           if(self.args.time):
-            fnTarget = self.functionsMultiProcess[key]
-
-            p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
-            jobs.append(p)
-            p.start()          
-            
             logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
             p.join(self.args.time)
 
-            # If thread is active
-            if p.is_alive():
-                eval_ = return_dict.get(fnTarget.__name__,None)
+            if p.is_alive(): # If thread is active
                 p.terminate()
-                p.join()
-                p.close()
                 logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           else:
-            eval_ = eval(value)
-            
-          logger.info(f"{key}. Resultado: {eval_}")
+            p.join()
+          
+          p.close()  
+          #eval_ = return_dict.get(fnTarget.__name__,None)
+          #logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
-          _result = eval_ and _result
+          #_result = eval_ and _result
 
-      logger.info(f"return_dict -> {return_dict}")
-      if(not _result):
-        raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
+      #logger.info(f"return_dict -> {return_dict}")
+      _result = all(list(return_dict.values()))
+      if(not _result): raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
     except Exception as e:
       _t = "ERROR en la verificación: "+str(e)
       logger.info(_t)     
