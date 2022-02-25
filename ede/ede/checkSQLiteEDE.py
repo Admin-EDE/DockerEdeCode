@@ -344,25 +344,27 @@ class check:
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
-          fnTarget = self.functionsMultiProcess[key]
 
-          p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
-          jobs.append(p)
-          p.start()          
           if(self.args.time):
+            fnTarget = self.functionsMultiProcess[key]
+
+            p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
+            jobs.append(p)
+            p.start()          
+            
             logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
             p.join(self.args.time)
 
             # If thread is active
             if p.is_alive():
+                eval_ = return_dict.get(fnTarget.__name__,None)
                 p.terminate()
-
+                p.join()
+                p.close()
                 logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           else:
-            p.join()
-            p.close()
+            eval_ = eval(value)
             
-          eval_ = return_dict.get(fnTarget.__name__,None)
           logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
           _result = eval_ and _result
