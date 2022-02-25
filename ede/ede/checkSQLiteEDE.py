@@ -418,6 +418,7 @@ class check:
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F0 ###
   
@@ -455,6 +456,7 @@ class check:
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   # FIN fn3F1 ###
 
@@ -519,6 +521,7 @@ class check:
       logger.error(f"No se pudo ejecutar la consulta a la vista personList: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F2 ###
 
@@ -558,7 +561,8 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
-        return _r
+      return_dict[getframeinfo(currentframe()).function] = _r
+      return _r
   ### FIN fn3F3 ###
   
   ### INICIO fn3F4 ###
@@ -600,7 +604,8 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
-        return _r
+      return_dict[getframeinfo(currentframe()).function] = _r
+      return _r
   ### FIN fn3F4 ###
   
   ### INICIO fn3F5 ###  
@@ -640,6 +645,7 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F5 ###  
   
@@ -680,6 +686,7 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F6 ###
   
@@ -718,6 +725,7 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F7 ###
   
@@ -756,6 +764,7 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F8 ###
   
@@ -795,6 +804,7 @@ class check:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3F9 ###
   
@@ -836,6 +846,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3FA ###
   
@@ -877,6 +888,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3FB ###
   
@@ -919,6 +931,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3FC ###
   
@@ -961,6 +974,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3FD ###
   
@@ -1037,6 +1051,7 @@ GROUP BY p.personId
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por estudiantes: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### FIN fn3FE ###
 
@@ -1079,6 +1094,7 @@ GROUP BY p.personId
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3FF ###
   
@@ -1135,6 +1151,7 @@ GROUP BY p.personId
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")        
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3E0 ###
 
@@ -1175,6 +1192,7 @@ GROUP BY p.personId
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ### FIN fn3E1 ###
 
@@ -1204,11 +1222,13 @@ GROUP BY p.personId
       else:
         logger.info(f"S/Datos")
 
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la tabla k12schoolList para identificar el RBD del establecimiento: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE EL FORMATO DEL RBD CORRESPONDA
@@ -1238,10 +1258,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA SI LA VISTA jerarquiasList contiene información
@@ -1278,12 +1300,14 @@ GROUP BY p.personId
         logger.info(f"Aprobado")
       else:
         logger.info(f"S/Datos")
-
+      
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA
@@ -1313,10 +1337,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA
@@ -1346,10 +1372,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA
@@ -1379,10 +1407,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA
@@ -1412,10 +1442,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA
@@ -1445,10 +1477,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True  
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA
@@ -1478,10 +1512,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA
@@ -1511,10 +1547,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA
@@ -1544,10 +1582,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA
@@ -1577,10 +1617,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA
@@ -1610,10 +1652,12 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   #VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
@@ -1647,11 +1691,13 @@ GROUP BY p.personId
       else:
         logger.info(f"S/Datos")
 
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   # Verifica que cada asignatura se encuentre asociada a un curso.
@@ -1688,6 +1734,7 @@ GROUP BY p.personId
       """).fetchall()
       if(_ExistData[0][0] == 0):
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       asignaturas = conn.execute("""
         /* 
@@ -1725,6 +1772,7 @@ GROUP BY p.personId
       """)
       if(asignaturas.returns_rows == 0):
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       asignaturas = asignaturas.fetchall()
@@ -1735,10 +1783,12 @@ GROUP BY p.personId
         _err = f"Las siguientes asignaturas no tienen ningún curso asociado: {asignaturasList}"
         logger.error(_err)
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
 
@@ -1807,13 +1857,16 @@ GROUP BY p.personId
           logger.error(_err2)
         if (_c1 > 0 or _c2 > 0):
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False          
       else:
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
@@ -1840,6 +1893,7 @@ GROUP BY p.personId
       """).fetchall()
       if(_ExistData[0][0]==0):
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       virtualIndicator = conn.execute("""
@@ -1854,6 +1908,7 @@ GROUP BY p.personId
       
       if(virtualIndicator.returns_rows == 0):
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       virtualIndicator = virtualIndicator.fetchall()
@@ -1863,10 +1918,12 @@ GROUP BY p.personId
         _err1 = f"Los siguientes registros de la tabla RoleAttendanceEvent no tienen definidos el indicador de virtualidad del estudiante: {data1}"
         logger.error(_err1)
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
@@ -1896,6 +1953,7 @@ GROUP BY p.personId
       """).fetchall()
       if(_ExistData[0][0] == 0 and _ExistData[0][1] == 0):
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True      
       
       ClassMeetingDays = conn.execute("""
@@ -1922,6 +1980,7 @@ GROUP BY p.personId
       """)#.fetchall()
       if(ClassMeetingDays.returns_rows == 0 and ClassPeriod.returns_rows == 0):
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       if(ClassMeetingDays.returns_rows != 0):
         ClassMeetingDays = ClassMeetingDays.fetchall()
@@ -1941,10 +2000,12 @@ GROUP BY p.personId
 
       if (_c1 > 0 or _c2 > 0):
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
 ### INICIO fn3C4 ###
@@ -2011,6 +2072,7 @@ GROUP BY p.personId
           logger.error(_err2)
         if (_c1 > 0 or _c2 > 0):
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False          
       else:
         logger.info(f"Aprobado")
@@ -2019,6 +2081,7 @@ GROUP BY p.personId
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### FIN fn3C4 ###    
 
@@ -2059,6 +2122,7 @@ GROUP BY p.personId
       """).fetchall()
       if(len(listInfoSuccesfull)<=0):
         logger.info("S/DATOS")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       else:
         RoleAttendance = conn.execute("""
@@ -2102,13 +2166,16 @@ GROUP BY p.personId
           if (_c1 > 0):
             logger.error(_err1)
             logger.error(f"Rechazado")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False          
         else:
           logger.info(f"Aprobado")
+          return_dict[getframeinfo(currentframe()).function] = True
           return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
 
@@ -2150,6 +2217,7 @@ GROUP BY p.personId
       """).fetchall()
       if(len(listInfoSuccesfull)<=0):
         logger.info("S/DATOS")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       else:
         RoleAttendance = conn.execute("""
@@ -2215,13 +2283,16 @@ GROUP BY p.personId
           if (_c1 > 0):
             logger.error(_err1)
             logger.error(f"Rechazado")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False          
         else:
           logger.info(f"Aprobado")
+          return_dict[getframeinfo(currentframe()).function] = True
           return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   # Revisar que la organización del establecimiento, asignaturas y cursos 
@@ -2251,6 +2322,7 @@ GROUP BY p.personId
       """).fetchall()
       if(_ExistData[0][0]==0):
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True      
       
       locations = conn.execute("""
@@ -2300,6 +2372,7 @@ GROUP BY p.personId
       """)
       if(locations.returns_rows==0):
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       locations = locations.fetchall()
@@ -2311,10 +2384,12 @@ GROUP BY p.personId
         if (_c1 > 0):
           logger.error(_err1)
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
 ### INICIO fn3DD ###
@@ -2361,10 +2436,12 @@ GROUP BY p.personId
       logger.info(f"Resultado: {school} -> {str(e)}")
       logger.error(f"Rechazado")
       logger.error(f"La organización tipo school es obligatoria")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
     if(len(school)==0):
       logger.error(f"S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
     
     webSite = []
@@ -2484,6 +2561,7 @@ GROUP BY p.personId
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### FIN fn3DD ###    
 
@@ -2666,11 +2744,12 @@ GROUP BY p.personId
       else:
         logger.info("La BD no contiene clave aleatoria de los docentes")
         logger.info("S/DATOS")
-
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudieron validar los verificadores de indentidad: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
   # Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
@@ -2711,11 +2790,12 @@ GROUP BY p.personId
       else:
         logger.info("La BD no contiene información de asistencia cargada")
         logger.info("S/DATOS")
-
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
       logger.error(f"No se pudo verificar que los eventos de asistencia esten bien asignados a las Organizaciones: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 
 
@@ -2760,18 +2840,22 @@ GROUP BY p.personId
             if lista == listaDos:
                 logger.info(f"La cantidad de matriculados corresponder con los alumnos inscritos")
                 logger.info(f"Aprobado")
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
             else :
                 logger.error(f'La cantidad de alumnos matriculados no cocincide con los inscritos')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.info(f"S/Datos")
             logger.info(f'No hay registros de matriculas')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2FA WC ##
 
@@ -2890,7 +2974,8 @@ GROUP BY p.personId
         """)#.fetchall()
         
         if(results.returns_rows == 0):
-          logger.error(f"S/DATOS")
+          logger.error(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = True
           return True
 
         results = results.fetchall()
@@ -3039,10 +3124,12 @@ GROUP BY p.personId
         if(_response):
           logger.info(f"datos de alumnos validados")
           logger.error(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = _response
         return _response
     except Exception as e:
         logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.info(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2EA WC ##
 
@@ -3089,18 +3176,22 @@ GROUP BY p.personId
             if _contador == _assessment:
                 logger.info(f'Todas las evaluaciones estan ingresadas como sumativas o formativas')
                 logger.info(f'Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
             else:
                 logger.error(f'No todas las evaluaciones estan ingresadas como sumativas o formativas')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn7F0 WC ##
 
@@ -3147,6 +3238,7 @@ GROUP BY p.personId
                 if (len(y)>3):
                     logger.error(f'Se han ingresado calificaciones sumativas con mas de un decimal')
                     logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             for x in _assessmentScoreValue:
                 if (x >= 1.0 and x <= 7.0):
@@ -3154,18 +3246,22 @@ GROUP BY p.personId
             if _contador == _assessment:
                 logger.info(f'Todas las evaluaciones sumativas estan ingresadas correctamente')
                 logger.info(f'Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
             else:
                 logger.error(f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn7F1 WC ##
 
@@ -3223,21 +3319,26 @@ GROUP BY p.personId
                     if x < 4:
                         logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
                 logger.info(f'Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
             else:
                 logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.error(f'No existen estudiantes promovidos en el establecimiento')
             logger.error(f'S/Datos')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn7F2 WC ##
 
@@ -3278,23 +3379,28 @@ GROUP BY p.personId
                 if (x is None or x > 100 or x <= 0):
                     logger.error(f'El peso de la/s calificacion/es esta mal ingresado')
                     logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             _scoreValue = (list([m[3] for m in _query if m[3] is not None]))
             for y in _scoreValue:
                 if (y is None):
                     logger.error(f'Existen Calificaciones mal ingresadas en el establecimiento')
                     logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             logger.info(f'Calificaciones con su ponderacion ingresadas correctamente')
             logger.info(f'Aprobado')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
         else:
             logger.error(f'S/Datos')
             logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn7F3 WC ##
 
@@ -3350,22 +3456,27 @@ GROUP BY p.personId
               if(len(_digitalRandom) == len(_digitalRandomKeyPerson)):
                 logger.info(f'Las modificaciones a las ponderaciones cuentan con firma del Docente/UTP')
                 logger.info(f'Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
               else:
                 logger.error(f'Las firmas ingresadas no corresponden a las del Docente/UTP')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             else:
               logger.error(f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
         else:
           logger.error(f'No existen cambios realizados a las ponderaciones ')
           logger.error(f'S/Datos')
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn7F4 WC ##
 
@@ -3431,22 +3542,27 @@ GROUP BY p.personId
                 if(len(_calendar) == len(_organizationCalendarSession)):
                   logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
                   logger.info(f'Aprobado')
+                  return_dict[getframeinfo(currentframe()).function] = True
                   return True
                 else:
                   logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
                   logger.error(f'Rechazado')
+                  return_dict[getframeinfo(currentframe()).function] = False
                   return False
             else:
                 logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
                 logger.error(f'Rechazdo')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.error(f'No evaluaciones registradas en el establecimiento ')
             logger.error(f'S/Datos')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn7F5 WC ##
 
@@ -3515,22 +3631,27 @@ GROUP BY p.personId
               if(len(_file) == len(_query)):
                 logger.info(f'Todos los alumnos nuevos con matricula definitiva poseen documento')
                 logger.info(f'Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
               else:
                 logger.error(f'los alumnos nuevos con matricula definitiva no poseen documento')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
           else:
             logger.error(f'Los alumnos nuevos con matricula definitiva no poseen documento')
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
         else:
             logger.error(f'No existen alumnos nuevos con matricula definitiva')
             logger.error(f'S/Datos')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2DA WC ##
 
@@ -3593,22 +3714,27 @@ GROUP BY p.personId
             if(len(_file) == len(_query)):
               logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
               logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
             else:
               logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
           else:
             logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2DB WC ##
 
@@ -3668,18 +3794,22 @@ GROUP BY p.personId
             if(len(_query)==len(_data)):
               logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
               logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
             else:
               logger.error(f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No existen registros de alumnos retirados del establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2CA WC ##
 
@@ -3727,18 +3857,22 @@ GROUP BY p.personId
             if(len(_query)==len(_queryEntregaDocumentos)):
               logger.info(f'Todos los alumnos retirados del establecimiento cuentan con una entrega de documentos respectiva al apoderado')
               logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
             else:
               logger.error(f'Los alumnos retirados del establecimiento no cuentan con un registro de entrega de documentos al apoderado')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No existen registro de alumnos retirados del establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2CB WC ##
 
@@ -3805,22 +3939,27 @@ GROUP BY p.personId
             if(len(_file) == len(_query)):
               logger.info(f'Todos los alumnos excedentes cuentan con su documento correspondiente')
               logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
             else:
               logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
           else:
             logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No existen alumnos excedentes en el establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f'NO se pudo ejecutar la verificación en la lista')
         logger.error(f'Rechazado')
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2BA WC ##
 
@@ -3896,20 +4035,24 @@ GROUP BY p.personId
                     if (len(results2))<1:
                         logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
                         logger.error(f"Rechazado")
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 x+=x
             logger.info(f"todos los alumnos de practica cumplen con los requisitos")
             logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
 
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos en practica registrados")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
 
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn29A WC ##
 
@@ -3955,6 +4098,7 @@ GROUP BY p.personId
                 if(x == 2):
                     logger.error(f"Matriculas repetidas")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
                 else:
                     for y in organizacionesK12:
@@ -3964,17 +4108,21 @@ GROUP BY p.personId
                             else:
                                 logger.error(f"Matricula/s no registrada/s")
                                 logger.error(f"Rechazado")
+                                return_dict[getframeinfo(currentframe()).function] = False
                                 return False
             logger.info(f'Matriculas ingresadas correctamente')
             logger.info(f'Aprobado')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos en practica registrados")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn29B WC ##
 
@@ -4022,11 +4170,13 @@ GROUP BY p.personId
             if not _organizationStu :
                 logger.error(f"Sin Alumnos")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _organizationProf = (list([m[5] for m in _queryProf if m[0] is not None]))
             if not _organizationProf :
                 logger.error(f"Sin profesores")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _contador = 0
             z = len(_organizationStu)
@@ -4037,18 +4187,22 @@ GROUP BY p.personId
             if _contador == z:
                 logger.info(f'Todos los alumnos en practica con profesor')
                 logger.info(f'Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
             else:
                 logger.error(f'Alumnos en practica sin profesor')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos en practica registrados")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn29C WC ##
 
@@ -4140,6 +4294,7 @@ GROUP BY p.personId
     except Exception as e:
         logger.info(f"S/Datos")
         logger.info(f'Sin asistencia por bloque: {e}')
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     try:
         asistencia = conn.execute("""
@@ -4254,6 +4409,7 @@ GROUP BY p.personId
     except Exception as e:
         logger.error(f'Rechazado')
         logger.info(f'No cumple con los criterios de la consulta: {e}')
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     try:
         if(len(asistencia)>0):
@@ -4267,19 +4423,23 @@ GROUP BY p.personId
               if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
                 logger.info(f'Rechazado')
                 logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False    
                 
               if(el_ != firmadoEnClases[idx_]):
                 logger.info(f'Rechazado')
                 logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             
         logger.info("Aprobado")    
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
         return _r
   ## Fin fn5E0 WC ##
 
@@ -4327,22 +4487,27 @@ JOIN RefIncidentBehavior rInBh
                         query = len(query)
                         logger.info(f'Total de datos: {query}')
                         logger.info(f'Aprobado')
+                        return_dict[getframeinfo(currentframe()).function] = True
                         return True
                     else:
                         logger.error(f'S/Datos')
                         logger.error(f'No se encuentran registradas medidas diciplinarias para los incidentes registrados')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 except Exception as e:
                     logger.error(f'No se pudo ejecutar la consulta: {str(e)}')
                     logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
         else:
             logger.info(f'S/Datos')
             logger.info(f'Sin incidentes registrados')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
   ## Fin fn8F1 WC ##
 
@@ -4377,22 +4542,27 @@ JOIN RefIncidentBehavior rInBh
           if not _date:
             logger.error(f"Sin fecha de asistencia ingresada")
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
           _status = (list(set([m[1] for m in _query if m[1] is not None])))
           if not _status:
             logger.error(f"Sin estado de asistencia asignado")
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
           logger.info(f'Aprobado')
           logger.info(f'Todos los registros de asistencia cuentan con un estado asignado')
+          return_dict[getframeinfo(currentframe()).function] = True
           return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin datos de asistencia")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
           logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
   ## Fin fn5E4 WC ##
 
@@ -4652,18 +4822,22 @@ JOIN RefIncidentBehavior rInBh
             if(_contador > 0):
                 logger.error('Duplicados')
                 logger.error('Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             else:
                 logger.info('No hay duplicados')
                 logger.info('Aprobado')
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
         else:
             logger.error(f'No existen Firmas')
             logger.error(f'S/Datos')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## fin fn5D0 WC ##
 
@@ -4809,26 +4983,32 @@ JOIN RefIncidentBehavior rInBh
                 if not profe:
                     logger.error(f"Sin profesor jefe, o profesor de asignaturas")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
                 elif not calenda:
                     logger.error(f"Sin calendario")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
                 elif not evalua:
                     logger.error(f"Sin evaluaciones")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             else:
                 logger.error(f"Sin Datos de alumnos: {org}")
         if x==0:
           logger.info(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
         logger.info("Se validaron todos los datos")
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn4FA WC ##
 
@@ -5069,6 +5249,7 @@ GROUP BY Organizationid, date
         logger.info(f"S/Datos")
         logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
         logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+        return_dict[getframeinfo(currentframe()).function] = False
         return False 
       
       #define listas de errores
@@ -5119,14 +5300,17 @@ GROUP BY Organizationid, date
         if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
         if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
         if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
       else:
         logger.info(f'Validacion aprobada')
         logger.info(f'Aprobado')
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
   ## Fin fn5F0 WC ##
 
@@ -5172,6 +5356,7 @@ GROUP BY Organizationid, date
     if( len(allRows) == 0):
       logger.info(f'S/Datos')
       logger.info(f'No hay entrevistas o reuniones con apoderados registradas en el sistema')
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     FineRows = []
     try:
@@ -5220,6 +5405,7 @@ GROUP BY Organizationid, date
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
   ## Fin fn8F3 WC ##
 
@@ -5259,36 +5445,43 @@ GROUP BY Organizationid, date
             if not _incidentId:
                 logger.error(f"Sin Incidentes")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _incidentDate = (list([m[1] for m in _queryIncident if m[1] is not None]))
             if not _incidentDate:
                 logger.error(f"Sin Fecha registrada para los incidentes")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _incidentTime = (list([m[2] for m in _queryIncident if m[2] is not None]))
             if not _incidentTime:
                 logger.error(f"Sin Time registrada para los incidentes")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _incidentTimeDescriptionCodeId = (list([m[3] for m in _queryIncident if m[3] is not None]))
             if not _incidentTimeDescriptionCodeId:
                 logger.error(f"Sin time code en el incidente")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _incidentDescription = (list([m[4] for m in _queryIncident if m[4] is not None]))
             if not _incidentDescription:
                 logger.error(f"Sin descripcion para el incidente")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _organizationPersonRoleId = (list([m[5] for m in _queryIncident if m[5] is not None]))
             if not _organizationPersonRoleId:
                 logger.error(f"Sin estudiante en incidente")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _roleId = (list([m[6] for m in _queryIncident if m[6] is not None]))
             if _roleId[0] != 6:
                 logger.error(f"Sin estudiante en incidente")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             for x in _incidentId:
 
@@ -5310,6 +5503,7 @@ GROUP BY Organizationid, date
                     if not _personId:
                         logger.error(f"Sin personas registradas para el incidente")
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                     _profe = 0 #4,5
                     _apoderado = 0 #15
@@ -5328,33 +5522,41 @@ GROUP BY Organizationid, date
                     if _entrevistado == 0:
                         logger.error(f'Sin entrevistado en reunion de incidente')
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                     if _entrevistador == 0:
                         logger.error(f'Sin entrevistador en reunion de incidente')
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                     if _profe == 0:
                         logger.error(f'Sin profesor asignado a incidente')
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                     if _apoderado == 0:
                         logger.error(f'Sin apoderado en incidente')
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 else:
                     logger.error(f"Sin personas registradas para el incidente")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             logger.info(f'Incidentes validados')
             logger.info(f'Aprobado')
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
         else:
             logger.error(f"S/Datos ")
             logger.error(f"Sin incidentes registrados")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn8F2 WC ##
 
@@ -5400,19 +5602,23 @@ GROUP BY Organizationid, date
             if lista == listaDos:
                 logger.info(f"todos los alumnos de intercambios fueron aprobados")
                 logger.info(f"Aprobado")
+                return_dict[getframeinfo(currentframe()).function] = True
                 return True
             else :
                 logger.error(f'No todos los alumnos de intercambio han sido aprobados')
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No hay alumnos de intercambio registrados en el establecimiento")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
 
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2AA WC ##
 
@@ -5480,22 +5686,27 @@ GROUP BY Organizationid, date
             if(len(_query) == len(_file)):
               logger.info(f'Todos los alumnos extranjeros poseen documento de convalidacion de estudios')
               logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
             else:
               logger.error(f'Existen documentos de convalidacion de ramos incompletos')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
           else:
             logger.error(f'No todos los alumnos extranjeros no poseen documento de convalidacion de estudios')
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn28A WC ##
 
@@ -5537,11 +5748,13 @@ GROUP BY Organizationid, date
             if not _alumnos :
                 logger.error(f"Sin alumnos registrados")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _matriculasTotales = (list([m[1] for m in _query if m[1] is not None]))
             if not _matriculasTotales :
                 logger.error(f"Sin matriculas registradas")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _totalAlumnos = int(len(_alumnos))
             if int(_matriculasTotales[0]) == _totalAlumnos:
@@ -5556,22 +5769,27 @@ GROUP BY Organizationid, date
                     if(len(_queryRegistroAsistencia)>0):
                         logger.info(f'Matriculas registradas y asistencia diaria realizada')
                         logger.info(f'Aprobado')
+                        return_dict[getframeinfo(currentframe()).function] = True
                         return True
                     else:
                         logger.error(f'Asistencia diaria no realizada por el establecimiento')
                         logger.error(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
             else:
                 logger.error(f"Sin matriculas no coinciden con total de alumnos registrados")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No existen alumnos matriculados en el establecimiento')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn531 WC ##
 
@@ -5645,22 +5863,27 @@ GROUP BY Organizationid, date
             if(len(_file) == len(_query)):
               logger.info(f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')
               logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
             else:
               logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
               logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
           else:
             logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
             logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
         else:
             logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
             logger.info(f"S/Datos")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn28B WC ##
 
@@ -5719,45 +5942,56 @@ GROUP BY Organizationid, date
                             if not organizationId :
                                 logger.error(f"Sin OrganizationId")
                                 logger.error(f'Rechazado')
+                                return_dict[getframeinfo(currentframe()).function] = False
                                 return False
                             if not calendarCode :
                                 logger.error(f"Sin CalendarCode")
                                 logger.error(f'Rechazado')
+                                return_dict[getframeinfo(currentframe()).function] = False
                                 return False
                             if not calendarDescripction :
                                 logger.error(f"Sin CaldendarDescription")
                                 logger.error(f'Rechazado')
+                                return_dict[getframeinfo(currentframe()).function] = False
                                 return False
                             if not calendarYear :
                                 logger.error(f"Sin CalendarYear")
                                 logger.error(f'Rechazado')
+                                return_dict[getframeinfo(currentframe()).function] = False
                                 return False
                             logger.info(f'Calendarios ingresados correctamente')
                             logger.info(f'Aprobado')
+                            return_dict[getframeinfo(currentframe()).function] = True
                             return True
                         else:
                             logger.info(f"S/Datos")
                             logger.info(f"Rechazado")
+                            return_dict[getframeinfo(currentframe()).function] = False
                             return False
                     except Exception as e:
                         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                         logger.error(f"Rechazado")
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 else:
                     logger.info(f"S/Datos")
                     logger.info(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             except Exception as e:
                 logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                 logger.error(f"Rechazado")
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn9F2 WC ##
 
@@ -5865,27 +6099,33 @@ GROUP BY Organizationid, date
                     else:
                         logger.info(f"S/Datos")
                         logger.info(f"Sin registros de actividades familiares o comunitarias")
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                     if (len(incidentProfessor)>0):
                         professor += 1
                     else:
                         logger.info(f"S/Datos")
                         logger.info(f"Sin registros de actividades familiares o comunitarias")
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 except Exception as e:
                     logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
             logger.info(f'Reuniones validas')
             logger.info(f'Aprobado')
+            return_dict[getframeinfo(currentframe()).function] = False
             return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin registros de actividades familiares o comunitarias")
+            return_dict[getframeinfo(currentframe()).function] = False
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn9F3 WC ##
 
@@ -5988,6 +6228,7 @@ GROUP BY Organizationid, date
              or   isJsonValidRegulationViolatedDesc == False):
             logger.error("Rechazado")
             logger.error("Los campos obligatorios no pueden ser nulos")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
                    
           if(refIncidentBehaviorDesc not in (
@@ -6000,6 +6241,7 @@ GROUP BY Organizationid, date
              and refDisciplinaryActionTaken is None):
             logger.error("Rechazado")
             logger.error("Las anotaciones negativas deben tener acciones asociadas")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
           
         #resultList  = [item[0] for item in allIncidents if item not in FineRows]
@@ -6014,6 +6256,7 @@ GROUP BY Organizationid, date
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
         return _r
   ## Fin fn8F0 WC ##
 
@@ -6057,42 +6300,51 @@ GROUP BY Organizationid, date
             if not identificador:
                 logger.error(f"Sin identificador")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             nombre = (list(set([m[1] for m in rows if m[1] is not None])))
             if not nombre:
                 logger.error(f"Sin nombre")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             titulo = (list(set([m[2] for m in rows if m[2] is not None])))
             if not titulo:
                 logger.error(f"Sin titulo")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             fechatitulo = (list(set([m[3] for m in rows if m[3] is not None])))
             if not fechatitulo:
                 logger.error(f"Sin fecha de titulo")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             institucion = (list(set([m[4] for m in rows if m[4] is not None])))
             if not institucion:
                 logger.error(f"Sin institucion")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             observacion = (list(set([m[5] for m in rows if m[5] is not None])))
             if not observacion:
                 logger.error(f"Sin observacion")
                 logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
             logger.info(f"Docentes validados")
             logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin clases en las que no hay docente/s")
+            return_dict[getframeinfo(currentframe()).function] = False
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn5E2 WC ##
 
@@ -6143,21 +6395,25 @@ GROUP BY Organizationid, date
                 if fila[3] is None or 0 or fila[4] is None  :
                     logger.error(f'clase con profesor suplente no idoneo no registrada para recuperar o registrada pero no firmada')
                     logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False
                 else:
                     if i == a and fila[a][3] is not None or 0 and fila[a][4] is not None:
                         logger.info(f'verificacion aprobada,Todas las suplencias tienen indicada la recuperacion y estan firmadas')
                         logger.infor(f'Aprobado')
+                        return_dict[getframeinfo(currentframe()).function] = True
                         return True
                     else:
                         i+=1
         else:
             logger.error(f'S/Datos')
             logger.error(f"Sin clases en las que no hay docente/s")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f'NO se pudo ejecutar la verificación en la lista')
         logger.error(f'Rechazado')
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## fin fn5E3 WC ##
 
@@ -6198,21 +6454,25 @@ GROUP BY Organizationid, date
                     if column is None:
                         logger.info(f'informacion incompleta del profesor')
                         logger.info(f'Rechazado')
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
                     else:
                         if i == a:
                             logger.info(f'Informacion de profesores completa')
                             logger.info(f'Aprobado')
+                            return_dict[getframeinfo(currentframe()).function] = True
                             return True
                         else:
                             i+=1
         else:
             logger.error(f'S/Datos')
             logger.error(f'Sin datos de docentes')
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn9F0 WC ##
 
@@ -6253,6 +6513,7 @@ GROUP BY Organizationid, date
     except Exception as e:
       logger.info(f"Resultado: {courseSections} -> {str(e)}")
       logger.info(f"S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
     _query = []
     logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
@@ -6314,6 +6575,7 @@ GROUP BY Organizationid, date
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
         return _r
   ## Fin fn9F1 WC ##
 
@@ -6419,6 +6681,7 @@ GROUP BY pid.Identifier
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### FIN FN0FA ###
 
@@ -6468,6 +6731,7 @@ GROUP BY pid.Identifier
     if( len(Allrows) == 0 ):
       logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
       logger.info(f"S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True #si no hay registros de salida anticipada, no continúa la revisión 
     try:
       if( len(Allrows) > 0 ):
@@ -6653,6 +6917,7 @@ GROUP BY pid.Identifier
       logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### FIN FN0FB ###
 
@@ -6703,6 +6968,7 @@ GROUP BY pid.Identifier
         if (len(_p)>len(_ed)):
           logger.error(f"Existen registros de retiros de estudiantes del establecimiento sin fecha de evento.")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
         else:
           for p in _p:
@@ -6724,32 +6990,39 @@ GROUP BY pid.Identifier
                           if va1 is None:
                             logger.error(f"No hay registro de firma digital de docente / administrativo para incidente.")
                             logger.error(f"Rechazado")
+                            return_dict[getframeinfo(currentframe()).function] = False
                             return False
                         elif(str(r4[1]) == "43"): #apoderado
                           if va1 is None: 
                             if va2 is None:
                               logger.error(f"No hay registro de firma digital ni documento digitalizado de apoderado para incidente.")
                               logger.error(f"Rechazado")
+                              return_dict[getframeinfo(currentframe()).function] = False
                               return False
                     else:
                       logger.error(f"No hay registro de personas asociadas a incidente Id: {str(r3)}")
                       logger.error(f"Rechazado")
+                      return_dict[getframeinfo(currentframe()).function] = False
                       return False
 
                 else:
                   logger.error(f"No hay registro de entrega de informacion por retiro de estudiante de establecimiento.")
                   logger.error(f"Rechazado")
+                  return_dict[getframeinfo(currentframe()).function] = False
                   return False
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True        
       else:
         logger.info(f"NO existen registros de retiro de alumnos del establecimiento.")
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn1FA ###
 
@@ -6794,6 +7067,7 @@ GROUP BY pid.Identifier
 
     if( len(Allrows) == 0 ):
       logger.info("S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True
     
     _r = False
@@ -6844,6 +7118,7 @@ GROUP BY pid.Identifier
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### fin fn1FB ###
 
@@ -6936,6 +7211,7 @@ GROUP BY pid.Identifier
                             if(_rdk is None):
                               logger.error(f"No hay registro de firma de docente/administrativo para evento.")
                               logger.error(f"Rechazado")
+                              return_dict[getframeinfo(currentframe()).function] = False
                               return False
                             else:
                               _l3 = 1
@@ -6944,27 +7220,32 @@ GROUP BY pid.Identifier
                               if(_fsb is None):
                                 logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento.")
                                 logger.error(f"Rechazado")
+                                return_dict[getframeinfo(currentframe()).function] = False
                                 return False
                               else:
                                 _l3 = 1
                       else:
                         logger.error(f"No har registro de docente y/o apoderado para evento.")
                         logger.error(f"Rechazado")
+                        return_dict[getframeinfo(currentframe()).function] = False
                         return False
 
                     else:
                       logger.error(f"No hay registro de personas asociadas al evento.")
                       logger.error(f"Rechazado")
+                      return_dict[getframeinfo(currentframe()).function] = False
                       return False
 
                 if(len(_l2)>0):
                   logger.error(f"Los siguientes apoderados no tienen registro de evento: {str(_l2)}")
                   logger.error(f"Rechazado")
+                  return_dict[getframeinfo(currentframe()).function] = False
                   return False
 
               else:
                 logger.error(f"No hay registro de entrega de informacion al apoderado.")
                 logger.error(f"Rechazado")
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False
 
           else:
@@ -6973,20 +7254,24 @@ GROUP BY pid.Identifier
         if(len(_l)>0):
           logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
 
       if(_l3 == 1):
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       if(_l3 == 0):
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
         
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn1FC ###
 
@@ -7141,24 +7426,29 @@ WHERE
             if(len(arr)!=0):
               logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
               logger.error(f"Rechazado")
+              return_dict[getframeinfo(currentframe()).function] = False
               return False 
             else:
               logger.info(f"Aprobado")
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
 
           else:  
               logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
               logger.error(f"Rechazado")
+              return_dict[getframeinfo(currentframe()).function] = False
               return False   
 
       else:
         logger.error(f"No hay informacion de establecimiento.")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False   
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6F0 ###
 
@@ -7231,19 +7521,23 @@ where
           if(len(arr)!=0):
               logger.error(f"Los siguientes numero de lista necesita informacion: {str(arr)} ")
               logger.error(f"Rechazado")
+              return_dict[getframeinfo(currentframe()).function] = False
               return False
           else:
               logger.info(f"Ningunos de los registros le falta un dato.")
               logger.info(f"Aprobado")
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
       else:
         logger.error(f"No hay registro Numero de lista asociados .")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False   
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6f1  ###
 
@@ -7287,14 +7581,17 @@ where
           _l1.append(_d+"-"+_r)
           logger.error(f"Existen registros de asistencia para dias con suspension de clases: {str(_l1)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
       else:
         logger.error(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6E2  ###
  
@@ -7361,6 +7658,7 @@ where
       if(_q1.returns_rows == 0):
         logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
         logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       _q1 = _q1.fetchall()
@@ -7386,18 +7684,22 @@ where
         if(len(_l)!=0):
           logger.error(f"Hay alumnos sin rergistro de fecha de alta/baja: {str(_l)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
 
         if(len(_l2)!=0):
           logger.error(f"Hay alumnos con inconsistencia en registros de alta/baja: {str(_l2)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
         
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6D0 ###
 
@@ -7457,6 +7759,7 @@ where
             else:
               logger.error(f"No hay informacion de calendario academico del establecimiento.")
               logger.error(f"Rechazado")
+              return_dict[getframeinfo(currentframe()).function] = False
               return False   
           if(_d2 is None):
             _l.append(_r)
@@ -7467,26 +7770,31 @@ where
                 _l2.append(_r+"-"+str(q3[0]))
             else:
               logger.info(f"Aprobado")
+              return_dict[getframeinfo(currentframe()).function] = True
               return True
         
         if(len(_l)!=0):
           logger.error(f"Hay alumnos retirados sin registro de fecha de retiro: {str(_l)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
 
         if(len(_l2)!=0):
           logger.error(f"Hay alumnos que registran asistencia anterior a la fecha de ingreso o posterior a la fecha de retiro del establecimiento: {str(_l2)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False 
 
       else:
         logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6D1 ###
 
@@ -7540,19 +7848,23 @@ where
         if(len(_l1)!=0):
           logger.error(f"Los siguientes alumnos excedentes sin derecho a subvencion tienen registro de asistencia a nivel de curso: {str(_l1)}")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
         else:
           logger.info(f"Aprobado")
+          return_dict[getframeinfo(currentframe()).function] = True
           return True
 
       else:
         logger.info(f"No hay registros de alumnos excedentes sin derecho a subvencion en el establecimiento.")
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
     except Exception as e:
         logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
 ### fin fn6C0 ###
 
@@ -7642,19 +7954,23 @@ where
         if(len(arr)!=0):
           logger.error(f"Los siguientes alumnos llegaron tarde o : {str(arr)} ")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False  
         else: 
           logger.info("Aprobado")
+          return_dict[getframeinfo(currentframe()).function] = True
           return True        
 
       else:
         logger.error(f"No hay registro Numero de lista asociados .")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False   
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ###  fin fn6E0  ###
 
@@ -7731,29 +8047,35 @@ where
                     if(len(arr)!=0):
                       logger.error(f"Los siguientes alumnos no tienen identificador de Formacion Dual : {str(arr)} ")
                       logger.error(f"Rechazado")
+                      return_dict[getframeinfo(currentframe()).function] = False
                       return False
                     else:
                       logger.info(f"Aprobado")
+                      return_dict[getframeinfo(currentframe()).function] = True
                       return True 
                   
                   else:
                     logger.error(f"No tiene alumnos en la asignatura ")
                     logger.error(f"Rechazado")
+                    return_dict[getframeinfo(currentframe()).function] = False
                     return False  
 
               else:
                 logger.error(f"La asignatura no esta enlazada para que sea de partica profesional")
                 logger.error(f"Rechazado")
+                return_dict[getframeinfo(currentframe()).function] = False
                 return False      
                     
       else:
         logger.info(f"En el colegio no hay asignaturas de pratica profesional.")
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True   
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin  fn681 ###
 
@@ -7905,6 +8227,7 @@ where
       if(_q1.returns_rows == 0):
         logger.error(f"El establecimientos no tiene alumnos de formación DUAL para revisar")
         logger.error(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
       
       _q1 = _q1.fetchall()
@@ -7943,10 +8266,12 @@ where
         #             if obser=="None":
         #               arr.append(rut)
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin  fn680 ###
 
@@ -8065,6 +8390,7 @@ where
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
       return _r
 ### fin  fn682  ###
 
@@ -8156,18 +8482,22 @@ where
           if(len(arr)!=0):
             logger.error(f"Los siguientes alumnos llegaron tarde o : {str(arr)} ")
             logger.error(f"Rechazado")
+            return_dict[getframeinfo(currentframe()).function] = False
             return False
           else:
             logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
       else:
         logger.error(f"No hay registro Numero de lista asociados .")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False   
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de información: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6E1  ###
 
@@ -8229,11 +8559,13 @@ where
       """).fetchall()
       
       if(not _data):
-        logger.error(f"S/DATOS")
+        logger.error(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True        
         
     except:
-      logger.error(f"S/DATOS")
+      logger.error(f"S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = True
       return True        
 
     try:
@@ -8332,6 +8664,7 @@ GROUP BY org
     try:
       if(not _result):
         logger.error(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True  
       
       organizacionesErrors = []
@@ -8360,11 +8693,13 @@ GROUP BY org
       if(organizacionesErrors):
         logger.error(f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
     
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin  fn6E4 ###
 
@@ -8420,7 +8755,8 @@ GROUP BY org
       _q1 = conn.execute(_S3)
       if(_q1.returns_rows == 0):
         logger.error(f"No hay informacion de estudiantes excedentes")
-        logger.info(f"S/DATOS")
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = False
         return True  
       
       _q1 = _q1.fetchall()
@@ -8438,13 +8774,16 @@ GROUP BY org
         if(len(arr)!=0):
           logger.error(f"Los siguientes alumnos no tienen Rex de aprobacion : {str(arr)} ")
           logger.error(f"Rechazado")
+          return_dict[getframeinfo(currentframe()).function] = False
           return False
 
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True      
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin  fn6C2 ###
 
@@ -8687,19 +9026,23 @@ WHERE
       _ids = (list([m[0] for m in _rightList if m[0] is not None]))      
       if(not _errorsList and not _ids):
         logger.info(f"S/DATOS")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
       if(not _errorsList and _ids):
         logger.info(f"APROBADO")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
       roleAttendanceEventIds = (list([m[0] for m in _errorsList if m[0] is not None]))
       logger.error(f"Los siguientes roleAttendanceEvent Ids estan con problemas: {str(roleAttendanceEventIds)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6B0 ###
 
@@ -8834,6 +9177,7 @@ WHERE
       else:
         logger.info(f"No hay información en el establecimiento de eventos que impliquen suspensión de clases.")
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
       _q2 = conn.execute(_s2).fetchall()
@@ -8855,23 +9199,28 @@ WHERE
       else:
         logger.info(f"No hay información en el establecimiento de clases recuperadas.")
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
       if(_flag1 == 1):
         logger.error(_msg1)
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
       elif(_flag2 == 1):
         logger.error(_msg2)
         logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
         return False
       else:
         logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
         return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
       return False
 ### fin fn6E3 ###
 
