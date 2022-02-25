@@ -202,7 +202,7 @@ class check:
   def stopFunctionAfterOfSomeTime(self, fn):
     _result = False
     try:
-      if(self.time):
+      if(self.args.time):
         logger.info(f"Ejecutanto {fn} con restrición de tiempo {self.time} segundos...")
         _result = eval(fn)
       else:
