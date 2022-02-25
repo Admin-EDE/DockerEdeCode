@@ -340,7 +340,7 @@ class check:
       return False 
     try:
       manager = multiprocessing.Manager()
-      return_dict = manager.dict({"response": False})
+      return_dict = manager.dict({"results": {}})
       jobs = []
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
@@ -351,18 +351,16 @@ class check:
             #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
             argsList = formatargspec(*getfullargspec(fnTarget))
-            #logger.info(f"{type(argumentos)}, {'conn' in argumentos}")
             argumentos = ()
             if('conn' in argsList): argumentos = argumentos + (conn,)
             if('return_dict' in argsList): argumentos = argumentos + (return_dict,)
-            p = multiprocessing.Process(target=fnTarget, name=value, args=argumentos)
+            p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=argumentos)
             jobs.append(p)
             p.start()
             p.join(self.args.time)
             if('return_dict' in argsList):
-              t = return_dict.get("response",None)
-              logger.info(f"return_dict -> {t}")
-              eval_ = return_dict.get("response",False)
+              logger.info(f"return_dict -> {return_dict}")
+              eval_ = return_dict["results"][fnTarget.__name__]
             else:
               eval_ = False
             # If thread is active
@@ -4621,8 +4619,8 @@ JOIN RefIncidentBehavior rInBh
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-        return_dict["response"] = _r
-        return return_dict.get("response",_r)
+        return_dict["results"]["fn5E5"] = _r
+        return _r
    ## FIN fn5E5 WC ##
 
   ## Inicio fn5D0 WC ##
