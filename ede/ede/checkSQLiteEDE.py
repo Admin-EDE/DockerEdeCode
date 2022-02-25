@@ -223,17 +223,16 @@ class check:
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
           #  try:
             #eval_ = eval(value)
-            p = multiprocessing.Process(target=self.fn5E5, name=value, args=(conn,))
+            p = multiprocessing.Process(target=value, name=value, args=(conn,))
             jobs.append(p)
             p.start()
             p.join(self.args.time)
             eval_ = False #return_dict.get("response",False)
             # If thread is active
             if p.is_alive():
-                print(f"{value} is running... Se termina proceso por exceder tiempo máximo...")
-                # Terminate foo
                 p.terminate()
-                p.join()              
+                p.join()
+                logger.error(f"{value} is running... Se termina proceso por exceder tiempo máximo...")
             # except Exception as e:
             #   logger.error(f"Exception: {e}")
             #   logger.error(f"{value} exedió el tiempo máximo permitido para ejercutarse!!!")
