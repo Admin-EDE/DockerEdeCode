@@ -272,7 +272,7 @@ class check:
       "fn5E2": "self.fn5E2(conn)",
       "fn5E3": "self.fn5E3(conn)",
       "fn5E4": "self.fn5E4(conn)",
-      "fn5E5": "self.fn5E5(conn)",
+      "fn5E5": "self.fn5E5(conn, return_dict)",
       "fn5D0": "self.fn5D0(conn)",
       "fn6F0": "self.fn6F0(conn)",
       "fn6F1": "self.fn6F1(conn)",
@@ -335,8 +335,7 @@ class check:
     try:
       conn = engine.connect()
     except Exception as e:
-      _t = "ERROR al realizar la conexión con la BD: "+str(e)
-      logger.error(_t)
+      logger.error(f"ERROR al realizar la conexión con la BD: {str(e)}")
       return False 
     try:
       manager = multiprocessing.Manager()
@@ -347,23 +346,25 @@ class check:
           logger.info(f"{key} iniciando...")
           if(self.args.time):
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-          #  try:
-            #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
             argsList = formatargspec(*getfullargspec(fnTarget))
+
             argumentos = ()
             if('conn' in argsList): argumentos = argumentos + (conn,)
             if('return_dict' in argsList): argumentos = argumentos + (return_dict,)
+
             p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=argumentos)
             jobs.append(p)
             p.start()
             p.join(self.args.time)
+
             if('return_dict' in argsList):
-              logger.info(f"return_dict -> {return_dict}")
+              #logger.info(f"return_dict -> {return_dict}")
               eval_ = return_dict[fnTarget.__name__]
-              print(f"eval_: {eval_}")
+              #print(f"eval_: {eval_}")
             else:
-              eval_ = False
+              eval_ = eval(value)
+
             # If thread is active
             if p.is_alive():
                 p.terminate()
