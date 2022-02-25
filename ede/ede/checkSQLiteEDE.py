@@ -359,10 +359,10 @@ class check:
                 p.terminate()
                 p.join()
                 logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
-          
-          while p.is_alive():
-            pass
-          p.close()
+          else:
+            while p.is_alive():
+              pass
+            p.close()
             
           eval_ = return_dict.get(fnTarget.__name__,None)
           logger.info(f"{key}. Resultado: {eval_}")
