@@ -224,7 +224,7 @@ class check:
           #  try:
             #eval_ = eval(value)
             p = multiprocessing.Process(target=self.fn5E5, name="self.fn5E5", args=(conn,))
-            jobs.append[p]
+            jobs.append(p)
             p.start()
             p.join(self.args.time)
             eval_ = False #return_dict.get("response",False)
