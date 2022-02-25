@@ -3,6 +3,7 @@ import logging
 logger = logging.getLogger('root')
 
 from validate_email import validate_email
+import signal
 import re
 import json
 from itertools import cycle
@@ -23,6 +24,10 @@ from sqlalchemy.orm import sessionmaker
 def sqlite_engine_connect(dbapi_connection, connection_record):
     dbapi_connection.create_function("regexp", 2, sqlite_regexp)
     dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
+
+def handler(signum, frame):
+  print('Signal handler called with signal', signum)
+  raise OSError("Función excedió tiempo máximo definido!") 
 
 def validateJSON(jsonData):
   try:
@@ -193,6 +198,19 @@ class check:
 
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
+   
+  def stopFunctionAfterOfSomeTime(self, fn):
+    _result = False
+    try:
+      if(self.time):
+        _result = eval(fn)
+      else:
+        _result = eval(fn)      
+    except:
+      logger.error(f"{fn} exedió el tiempo máximo permitido para ejercutarse!!!")
+      logger.error(f"{fn}: AbortByTime")
+    finally:
+      return _result
 
   #----------------------------------------------------------------------------
   # Transforma archivo JSON en un DataFrame de pandas con todas sus columnas.
@@ -209,7 +227,7 @@ class check:
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
-          eval_ = eval(value)
+          eval_ = self.stopFunctionAfterOfSomeTime(value)
           logger.info(f"{key}. Resultado: {eval_}")
           _result = eval_ and _result
 
