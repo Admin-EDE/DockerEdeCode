@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from inspect import formatargspec, getfullargspec
+from inspect import formatargspec, getfullargspec, getframeinfo, currentframe
 import logging
 logger = logging.getLogger('root')
 
@@ -360,7 +360,7 @@ class check:
             p.join(self.args.time)
             if('return_dict' in argsList):
               logger.info(f"return_dict -> {return_dict}")
-              eval_ = return_dict["results"][fnTarget.__name__]
+              eval_ = return_dict[fnTarget.__name__]
             else:
               eval_ = False
             # If thread is active
@@ -372,6 +372,7 @@ class check:
             eval_ = eval(value)
           
           logger.info(f"{key}. Resultado: {eval_}")
+          #all(l[:][1])
           _result = eval_ and _result
 
       if(not _result):
@@ -4428,6 +4429,7 @@ JOIN RefIncidentBehavior rInBh
           ]
     """      
     _r = False
+    return_dict[getframeinfo(currentframe()).function] = _r
     _query = []
     try:
       _query = conn.execute("""
@@ -4619,7 +4621,7 @@ JOIN RefIncidentBehavior rInBh
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-        return_dict["results"]["fn5E5"] = _r
+        return_dict[getframeinfo(currentframe()).function] = _r
         return _r
    ## FIN fn5E5 WC ##
 
