@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from dbm.dumb import _ValueType
 import logging
 logger = logging.getLogger('root')
 
