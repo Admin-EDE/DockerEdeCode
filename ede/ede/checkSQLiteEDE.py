@@ -4440,7 +4440,7 @@ GROUP BY p.personId
         logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
-        return _r
+      return _r
   ## Fin fn5E0 WC ##
 
   ## Inicio fn8F1 WC ##
@@ -6257,7 +6257,7 @@ GROUP BY Organizationid, date
         logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
-        return _r
+      return _r
   ## Fin fn8F0 WC ##
 
   ## Inicio fn5E2 WC ##
@@ -6576,7 +6576,7 @@ GROUP BY Organizationid, date
         logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
-        return _r
+      return _r
   ## Fin fn9F1 WC ##
 
 ### WebClass FIN ###
