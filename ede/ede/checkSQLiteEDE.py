@@ -348,8 +348,9 @@ class check:
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
           #  try:
             #eval_ = eval(value)
-            logger.info(f"{key},{self.functionsMultiProcess[key].__kwdefaults__}")
-            p = multiprocessing.Process(target=getattr(self.functionsMultiProcess,f"{key}",None), name=value, args=(conn,))
+            fnTarget = self.functionsMultiProcess[key]
+            logger.info(f"{key},{fnTarget.__kwdefaults__},{fnTarget.__defaults__}")
+            p = multiprocessing.Process(target=fnTarget, name=value, args=(conn,))
             jobs.append(p)
             p.start()
             p.join(self.args.time)
