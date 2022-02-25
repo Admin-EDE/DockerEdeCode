@@ -1,6 +1,7 @@
 import argparse #Librería usada en funcion main() para crear el menú de la consola
 import importlib.util #utilizada en función module_from_file para cargar las librerías del estándar
 import logging
+import os
 logger = logging.getLogger('root')
 
 class consoleMenu:
@@ -36,6 +37,7 @@ class consoleMenu:
     parser_check.add_argument('-d','--debug', help='Aumenta el detalle de la salida', action="store_true")
     parser_check.add_argument('-j','--json', help='El archivo de resultados en formato JSON', action="store_true")
     parser_check.add_argument('-f','--function', type=str, help='Especifica la función que se desea revisar')    
+    parser_check.add_argument('-t','--time', type=int, help='Especifica el tiempo máximo de cada verificación')    
     parser_check.set_defaults(func=self.check)
     
   def module_from_file(self,module_name, file_path):
