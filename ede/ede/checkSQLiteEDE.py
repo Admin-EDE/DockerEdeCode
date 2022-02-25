@@ -199,25 +199,6 @@ class check:
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
    
-  def stopFunctionAfterOfSomeTime(self, fn, conn):
-    _result = False
-    try:
-      if(self.args.time):
-        logger.info(f"Ejecutanto {fn} con restrición de tiempo {self.args.time} segundos...")
-        # Set the signal handler and a 5-second alarm
-        signal.signal(signal.SIGALRM, handler)
-        signal.alarm(self.args.time)        
-        _result = eval(fn)
-        signal.alarm(0)          # Disable the alarm
-      else:
-        _result = eval(fn)      
-    except Exception as e:
-      logger.error(f"Exception: {e}")
-      logger.error(f"{fn} exedió el tiempo máximo permitido para ejercutarse!!!")
-      logger.error(f"{fn}: AbortByTime")
-    finally:
-      return _result
-
   #----------------------------------------------------------------------------
   # Transforma archivo JSON en un DataFrame de pandas con todas sus columnas.
   # Agrega las columnas que faltan.
@@ -226,12 +207,13 @@ class check:
     _result = True
     sec = self.args.secPhase
     path = self.args.path_to_DB_file
-    engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000")
+    engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000",
+                           connect_args={'connect_timeout': 10})
     try:
       conn = engine.connect()
     except Exception as e:
-      _t = "ERROR en la verificación: "+str(e)
-      logger.info(_t)
+      _t = "ERROR al realizar la conexión con la BD: "+str(e)
+      logger.error(_t)
       _result = False 
     try:
       # Set the signal handler
