@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger('root')
 
 from validate_email import validate_email
-import signal
+import multiprocessing
 import re
 import json
 from itertools import cycle
@@ -24,10 +24,6 @@ from sqlalchemy.orm import sessionmaker
 def sqlite_engine_connect(dbapi_connection, connection_record):
     dbapi_connection.create_function("regexp", 2, sqlite_regexp)
     dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
-
-def handler(signum, frame):
-  print('Signal handler called with signal', signum)
-  raise OSError("Función excedió tiempo máximo definido!") 
 
 def validateJSON(jsonData):
   try:
@@ -207,8 +203,9 @@ class check:
     _result = True
     sec = self.args.secPhase
     path = self.args.path_to_DB_file
-    engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000",
-                           connect_args={'.timeout': 10000})
+    engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000"
+                          # ,connect_args={'timeout': 10000}
+                           )
     try:
       conn = engine.connect()
     except Exception as e:
@@ -216,21 +213,27 @@ class check:
       logger.error(_t)
       return False 
     try:
-      # Set the signal handler
-      signal.signal(signal.SIGALRM, handler)
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
           if(self.args.time):
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-            signal.alarm(self.args.time)  # Set time-second alarm
-            try:
-              eval_ = eval(value)
-            except Exception as e:
-              logger.error(f"Exception: {e}")
-              logger.error(f"{value} exedió el tiempo máximo permitido para ejercutarse!!!")
-              logger.error(f"{value}: AbortByTime")
-            signal.alarm(0)               # Disable the alarm
+          #  try:
+            #eval_ = eval(value)
+            p = multiprocessing.Process(target=eval(value), name=value, args=(conn,))
+            p.start()
+            p.join(self.args.time)
+            # If thread is active
+            if p.is_alive():
+                print(f"{value} is running... Se termina proceso por exceder tiempo máximo...")
+                # Terminate foo
+                p.terminate()
+                p.join()              
+            # except Exception as e:
+            #   logger.error(f"Exception: {e}")
+            #   logger.error(f"{value} exedió el tiempo máximo permitido para ejercutarse!!!")
+            #   logger.error(f"{value}: AbortByTime")
+            # signal.alarm(0)               # Disable the alarm
           else:
             eval_ = eval(value)
           
