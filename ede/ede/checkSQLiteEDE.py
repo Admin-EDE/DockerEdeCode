@@ -345,6 +345,7 @@ class check:
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
           fnTarget = self.functionsMultiProcess[key]
+
           p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
           jobs.append(p)
           p.start()          
@@ -353,7 +354,7 @@ class check:
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
             p.join(self.args.time)
 
-          eval_ = return_dict[fnTarget.__name__]
+          eval_ = return_dict.get(fnTarget.__name__,None)
 
           # If thread is active
           if p.is_alive():
