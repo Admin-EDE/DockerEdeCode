@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import inspect
 import logging
 logger = logging.getLogger('root')
 
@@ -349,7 +350,7 @@ class check:
           #  try:
             #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
-            logger.info(f"{key},{fnTarget.__qualname__},{fnTarget.__name__},{fnTarget.__annotations__}")
+            logger.info(inspect.getargspec(fnTarget))
             p = multiprocessing.Process(target=fnTarget, name=value, args=(conn,))
             jobs.append(p)
             p.start()
@@ -359,7 +360,7 @@ class check:
             if p.is_alive():
                 p.terminate()
                 p.join()
-                logger.error(f"{value} estaba corriendo, pero fue finalizada por porque excedió su tiempo máximo...")
+                logger.error(f"{value} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           else:
             eval_ = eval(value)
           
