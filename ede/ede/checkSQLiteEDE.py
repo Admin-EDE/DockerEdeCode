@@ -367,7 +367,7 @@ class check:
 
       logger.info(f"return_dict -> {return_dict}")
       if(not _result):
-        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
+        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación.\nHay errores en la revisión.\nRevise el LOG para más detalles")
     except Exception as e:
       _t = "ERROR en la verificación: "+str(e)
       logger.info(_t)     
