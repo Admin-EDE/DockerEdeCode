@@ -357,9 +357,8 @@ class check:
             if p.is_alive(): # If thread is active
                 p.terminate()
                 logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
-          else:
-            p.join()
-          
+
+          p.join()          
           p.close()  
           #eval_ = return_dict.get(fnTarget.__name__,None)
           #logger.info(f"{key}. Resultado: {eval_}")
