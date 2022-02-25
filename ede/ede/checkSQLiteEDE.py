@@ -214,7 +214,7 @@ class check:
     except Exception as e:
       _t = "ERROR al realizar la conexión con la BD: "+str(e)
       logger.error(_t)
-      _result = False 
+      return False 
     try:
       # Set the signal handler
       signal.signal(signal.SIGALRM, handler)
