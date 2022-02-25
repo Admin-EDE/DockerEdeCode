@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import inspect
+from inspect import formatargspec, getfullargspec
 import logging
 logger = logging.getLogger('root')
 
@@ -350,7 +350,7 @@ class check:
           #  try:
             #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
-            logger.info(inspect.getargspec(fnTarget))
+            logger.info(formatargspec(**getfullargspec(fnTarget)))
             p = multiprocessing.Process(target=fnTarget, name=value, args=(conn,))
             jobs.append(p)
             p.start()
