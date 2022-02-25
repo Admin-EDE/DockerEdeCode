@@ -349,7 +349,7 @@ class check:
           #  try:
             #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
-            logger.info(f"{key},{fnTarget.__kwdefaults__},{fnTarget.__defaults__}")
+            logger.info(f"{key},{fnTarget.__func__}")
             p = multiprocessing.Process(target=fnTarget, name=value, args=(conn,))
             jobs.append(p)
             p.start()
@@ -359,12 +359,7 @@ class check:
             if p.is_alive():
                 p.terminate()
                 p.join()
-                logger.error(f"{value} is running... Se termina proceso por exceder tiempo máximo...")
-            # except Exception as e:
-            #   logger.error(f"Exception: {e}")
-            #   logger.error(f"{value} exedió el tiempo máximo permitido para ejercutarse!!!")
-            #   logger.error(f"{value}: AbortByTime")
-            # signal.alarm(0)               # Disable the alarm
+                logger.error(f"{value} estaba corriendo, pero fue finalizada por porque excedió su tiempo máximo...")
           else:
             eval_ = eval(value)
           
