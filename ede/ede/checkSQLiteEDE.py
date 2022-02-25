@@ -207,7 +207,8 @@ class check:
         _result = eval(fn)
       else:
         _result = eval(fn)      
-    except:
+    except Exception as e:
+      logger.error(f"Exceptio: {e}")
       logger.error(f"{fn} exedió el tiempo máximo permitido para ejercutarse!!!")
       logger.error(f"{fn}: AbortByTime")
     finally:
