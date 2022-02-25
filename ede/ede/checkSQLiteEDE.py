@@ -359,7 +359,10 @@ class check:
             jobs.append(p)
             p.start()
             p.join(self.args.time)
-            eval_ = False #return_dict.get("response",False)
+            if('return_dict' in argsList):
+              eval_ = return_dict.get("response",False)
+            else:
+              eval_ = False
             # If thread is active
             if p.is_alive():
                 p.terminate()
@@ -4402,7 +4405,7 @@ JOIN RefIncidentBehavior rInBh
   ## Fin fn5E4 WC ##
 
   ## INICIO fn5E5 WC ##
-  def fn5E5(self,conn):
+  def fn5E5(self,conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
       6.2 Contenido mínimo, letra b.2
@@ -4616,7 +4619,8 @@ JOIN RefIncidentBehavior rInBh
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-        return _r
+        return_dict["response"] = _r
+        return return_dict.reponse
    ## FIN fn5E5 WC ##
 
   ## Inicio fn5D0 WC ##
