@@ -350,9 +350,12 @@ class check:
           #  try:
             #eval_ = eval(value)
             fnTarget = self.functionsMultiProcess[key]
-            argumentos = formatargspec(*getfullargspec(fnTarget))
-            logger.info(f"{type(argumentos)}, {'conn' in argumentos}")
-            p = multiprocessing.Process(target=fnTarget, name=value, args=(conn,))
+            argsList = formatargspec(*getfullargspec(fnTarget))
+            #logger.info(f"{type(argumentos)}, {'conn' in argumentos}")
+            argumentos = ()
+            if('conn' in argsList): argumentos = argumentos + (conn,)
+            if('return_dict' in argsList): argumentos = argumentos + (return_dict,)
+            p = multiprocessing.Process(target=fnTarget, name=value, args=argumentos)
             jobs.append(p)
             p.start()
             p.join(self.args.time)
