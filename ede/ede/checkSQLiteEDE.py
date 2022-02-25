@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dbm.dumb import _ValueType
 import logging
 logger = logging.getLogger('root')
 
@@ -228,8 +229,8 @@ class check:
               eval_ = eval(value)
             except Exception as e:
               logger.error(f"Exception: {e}")
-              logger.error(f"{fn} exedió el tiempo máximo permitido para ejercutarse!!!")
-              logger.error(f"{fn}: AbortByTime")
+              logger.error(f"{value} exedió el tiempo máximo permitido para ejercutarse!!!")
+              logger.error(f"{value}: AbortByTime")
             signal.alarm(0)               # Disable the alarm
           else:
             eval_ = eval(value)
