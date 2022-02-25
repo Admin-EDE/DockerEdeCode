@@ -361,13 +361,14 @@ class check:
                 logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           
           eval_ = return_dict.get(fnTarget.__name__,None)
+          p.close()
           logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
           _result = eval_ and _result
 
       logger.info(f"return_dict -> {return_dict}")
       if(not _result):
-        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación.\nHay errores en la revisión.\nRevise el LOG para más detalles")
+        raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
     except Exception as e:
       _t = "ERROR en la verificación: "+str(e)
       logger.info(_t)     
