@@ -340,7 +340,7 @@ class check:
       return False 
     try:
       manager = multiprocessing.Manager()
-      return_dict = manager.dict({"results": {}})
+      return_dict = manager.dict()
       jobs = []
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
@@ -361,6 +361,7 @@ class check:
             if('return_dict' in argsList):
               logger.info(f"return_dict -> {return_dict}")
               eval_ = return_dict[fnTarget.__name__]
+              print(f"eval_: {eval_}")
             else:
               eval_ = False
             # If thread is active
