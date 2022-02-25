@@ -203,7 +203,7 @@ class check:
     _result = False
     try:
       if(self.args.time):
-        logger.info(f"Ejecutanto {fn} con restrición de tiempo {self.time} segundos...")
+        logger.info(f"Ejecutanto {fn} con restrición de tiempo {self.args.time} segundos...")
         _result = eval(fn)
       else:
         _result = eval(fn)      
