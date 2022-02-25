@@ -351,17 +351,16 @@ class check:
           p.start()          
 
           if(self.args.time):
-            logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
+            logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
             p.join(self.args.time)
 
-          eval_ = return_dict.get(fnTarget.__name__,None)
-
-          # If thread is active
-          if p.is_alive():
-              p.terminate()
-              p.join()
-              logger.error(f"{value} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
+            # If thread is active
+            if p.is_alive():
+                p.terminate()
+                p.join()
+                logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           
+          eval_ = return_dict.get(fnTarget.__name__,None)
           logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
           _result = eval_ and _result
