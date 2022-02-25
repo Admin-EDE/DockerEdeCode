@@ -199,7 +199,7 @@ class check:
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
    
-  def stopFunctionAfterOfSomeTime(self, fn):
+  def stopFunctionAfterOfSomeTime(self, fn,conn):
     _result = False
     try:
       if(self.args.time):
@@ -208,7 +208,7 @@ class check:
       else:
         _result = eval(fn)      
     except Exception as e:
-      logger.error(f"Exceptio: {e}")
+      logger.error(f"Exception: {e}")
       logger.error(f"{fn} exedió el tiempo máximo permitido para ejercutarse!!!")
       logger.error(f"{fn}: AbortByTime")
     finally:
@@ -229,7 +229,7 @@ class check:
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
-          eval_ = self.stopFunctionAfterOfSomeTime(value)
+          eval_ = self.stopFunctionAfterOfSomeTime(value,conn)
           logger.info(f"{key}. Resultado: {eval_}")
           _result = eval_ and _result
 
