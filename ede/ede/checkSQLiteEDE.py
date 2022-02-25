@@ -349,7 +349,6 @@ class check:
           p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
           jobs.append(p)
           p.start()          
-
           if(self.args.time):
             logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
             p.join(self.args.time)
@@ -357,11 +356,10 @@ class check:
             # If thread is active
             if p.is_alive():
                 p.terminate()
-                p.join()
+
                 logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           else:
-            while p.is_alive():
-              pass
+            p.join()
             p.close()
             
           eval_ = return_dict.get(fnTarget.__name__,None)
