@@ -199,12 +199,16 @@ class check:
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
     self.listValidations = self.cargarPlanillaConListasParaValidar()
    
-  def stopFunctionAfterOfSomeTime(self, fn,conn):
+  def stopFunctionAfterOfSomeTime(self, fn, conn):
     _result = False
     try:
       if(self.args.time):
         logger.info(f"Ejecutanto {fn} con restrición de tiempo {self.args.time} segundos...")
+        # Set the signal handler and a 5-second alarm
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(self.args.time)        
         _result = eval(fn)
+        signal.alarm(0)          # Disable the alarm
       else:
         _result = eval(fn)      
     except Exception as e:
@@ -225,21 +229,37 @@ class check:
     engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000")
     try:
       conn = engine.connect()
-
+    except Exception as e:
+      _t = "ERROR en la verificación: "+str(e)
+      logger.info(_t)
+      _result = False 
+    try:
+      # Set the signal handler
+      signal.signal(signal.SIGALRM, handler)
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
-          eval_ = self.stopFunctionAfterOfSomeTime(value,conn)
+          if(self.args.time):
+            logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
+            signal.alarm(self.args.time)  # Set time-second alarm
+            try:
+              eval_ = eval(value)
+            except Exception as e:
+              logger.error(f"Exception: {e}")
+              logger.error(f"{fn} exedió el tiempo máximo permitido para ejercutarse!!!")
+              logger.error(f"{fn}: AbortByTime")
+            signal.alarm(0)               # Disable the alarm
+          else:
+            eval_ = eval(value)
+          
           logger.info(f"{key}. Resultado: {eval_}")
           _result = eval_ and _result
 
       if(not _result):
-        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación.\
-           Hay errores en la revisión. Revise el LOG para más detalles")
-
+        raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
     except Exception as e:
-      _t = "ERROR en la validación: "+str(e)
-      logger.info(_t)
+      _t = "ERROR en la verificación: "+str(e)
+      logger.info(_t)     
       _result = False
     finally:
       #closind database connection
