@@ -223,7 +223,7 @@ class check:
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
           #  try:
             #eval_ = eval(value)
-            p = multiprocessing.Process(target=self.fn5E5, name="self.fn5E5", args=(conn,))
+            p = multiprocessing.Process(target=eval(value), name=value, args=(conn,))
             jobs.append(p)
             p.start()
             p.join(self.args.time)
