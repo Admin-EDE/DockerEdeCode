@@ -188,129 +188,129 @@ class check:
       "fn9F3": self.fn9F3
     }    
     self.functions = {
-      "fn0FA": "self.fn0FA(conn)",
-      "fn0FB": "self.fn0FB(conn)",
-      "fn1FA": "self.fn1FA(conn)",
-      "fn1FB": "self.fn1FB(conn)",
-      "fn1FC": "self.fn1FC(conn)",
-      "fn2FA": "self.fn2FA(conn)",
-      "fn2EA": "self.fn2EA(conn)",
-      "fn2DA": "self.fn2DA(conn)",
-      "fn2DB": "self.fn2DB(conn)",
-      "fn2CA": "self.fn2CA(conn)",
-      "fn2CB": "self.fn2CB(conn)",
-      "fn2BA": "self.fn2BA(conn)",
-      "fn2AA": "self.fn2AA(conn)",
-      "fn29A": "self.fn29A(conn)",
-      "fn29B": "self.fn29B(conn)",
-      "fn29C": "self.fn29C(conn)",
-      "fn28A": "self.fn28A(conn)",
-      "fn28B": "self.fn28B(conn)",
-      "fn3F0": "self.fn3F0(conn)",
-      "fn3F1": "self.fn3F1(conn)",
-      "fn3F2": "self.fn3F2(conn)",
-      "fn3F3": "self.fn3F3()",
-      "fn3F4": "self.fn3F4()",
-      "fn3F5": "self.fn3F5()",
-      "fn3F6": "self.fn3F6()",
-      "fn3F7": "self.fn3F7()",
-      "fn3F8": "self.fn3F8()",
-      "fn3F9": "self.fn3F9()",
-      "fn3FA": "self.fn3FA()",
-      "fn3FB": "self.fn3FB()",
-      "fn3FC": "self.fn3FC()",
-      "fn3FD": "self.fn3FD()",
-      "fn3FE": "self.fn3FE(conn)",
-      "fn3FF": "self.fn3FF(conn)",
-      "fn3E0": "self.fn3E0(conn)",
-      "fn3E1": "self.fn3E1()",
-      "fn3E2": "self.fn3E2(conn)",
-      "fn3E3": "self.fn3E3()",
-      "fn3E4": "self.fn3E4(conn)",
-      "fn3E5": "self.fn3E5()",
-      "fn3E6": "self.fn3E6()",
-      "fn3E7": "self.fn3E7()",
-      "fn3E8": "self.fn3E8()",
-      "fn3E9": "self.fn3E9()",
-      "fn3EA": "self.fn3EA()",
-      "fn3EB": "self.fn3EB()",
-      "fn3EC": "self.fn3EC()",
-      "fn3ED": "self.fn3ED()",
-      "fn3EE": "self.fn3EE()",
-      "fn3EF": "self.fn3EF(conn)",
-      "fn3D0": "self.fn3D0(conn)",
-      "fn3D1": "self.fn3D1(conn)",
-      "fn3D2": "self.fn3D2(conn)",
-      "fn3D3": "self.fn3D3(conn)",
+      "fn0FA": "self.fn0FA(conn, return_dict)",
+      "fn0FB": "self.fn0FB(conn, return_dict)",
+      "fn1FA": "self.fn1FA(conn, return_dict)",
+      "fn1FB": "self.fn1FB(conn, return_dict)",
+      "fn1FC": "self.fn1FC(conn, return_dict)",
+      "fn2FA": "self.fn2FA(conn, return_dict)",
+      "fn2EA": "self.fn2EA(conn, return_dict)",
+      "fn2DA": "self.fn2DA(conn, return_dict)",
+      "fn2DB": "self.fn2DB(conn, return_dict)",
+      "fn2CA": "self.fn2CA(conn, return_dict)",
+      "fn2CB": "self.fn2CB(conn, return_dict)",
+      "fn2BA": "self.fn2BA(conn, return_dict)",
+      "fn2AA": "self.fn2AA(conn, return_dict)",
+      "fn29A": "self.fn29A(conn, return_dict)",
+      "fn29B": "self.fn29B(conn, return_dict)",
+      "fn29C": "self.fn29C(conn, return_dict)",
+      "fn28A": "self.fn28A(conn, return_dict)",
+      "fn28B": "self.fn28B(conn, return_dict)",
+      "fn3F0": "self.fn3F0(conn, return_dict)",
+      "fn3F1": "self.fn3F1(conn, return_dict)",
+      "fn3F2": "self.fn3F2(conn, return_dict)",
+      "fn3F3": "self.fn3F3(conn, return_dict)",
+      "fn3F4": "self.fn3F4(conn, return_dict)",
+      "fn3F5": "self.fn3F5(conn, return_dict)",
+      "fn3F6": "self.fn3F6(conn, return_dict)",
+      "fn3F7": "self.fn3F7(conn, return_dict)",
+      "fn3F8": "self.fn3F8(conn, return_dict)",
+      "fn3F9": "self.fn3F9(conn, return_dict)",
+      "fn3FA": "self.fn3FA(conn, return_dict)",
+      "fn3FB": "self.fn3FB(conn, return_dict)",
+      "fn3FC": "self.fn3FC(conn, return_dict)",
+      "fn3FD": "self.fn3FD(conn, return_dict)",
+      "fn3FE": "self.fn3FE(conn, return_dict)",
+      "fn3FF": "self.fn3FF(conn, return_dict)",
+      "fn3E0": "self.fn3E0(conn, return_dict)",
+      "fn3E1": "self.fn3E1(conn, return_dict)",
+      "fn3E2": "self.fn3E2(conn, return_dict)",
+      "fn3E3": "self.fn3E3(conn, return_dict)",
+      "fn3E4": "self.fn3E4(conn, return_dict)",
+      "fn3E5": "self.fn3E5(conn, return_dict)",
+      "fn3E6": "self.fn3E6(conn, return_dict)",
+      "fn3E7": "self.fn3E7(conn, return_dict)",
+      "fn3E8": "self.fn3E8(conn, return_dict)",
+      "fn3E9": "self.fn3E9(conn, return_dict)",
+      "fn3EA": "self.fn3EA(conn, return_dict)",
+      "fn3EB": "self.fn3EB(conn, return_dict)",
+      "fn3EC": "self.fn3EC(conn, return_dict)",
+      "fn3ED": "self.fn3ED(conn, return_dict)",
+      "fn3EE": "self.fn3EE(conn, return_dict)",
+      "fn3EF": "self.fn3EF(conn, return_dict)",
+      "fn3D0": "self.fn3D0(conn, return_dict)",
+      "fn3D1": "self.fn3D1(conn, return_dict)",
+      "fn3D2": "self.fn3D2(conn, return_dict)",
+      "fn3D3": "self.fn3D3(conn, return_dict)",
       "fn3D4": "No/Verificado",
       "fn3D5": "No/Verificado",
       "fn3D6": "No/Verificado",
       "fn3D7": "No/Verificado",
       "fn3D8": "No/Verificado",
-      "fn3D9": "self.fn3D9(conn)",
-      "fn3DA": "self.fn3DA(conn)",
+      "fn3D9": "self.fn3D9(conn, return_dict)",
+      "fn3DA": "self.fn3DA(conn, return_dict)",
       "fn3DB": "No/Verificado",
       "fn3DC": "No/Verificado",
-      "fn3DD": "self.fn3DD(conn)",
+      "fn3DD": "self.fn3DD(conn, return_dict)",
       "fn3DE": "No/Verificado",
       "fn3DF": "No/Verificado",
       "fn3C0": "No/Verificado",
       "fn3C1": "No/Verificado",
       "fn3C2": "No/Verificado",
-      "fn3C3": "self.fn3C3(conn)",
-      "fn3C4": "self.fn3C4(conn)",
-      "fn3C5": "self.fn3C5(conn)",
+      "fn3C3": "self.fn3C3(conn, return_dict)",
+      "fn3C4": "self.fn3C4(conn, return_dict)",
+      "fn3C5": "self.fn3C5(conn, return_dict)",
       "fn3C6": "No/Verificado",
       "fn3C7": "No/Verificado",
       "fn3C8": "No/Verificado",
       "fn3C9": "No/Verificado",
-      "fn3CA": "self.fn3CA(conn)",
-      "fn4FA": "self.fn4FA(conn)",
-      "fn5F0": "self.fn5F0(conn)",
-      "fn5E0": "self.fn5E0(conn)",
-      "fn5E1": "self.fn5E1(conn)",
-      "fn5E2": "self.fn5E2(conn)",
-      "fn5E3": "self.fn5E3(conn)",
-      "fn5E4": "self.fn5E4(conn)",
+      "fn3CA": "self.fn3CA(conn, return_dict)",
+      "fn4FA": "self.fn4FA(conn, return_dict)",
+      "fn5F0": "self.fn5F0(conn, return_dict)",
+      "fn5E0": "self.fn5E0(conn, return_dict)",
+      "fn5E1": "self.fn5E1(conn, return_dict)",
+      "fn5E2": "self.fn5E2(conn, return_dict)",
+      "fn5E3": "self.fn5E3(conn, return_dict)",
+      "fn5E4": "self.fn5E4(conn, return_dict)",
       "fn5E5": "self.fn5E5(conn, return_dict)",
-      "fn5D0": "self.fn5D0(conn)",
-      "fn6F0": "self.fn6F0(conn)",
-      "fn6F1": "self.fn6F1(conn)",
-      "fn6E0": "self.fn6E0(conn)",
-      "fn6E1": "self.fn6E1(conn)",
-      "fn6E2": "self.fn6E2(conn)",
-      "fn6E3": "self.fn6E3(conn)",
-      "fn6E4": "self.fn6E4(conn)",
-      "fn6D0": "self.fn6D0(conn)",
-      "fn6D1": "self.fn6D1(conn)",
-      "fn6C0": "self.fn6C0(conn)",
+      "fn5D0": "self.fn5D0(conn, return_dict)",
+      "fn6F0": "self.fn6F0(conn, return_dict)",
+      "fn6F1": "self.fn6F1(conn, return_dict)",
+      "fn6E0": "self.fn6E0(conn, return_dict)",
+      "fn6E1": "self.fn6E1(conn, return_dict)",
+      "fn6E2": "self.fn6E2(conn, return_dict)",
+      "fn6E3": "self.fn6E3(conn, return_dict)",
+      "fn6E4": "self.fn6E4(conn, return_dict)",
+      "fn6D0": "self.fn6D0(conn, return_dict)",
+      "fn6D1": "self.fn6D1(conn, return_dict)",
+      "fn6C0": "self.fn6C0(conn, return_dict)",
       "fn6C1": "No/Verificado",
-      "fn6C2": "self.fn6C2(conn)",
-      "fn6B0": "self.fn6B0(conn)",
+      "fn6C2": "self.fn6C2(conn, return_dict)",
+      "fn6B0": "self.fn6B0(conn, return_dict)",
       "fn6B1": "No/Verificado",
       "fn6A0": "No/Verificado",
       "fn6A1": "No/Verificado",
       "fn6A2": "No/Verificado",
       "fn6A3": "No/Verificado",
       "fn690": "No/Verificado",
-      "fn680": "self.fn680(conn)",
-      "fn681": "self.fn681(conn)",
-      "fn682": "self.fn682(conn)",
-      "fn7F0": "self.fn7F0(conn)",
-      "fn7F1": "self.fn7F1(conn)",
-      "fn7F2": "self.fn7F2(conn)",
-      "fn7F3": "self.fn7F3(conn)",
-      "fn7F4": "self.fn7F4(conn)",
-      "fn7F5": "self.fn7F5(conn)",
+      "fn680": "self.fn680(conn, return_dict)",
+      "fn681": "self.fn681(conn, return_dict)",
+      "fn682": "self.fn682(conn, return_dict)",
+      "fn7F0": "self.fn7F0(conn, return_dict)",
+      "fn7F1": "self.fn7F1(conn, return_dict)",
+      "fn7F2": "self.fn7F2(conn, return_dict)",
+      "fn7F3": "self.fn7F3(conn, return_dict)",
+      "fn7F4": "self.fn7F4(conn, return_dict)",
+      "fn7F5": "self.fn7F5(conn, return_dict)",
       "fn7F6": "No/Verificado",
-      "fn8F0": "self.fn8F0(conn)",
-      "fn8F1": "self.fn8F1(conn)",
-      "fn8F2": "self.fn8F2(conn)",
-      "fn8F3": "self.fn8F3(conn)",
-      "fn9F0": "self.fn9F0(conn)",
-      "fn9F1": "self.fn9F1(conn)",
-      "fn9F2": "self.fn9F2(conn)",
-      "fn9F3": "self.fn9F3(conn)"
+      "fn8F0": "self.fn8F0(conn, return_dict)",
+      "fn8F1": "self.fn8F1(conn, return_dict)",
+      "fn8F2": "self.fn8F2(conn, return_dict)",
+      "fn8F3": "self.fn8F3(conn, return_dict)",
+      "fn9F0": "self.fn9F0(conn, return_dict)",
+      "fn9F1": "self.fn9F1(conn, return_dict)",
+      "fn9F2": "self.fn9F2(conn, return_dict)",
+      "fn9F3": "self.fn9F3(conn, return_dict)"
     }
     print(type(self.args.function))
     if (self.args.function):
@@ -344,39 +344,28 @@ class check:
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
+          fnTarget = self.functionsMultiProcess[key]
+          p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,)))
+          jobs.append(p)
+          p.start()          
+
           if(self.args.time):
             logger.info(f"{value} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-            fnTarget = self.functionsMultiProcess[key]
-            argsList = formatargspec(*getfullargspec(fnTarget))
-
-            argumentos = ()
-            if('conn' in argsList): argumentos = argumentos + (conn,)
-            if('return_dict' in argsList): argumentos = argumentos + (return_dict,)
-
-            p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=argumentos)
-            jobs.append(p)
-            p.start()
             p.join(self.args.time)
 
-            if('return_dict' in argsList):
-              #logger.info(f"return_dict -> {return_dict}")
-              eval_ = return_dict[fnTarget.__name__]
-              #print(f"eval_: {eval_}")
-            else:
-              eval_ = eval(value)
+          eval_ = return_dict[fnTarget.__name__]
 
-            # If thread is active
-            if p.is_alive():
-                p.terminate()
-                p.join()
-                logger.error(f"{value} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
-          else:
-            eval_ = eval(value)
+          # If thread is active
+          if p.is_alive():
+              p.terminate()
+              p.join()
+              logger.error(f"{value} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
           
           logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
           _result = eval_ and _result
 
+      logger.info(f"return_dict -> {return_dict}")
       if(not _result):
         raise Exception("El archivo no cumple con el Estándar de Datos para la Educación. Hay errores en la revisión. Revise el LOG para más detalles")
     except Exception as e:
@@ -399,7 +388,7 @@ class check:
     return xd
 
   ### INICIO fn3F0 ###
-  def fn3F0(self,conn):
+  def fn3F0(self, conn, return_dict):
     """Verifica la conexión con la base de datos SQLCypher
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -433,7 +422,7 @@ class check:
   ### FIN fn3F0 ###
   
   ### INICIO fn3F1 ###
-  def fn3F1(self,conn):
+  def fn3F1(self, conn, return_dict):
     """Verifica la integridad referencial de los datos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -470,7 +459,7 @@ class check:
   # FIN fn3F1 ###
 
   ### INICIO fn3F2 ###
-  def fn3F2(self, conn):
+  def fn3F2(self, conn, return_dict):
     """
     Integridad: Verifica que lista personList contenga información
     Args:
@@ -534,7 +523,7 @@ class check:
   ### FIN fn3F2 ###
 
   ### INICIO fn3F3 ###
-  def fn3F3(self):
+  def fn3F3(self,conn, return_dict):
     """ 
     Integridad: Verifica que los RUT's ingresados sean válidos
     Args:
@@ -573,7 +562,7 @@ class check:
   ### FIN fn3F3 ###
   
   ### INICIO fn3F4 ###
-  def fn3F4(self):
+  def fn3F4(self,conn, return_dict):
     """ 
     Integridad: Verifica si los IPE ingresados son válidos
     Args:
@@ -615,7 +604,7 @@ class check:
   ### FIN fn3F4 ###
   
   ### INICIO fn3F5 ###  
-  def fn3F5(self):
+  def fn3F5(self,conn, return_dict):
     """ 
     Integridad: Verifica si los e-mails ingresados cumplen con el formato
     Args:
@@ -655,7 +644,7 @@ class check:
   ### FIN fn3F5 ###  
   
   ### INICIO fn3F6 ###
-  def fn3F6(self):
+  def fn3F6(self,conn, return_dict):
     """ 
     Integridad: Verifica la lista de teléfonos
     Args:
@@ -695,7 +684,7 @@ class check:
   ### FIN fn3F6 ###
   
   ### INICIO fn3F7 ###
-  def fn3F7(self):
+  def fn3F7(self,conn, return_dict):
     """ 
     Integridad: Verifica que el número de lista cumpla con el formato
     Args:
@@ -733,7 +722,7 @@ class check:
   ### FIN fn3F7 ###
   
   ### INICIO fn3F8 ###
-  def fn3F8(self):
+  def fn3F8(self,conn, return_dict):
     """
     Integridad: Verifica que el número de matrícula cumpla con el formato
     Args:
@@ -771,7 +760,7 @@ class check:
   ### FIN fn3F8 ###
   
   ### INICIO fn3F9 ###
-  def fn3F9(self):
+  def fn3F9(self,conn, return_dict):
     """
     Integridad: Verifica que las fechas ingresadas cumplan con el formato
     Args:
@@ -810,7 +799,7 @@ class check:
   ### FIN fn3F9 ###
   
   ### INICIO fn3FA ###
-  def fn3FA(self):
+  def fn3FA(self,conn, return_dict):
     """
     Integridad: Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
     Args:
@@ -851,7 +840,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
   ### FIN fn3FA ###
   
   ### INICIO fn3FB ###
-  def fn3FB(self):
+  def fn3FB(self,conn, return_dict):
     """
     Integridad: Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
     Args:
@@ -892,7 +881,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
   ### FIN fn3FB ###
   
   ### INICIO fn3FC ###
-  def fn3FC(self):
+  def fn3FC(self,conn, return_dict):
     """
     Integridad: Verifica que la cantidad de emails corresponda con los tipos de emails ingresados
     Args:
@@ -934,7 +923,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
   ### FIN fn3FC ###
   
   ### INICIO fn3FD ###
-  def fn3FD(self):
+  def fn3FD(self,conn, return_dict):
     """
     Integridad: Verifica que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados
     Args:
@@ -976,7 +965,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
   ### FIN fn3FD ###
   
   ### INICIO fn3F3 ###
-  def fn3FE(self, conn):
+  def fn3FE(self, conn, return_dict):
     """
     Integridad: Verifica que los estudiantes tengan sus datos de nacimiento
     Args:
@@ -1052,7 +1041,7 @@ GROUP BY p.personId
 ### FIN fn3FE ###
 
   ### INICIO fn3FF ###
-  def fn3FF(self, conn):
+  def fn3FF(self, conn, return_dict):
     """
     Integridad: Verifica que todos los estudiantes tengan país, región y ciudad de nacimiento
     Args:
@@ -1094,7 +1083,7 @@ GROUP BY p.personId
   ### FIN fn3FF ###
   
   ### INICIO fn3E0 ###
-  def fn3E0(self, conn):
+  def fn3E0(self, conn, return_dict):
     """
     Integridad: VERIFICA SI LA VISTA PersonList filtrada por docentes contiene información
     Args:
@@ -1150,7 +1139,7 @@ GROUP BY p.personId
   ### FIN fn3E0 ###
 
   ### INICIO fn3E1 ###
-  def fn3E1(self):
+  def fn3E1(self,conn, return_dict):
     """ 
     Integridad: VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema
     Args:
@@ -1190,7 +1179,7 @@ GROUP BY p.personId
   ### FIN fn3E1 ###
 
   #VERIFICA SI LA TABLA k12schoolList unida a organizationList contiene información
-  def fn3E2(self, conn):
+  def fn3E2(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1223,7 +1212,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE EL FORMATO DEL RBD CORRESPONDA
-  def fn3E3(self):
+  def fn3E3(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1256,7 +1245,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA SI LA VISTA jerarquiasList contiene información
-  def fn3E4(self, conn):
+  def fn3E4(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1298,7 +1287,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA
-  def fn3E5(self):
+  def fn3E5(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1331,7 +1320,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA
-  def fn3E6(self):
+  def fn3E6(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1364,7 +1353,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA
-  def fn3E7(self):
+  def fn3E7(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1397,7 +1386,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA
-  def fn3E8(self):
+  def fn3E8(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1430,7 +1419,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA
-  def fn3E9(self):
+  def fn3E9(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1463,7 +1452,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA
-  def fn3EA(self):
+  def fn3EA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1496,7 +1485,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA
-  def fn3EB(self):
+  def fn3EB(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1529,7 +1518,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA
-  def fn3EC(self):
+  def fn3EC(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1562,7 +1551,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA
-  def fn3ED(self):
+  def fn3ED(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1595,7 +1584,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA
-  def fn3EE(self):
+  def fn3EE(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1628,7 +1617,7 @@ GROUP BY p.personId
       return False
 
   #VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
-  def fn3EF(self, conn):
+  def fn3EF(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1668,7 +1657,7 @@ GROUP BY p.personId
   # Verifica que cada asignatura se encuentre asociada a un curso.
   # Entrega los organizationID de las asignaturas 
   # que no están asociadas a ningún curso
-  def fn3D0(self, conn):
+  def fn3D0(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1755,7 +1744,7 @@ GROUP BY p.personId
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
-  def fn3D1(self, conn):
+  def fn3D1(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1829,7 +1818,7 @@ GROUP BY p.personId
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
-  def fn3D2(self, conn):
+  def fn3D2(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1882,7 +1871,7 @@ GROUP BY p.personId
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
-  def fn3D3(self, conn):
+  def fn3D3(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -1959,7 +1948,7 @@ GROUP BY p.personId
       return False
 
 ### INICIO fn3C4 ###
-  def fn3C4(self, conn):
+  def fn3C4(self, conn, return_dict):
     """
     Integridad
     Args:
@@ -2035,7 +2024,7 @@ GROUP BY p.personId
 
   # Revisar que los cursos del establecimiento tengan bien 
   # calculada la información de la tabla RoleAttendance.
-  def fn3D9(self, conn):
+  def fn3D9(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -2125,7 +2114,7 @@ GROUP BY p.personId
 
   # Revisar que los cursos del establecimiento tengan bien 
   # calculada la información de la tabla RoleAttendance.
-  def fn3DA(self, conn):
+  def fn3DA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -2237,7 +2226,7 @@ GROUP BY p.personId
 
   # Revisar que la organización del establecimiento, asignaturas y cursos 
   # tengan asignada una localidad dentro del establecimiento.
-  def fn3C3(self, conn):
+  def fn3C3(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -2329,7 +2318,7 @@ GROUP BY p.personId
       return False
 
 ### INICIO fn3DD ###
-  def fn3DD(self, conn):
+  def fn3DD(self, conn, return_dict):
     """
     Integridad: Verifica la información mínima del establecimiento
     Args:
@@ -2650,7 +2639,7 @@ GROUP BY p.personId
     return _r
 
   # VERIFICA DATOS DE LAS ORGANIZACIONES
-  def fn3C5(self, conn):
+  def fn3C5(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -2687,7 +2676,7 @@ GROUP BY p.personId
   # Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
   # Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
   # Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento
-  def fn3CA(self, conn):
+  def fn3CA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -2733,7 +2722,7 @@ GROUP BY p.personId
 
 ## WebClass INICIO ##
   ## Inicio fn2FA WC ##
-  def fn2FA(self, conn):
+  def fn2FA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -2787,7 +2776,7 @@ GROUP BY p.personId
   ## Fin fn2FA WC ##
 
   ##Inicio fn2EA WC ##
-  def fn2EA(self, conn):
+  def fn2EA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3058,7 +3047,7 @@ GROUP BY p.personId
   ## Fin fn2EA WC ##
 
  ## Inicio fn7F0 WC ##
-  def fn7F0(self,conn):
+  def fn7F0(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3116,7 +3105,7 @@ GROUP BY p.personId
   ## Fin fn7F0 WC ##
 
   ## Inicio fn7F1 WC ##
-  def fn7F1(self,conn):
+  def fn7F1(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3181,7 +3170,7 @@ GROUP BY p.personId
   ## Fin fn7F1 WC ##
 
   ## Inicio fn7F2 WC ##
-  def fn7F2(self,conn):
+  def fn7F2(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3253,7 +3242,7 @@ GROUP BY p.personId
   ## Fin fn7F2 WC ##
 
   ## Inicio fn7F3 WC ##
-  def fn7F3(self,conn):
+  def fn7F3(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3310,7 +3299,7 @@ GROUP BY p.personId
   ## Fin fn7F3 WC ##
 
   ## Inicio fn7F4 WC ##
-  def fn7F4(self,conn):
+  def fn7F4(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3381,7 +3370,7 @@ GROUP BY p.personId
   ## Fin fn7F4 WC ##
 
   ## Inicio fn7F5 WC ##
-  def fn7F5(self,conn):
+  def fn7F5(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3462,7 +3451,7 @@ GROUP BY p.personId
   ## Fin fn7F5 WC ##
 
   ## Inicio fn2DA WC ##
-  def fn2DA(self,conn):
+  def fn2DA(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3546,7 +3535,7 @@ GROUP BY p.personId
   ## Fin fn2DA WC ##
 
   ## Inicio fn2DB WC ##
-  def fn2DB(self,conn):
+  def fn2DB(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3624,7 +3613,7 @@ GROUP BY p.personId
   ## Fin fn2DB WC ##
 
   ## Inicio fn2CA WC ##
-  def fn2CA(self,conn):
+  def fn2CA(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3695,7 +3684,7 @@ GROUP BY p.personId
   ## Fin fn2CA WC ##
 
   ## Inicio fn2CB WC ##
-  def fn2CB(self,conn):
+  def fn2CB(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3754,7 +3743,7 @@ GROUP BY p.personId
   ## Fin fn2CB WC ##
 
    ## Inicio fn2BA WC ##
-  def fn2BA(self,conn):
+  def fn2BA(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3836,7 +3825,7 @@ GROUP BY p.personId
   ## Fin fn2BA WC ##
 
   ## Inicio fn29A WC ##
-  def fn29A(self, conn):
+  def fn29A(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3925,7 +3914,7 @@ GROUP BY p.personId
   ## Fin fn29A WC ##
 
   ## Inicio fn29B WC ##
-  def fn29B(self, conn):
+  def fn29B(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -3990,7 +3979,7 @@ GROUP BY p.personId
   ## Fin fn29B WC ##
 
   ## Inicio fn29C WC ##
-  def fn29C(self, conn):
+  def fn29C(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -4064,7 +4053,7 @@ GROUP BY p.personId
   ## Fin fn29C WC ##
 
   ## Inicio fn5E0 WC ##
-  def fn5E0(self, conn):
+  def fn5E0(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -4295,7 +4284,7 @@ GROUP BY p.personId
   ## Fin fn5E0 WC ##
 
   ## Inicio fn8F1 WC ##
-  def fn8F1(self, conn):
+  def fn8F1(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -4358,7 +4347,7 @@ JOIN RefIncidentBehavior rInBh
   ## Fin fn8F1 WC ##
 
   ## Inicio fn5E4 WC ##
-  def fn5E4(self,conn):
+  def fn5E4(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -4628,7 +4617,7 @@ JOIN RefIncidentBehavior rInBh
    ## FIN fn5E5 WC ##
 
   ## Inicio fn5D0 WC ##
-  def fn5D0(self, conn):
+  def fn5D0(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -4679,7 +4668,7 @@ JOIN RefIncidentBehavior rInBh
   ## fin fn5D0 WC ##
 
   ## Inicio fn4FA WC ##
-  def fn4FA(self, conn):
+  def fn4FA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -4844,7 +4833,7 @@ JOIN RefIncidentBehavior rInBh
   ## Fin fn4FA WC ##
 
   ## Inicio fn5F0 WC ##
-  def fn5F0(self, conn):
+  def fn5F0(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5142,7 +5131,7 @@ GROUP BY Organizationid, date
   ## Fin fn5F0 WC ##
 
   ## Inicio fn8F3 WC ##
-  def fn8F3(self, conn):
+  def fn8F3(self, conn, return_dict):
     """ 
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
       6.2 Contenido mínimo, letra e
@@ -5235,7 +5224,7 @@ GROUP BY Organizationid, date
   ## Fin fn8F3 WC ##
 
   ## Inicio fn8F2 WC ##
-  def fn8F2(self,conn):
+  def fn8F2(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5370,7 +5359,7 @@ GROUP BY Organizationid, date
   ## Fin fn8F2 WC ##
 
   ## Inicio fn2AA WC ##
-  def fn2AA(self, conn):
+  def fn2AA(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5428,7 +5417,7 @@ GROUP BY Organizationid, date
   ## Fin fn2AA WC ##
 
   ## Inicio fn28A WC ##
-  def fn28A(self, conn):
+  def fn28A(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5511,7 +5500,7 @@ GROUP BY Organizationid, date
   ## Fin fn28A WC ##
 
   ## Inicio fn5E1 WC ##
-  def fn5E1(self,conn):
+  def fn5E1(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5587,7 +5576,7 @@ GROUP BY Organizationid, date
   ## Fin fn531 WC ##
 
   ## Inicio fn28B WC ##
-  def fn28B(self, conn):
+  def fn28B(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5676,7 +5665,7 @@ GROUP BY Organizationid, date
   ## Fin fn28B WC ##
 
   ## Inicio fn9F2 WC ##
-  def fn9F2(self, conn):
+  def fn9F2(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5773,7 +5762,7 @@ GROUP BY Organizationid, date
   ## Fin fn9F2 WC ##
 
   ## Inicio fn9F3 WC ##
-  def fn9F3(self, conn):
+  def fn9F3(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -5901,7 +5890,7 @@ GROUP BY Organizationid, date
   ## Fin fn9F3 WC ##
 
   ## Inicio fn8F0 WC ##
-  def fn8F0(self, conn):
+  def fn8F0(self, conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
       6.2 Contenido mínimo, letra e
@@ -6029,7 +6018,7 @@ GROUP BY Organizationid, date
   ## Fin fn8F0 WC ##
 
   ## Inicio fn5E2 WC ##
-  def fn5E2(self, conn):
+  def fn5E2(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -6108,7 +6097,7 @@ GROUP BY Organizationid, date
   ## Fin fn5E2 WC ##
 
   ## Inicio fn5E3 WC ##
-  def fn5E3(self,conn):
+  def fn5E3(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -6173,7 +6162,7 @@ GROUP BY Organizationid, date
   ## fin fn5E3 WC ##
 
   ## Inicio fn9F0 WC ##
-  def fn9F0(self,conn):
+  def fn9F0(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -6228,7 +6217,7 @@ GROUP BY Organizationid, date
   ## Fin fn9F0 WC ##
 
   ## Fin fn9F1 WC ##
-  def fn9F1(self,conn):
+  def fn9F1(self,conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
       6.2 Contenido mínimo, letra f
@@ -6333,7 +6322,7 @@ GROUP BY Organizationid, date
 ### MIAULA INICIO ###
 
 ### INICIO FN0FA ###
-  def fn0FA(self, conn):
+  def fn0FA(self, conn, return_dict):
     """
     SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
       Verifica que cada estudiante tenga registrado un listado de personas
@@ -6434,7 +6423,7 @@ GROUP BY pid.Identifier
 ### FIN FN0FA ###
 
 ### INICIO FN0FB ###
-  def fn0FB(self, conn):
+  def fn0FB(self, conn, return_dict):
     """
     SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
         Verificar, en caso que existan retiros anticipados, que se encuentre registrado 
@@ -6668,7 +6657,7 @@ GROUP BY pid.Identifier
 ### FIN FN0FB ###
 
 ### INICIO fn1FA ###
-  def fn1FA(self, conn):
+  def fn1FA(self, conn, return_dict):
     _Apo=[]
     try:
 
@@ -6765,7 +6754,7 @@ GROUP BY pid.Identifier
 ### fin fn1FA ###
 
 ### inicio fn1FB ###
-  def fn1FB(self, conn):
+  def fn1FB(self, conn, return_dict):
     """
     REGISTRO DE LA ENTREGA DE INFORMACIÓN
       8.0 De la entrega de información
@@ -6859,7 +6848,7 @@ GROUP BY pid.Identifier
 ### fin fn1FB ###
 
 ### inicio fn1FC ###
-  def fn1FC(self, conn):
+  def fn1FC(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7002,7 +6991,7 @@ GROUP BY pid.Identifier
 ### fin fn1FC ###
 
 ### inicio fn6F0  ##
-  def fn6F0(self,conn):
+  def fn6F0(self,conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
       6.2 Contenido mínimo, letra c
@@ -7174,7 +7163,7 @@ WHERE
 ### fin fn6F0 ###
 
 ### inicio fn6F1 ###
-  def fn6F1(self,conn):
+  def fn6F1(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7259,7 +7248,7 @@ where
 ### fin fn6f1  ###
 
 ### inicio fn6E2  ###
-  def fn6E2(self, conn):
+  def fn6E2(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7310,7 +7299,7 @@ where
 ### fin fn6E2  ###
  
 ### inicio fn6D0 ###
-  def fn6D0(self, conn):
+  def fn6D0(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7413,7 +7402,7 @@ where
 ### fin fn6D0 ###
 
 ### inicio fn6D1 ###
-  def fn6D1(self, conn):
+  def fn6D1(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7502,7 +7491,7 @@ where
 ### fin fn6D1 ###
 
 ### inicio fn6C0 ###
-  def fn6C0(self, conn):
+  def fn6C0(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7568,7 +7557,7 @@ where
 ### fin fn6C0 ###
 
 ### inicio fn6E0 ###
-  def fn6E0(self,conn):
+  def fn6E0(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7670,7 +7659,7 @@ where
 ###  fin fn6E0  ###
 
 ### inicio  fn681 ###
-  def fn681(self,conn):
+  def fn681(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7769,7 +7758,7 @@ where
 ### fin  fn681 ###
 
 ### inicio  fn680 ###
-  def fn680(self,conn):
+  def fn680(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -7962,7 +7951,7 @@ where
 ### fin  fn680 ###
 
 ### inicio fn682 ###
-  def fn682(self,conn):
+  def fn682(self,conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
       6.2 Contenido mínimo, letra c.8
@@ -8080,7 +8069,7 @@ where
 ### fin  fn682  ###
 
 ### inicio fn6E1 ###
-  def fn6E1(self,conn):
+  def fn6E1(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -8183,7 +8172,7 @@ where
 ### fin fn6E1  ###
 
 ### inicio fn6E4 ### 
-  def fn6E4(self,conn):
+  def fn6E4(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -8380,7 +8369,7 @@ GROUP BY org
 ### fin  fn6E4 ###
 
 ### inicio  fn6C2 ###
-  def fn6C2(self,conn):
+  def fn6C2(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -8460,7 +8449,7 @@ GROUP BY org
 ### fin  fn6C2 ###
 
 ### inicio  fn6B0 ###
-  def fn6B0(self,conn):
+  def fn6B0(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -8798,7 +8787,7 @@ WHERE
     return arr7
 
 ### inicio fn6E3 ###
-  def fn6E3(self,conn):
+  def fn6E3(self,conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
