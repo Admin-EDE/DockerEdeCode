@@ -345,7 +345,7 @@ class check:
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
           fnTarget = self.functionsMultiProcess[key]
-          p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,)))
+          p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
           jobs.append(p)
           p.start()          
 
