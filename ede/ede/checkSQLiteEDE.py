@@ -208,7 +208,7 @@ class check:
     sec = self.args.secPhase
     path = self.args.path_to_DB_file
     engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000",
-                           connect_args={'timeout': 10})
+                           connect_args={'.timeout': 10000})
     try:
       conn = engine.connect()
     except Exception as e:
