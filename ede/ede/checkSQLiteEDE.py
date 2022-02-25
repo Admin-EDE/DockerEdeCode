@@ -4620,7 +4620,7 @@ JOIN RefIncidentBehavior rInBh
         logger.error(f"Rechazado")
     finally:
         return_dict["response"] = _r
-        return return_dict.reponse
+        return return_dict.get("response",False)
    ## FIN fn5E5 WC ##
 
   ## Inicio fn5D0 WC ##
