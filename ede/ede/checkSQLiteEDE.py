@@ -2121,7 +2121,7 @@ GROUP BY p.personId
         AttendanceTermIndicator = 1
       """).fetchall()
       if(len(listInfoSuccesfull)<=0):
-        logger.info("S/DATOS")
+        logger.info("S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
         return True
       else:
@@ -2216,7 +2216,7 @@ GROUP BY p.personId
         RefAttendanceEventType.Description IN ('Daily attendance') -- Filtra la asistencia diaria      
       """).fetchall()
       if(len(listInfoSuccesfull)<=0):
-        logger.info("S/DATOS")
+        logger.info("S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
         return True
       else:
@@ -2743,7 +2743,7 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(_err)
       else:
         logger.info("La BD no contiene clave aleatoria de los docentes")
-        logger.info("S/DATOS")
+        logger.info("S/Datos")
       return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
@@ -2789,7 +2789,7 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _r else logger.error(_err)
       else:
         logger.info("La BD no contiene información de asistencia cargada")
-        logger.info("S/DATOS")
+        logger.info("S/Datos")
       return_dict[getframeinfo(currentframe()).function] = True
       return True
     except Exception as e:
@@ -9025,7 +9025,7 @@ WHERE
     try:
       _ids = (list([m[0] for m in _rightList if m[0] is not None]))      
       if(not _errorsList and not _ids):
-        logger.info(f"S/DATOS")
+        logger.info(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
         return True
 
