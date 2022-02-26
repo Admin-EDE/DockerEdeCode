@@ -350,32 +350,32 @@ class check:
           jobs.append(p)
           p.start()
 
-#          if(self.args.time):
-#            logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-#            p.join(self.args.time)
-#
-#            if p.is_alive(): # If thread is active
-#                p.terminate()
-#                logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
-#
-#          p.join()          
-#          p.close()  
+          if(self.args.time):
+            logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
+            p.join(self.args.time)
+
+            if p.is_alive(): # If thread is active
+                p.terminate()
+                logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
+
+          p.join()          
+          p.close()  
           #eval_ = return_dict.get(fnTarget.__name__,None)
           #logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
           #_result = eval_ and _result
 
       #logger.info(f"return_dict -> {return_dict}")
-      if(self.args.time):
-        logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-        p.join(self.args.time)
+#      if(self.args.time):
+#        logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
+#        p.join(self.args.time)
 #
-        if p.is_alive(): # If thread is active
-          p.terminate()
-          logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
+#        if p.is_alive(): # If thread is active
+#          p.terminate()
+#          logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
 
-      p.join()          
-      p.close()        
+      #p.join()          
+      #p.close()        
       _result = all(list(return_dict.values()))
       if(not _result): raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
     except Exception as e:
