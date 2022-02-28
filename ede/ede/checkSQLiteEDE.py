@@ -1053,6 +1053,7 @@ JOIN RefPersonStatusType rpst
       logger.info(f"Resultado: {rows} -> {str(e)}")
     
     try:
+      logger.info(f"Resultado: {rows}")
       if(len(rows) > 0):
         cantidadNumeroLista = rows[0]
         cantidadNumeroMatricula = rows[0][1]
