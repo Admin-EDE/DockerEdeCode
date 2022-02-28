@@ -6511,13 +6511,14 @@ GROUP BY Organizationid, date
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {courseSections} -> {str(e)}")
+   
+    if (len(courseSections)<=0):
       logger.info(f"S/Datos")
       return_dict[getframeinfo(currentframe()).function] = False
       return False
+
+    logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     _query = []
-    
-    if (len(courseSections)>0): 
-      logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     try:
       _query = conn.execute("""
           SELECT
