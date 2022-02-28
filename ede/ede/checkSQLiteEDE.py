@@ -359,7 +359,7 @@ class check:
       while True:
         time += 1
         l = [not p.is_alive() for p in jobs]
-        if(all(l) and time < self.args.time):
+        if(all(l) and time >= self.args.time):
           for p in jobs:
             if p.is_alive(): # If thread is active
               p.terminate()
