@@ -338,6 +338,9 @@ class check:
       logger.error(f"ERROR al realizar la conexión con la BD: {str(e)}")
       return False 
     try:
+      if(self.args.time):
+          logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
+        
       manager = multiprocessing.Manager()
       return_dict = manager.dict()
       jobs = []
@@ -350,16 +353,22 @@ class check:
           jobs.append(p)
           p.start()
 
-          if(self.args.time):
-            logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-            p.join(self.args.time)
+      if(self.args.time):
+        for p in jobs:
+          if p.is_alive(): # If thread is active
+              p.terminate()
+              logger.error(f"TIMEOUT: {key}")
+      else:
+          while True
+            l = [not p.is_alive() for p in jobs]
+            if(all(l)):
+              break
+        
+        
 
-            if p.is_alive(): # If thread is active
-                p.terminate()
-                logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
 
-          p.join()          
-          p.close()  
+#          p.join()          
+#          p.close()  
           #eval_ = return_dict.get(fnTarget.__name__,None)
           #logger.info(f"{key}. Resultado: {eval_}")
           #all(l[:][1])
