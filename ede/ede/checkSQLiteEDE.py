@@ -313,7 +313,6 @@ class check:
       "fn9F2": "self.fn9F2(conn, return_dict)",
       "fn9F3": "self.fn9F3(conn, return_dict)"
     }
-    print(type(self.args.function))
     if (self.args.function):
       __value = self.functions.get(self.args.function,None)
       if(__value):
