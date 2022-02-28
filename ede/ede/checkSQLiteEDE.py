@@ -978,29 +978,37 @@ class check:
             - Verifica que el texto del campo se encuentre dentro de la lista de asignación disponibles.
 Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s/edit?usp=drive_open&ouid=116365379129523371463 para más detalles.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
+          ]     
     """
     _r = False
-    _l = []
+    rows = []
     try:
-      _l = self.TribalList
+      rows = conn.execute("""
+          SELECT rta.Description
+          from person p
+          JOIN RefTribalAffiliation rta
+            ON p.RefTribalAffiliationId = rta.RefTribalAffiliationId     
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
     try:
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaTribalAffiliation(e)])
+      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      if(len(rows) > 0 and len(datos) > 0):
+        _err = set([e for e in datos if not self.validaTribalAffiliation(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DE LA LISTA DE AFILIACIONES TRIBALES DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      _r = True
+        _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ### FIN fn3FA ###
   
