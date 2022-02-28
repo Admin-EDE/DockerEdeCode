@@ -42,6 +42,7 @@ def main():
   t_stamp = str(int(datetime.timestamp(datetime.now(timezone('Chile/Continental')))))
   logger = setup_custom_logger('root', t_stamp)
 
+  logger.info("\n******************************************************************************************************************************\n")
   logger.info("Iniciando ejecución desde 'parseCSVtoEDE.py'...")
 
   if(len(sys.argv) < 2):
