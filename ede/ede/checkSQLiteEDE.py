@@ -359,7 +359,7 @@ class check:
               p.terminate()
               logger.error(f"TIMEOUT: {key}")
       else:
-          while True
+          while True:
             l = [not p.is_alive() for p in jobs]
             if(all(l)):
               break
