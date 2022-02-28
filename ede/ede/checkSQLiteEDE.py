@@ -930,7 +930,7 @@ class check:
       logger.info(f"Resultado: {fullDateTimeAllRecords} -> {str(e)}")
       
     try:
-      fullDateTimeQueryWithRegexp = fullDateTimeQuery + """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$" """      
+      fullDateTimeQueryWithRegexp = fullDateTimeQuery + """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$" """      
       fullDateTimeDataWithErrors = conn.execute(fullDateTimeQueryWithRegexp).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
