@@ -420,6 +420,7 @@ class check:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
       return _r
   ### FIN fn3F0 ###
   
@@ -458,6 +459,7 @@ class check:
       logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   # FIN fn3F1 ###
 
@@ -483,17 +485,6 @@ class check:
       rows = conn.execute("""
         SELECT
           RUN
-          ,IPE
-          ,emailAddress
-          ,emailAddressType
-          ,TelephoneNumber
-          ,telephoneNumberType
-          ,numeroListaCurso
-          ,numeroMatricula
-          ,fechaIncorporacionEstudiante
-          ,fechaRetiroEstudiante
-          ,fechaCumpleanos
-          ,TribalAffiliationDescription
         FROM PersonList;
       """).fetchall()
     except Exception as e:
@@ -501,11 +492,6 @@ class check:
     try:
       if(len(rows)>0):
         logger.info(f"len(personList): {len(rows)}")
-        self.fechaIncorporacionEstudianteList = self.convertirArray2DToList(list([m[8] for m in rows if m[8] is not None])) # Valida que las fechas cumplan con el formato de fecha
-        self.fechaRetiroEstudianteList = self.convertirArray2DToList(list([m[9] for m in rows if m[9] is not None])) # Valida que las fechas cumplan con el formato de fecha
-        self.fechaCumpleanosList = self.convertirArray2DToList(list([m[10] for m in rows if m[10] is not None])) # Valida que las fechas cumplan con el formato de fecha
-        self.AllDatesList = self.fechaIncorporacionEstudianteList+self.fechaRetiroEstudianteList+self.fechaCumpleanosList # Valida que las fechas cumplan con el formato de fecha
-        self.TribalList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None]))) # Valida que las afiliaciones tribales sean las permitidas en Chile
         logger.info(f"Aprobado")
         _r = True        
       else:
@@ -515,6 +501,7 @@ class check:
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ### FIN fn3F2 ###
 
@@ -1026,22 +1013,53 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
             - verifica que la cantidad de números de matrícula, números de lista y fechas de incorporación sean iguales.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
+          ]          
     """       
     _r = False
-    _l1 = []
-    _l2 = []
-    _l3 = []
+    rows = []
     try:
-      _l1 = self.numListaList
-      _l2 = self.numMatriculaList
-      _l3 = self.fechaIncorporacionEstudianteList      
+      rows = conn.execute("""
+SELECT 
+(SELECT count(numLista.Identifier)
+FROM person p
+OUTER LEFT JOIN PersonIdentifier numLista
+	ON p.personid = numLista.personid
+JOIN RefPersonIdentificationSystem rfiLista 
+  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
+  AND rfiLista.code IN ('listNumber')) as 'cantidadNumeroLista'
+,(SELECT count(numMatri.Identifier)
+FROM person p
+JOIN PersonIdentifier numMatri
+	ON p.personid = numMatri.personid
+JOIN RefPersonIdentificationSystem rfiMatri
+  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
+  AND rfiMatri.code IN ('SchoolNumber')) as 'cantidadNumeroMatricula'
+,(SELECT count(rpst.Description)
+FROM person p
+JOIN PersonStatus ps
+	ON ps.personId = p.personId
+JOIN RefPersonStatusType rpst
+  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
+  AND rpst.Description IN ('Estudiante con matrícula definitiva')) as 'cantidadMatriDefinitiva'
+,(SELECT count(rpst.Description)
+FROM person p
+JOIN PersonStatus ps
+	ON ps.personId = p.personId
+JOIN RefPersonStatusType rpst
+  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
+  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')) as 'cantidadNumerosListaAsignados'  
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l1},{_l2},{_l3} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
     try:
-      if( len(_l1) > 0 and len(_l2) > 0 and len(_l3) > 0):
-        _r   = len(_l1) == len(_l2) == len(_l3)
-        _t = f"Valida que la cantidad de #matricula == #Lista == #fechasIncorporaciónes: {_r}.  NumLista:{len(_l1)}, NumMat:{len(_l2)}, FechaIncorporación:{len(_l3)}"
+      if(len(rows) > 0):
+        cantidadNumeroLista = rows[0]
+        cantidadNumeroMatricula = rows[1]
+        cantidadMatriDefinitiva = rows[2]
+        cantidadNumerosListaAsignados = rows[3]        
+        _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
+        _t = f"Valida que la cantidad de #matricula == #Lista: {_r}.  NumLista:{len(cantidadNumeroLista)}, NumMat:{len(cantidadNumeroMatricula)}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
@@ -1051,6 +1069,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ### FIN fn3FB ###
   
