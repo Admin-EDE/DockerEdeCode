@@ -542,14 +542,22 @@ class check:
           ]
     """
     _r = False
-    _l = []
+    rows = []
     try:
-      _l = self.rutList
+      rows = conn.execute("""
+        SELECT PersonIdentifierId, identifier 
+        FROM PersonIdentifier pi
+        JOIN RefPersonIdentificationSystem rfi 
+          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+          AND rfi.code IN ('RUN')
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
     try:
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validarRUN(e)])
+      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      if(len(rows) > 0 and len(datos) > 0):
+        _err = set([e for e in datos if not self.validarRUN(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
