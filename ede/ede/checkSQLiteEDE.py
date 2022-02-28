@@ -602,7 +602,7 @@ class check:
         FROM PersonIdentifier pi
         JOIN RefPersonIdentificationSystem rfi 
           ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-          AND rfi.code IN ('RUN')
+          AND rfi.code IN ('IPE')
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
