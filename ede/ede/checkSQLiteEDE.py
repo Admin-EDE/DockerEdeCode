@@ -833,20 +833,110 @@ class check:
           ]
     """       
     _r = False
-    _l = []
+    rows = []
     try:
-      _l = self.AllDatesList
+      shortDate = conn.execute("""
+          SELECT DISTINCT shortDate
+          FROM (
+            SELECT StartDate as onlyDate
+            FROM organizationCalendarCrisis
+            UNION ALL
+            SELECT EndDate
+            FROM organizationCalendarCrisis
+            UNION ALL
+            SELECT CrisisEndDate
+            FROM organizationCalendarCrisis
+            UNION ALL
+            SELECT Birthdate
+            FROM Person
+            UNION ALL
+            SELECT AwardDate
+            FROM PersonDegreeOrCertificate
+            UNION ALL
+            SELECT IncidentDate
+            FROM Incident
+            UNION ALL
+            SELECT Date
+            FROM IncidentPerson
+            UNION ALL
+            SELECT DisciplinaryActionStartDate
+            FROM K12StudentDiscipline
+            UNION ALL
+            SELECT DisciplinaryActionEndDate
+            FROM K12StudentDiscipline
+            UNION ALL
+            SELECT StatusStartDate
+            FROM PersonStatus
+            UNION ALL
+            SELECT StatusEndDate
+            FROM PersonStatus
+            UNION ALL
+            SELECT StatusStartDate
+            FROM RoleStatus
+            UNION ALL
+            SELECT StatusEndDate
+            FROM RoleStatus
+            UNION ALL
+            SELECT rexDate
+            FROM OrganizationCalendarEvent
+            UNION ALL
+            SELECT BeginDate
+            FROM OrganizationCalendarSession
+            UNION ALL
+            SELECT EndDate
+            FROM OrganizationCalendarSession
+            UNION ALL
+            SELECT FirstInstructionDate
+            FROM OrganizationCalendarSession
+            UNION ALL
+            SELECT LastInstructionDate
+            FROM OrganizationCalendarSession
+          )
+          WHERE 
+            shortDate IS NOT NULL
+            AND 
+            shortDate NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))$"
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l} -> {str(e)}")
+      logger.info(f"Resultado: {shortDate} -> {str(e)}")
+
     try:
-      if( len(_l) > 0 ):
-        _err = set([e for e in _l if not self.validaFormatoFecha(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DE LAS DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
+      fullDateTime = conn.execute("""
+          SELECT DISTINCT fullDateTime
+          FROM (
+            SELECT Date as fullDateTime
+            FROM RoleAttendanceEvent
+            UNION ALL
+            SELECT digitalRandomKeyDate as fullDateTime
+            FROM RoleAttendanceEvent
+            UNION ALL
+            SELECT EntryDate
+            FROM OrganizationPersonRole
+            UNION ALL
+            SELECT ExitDate
+            FROM OrganizationPersonRole	
+          )
+          WHERE 
+            fullDateTime IS NOT NULL
+            AND
+            fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$"
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {fullDateTime} -> {str(e)}")
+    
+    try:
+      shortDateData = self.convertirArray2DToList(list([m[0] for m in shortDate if m[0] is not None])) # Valida lista de rut ingresados a la BD 
+      fullDateTimeData = self.convertirArray2DToList(list([m[0] for m in fullDateTime if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      if(len(shortDate) == 0 and len(shortDateData) == 0 and len(fullDateTime) == 0 and len(fullDateTimeData) == 0):
+        logger.info("Aprobado")
+        _r = True
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+        
+      if( (len(shortDate) > 0 and len(shortDateData) > 0) or (len(fullDateTime) > 0 and len(fullDateTimeData) > 0)):
+        logger.error(f"Rechazado")
+        
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
