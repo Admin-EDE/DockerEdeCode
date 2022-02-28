@@ -1151,27 +1151,41 @@ JOIN RefPersonStatusType rpst
           ]
     """       
     _r = False
-    _l1 = []
-    _l2 = []
+    rows = []
     try:
-      _l1 = self.phoneList
-      _l2 = self.phoneTypeList
+      rows = conn.execute("""
+        SELECT count(TelephoneNumber), count(RefPersonTelephoneNumberTypeId)
+        from PersonTelephone
+        UNION ALL
+        SELECT count(TelephoneNumber), count(RefInstitutionTelephoneTypeId)
+        FROM OrganizationTelephone
+    """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l1},{_l2} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
     try:
-      if( len(_l1) > 0 and len(_l2) > 0 ):
-        _r   = len(_l1) == len(_l2)
-        _t = f"VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados en las personas: {_r}."
+      if(len(rows) > 0):
+        personPhone= rows[0][0]
+        personPhoneType = rows[0][1]
+        orgPhone = rows[1][0]
+        orgPhoneType = rows[1][1]
+        _r1 = personPhone == personPhoneType and personPhone != 0
+        _r2 = orgPhone == orgPhoneType and orgPhone != 0
+        _r = _r1 and _r2
+        _t = f"VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos registrados: {_r}. "
         logger.info(_t) if _r else logger.error(_t)
+        _t = f"personPhone {personPhone}, personPhoneType: {personPhoneType}, orgPhone: {orgPhone}, orgPhoneType: {orgPhoneType}"
+        logger.info(_t) if _r else logger.error(_t)       
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      _r = True
+        _r = True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
       return _r
   ### FIN fn3FD ###
   
