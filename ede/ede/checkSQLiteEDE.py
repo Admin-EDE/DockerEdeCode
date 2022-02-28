@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from inspect import formatargspec, getfullargspec, getframeinfo, currentframe
-from sys import orig_argv
 from time import sleep
 import logging
 logger = logging.getLogger('root')
