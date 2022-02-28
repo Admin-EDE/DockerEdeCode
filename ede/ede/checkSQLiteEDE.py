@@ -1053,9 +1053,9 @@ JOIN RefPersonStatusType rpst
       logger.info(f"Resultado: {rows} -> {str(e)}")
     
     try:
-      logger.info(f"Resultado: {rows}")
+      logger.info(f"Resultado: {type(rows)}-{rows}")
       if(len(rows) > 0):
-        cantidadNumeroLista = rows[0]
+        cantidadNumeroLista = rows[0][0]
         cantidadNumeroMatricula = rows[0][1]
         cantidadMatriDefinitiva = rows[0][2]
         cantidadNumerosListaAsignados = rows[0][3]        
