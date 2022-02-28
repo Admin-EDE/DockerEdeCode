@@ -1112,7 +1112,9 @@ JOIN RefPersonStatusType rpst
         personEmailsType = rows[0][1]
         orgEmails = rows[1][0]
         orgEmailsType = rows[1][1]
-        _r   = personEmails == personEmailsType == orgEmails == orgEmailsType
+        _r1 = personEmails == personEmailsType
+        _r2 = orgEmails == orgEmailsType
+        _r = _r1 and _r2
         _t = f"VERIFICA que la cantidad de e-mails corresponda con los tipos de e-mails registrados: {_r}. "
         logger.info(_t) if _r else logger.error(_t)
         _t = f"personEmails: {personEmails}, personEmailsType: {personEmailsType}, orgEmails: {orgEmails}, orgEmailsType: {orgEmailsType}"
