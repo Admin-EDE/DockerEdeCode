@@ -18,10 +18,7 @@ def module_from_file(module_name, file_path):
 
 def setup_custom_logger(name, t_stamp):
   _nameLogFile = f'./{t_stamp}_LOG.txt'
-  stream_formatter = logging.Formatter(
-        '{"time": "%(asctime)s", "name": "%(name)s", "module": "%(module)s", "funcName": "%(funcName)s", \
-      "lineno": "%(lineno)d", "levelname": "%(levelname)s", "message": "%(message)s", "pathname": "%(pathname)s"}'
-  )
+  stream_formatter = logging.Formatter('%(asctime)s %(levelname)s %(lineno)d %(funcName)s %(message)s')
   file_formatter=logging.Formatter(
     '{"time": "%(asctime)s", "name": "%(name)s", "module": "%(module)s", "funcName": "%(funcName)s", \
       "lineno": "%(lineno)d", "levelname": "%(levelname)s", "message": "%(message)s", "pathname": "%(pathname)s"}'
