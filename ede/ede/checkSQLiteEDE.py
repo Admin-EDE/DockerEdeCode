@@ -945,11 +945,10 @@ class check:
         shortDateData = self.convertirArray2DToList(list([m[0] for m in shortDateDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD 
         fullDateTimeData = self.convertirArray2DToList(list([m[0] for m in fullDateTimeDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD       
 
-        if(len(shortDateDataWithErrors) == 0 and len(shortDateData) == 0 and len(fullDateTimeQueryWithRegexp) == 0 and len(fullDateTimeDataWithErrors) == 0):
+        if(len(shortDateData) == 0 and len(fullDateTimeData) == 0):
           logger.info("Aprobado")
           _r = True
-          
-        if( len(shortDateData) > 0 or len(fullDateTimeData) > 0):
+        elif( len(shortDateData) >= 0 or len(fullDateTimeData) >= 0):
           logger.error(f"Rechazado")
           logger.error(f"shortDateData: {set(shortDateData)}")
           logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
