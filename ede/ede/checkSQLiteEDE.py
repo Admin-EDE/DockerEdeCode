@@ -838,7 +838,7 @@ class check:
       shortDate = conn.execute("""
           SELECT DISTINCT shortDate
           FROM (
-            SELECT StartDate as onlyDate
+            SELECT StartDate as shortDate
             FROM organizationCalendarCrisis
             UNION ALL
             SELECT EndDate
