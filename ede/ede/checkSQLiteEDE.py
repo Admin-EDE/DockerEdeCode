@@ -1246,14 +1246,7 @@ GROUP BY p.personId
       logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
       if(len(rows)>0):
-        logger.info(f"len(estudiantes): {len(rows)}")        
-        self.personIdCL  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
-        self.personIdEX  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
-        cuidadNacCl   = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
-        regionNacCL   = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
-        paisNacCL     = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
-        statusCL      = self.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
-        self.comparaEstudiantesCL = [len(self.personIdCL) == len(cuidadNacCl) == len(regionNacCL) == len(paisNacCL) == len(statusCL)]
+        logger.info(f"len(estudiantes): {len(rows)}")
         logger.info(f"Aprobado")
         _r = True
       else:
@@ -1263,6 +1256,7 @@ GROUP BY p.personId
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
       return _r
 ### FIN fn3FE ###
 
@@ -1285,16 +1279,59 @@ GROUP BY p.personId
           ]
     """       
     _r = False
-    _lCL = []
-    _lEX = []
+    rows = []
     try:
-      _lCL = self.comparaEstudiantesCL
-      _lEX = self.personIdEX 
+      rows = conn.execute("""
+SELECT
+	  p.personId
+	, pbp.ciudadNacimiento
+	, pbp.regionNacimiento
+	, pbp.paisNacimiento
+	, count(rpst.description)
+FROM Person p
+
+JOIN (
+	SELECT 
+		  PersonBirthplace.PersonId, 
+		  PersonBirthplace.City as 'ciudadNacimiento'
+		, RefState.Code as 'regionNacimiento'
+		, RefCountry.Code as 'paisNacimiento'
+	FROM PersonBirthplace
+	JOIN RefCountry 
+		ON RefCountry.RefCountryId = PersonBirthplace.RefCountryId
+	OUTER LEFT JOIN RefState 
+		ON RefState.RefStateId = PersonBirthplace.RefStateId
+	) as pbp 
+	ON p.PersonId = pbp.PersonId
+JOIN PersonStatus pst
+	ON pst.personId = p.personId
+	
+JOIN RefPersonStatusType rpst
+	ON pst.RefPersonStatusTypeId = rpst.RefPersonStatusTypeId
+	AND 
+	rpst.description IN ('Estudiante con matrícula definitiva','Estudiante asignado a un curso, se crea número de lista')
+	AND 
+	rpst.description NOT IN ('Estudiante retirado definitivamente')
+
+GROUP BY p.personId
+    """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_lCL} y {_lEX} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
-      if( len(_lCL) > 0 or len(_lEX) > 0 ):
-        studentNumber = len( self.personIdEX ) + len( self.personIdCL )
+      if(len(rows)>0):
+        logger.info(f"len(estudiantes): {len(rows)}")        
+        personIdCL  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
+        personIdEX  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
+        cuidadNacCl   = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
+        regionNacCL   = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
+        paisNacCL     = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
+        statusCL      = self.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
+        _lCL = [len(personIdCL) == len(cuidadNacCl) == len(regionNacCL) == len(paisNacCL) == len(statusCL)]
+    except Exception as e:
+      logger.info(f"Resultado: {_lCL} y {personIdEX} -> {str(e)}")
+    try:
+      if( len(_lCL) > 0 or len(personIdEX) > 0 ):
+        studentNumber = len( personIdEX ) + len( personIdCL )
         _t = f"Se encontraron {studentNumber} estudiantes con información de Pais, Región y cuidad de nacimiento: {_r}."
         logger.info(_t) if _lCL else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
@@ -1306,6 +1343,7 @@ GROUP BY p.personId
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
       return _r
   ### FIN fn3FF ###
   
