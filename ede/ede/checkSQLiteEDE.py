@@ -369,15 +369,14 @@ class check:
 
       logger.info(return_dict)
       _result = all(list(return_dict.values()))
-      if(not _result): raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
+      if(not _result): raise Exception("--------- EL ARCHIVO NO CUMPLE CON EL ESTÁNDAR DE DATOS PARA LA EDUCACIÓN ----------")
       
     except Exception as e:
-      _t = "ERROR en la verificación: "+str(e)
-      logger.info(_t)     
+      logger.error("ERROR => "+str(e))
       _result = False
     finally:
       conn.close() #closind database connection
-    return True#_result
+      return _result
 
   #Carga planilla con todas las listas de validación desde Google Drive
   #https://drive.google.com/open?id=1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s
