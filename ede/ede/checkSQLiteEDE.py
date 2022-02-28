@@ -901,9 +901,9 @@ class check:
     
     try:
       shortDateQueryWithRegexp = shortDateQuery + """ AND shortDate NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))$" """
-      shortDateFineRecords = conn.execute(shortDateQueryWithRegexp).fetchall()
+      shortDateDataWithErrors = conn.execute(shortDateQueryWithRegexp).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {shortDateFineRecords} -> {str(e)}")
+      logger.info(f"Resultado: {shortDateDataWithErrors} -> {str(e)}")
 
     fullDateTimeAllRecords = []
     try:
@@ -931,22 +931,22 @@ class check:
       
     try:
       fullDateTimeQueryWithRegexp = fullDateTimeQuery + """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$" """      
-      fullDateTimeFineRecords = conn.execute(fullDateTimeQueryWithRegexp).fetchall()
+      fullDateTimeDataWithErrors = conn.execute(fullDateTimeQueryWithRegexp).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {fullDateTimeFineRecords} -> {str(e)}")
+      logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
     
     try:
       if(len(shortDateAllRecords) == 0 and len(fullDateTimeAllRecords) == 0):
         logger.info("S/Datos")
       else:     
-        shortDateData = self.convertirArray2DToList(list([m[0] for m in shortDateQueryWithRegexp if m[0] is not None])) # Valida lista de rut ingresados a la BD 
-        fullDateTimeData = self.convertirArray2DToList(list([m[0] for m in fullDateTimeQueryWithRegexp if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+        shortDateData = self.convertirArray2DToList(list([m[0] for m in shortDateDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD 
+        fullDateTimeData = self.convertirArray2DToList(list([m[0] for m in fullDateTimeDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD       
 
-        if(len(shortDateQueryWithRegexp) == 0 and len(shortDateData) == 0 and len(fullDateTimeQueryWithRegexp) == 0 and len(fullDateTimeData) == 0):
+        if(len(shortDateDataWithErrors) == 0 and len(shortDateData) == 0 and len(fullDateTimeQueryWithRegexp) == 0 and len(fullDateTimeDataWithErrors) == 0):
           logger.info("Aprobado")
           _r = True
           
-        if( (len(shortDateQueryWithRegexp) > 0 and len(shortDateData) > 0) or (len(fullDateTimeQueryWithRegexp) > 0 and len(fullDateTimeData) > 0)):
+        if( (len(shortDateQueryWithRegexp) > 0 and len(shortDateData) > 0) or (len(fullDateTimeDataWithErrors) > 0 and len(fullDateTimeData) > 0)):
           logger.error(f"Rechazado")
           logger.error(f"shortDateData: {set(shortDateData)}")
           logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
