@@ -359,7 +359,7 @@ class check:
         for p in jobs:
           if p.is_alive(): # If thread is active
               p.terminate()
-              logger.error(f"TIMEOUT: {key}")
+              logger.error(f"TIMEOUT: {p}")
       else:
           while True:
             l = [not p.is_alive() for p in jobs]
