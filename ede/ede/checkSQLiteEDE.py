@@ -1107,7 +1107,7 @@ JOIN RefPersonStatusType rpst
       logger.info(f"Resultado: {rows} -> {str(e)}")
     
     try:
-      if(len(rows) > 0):
+      if(len(rows) > 0 and rows[0][0] != 0 and rows[1][0] != 0):
         personEmails = rows[0][0]
         personEmailsType = rows[0][1]
         orgEmails = rows[1][0]
