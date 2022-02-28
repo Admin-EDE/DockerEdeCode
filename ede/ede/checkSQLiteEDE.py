@@ -643,16 +643,30 @@ class check:
             - validar el formato del correo electrónico
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
+          
+SELECT emailAddress
+from PersonEmailAddress
+UNION ALL
+SELECT ElectronicMailAddress
+FROM OrganizationEmail          
     """   
     _r = False
-    _l = [] 
+    rows = []
     try:
-      _l = self.emailList
+      rows = conn.execute("""
+        SELECT identifier 
+        FROM PersonIdentifier pi
+        JOIN RefPersonIdentificationSystem rfi 
+          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+          AND rfi.code IN ('IPE')
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
     try:
-      if(len(_l)>0):
-        _err = set([e for e in _l if not validate_email(e)])
+      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      if(len(rows) > 0 and len(datos) > 0):
+        _err = set([e for e in datos if not validate_email(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DE FORMATO DE LOS E-MAILS DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -665,6 +679,7 @@ class check:
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ### FIN fn3F5 ###  
   
