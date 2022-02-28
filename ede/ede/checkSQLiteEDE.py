@@ -1317,16 +1317,16 @@ GROUP BY p.personId
     """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
+      
     try:
-      if(len(rows)>0):
-        logger.info(f"len(estudiantes): {len(rows)}")        
-        personIdCL  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
-        personIdEX  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
-        cuidadNacCl   = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
-        regionNacCL   = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
-        paisNacCL     = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
-        statusCL      = self.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
-        _lCL = [len(personIdCL) == len(cuidadNacCl) == len(regionNacCL) == len(paisNacCL) == len(statusCL)]
+      logger.info(f"len(estudiantes): {len(rows)}")        
+      personIdCL  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
+      personIdEX  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
+      cuidadNacCl   = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
+      regionNacCL   = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
+      paisNacCL     = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
+      statusCL      = self.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
+      _lCL = [len(personIdCL) == len(cuidadNacCl) == len(regionNacCL) == len(paisNacCL) == len(statusCL)]
     except Exception as e:
       logger.info(f"Resultado: {_lCL} y {personIdEX} -> {str(e)}")
     try:
