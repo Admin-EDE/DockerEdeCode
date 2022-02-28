@@ -1055,9 +1055,9 @@ JOIN RefPersonStatusType rpst
     try:
       if(len(rows) > 0):
         cantidadNumeroLista = rows[0]
-        cantidadNumeroMatricula = rows[1]
-        cantidadMatriDefinitiva = rows[2]
-        cantidadNumerosListaAsignados = rows[3]        
+        cantidadNumeroMatricula = rows[0][1]
+        cantidadMatriDefinitiva = rows[0][2]
+        cantidadNumerosListaAsignados = rows[0][3]        
         _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
         _t = f"Valida que la cantidad de #matricula == #Lista: {_r}.  NumLista:{len(cantidadNumeroLista)}, NumMat:{len(cantidadNumeroMatricula)}"
         logger.info(_t) if _r else logger.error(_t)
