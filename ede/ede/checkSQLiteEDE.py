@@ -354,17 +354,23 @@ class check:
           jobs.append(p)
           p.start()
 
-      if(self.args.time):
-        sleep(self.args.time)
-        for p in jobs:
-          if p.is_alive(): # If thread is active
+      time = 0
+ #     if(self.args.time):
+      while True:
+        time += 1
+        l = [not p.is_alive() for p in jobs]
+        if(all(l) and time < self.args.time):
+          for p in jobs:
+            if p.is_alive(): # If thread is active
               p.terminate()
               logger.error(f"TIMEOUT: {p}")
-      else:
-          while True:
-            l = [not p.is_alive() for p in jobs]
-            if(all(l)):
-              break
+          break
+        sleep(1)
+#      else:
+#          while True:
+#            l = [not p.is_alive() for p in jobs]
+#            if(all(l)):
+#              break
         
         
 
