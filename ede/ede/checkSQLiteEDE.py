@@ -1053,11 +1053,11 @@ JOIN RefPersonStatusType rpst
       logger.info(f"Resultado: {rows} -> {str(e)}")
     
     try:
-      if(len(rows) > 0):
+      if(len(rows) > 0 and rows[0][0] != 0):
         cantidadNumeroLista = rows[0][0]
         cantidadNumeroMatricula = rows[0][1]
         cantidadMatriDefinitiva = rows[0][2]
-        cantidadNumerosListaAsignados = rows[0][3]        
+        cantidadNumerosListaAsignados = rows[0][3]
         _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
         _t = f"Valida que la cantidad de #matricula == #Lista: {_r}.  NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}"
         logger.info(_t) if _r else logger.error(_t)
