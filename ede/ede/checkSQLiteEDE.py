@@ -340,7 +340,7 @@ class check:
       return False 
     try:
       if(self.args.time):
-          logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
+          logger.info(f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
         
       manager = multiprocessing.Manager()
       return_dict = manager.dict()
