@@ -791,14 +791,22 @@ class check:
           ]
     """
     _r = False
-    _l = []
+    rows = []
     try:
-      _l = self.numMatriculaList
+      rows = conn.execute("""
+        SELECT identifier 
+        FROM PersonIdentifier pi
+        JOIN RefPersonIdentificationSystem rfi 
+          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+          AND rfi.code IN ('SchoolNumber')
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
     try:
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaFormatoNumero(e)])
+      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      if(len(rows) > 0 and len(datos) > 0):
+        _err = set([e for e in datos if not self.validaFormatoNumero(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DEL NUMERO DE MATRICULA DE LAS PERSONAS: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -810,6 +818,7 @@ class check:
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")       
       return _r
   ### FIN fn3F8 ###
   
