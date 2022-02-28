@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from inspect import formatargspec, getfullargspec, getframeinfo, currentframe
+from time import sleep
 import logging
 logger = logging.getLogger('root')
 
@@ -354,6 +355,7 @@ class check:
           p.start()
 
       if(self.args.time):
+        sleep(self.args.time)
         for p in jobs:
           if p.is_alive(): # If thread is active
               p.terminate()
