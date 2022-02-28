@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger('root')
 
 from validate_email import validate_email
-import multiprocessing
+from multiprocessing import current_process, Process, Manager
 import re
 import json
 from itertools import cycle
@@ -343,7 +343,7 @@ class check:
       else:
         self.args.time = 300
         
-      manager = multiprocessing.Manager()
+      manager = Manager()
       return_dict = manager.dict()
       jobs = []
       for key,value in self.functions.items():
@@ -351,7 +351,7 @@ class check:
           logger.info(f"{key} iniciando...")
           fnTarget = self.functionsMultiProcess[key]
 
-          p = multiprocessing.Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
+          p = Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
           jobs.append(p)
           p.start()
 
@@ -569,6 +569,7 @@ class check:
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando... Return: {_r}")
       return _r
   ### FIN fn3F3 ###
   
