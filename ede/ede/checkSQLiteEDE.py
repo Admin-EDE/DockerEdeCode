@@ -366,8 +366,11 @@ class check:
               logger.error(f"TIMEOUT: {p}")
           break
         sleep(1)
+
+      logger.info(return_dict)
       _result = all(list(return_dict.values()))
       if(not _result): raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
+      
     except Exception as e:
       _t = "ERROR en la verificación: "+str(e)
       logger.info(_t)     
