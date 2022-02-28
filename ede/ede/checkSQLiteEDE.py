@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from inspect import formatargspec, getfullargspec, getframeinfo, currentframe
+from sys import orig_argv
 from time import sleep
 import logging
 logger = logging.getLogger('root')
@@ -359,7 +360,7 @@ class check:
       while True:
         time += 1
         l = [not p.is_alive() for p in jobs]
-        if(all(l) and time >= self.args.time):
+        if(all(l) or time >= self.args.time):
           for p in jobs:
             if p.is_alive(): # If thread is active
               p.terminate()
