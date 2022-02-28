@@ -369,11 +369,11 @@ class check:
 
       logger.info(return_dict)
       _result = all(list(return_dict.values()))
-      if(not _result): raise Exception("--------- EL ARCHIVO NO CUMPLE CON EL ESTÁNDAR DE DATOS PARA LA EDUCACIÓN ----------")
+      if(not _result): 
+        logger.error("--------- EL ARCHIVO NO CUMPLE CON EL ESTÁNDAR DE DATOS PARA LA EDUCACIÓN ----------")
       
     except Exception as e:
-      logger.error("ERROR => "+str(e))
-      _result = False
+      pass
     finally:
       conn.close() #closind database connection
       return _result
@@ -501,13 +501,6 @@ class check:
     try:
       if(len(rows)>0):
         logger.info(f"len(personList): {len(rows)}")
-        self.ipeList = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None])) # Valida lista de IPE ingresados a la BD
-        self.emailList = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None])) #Valida que los email tengan el formato correcto
-        self.emailTypeList = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None])) #Valida que los emailType tengan el formato correcto
-        self.phoneList = self.convertirArray2DToList(list([m[4] for m in rows if m[4] is not None])) # Valida que los teléfonos cumplan con el formato E164
-        self.phoneTypeList = self.convertirArray2DToList(list([m[5] for m in rows if m[5] is not None])) # Valida que los tipos de teléfonos cumplan con el formato E164
-        self.numListaList = self.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None])) # Valida los número de lista de los cursos sean número
-        self.numMatriculaList = self.convertirArray2DToList(list([m[7] for m in rows if m[7] is not None])) # Valida los números de matrícula del establecimiento sean número
         self.fechaIncorporacionEstudianteList = self.convertirArray2DToList(list([m[8] for m in rows if m[8] is not None])) # Valida que las fechas cumplan con el formato de fecha
         self.fechaRetiroEstudianteList = self.convertirArray2DToList(list([m[9] for m in rows if m[9] is not None])) # Valida que las fechas cumplan con el formato de fecha
         self.fechaCumpleanosList = self.convertirArray2DToList(list([m[10] for m in rows if m[10] is not None])) # Valida que las fechas cumplan con el formato de fecha
@@ -818,7 +811,7 @@ class check:
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")       
+      logger.info(f"{current_process().name} finalizando...")
       return _r
   ### FIN fn3F8 ###
   
@@ -859,6 +852,7 @@ class check:
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
       return _r
   ### FIN fn3F9 ###
   
