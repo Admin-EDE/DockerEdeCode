@@ -643,23 +643,17 @@ class check:
             - validar el formato del correo electrónico
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-          
-SELECT emailAddress
-from PersonEmailAddress
-UNION ALL
-SELECT ElectronicMailAddress
-FROM OrganizationEmail          
     """   
     _r = False
     rows = []
     try:
       rows = conn.execute("""
-        SELECT identifier 
-        FROM PersonIdentifier pi
-        JOIN RefPersonIdentificationSystem rfi 
-          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-          AND rfi.code IN ('IPE')
-      """).fetchall()
+        SELECT emailAddress
+        from PersonEmailAddress
+        UNION ALL
+        SELECT ElectronicMailAddress
+        FROM OrganizationEmail          
+    """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
     
