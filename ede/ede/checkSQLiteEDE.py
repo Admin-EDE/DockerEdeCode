@@ -949,7 +949,7 @@ class check:
           logger.info("Aprobado")
           _r = True
           
-        if( (len(shortDateQueryWithRegexp) > 0 and len(shortDateData) > 0) or (len(fullDateTimeDataWithErrors) > 0 and len(fullDateTimeData) > 0)):
+        if( len(shortDateData) > 0 or len(fullDateTimeData) > 0):
           logger.error(f"Rechazado")
           logger.error(f"shortDateData: {set(shortDateData)}")
           logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
