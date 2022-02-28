@@ -341,6 +341,8 @@ class check:
     try:
       if(self.args.time):
           logger.info(f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
+      else:
+        self.args.time = 300
         
       manager = multiprocessing.Manager()
       return_dict = manager.dict()
@@ -355,10 +357,8 @@ class check:
           p.start()
 
       time = 0
- #     if(self.args.time):
       while True:
-        if(self.args.time):
-          time += 1
+        time += 1
         l = [not p.is_alive() for p in jobs]
         if(all(l) or time >= self.args.time):
           for p in jobs:
