@@ -558,7 +558,7 @@ class check:
       logger.info(f"Resultado: {rows} -> {str(e)}")
     
     try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      datos = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None])) # Valida lista de rut ingresados a la BD       
       if(len(rows) > 0 and len(datos) > 0):
         _err = set([e for e in datos if not self.validarRUN(e)])
         _r   = False if len(_err)>0 else True
