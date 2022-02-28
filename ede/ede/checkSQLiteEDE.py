@@ -1384,14 +1384,6 @@ GROUP BY p.personId
       logger.info(f"len(docentes): {len(rows)}")
 
       if( len( rows ) > 0 ):
-        personId            = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        title               = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))
-        Type                = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None]))
-        AwardDate           = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None]))
-        Institution         = self.convertirArray2DToList(list([m[4] for m in rows if m[4] is not None]))
-        AccreditationStatus = self.convertirArray2DToList(list([m[5] for m in rows if m[5] is not None]))
-        VerificationMethod  = self.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None]))
-        self.comparaDocentes = [len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod)]
         logger.info(f"Aprobado")
         _r = True
       else:
@@ -1401,6 +1393,7 @@ GROUP BY p.personId
       logger.error(f"Rechazado")        
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ### FIN fn3E0 ###
 
@@ -1423,14 +1416,34 @@ GROUP BY p.personId
           ]
     """       
     _r = False
-    _l = []
+    rows = []
     try:
-      _l = self.comparaDocentes
+      rows = conn.execute("""
+      SELECT
+        personId
+        ,DegreeOrCertificateTitleOrSubject
+        ,DegreeOrCertificateTypeDescription
+        ,AwardDate
+        ,NameOfInstitution
+        ,higherEducationInstitutionAccreditationStatusDescription
+        ,educationVerificationMethodDescription
+      FROM PersonList
+      WHERE Role like '%Docente%';
+    """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_l} -> {str(e)}")
-    try:      
-      if(len(_l)>0):
-        _r   = _l
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:
+      logger.info(f"len(docentes): {len(rows)}")
+
+      if( len( rows ) > 0 ):
+        personId            = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        title               = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))
+        Type                = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None]))
+        AwardDate           = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None]))
+        Institution         = self.convertirArray2DToList(list([m[4] for m in rows if m[4] is not None]))
+        AccreditationStatus = self.convertirArray2DToList(list([m[5] for m in rows if m[5] is not None]))
+        VerificationMethod  = self.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None]))
+        _r = len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod)
         _t = f"VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
@@ -1442,6 +1455,7 @@ GROUP BY p.personId
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ### FIN fn3E1 ###
 
