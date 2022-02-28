@@ -936,7 +936,10 @@ class check:
       logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
     
     try:
-      if(len(shortDateAllRecords) == 0 and len(fullDateTimeAllRecords) == 0):
+      shortDateAllData = self.convertirArray2DToList(list([m[0] for m in shortDateAllRecords if m[0] is not None])) # Valida lista de rut ingresados a la BD 
+      fullDateTimeAllData = self.convertirArray2DToList(list([m[0] for m in fullDateTimeAllRecords if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+      
+      if(len(shortDateAllData) == 0 and len(fullDateTimeAllData) == 0):
         logger.info("S/Datos")
       else:     
         shortDateData = self.convertirArray2DToList(list([m[0] for m in shortDateDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD 
