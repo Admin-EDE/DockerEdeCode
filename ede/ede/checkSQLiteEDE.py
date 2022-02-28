@@ -366,33 +366,6 @@ class check:
               logger.error(f"TIMEOUT: {p}")
           break
         sleep(1)
-#      else:
-#          while True:
-#            l = [not p.is_alive() for p in jobs]
-#            if(all(l)):
-#              break
-        
-        
-
-
-#          p.join()          
-#          p.close()  
-          #eval_ = return_dict.get(fnTarget.__name__,None)
-          #logger.info(f"{key}. Resultado: {eval_}")
-          #all(l[:][1])
-          #_result = eval_ and _result
-
-      #logger.info(f"return_dict -> {return_dict}")
-#      if(self.args.time):
-#        logger.info(f"{key} ejecutandose con restrición de tiempo {self.args.time} segundos...")
-#        p.join(self.args.time)
-#
-#        if p.is_alive(): # If thread is active
-#          p.terminate()
-#          logger.error(f"{key} estaba corriendo, pero fue finalizada porque excedió su tiempo máximo...")
-
-      #p.join()          
-      #p.close()        
       _result = all(list(return_dict.values()))
       if(not _result): raise Exception("--------- El archivo no cumple con el Estándar de Datos para la Educación. ----------")
     except Exception as e:
@@ -400,8 +373,7 @@ class check:
       logger.info(_t)     
       _result = False
     finally:
-      #closind database connection
-      conn.close()
+      conn.close() #closind database connection
     return True#_result
 
   #Carga planilla con todas las listas de validación desde Google Drive
@@ -6543,7 +6515,9 @@ GROUP BY Organizationid, date
       return_dict[getframeinfo(currentframe()).function] = False
       return False
     _query = []
-    logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
+    
+    if (len(courseSections)>0): 
+      logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     try:
       _query = conn.execute("""
           SELECT
