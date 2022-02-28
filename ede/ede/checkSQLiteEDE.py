@@ -1059,9 +1059,10 @@ JOIN RefPersonStatusType rpst
         cantidadMatriDefinitiva = rows[0][2]
         cantidadNumerosListaAsignados = rows[0][3]
         _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
-        _t = f"Valida que la cantidad de #matricula == #Lista: {_r}. personIdentifier NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}"
-        _t = f"Valida que la cantidad de #matricula == #Lista: {_r}. personStatus NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}"
-        logger.info(_t) if _r else logger.error(_t)
+        _t1 = f"Verifica: {_r}. PERSON_IDENTIFIER -> NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}"
+        _t2 = f"Verifica: {_r}. PERSON_STATUS     ->  NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}"
+        logger.info(_t1) if _r else logger.error(_t1)
+        logger.info(_t2) if _r else logger.error(_t2)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
