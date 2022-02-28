@@ -357,7 +357,8 @@ class check:
       time = 0
  #     if(self.args.time):
       while True:
-        time += 1
+        if(self.args.time):
+          time += 1
         l = [not p.is_alive() for p in jobs]
         if(all(l) or time >= self.args.time):
           for p in jobs:
