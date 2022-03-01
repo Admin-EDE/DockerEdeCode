@@ -3332,261 +3332,253 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    results = []
     try:
-        results = conn.execute("""
-          SELECT 
-            (
-              SELECT identifier 
-              FROM PersonIdentifier pi
-              JOIN RefPersonIdentificationSystem rfi 
-                ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-                AND rfi.code IN ('SchoolNumber')
-              WHERE pi.PersonId = p.PersonId
-            ) as "matricula" -- 0
-            ,(
-              SELECT identifier 
-              FROM PersonIdentifier pi
-              JOIN RefPersonIdentificationSystem rfi 
-                ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-                AND rfi.code IN ('RUN', 'IPE')
-              WHERE pi.PersonId = p.PersonId
-            ) as "cedula" -- 1
-            , p.FirstName as "primer nombre" -- 2
-            , p.MiddleName as "otros nombres" -- 3
-            , p.LastName as "apellidoPaterno" -- 4
-            , p.SecondLastName as "apellidoMaterno" -- 5
-            , case when RTA.Description is null then 'ninguna' else RTA.Description end as "tribalAffiationDescription" -- 6
-            , Role.Name as rol -- 7
-            , rf.Description as sexo -- 8
-            , p.Birthdate as "fechaCumpleaños" -- 9
-            , opr.EntryDate as "fecha de incorporacion" -- 10
-            , RefCountry.Description as pais -- 11
-            , rfs.Description as region -- 12
-            , pa.City -- 13
-            , rfc.Description as comuna -- 14
-            , pa.AddressCountyName -- 15
-            , pa.StreetNumberAndName as direccion -- 16
-            , pa.ApartmentRoomOrSuiteNumber -- 17
-            , pa.PostalCode -- 18
-            , p2.FirstName as "Nombre Apoderado" -- 19
-            , p2.MiddleName as "segundo nombre apoderado" -- 20
-            , p2.LastName as "apellidoPaterno apoderado" -- 21
-            , p2.SecondLastName as "apellidoMaterno apoderado" -- 22
-            , RefCountry2.Description as paisApoderado -- 23
-            , rfs2.Description as regionApoderado -- 24
-            , pa2.City as ciudadapoderado -- 25
-            , rfc2.Description as comunaApoderado -- 26
-            , pa2.AddressCountyName -- 27
-            , pa2.StreetNumberAndName as direccionApoderado -- 28
-            , pa2.ApartmentRoomOrSuiteNumber -- 29
-            , pa2.PostalCode as codigoPostalApoderado -- 30
-            , rfpiv.Description -- 31
-            , pt2.TelephoneNumber as numeroTelefonicoApoderado -- 32
-            , rfptnt.Description as tipoNumeroApoderado -- 33
-            , pt2.PrimaryTelephoneNumberIndicator -- 34
-            , pea2.EmailAddress as emailApoderado -- 35
-            , rfet.Description as tipoEmail -- 36
-            , opr.ExitDate as fechaRetiro -- 37
-            , opr.OrganizationId -- 38
-            , p.personId --39
-            , rprs.description -- 40
-          FROM Person p 
-            JOIN Organization o on o.OrganizationId=opr.OrganizationId			  
-    -- Información del estudiante
-            OUTER LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
-            OUTER LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
-            OUTER LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
-            OUTER LEFT JOIN Role on Role.RoleId=opr.RoleId
-            OUTER LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
-            OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
-            OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
-            OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
-            OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
-    -- Información del Apoderado
-            OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
-            OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
-            OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
-            OUTER LEFT JOIN RefCountry RefCountry2 on pa2.RefCountryId = RefCountry2.RefCountryId
-            OUTER LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
-            OUTER LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
-            OUTER LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
-            OUTER LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
-            OUTER LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
-            OUTER LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
-            OUTER LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
-          WHERE 
-            opr.RoleId IN (
-              SELECT RoleId
-              FROM Role
-              WHERE Name IN ('Estudiante')
-            ) 
-            AND
-            o.RefOrganizationTypeId IN (
-              SELECT RefOrganizationTypeId
-              FROM RefOrganizationType
-              WHERE Description IN ('Course')
-            )
-          GROUP by p.PersonId
-        """)#.fetchall()
-        
-        if(results.returns_rows == 0):
-          logger.error(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          return True
-
-        results = results.fetchall()
-        _response = True        
-        for fila in results:
-            # seccion=fila[38]
-            # nivel = conn.execute("""select  Nivel.Name
-            #     from Organization Nivel
-            #     join RefOrganizationType rft on Nivel.RefOrganizationTypeId = rft.RefOrganizationTypeId
-            #     join OrganizationRelationship or1 on or1.OrganizationId=Nivel.OrganizationId
-            #     join OrganizationRelationship or2 on or1.OrganizationId=or2.Parent_OrganizationId
-            #     join OrganizationRelationship or3 on or2.OrganizationId=or3.Parent_OrganizationId
-            #     join OrganizationRelationship or4 on or3.OrganizationId=or4.Parent_OrganizationId
-            #     join OrganizationRelationship or5 on or4.OrganizationId=or5.Parent_OrganizationId
-            #     join OrganizationRelationship or6 on or5.OrganizationId=or6.Parent_OrganizationId
-            #     join OrganizationRelationship or7 on or6.OrganizationId = or7.Parent_OrganizationId
-            #     join OrganizationRelationship or8 on or7.OrganizationId = or8.Parent_OrganizationId
-            #     where or8.OrganizationId= ?;""",([seccion])).fetchall()
-            # cursos = conn.execute("""select asi.name from Organization asi join OrganizationRelationship ors on ors.OrganizationId=asi.OrganizationId
-            #     where ors.Parent_OrganizationId = ?;""",([seccion])).fetchall()
-            if (fila[0] is None):
-                logger.error(f"alumno sin matricula")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[1] is None):
-                logger.error(f"alumno sin RUN")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[2] is None ):
-                logger.error(f"alumno sin nombre")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[4] is None):
-                logger.error(f"alumno sin apellido paterno")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[5] is None):
-                logger.error(f"alumno sin apellido materno")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[6] is None):
-                logger.error(f"alumno sin tribalAffillation")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[7] is None):
-                logger.error(f"alumno sin rol")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[8] is None):
-                logger.error(f"alumno sin sexo")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[9] is None):
-                logger.error(f"alumno sin fecha cumpleaños")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[10] is None):
-                logger.error(f"alumno sin fecha de entrada")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[11] is None):
-                logger.error(f"alumno sin pais")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[12] is None):
-                logger.error(f"alumno sin region")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[13] is None):
-                logger.error(f"alumno sin ciudad")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[14] is None):
-                logger.error(f"alumno sin comuna")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[15] is None or fila[16] is None or fila[17] is None):
-                logger.error(f"alumno sin dirección")
-                logger.error(f"Rechazado")
-                _response = False
-            if (fila[18] is None):
-                logger.error(f"alumno sin codigo postal")
-                logger.error(f"Rechazado")
-                _response = False
-            if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
-              if (fila[19] is None):
-                  logger.error(f"apoderado alumno sin nombre")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[21] is None):
-                  logger.error(f"apoderado alumno sin apellido paterno")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[22] is None):
-                  logger.error(f"apoderado alumno sin apellido materno")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[23] is None):
-                  logger.error(f"apoderado alumno sin pais")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[24] is None):
-                  logger.error(f"apoderado alumno sin region")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[25] is None):
-                  logger.error(f"apoderado alumno sin ciudad")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[26] is None):
-                  logger.error(f"apoderado alumno sin comuma")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[27] is None or fila[28] is None or fila[29] is None):
-                  logger.error(f"apoderado alumno sin direccion")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[30] is None):
-                  logger.error(f"apoderado alumno sin codigo postal")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[32] is None):
-                  logger.error(f"apoderado alumno sin numero telefonico")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[33] is None):
-                  logger.error(f"apoderado alumno sin tipo de numero telefonico")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[34] is None):
-                  logger.error(f"apoderado alumno sin verificador de numero primario")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[35] is None):
-                  logger.error(f"apoderado alumno sin email")
-                  logger.error(f"Rechazado")
-                  _response = False
-              if (fila[36] is None):
-                  logger.error(f"apoderado alumno sin tipo de email")
-                  logger.error(f"Rechazado")
-                  _response = False
-            else:
-                logger.error(f"El estudiante no tiene un apoderdo asignado")
-                logger.error(f"Rechazado")
-                _response = False                  
-        if(_response):
-          logger.info(f"datos de alumnos validados")
-          logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = _response
-        return _response
+      results = conn.execute("""
+        SELECT 
+          (
+            SELECT identifier 
+            FROM PersonIdentifier pi
+            JOIN RefPersonIdentificationSystem rfi 
+              ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+              AND rfi.code IN ('SchoolNumber')
+            WHERE pi.PersonId = p.PersonId
+          ) as "matricula" -- 0
+          ,(
+            SELECT identifier 
+            FROM PersonIdentifier pi
+            JOIN RefPersonIdentificationSystem rfi 
+              ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
+              AND rfi.code IN ('RUN', 'IPE')
+            WHERE pi.PersonId = p.PersonId
+          ) as "cedula" -- 1
+          , p.FirstName as "primer nombre" -- 2
+          , p.MiddleName as "otros nombres" -- 3
+          , p.LastName as "apellidoPaterno" -- 4
+          , p.SecondLastName as "apellidoMaterno" -- 5
+          , case when RTA.Description is null then 'ninguna' else RTA.Description end as "tribalAffiationDescription" -- 6
+          , Role.Name as rol -- 7
+          , rf.Description as sexo -- 8
+          , p.Birthdate as "fechaCumpleaños" -- 9
+          , opr.EntryDate as "fecha de incorporacion" -- 10
+          , RefCountry.Description as pais -- 11
+          , rfs.Description as region -- 12
+          , pa.City -- 13
+          , rfc.Description as comuna -- 14
+          , pa.AddressCountyName -- 15
+          , pa.StreetNumberAndName as direccion -- 16
+          , pa.ApartmentRoomOrSuiteNumber -- 17
+          , pa.PostalCode -- 18
+          , p2.FirstName as "Nombre Apoderado" -- 19
+          , p2.MiddleName as "segundo nombre apoderado" -- 20
+          , p2.LastName as "apellidoPaterno apoderado" -- 21
+          , p2.SecondLastName as "apellidoMaterno apoderado" -- 22
+          , RefCountry2.Description as paisApoderado -- 23
+          , rfs2.Description as regionApoderado -- 24
+          , pa2.City as ciudadapoderado -- 25
+          , rfc2.Description as comunaApoderado -- 26
+          , pa2.AddressCountyName -- 27
+          , pa2.StreetNumberAndName as direccionApoderado -- 28
+          , pa2.ApartmentRoomOrSuiteNumber -- 29
+          , pa2.PostalCode as codigoPostalApoderado -- 30
+          , rfpiv.Description -- 31
+          , pt2.TelephoneNumber as numeroTelefonicoApoderado -- 32
+          , rfptnt.Description as tipoNumeroApoderado -- 33
+          , pt2.PrimaryTelephoneNumberIndicator -- 34
+          , pea2.EmailAddress as emailApoderado -- 35
+          , rfet.Description as tipoEmail -- 36
+          , opr.ExitDate as fechaRetiro -- 37
+          , opr.OrganizationId -- 38
+          , p.personId --39
+          , rprs.description -- 40
+        FROM Person p 
+          JOIN Organization o on o.OrganizationId=opr.OrganizationId			  
+  -- Información del estudiante
+          OUTER LEFT JOIN RefSex rf on p.RefSexId = rf.RefSexId
+          OUTER LEFT JOIN OrganizationPersonRole opr on opr.PersonId=p.PersonId
+          OUTER LEFT JOIN RefTribalAffiliation RTA on p.RefTribalAffiliationId = RTA.RefTribalAffiliationId
+          OUTER LEFT JOIN Role on Role.RoleId=opr.RoleId
+          OUTER LEFT JOIN PersonAddress pa on pa.PersonId=p.PersonId
+          OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
+          OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
+          OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
+          OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
+  -- Información del Apoderado
+          OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
+          OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
+          OUTER LEFT JOIN PersonAddress pa2 on pa2.PersonId=p2.PersonId
+          OUTER LEFT JOIN RefCountry RefCountry2 on pa2.RefCountryId = RefCountry2.RefCountryId
+          OUTER LEFT JOIN RefState rfs2 on pa2.RefStateId= rfs2.RefStateId
+          OUTER LEFT JOIN RefCounty rfc2 on pa2.RefCountyId = rfc2.RefCountyId
+          OUTER LEFT JOIN RefPersonalInformationVerification rfpiv on pa2.RefPersonalInformationVerificationId = rfpiv.RefPersonalInformationVerificationId
+          OUTER LEFT JOIN PersonTelephone pt2 on pt2.PersonId = p2.PersonId
+          OUTER LEFT JOIN RefPersonTelephoneNumberType rfptnt on pt2.RefPersonTelephoneNumberTypeId = rfptnt.RefPersonTelephoneNumberTypeId
+          OUTER LEFT JOIN PersonEmailAddress pea2 on p2.PersonId=pea2.PersonId
+          OUTER LEFT JOIN RefEmailType rfet on rfet.RefEmailTypeId = pea2.RefEmailTypeId
+        WHERE 
+          opr.RoleId IN (
+            SELECT RoleId
+            FROM Role
+            WHERE Name IN ('Estudiante')
+          ) 
+          AND
+          o.RefOrganizationTypeId IN (
+            SELECT RefOrganizationTypeId
+            FROM RefOrganizationType
+            WHERE Description IN ('Course')
+          )
+        GROUP by p.PersonId
+      """).fetchall()
     except Exception as e:
-        logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+      logger.info(f"Resultado: {results} -> {str(e)}")
+
+    if( len(results) == 0):
+      logger.error(f"S/Datos")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+
+    try:
+      _response = True        
+      for fila in results:
+          if (fila[0] is None):
+            logger.error(f"alumno sin matricula")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[1] is None):
+            logger.error(f"alumno sin RUN")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[2] is None ):
+            logger.error(f"alumno sin nombre")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[4] is None):
+            logger.error(f"alumno sin apellido paterno")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[5] is None):
+            logger.error(f"alumno sin apellido materno")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[6] is None):
+            logger.error(f"alumno sin tribalAffillation")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[7] is None):
+            logger.error(f"alumno sin rol")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[8] is None):
+            logger.error(f"alumno sin sexo")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[9] is None):
+            logger.error(f"alumno sin fecha cumpleaños")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[10] is None):
+            logger.error(f"alumno sin fecha de entrada")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[11] is None):
+            logger.error(f"alumno sin pais")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[12] is None):
+            logger.error(f"alumno sin region")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[13] is None):
+            logger.error(f"alumno sin ciudad")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[14] is None):
+            logger.error(f"alumno sin comuna")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[15] is None or fila[16] is None or fila[17] is None):
+            logger.error(f"alumno sin dirección")
+            logger.error(f"Rechazado")
+            _response = False
+          if (fila[18] is None):
+            logger.error(f"alumno sin codigo postal")
+            logger.error(f"Rechazado")
+            _response = False
+          if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
+            if (fila[19] is None):
+              logger.error(f"apoderado alumno sin nombre")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[21] is None):
+              logger.error(f"apoderado alumno sin apellido paterno")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[22] is None):
+              logger.error(f"apoderado alumno sin apellido materno")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[23] is None):
+              logger.error(f"apoderado alumno sin pais")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[24] is None):
+              logger.error(f"apoderado alumno sin region")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[25] is None):
+              logger.error(f"apoderado alumno sin ciudad")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[26] is None):
+              logger.error(f"apoderado alumno sin comuma")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[27] is None or fila[28] is None or fila[29] is None):
+              logger.error(f"apoderado alumno sin direccion")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[30] is None):
+              logger.error(f"apoderado alumno sin codigo postal")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[32] is None):
+              logger.error(f"apoderado alumno sin numero telefonico")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[33] is None):
+              logger.error(f"apoderado alumno sin tipo de numero telefonico")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[34] is None):
+              logger.error(f"apoderado alumno sin verificador de numero primario")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[35] is None):
+              logger.error(f"apoderado alumno sin email")
+              logger.error(f"Rechazado")
+              _response = False
+            if (fila[36] is None):
+              logger.error(f"apoderado alumno sin tipo de email")
+              logger.error(f"Rechazado")
+              _response = False
+          else:
+              logger.error(f"El estudiante no tiene un apoderdo asignado")
+              logger.error(f"Rechazado")
+              _response = False                  
+      if(_response):
+        logger.info(f"datos de alumnos validados")
+        logger.info(f"Aprobado")
+        _r = True
+    except Exception as e:
+      logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
   ## Fin fn2EA WC ##
 
  ## Inicio fn7F0 WC ##
