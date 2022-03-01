@@ -55,13 +55,14 @@ class insert:
         out.write(io.BytesIO(r.content).read()) ## Read bytes into file
       logger.info("registroEDE.csv actualizado correctamente")
     except:
-      logger.error("No se pudod descargar registroEDE.csv")
+      logger.error("No se pudo descargar registroEDE.csv")
     try:
       url = './ede/ede/RegistroEDE.csv'
       df = pd.read_csv(url)
       _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
-      _t=f"clave pública: {df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0]}"; logger.info(_t)
-      return df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
+      clavePublica = df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
+      _t=f"clave pública: {clavePublica}"; logger.info(_t)
+      return clavePublica
     except:
       _t=f"clave pública: SIN INFORMACIÓN"; logger.error(_t)      
       return None
