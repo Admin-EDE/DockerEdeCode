@@ -2025,12 +2025,22 @@ GROUP BY p.personId
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    courses1 = []
     try:
       courses1 = conn.execute("SELECT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {courses1} -> {str(e)}")
+
+    courses2 = []
+    try:
       courses2 = conn.execute("SELECT OrganizationIdCurso FROM cursoList;").fetchall()
-      logger.info(f"Vista jerarquiasList: {len(courses1)}, Vista cursoList: {len(courses2)}")
-      if(len(courses1)>0 and len(courses2)>0):
+    except Exception as e:
+      logger.info(f"Resultado: {courses2} -> {str(e)}")
+
+    try:
+      if( len(courses1) > 0 and len(courses2) > 0):
         # Valida que lista de cursos coincidan
         curso1 = list(set([m[0] for m in courses1 if m[0] is not None]))
         curso2 = list(set([m[0] for m in courses2 if m[0] is not None]))
@@ -2039,15 +2049,13 @@ GROUP BY p.personId
         logger.info(f"Aprobado") if _c == len(curso1) == len(curso2) else logger.error(_err)
       else:
         logger.info(f"S/Datos")
-
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
-
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")     
+      return _r
 
   # Verifica que cada asignatura se encuentre asociada a un curso.
   # Entrega los organizationID de las asignaturas 
@@ -2067,7 +2075,9 @@ GROUP BY p.personId
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    _ExistData = []
     try:
       _ExistData = conn.execute("""
         SELECT count(OrganizationId)
@@ -2080,11 +2090,19 @@ GROUP BY p.personId
             FROM RefOrganizationType 
             WHERE Description LIKE 'Course Section'
           )
-      """).fetchall()
-      if(_ExistData[0][0] == 0):
-        logger.info(f"S/Datos")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
+                                """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {_ExistData} -> {str(e)}")
+
+    if(_ExistData[0][0] == 0):
+      logger.info(f"S/Datos")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
+
+    asignaturas = []
+    try:
       asignaturas = conn.execute("""
         /* 
         * Selecciona de la tabla Organization los ID's de todas las asignaturas
@@ -2118,13 +2136,18 @@ GROUP BY p.personId
                                                 )
                                         )
                 );
-      """)
-      if(asignaturas.returns_rows == 0):
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
-      
-      asignaturas = asignaturas.fetchall()
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {asignaturas} -> {str(e)}")
+
+    if( len(asignaturas) == 0):
+      logger.info(f"Aprobado")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
+    
+    try:        
       logger.info(f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
       if(len(asignaturas) > 0):
         asignaturasList = list(set([m[0] for m in asignaturas if m[0] is not None]))
@@ -2132,13 +2155,13 @@ GROUP BY p.personId
         _err = f"Las siguientes asignaturas no tienen ningún curso asociado: {asignaturasList}"
         logger.error(_err)
         logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
