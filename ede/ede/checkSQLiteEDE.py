@@ -3734,6 +3734,8 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    _query = []
     try:
         _query = conn.execute("""
         SELECT DISTINCT PS.PersonId
@@ -3743,55 +3745,63 @@ GROUP BY p.personId
         WHERE OPR.RoleId = 6
           AND PS.RefPersonStatusTypeId = 28;
         """).fetchall()
-        if(len(_query)>0):
-            _scoreQuery = conn.execute("""
-            SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0)
-            FROM AssessmentResult R
-                    JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
-                    JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                    JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
-                    JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                    JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
-            WHERE A.RefAssessmentTypeId = 28
-              AND R.RefScoreMetricTypeId IN (1, 2)
-              AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
-              AND ASSR.PersonId IN (SELECT DISTINCT PS.PersonId
-                                    FROM OrganizationPersonRole OPR
-                                            JOIN Person P ON OPR.PersonId = P.PersonId
-                                            JOIN PersonStatus PS ON P.PersonId = PS.PersonId
-                                    WHERE OPR.RoleId = 6
-                                      AND PS.RefPersonStatusTypeId = 28
-            )
-            GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId, ASSR.PersonId
-            ORDER BY ASSR.PersonId ASC;
-            """).fetchall()
-            if(len(_scoreQuery)>0):
-                _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
-                for x in _score:
-                    if x < 4:
-                        logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
-                logger.info(f'Aprobado')
-                return_dict[getframeinfo(currentframe()).function] = True
-                return True
-            else:
-                logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-        else:
-            logger.error(f'No existen estudiantes promovidos en el establecimiento')
-            logger.error(f'S/Datos')
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
     except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+      logger.info(f"Resultado: {_query} -> {str(e)}")
+    
+    if(len(_query) == 0):
+      logger.error(f'No existen estudiantes promovidos en el establecimiento')
+      logger.error(f'S/Datos')
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+    
+    _scoreQuery = []
+    try:
+      _scoreQuery = conn.execute("""
+      SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0)
+      FROM AssessmentResult R
+              JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+              JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+              JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+              JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
+              JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
+      WHERE A.RefAssessmentTypeId = 28
+        AND R.RefScoreMetricTypeId IN (1, 2)
+        AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
+        AND ASSR.PersonId IN (SELECT DISTINCT PS.PersonId
+                              FROM OrganizationPersonRole OPR
+                                      JOIN Person P ON OPR.PersonId = P.PersonId
+                                      JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+                              WHERE OPR.RoleId = 6
+                                AND PS.RefPersonStatusTypeId = 28
+      )
+      GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId, ASSR.PersonId
+      ORDER BY ASSR.PersonId ASC;
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {_scoreQuery} -> {str(e)}")
+    
+    try:      
+      if(len(_scoreQuery)>0):
+          _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
+          for x in _score:
+            if x < 4:
+              logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
+              logger.error(f'Rechazado')
+          logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
+          logger.info(f'Aprobado')
+          _r = True
+        else:
+          logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
+          logger.error(f'Rechazado')
+    except Exception as e:
+      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
   ## Fin fn7F2 WC ##
 
   ## Inicio fn7F3 WC ##
