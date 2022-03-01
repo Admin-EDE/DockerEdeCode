@@ -3444,108 +3444,112 @@ GROUP BY p.personId
       _response = True
       _err = {}
       for fila in results:
-        _err[fila[39]] = []
+        _errList = []
         if (fila[0] is None):
-          _err[fila[39]].append("alumno sin matricula")
+          _errList.append("alumno sin matricula")
           _response = False
         if (fila[1] is None):
-          _err[fila[39]].append("alumno sin RUN")
+          _errList.append("alumno sin RUN")
           _response = False
         if (fila[2] is None ):
-          _err[fila[39]].append("alumno sin nombre")
+          _errList.append("alumno sin nombre")
           _response = False
         if (fila[4] is None):
-          _err[fila[39]].append("alumno sin apellido paterno")
+          _errList.append("alumno sin apellido paterno")
           _response = False
         if (fila[5] is None):
-          _err[fila[39]].append("alumno sin apellido materno")
+          _errList.append("alumno sin apellido materno")
           _response = False
         if (fila[6] is None):
-          _err[fila[39]].append("alumno sin tribalAffillation")
+          _errList.append("alumno sin tribalAffillation")
           _response = False
         if (fila[7] is None):
-          _err[fila[39]].append("alumno sin rol")
+          _errList.append("alumno sin rol")
           _response = False
         if (fila[8] is None):
-          _err[fila[39]].append("alumno sin sexo")
+          _errList.append("alumno sin sexo")
           _response = False
         if (fila[9] is None):
-          _err[fila[39]].append("alumno sin fecha cumpleaños")
+          _errList.append("alumno sin fecha cumpleaños")
           _response = False
         if (fila[10] is None):
-          _err[fila[39]].append("alumno sin fecha de entrada")
+          _errList.append("alumno sin fecha de entrada")
           _response = False
         if (fila[11] is None):
-          _err[fila[39]].append("alumno sin pais")
+          _errList.append("alumno sin pais")
           _response = False
         if (fila[12] is None):
-          _err[fila[39]].append("alumno sin region")
+          _errList.append("alumno sin region")
           _response = False
         if (fila[13] is None):
-          _err[fila[39]].append("alumno sin ciudad")
+          _errList.append("alumno sin ciudad")
           _response = False
         if (fila[14] is None):
-          _err[fila[39]].append("alumno sin comuna")
+          _errList.append("alumno sin comuna")
           _response = False
         if (fila[15] is None or fila[16] is None or fila[17] is None):
-          _err[fila[39]].append("alumno sin dirección")
+          _errList.append("alumno sin dirección")
           _response = False
         if (fila[18] is None):
-          _err[fila[39]].append("alumno sin codigo postal")
+          _errList.append("alumno sin codigo postal")
           _response = False
         if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
           if (fila[19] is None):
-            _err[fila[39]].append("apoderado alumno sin nombre")
+            _errList.append("apoderado alumno sin nombre")
             _response = False
           if (fila[21] is None):
-            _err[fila[39]].append("apoderado alumno sin apellido paterno")
+            _errList.append("apoderado alumno sin apellido paterno")
             _response = False
           if (fila[22] is None):
-            _err[fila[39]].append("apoderado alumno sin apellido materno")
+            _errList.append("apoderado alumno sin apellido materno")
             _response = False
           if (fila[23] is None):
-            _err[fila[39]].append("apoderado alumno sin pais")
+            _errList.append("apoderado alumno sin pais")
             _response = False
           if (fila[24] is None):
-            _err[fila[39]].append("apoderado alumno sin region")
+            _errList.append("apoderado alumno sin region")
             _response = False
           if (fila[25] is None):
-            _err[fila[39]].append("apoderado alumno sin ciudad")
+            _errList.append("apoderado alumno sin ciudad")
             _response = False
           if (fila[26] is None):
-            _err[fila[39]].append("apoderado alumno sin comuma")
+            _errList.append("apoderado alumno sin comuma")
             _response = False
           if (fila[27] is None or fila[28] is None or fila[29] is None):
-            _err[fila[39]].append("apoderado alumno sin direccion")
+            _errList.append("apoderado alumno sin direccion")
             _response = False
           if (fila[30] is None):
-            _err[fila[39]].append("apoderado alumno sin codigo postal")
+            _errList.append("apoderado alumno sin codigo postal")
             _response = False
           if (fila[32] is None):
-            _err[fila[39]].append("apoderado alumno sin numero telefonico")
+            _errList.append("apoderado alumno sin numero telefonico")
             _response = False
           if (fila[33] is None):
-            _err[fila[39]].append("apoderado alumno sin tipo de numero telefonico")
+            _errList.append("apoderado alumno sin tipo de numero telefonico")
             _response = False
           if (fila[34] is None):
-            _err[fila[39]].append("apoderado alumno sin verificador de numero primario")
+            _errList.append("apoderado alumno sin verificador de numero primario")
             _response = False
           if (fila[35] is None):
-            _err[fila[39]].append("apoderado alumno sin email")
+            _errList.append("apoderado alumno sin email")
             _response = False
           if (fila[36] is None):
-            _err[fila[39]].append("apoderado alumno sin tipo de email")
+            _errList.append("apoderado alumno sin tipo de email")
             _response = False
           else:
-            _err[fila[39]].append("El estudiante no tiene un apoderdo asignado")
+            _errList.append("El estudiante no tiene un apoderdo asignado")
             _response = False                  
+      
+        if( len(_errList) > 0 ):
+          _err[fila[39]] = _errList
+                
       if(_response):
         logger.info(f"datos de alumnos validados")
         logger.info(f"Aprobado")
         _r = True
       else: 
         logger.error(f"Rechazado")
-        logger.error(f"errores encontrados{_err}")
+        logger.error(f"errores encontrados: {_err}")
     except Exception as e:
       logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
