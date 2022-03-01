@@ -349,8 +349,8 @@ class check:
       for key,value in self.functions.items():
         if(value != "No/Verificado"):
           logger.info(f"{key} iniciando...")
-          fnTarget = self.functionsMultiProcess[key]
 
+          fnTarget = self.functionsMultiProcess[key]
           p = Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
           jobs.append(p)
           p.start()
@@ -1476,23 +1476,33 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """       
+    _r = False
+    rows = []
     try:
-      rows = conn.execute("SELECT Identifier FROM k12schoolList INNER JOIN organizationList USING(OrganizationId);").fetchall()
+      rows = conn.execute("""
+        SELECT Identifier 
+        FROM k12schoolList 
+          INNER JOIN organizationList 
+            USING(OrganizationId);""").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
+    try:
       logger.info(f"len(establecimientos): {len(rows)}")
-      if(len(rows)>0):
+      if( len(rows) > 0 ):
         self.formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
         logger.info(f"Aprobado")
+        _r = True
       else:
         logger.info(f"S/Datos")
-
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
 
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la tabla k12schoolList para identificar el RBD del establecimiento: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE EL FORMATO DEL RBD CORRESPONDA
   def fn3E3(self, conn, return_dict):
