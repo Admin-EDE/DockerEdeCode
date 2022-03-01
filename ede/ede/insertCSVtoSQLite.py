@@ -93,8 +93,10 @@ class insert:
       _t = f'email: {self.args.email}.';logger.info(_t)
       _key = self.getPublicKeyFromEmail(self.args.email)
       if(_key):
-        _t = f'Falló la lectura de la clave pública del email: {self.args.email}. Se utilizará la clave por defecto';logger.error(_t)
+        _t = f'Lectura de la clave pública del email: {self.args.email} cargada correctamente.';logger.error(_t)
         pubkey = _key
+      else:
+        _t = f'falló  lectura de la clave pública del email: {self.args.email}. Se ocupará clave de la SIE';logger.error(_t)
     keyDER = b64decode(pubkey)
     publickey = RSA.importKey(keyDER)
     encryptor = PKCS1_OAEP.new(publickey)
