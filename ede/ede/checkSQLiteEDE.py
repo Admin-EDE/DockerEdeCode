@@ -3477,7 +3477,7 @@ GROUP BY p.personId
         return _response
     except Exception as e:
         logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.info(f"Rechazado")
+        logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
   ## Fin fn2EA WC ##
@@ -5075,7 +5075,7 @@ JOIN RefIncidentBehavior rInBh
     """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {_query} -> {str(e)}")
-      logger.info(f"Rechazado")
+      logger.error(f"Rechazado")
       logger.info(f"No hay información para evaluar, pero debería por eso no aplica S/Datos")
     try:
       _result = []      
@@ -5744,7 +5744,7 @@ GROUP BY Organizationid, date
         resultList  = [item[0] for item in allRows if item not in FineRows]
       
       if( len(resultList) > 0):
-        logger.info(f"Rechazado")
+        logger.error(f"Rechazado")
         logger.info(f"Los incidentId con problemas son: {resultList}")
       else:
         logger.info(f"Aprobado")
@@ -6313,8 +6313,8 @@ GROUP BY Organizationid, date
                             return_dict[getframeinfo(currentframe()).function] = True
                             return True
                         else:
-                            logger.info(f"S/Datos")
-                            logger.info(f"Rechazado")
+                            #logger.info(f"S/Datos")
+                            logger.error(f"Rechazado")
                             return_dict[getframeinfo(currentframe()).function] = False
                             return False
                     except Exception as e:
@@ -6323,8 +6323,8 @@ GROUP BY Organizationid, date
                         return_dict[getframeinfo(currentframe()).function] = False
                         return False
                 else:
-                    logger.info(f"S/Datos")
-                    logger.info(f"Rechazado")
+                    #logger.info(f"S/Datos")
+                    logger.error(f"Rechazado")
                     return_dict[getframeinfo(currentframe()).function] = False
                     return False
             except Exception as e:
@@ -7028,7 +7028,7 @@ GROUP BY pid.Identifier
           logger.error(f"Rechazado")
       else:
         logger.info(f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
-        logger.info(f"Rechazado")
+        logger.error(f"Rechazado")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
       logger.error(f"Rechazado")
@@ -7263,7 +7263,7 @@ GROUP BY pid.Identifier
         else:
           logger.info(f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
       else:
-        logger.info(f"Rechazado")
+        logger.error(f"Rechazado")
         logger.info(f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
@@ -7459,7 +7459,7 @@ GROUP BY pid.Identifier
         resultList  = [item[0] for item in Allrows if item not in FineRows]
       
       if( len(resultList) > 0):
-        logger.info(f"Rechazado")
+        logger.error(f"Rechazado")
         logger.info(f"Los incidentId con problemas son: {resultList}")
       else:
         logger.info(f"Aprobado")
