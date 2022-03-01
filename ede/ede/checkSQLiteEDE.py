@@ -1573,7 +1573,6 @@ GROUP BY p.personId
       rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
-    
     try:
       logger.info(f"len(organizaciones): {len(rows)}")
       if( len(rows) > 0 ):
@@ -2330,7 +2329,9 @@ GROUP BY p.personId
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    _ExistData = []
     try:
       _ExistData = conn.execute("""
         -- Lista todos los registros de la tabla CourseSectionSchedule
@@ -2338,11 +2339,17 @@ GROUP BY p.personId
         SELECT count(ClassMeetingDays), count(ClassPeriod)
         FROM CourseSectionSchedule
       """).fetchall()
-      if(_ExistData[0][0] == 0 and _ExistData[0][1] == 0):
-        logger.info(f"S/Datos")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True      
-      
+    except Exception as e:
+      logger.info(f"Resultado: {_ExistData} -> {str(e)}")      
+
+    if(_ExistData[0][0] == 0 and _ExistData[0][1] == 0):
+      logger.info(f"S/Datos")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")     
+      return _r
+    ClassMeetingDays = []
+    try:
       ClassMeetingDays = conn.execute("""
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
@@ -2353,7 +2360,12 @@ GROUP BY p.personId
             substr(str, instr(str, ',')+1)
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes');
-      """)#.fetchall()
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {ClassMeetingDays} -> {str(e)}")
+    
+    ClassPeriod = []
+    try:
       ClassPeriod = conn.execute("""
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
@@ -2364,36 +2376,40 @@ GROUP BY p.personId
             substr(str, instr(str, ',')+1)
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Bloque01','Bloque02','Bloque03','Bloque04','Bloque05','Bloque06','Bloque07','Bloque08','Bloque09','Bloque10','Bloque11','Bloque12','Bloque13','Bloque14','Bloque15','Bloque16','Bloque17','Bloque18','Bloque19','Bloque20');
-      """)#.fetchall()
-      if(ClassMeetingDays.returns_rows == 0 and ClassPeriod.returns_rows == 0):
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
-      if(ClassMeetingDays.returns_rows != 0):
-        ClassMeetingDays = ClassMeetingDays.fetchall()
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {ClassPeriod} -> {str(e)}")
+
+    if(len(ClassMeetingDays) == 0 and len(ClassPeriod) == 0):
+      logger.info(f"Aprobado")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+    
+    try:
+      if( len(ClassMeetingDays) != 0 ):
         logger.info(f"ClassMeetingDays con formato errorneo: {len(ClassMeetingDays)}")
         data1 = list(set([m[0] for m in ClassMeetingDays if m[0] is not None]))        
         _c1 = len(set(data1))
         if (_c1 > 0):
           logger.error(f"Las siguientes registros tiene mal formateado el campo ClassMeetingDays: {data1}")
                 
-      if(ClassPeriod.returns_rows != 0):
-        ClassPeriod = ClassPeriod.fetchall()
+      if( len(ClassPeriod) != 0 ):
         logger.info(f"ClassPeriod con formato erroneo: {len(ClassPeriod)}")        
         data2 = list(set([m[0] for m in ClassPeriod if m[0] is not None]))
         _c2 = len(set(data2))
         if (_c2 > 0):
           logger.error(f"Las siguientes registros tienen mal formateado el campo ClassPeriod: {data2}")
 
-      if (_c1 > 0 or _c2 > 0):
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False          
+      if (_c1 > 0 or _c2 > 0): logger.error(f"Rechazado")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
 ### INICIO fn3C4 ###
   def fn3C4(self, conn, return_dict):
