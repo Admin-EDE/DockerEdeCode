@@ -2872,15 +2872,12 @@ GROUP BY p.personId
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {school} -> {str(e)}")
-      logger.error(f"Rechazado")
-      logger.error(f"La organización tipo school es obligatoria")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
 
     if(len(school)==0):
       logger.error(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
     
     webSite = []
     try:
@@ -2897,6 +2894,7 @@ GROUP BY p.personId
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {webSite} -> {str(e)}")
+    
     ElectronicMailAddress = []
     try:
       ElectronicMailAddress = conn.execute("""
@@ -2915,6 +2913,7 @@ GROUP BY p.personId
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {ElectronicMailAddress} -> {str(e)}")
+    
     phoneNumbers = []
     try:
       phoneNumbers = conn.execute("""
@@ -2933,6 +2932,7 @@ GROUP BY p.personId
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {phoneNumbers} -> {str(e)}")
+    
     locations = []
     try:
       locations = conn.execute("""
@@ -2969,6 +2969,7 @@ GROUP BY p.personId
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {locations} -> {str(e)}")
+    
     try:
       _err = False      
       if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
@@ -3000,6 +3001,7 @@ GROUP BY p.personId
       logger.error(f"Rechazado")
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
 ### FIN fn3DD ###    
 
@@ -3417,6 +3419,7 @@ GROUP BY p.personId
           return True
 
         results = results.fetchall()
+        _response = True        
         for fila in results:
             # seccion=fila[38]
             # nivel = conn.execute("""select  Nivel.Name
@@ -3433,7 +3436,6 @@ GROUP BY p.personId
             #     where or8.OrganizationId= ?;""",([seccion])).fetchall()
             # cursos = conn.execute("""select asi.name from Organization asi join OrganizationRelationship ors on ors.OrganizationId=asi.OrganizationId
             #     where ors.Parent_OrganizationId = ?;""",([seccion])).fetchall()
-            _response = True
             if (fila[0] is None):
                 logger.error(f"alumno sin matricula")
                 logger.error(f"Rechazado")
