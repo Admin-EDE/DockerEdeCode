@@ -1533,8 +1533,8 @@ GROUP BY p.personId
     
     try:
       logger.info(f"len(establecimientos): {len(rows)}")
-      if( len(rows) > 0 ):
-        formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
+      formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))     
+      if( len(formatoRBD) > 0 ):
         _err = set([e for e in formatoRBD if not self.validaFormatoRBD(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DEL FORMATO DEL RBD DEL ESTABLECIMIENTO: {_r}. {_err}"
@@ -1568,27 +1568,19 @@ GROUP BY p.personId
           ]
     """      
     _r = False
+    rows = []
     try:
       rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
+    try:
       logger.info(f"len(organizaciones): {len(rows)}")
-      if(len(rows)>0):
-        self.modalidadList = self.convertirArray2DToList(list(set([m[2] for m in rows if m[2] is not None])))
-        self.jornadaList = self.convertirArray2DToList(list(set([m[3] for m in rows if m[3] is not None])))
-        self.nivelList = self.convertirArray2DToList(list(set([m[4] for m in rows if m[4] is not None])))
-        self.ramaList = self.convertirArray2DToList(list(set([m[5] for m in rows if m[5] is not None])))
-        self.sectorList = self.convertirArray2DToList(list(set([m[6] for m in rows if m[6] is not None])))
-        self.especialidadList = self.convertirArray2DToList(list(set([m[7] for m in rows if m[7] is not None])))
-        self.tipoCursoList = self.convertirArray2DToList(list(set([m[8] for m in rows if m[8] is not None])))
-        self.codigoEnseList = self.convertirArray2DToList(list(set([m[9] for m in rows if m[9] is not None])))
-        self.gradoList = self.convertirArray2DToList(list(set([m[10] for m in rows if m[10] is not None])))
-        self.letraCursoList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None])))
+      if( len(rows) > 0 ):
         logger.info(f"Aprobado")
+        _r = True
       else:
         logger.info(f"S/Datos")
-      
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
-
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
       logger.error(f"Rechazado")
@@ -1614,23 +1606,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.modalidadList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaModalidad(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      modalidadList = self.convertirArray2DToList(list(set([m[2] for m in rows if m[2] is not None])))
+      if(len(modalidadList)>0):
+        _err = set([e for e in modalidadList if not self.validaModalidad(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3E6(self, conn, return_dict):
@@ -1649,23 +1648,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.jornadaList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaJornada(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      jornadaList = self.convertirArray2DToList(list(set([m[3] for m in rows if m[3] is not None])))
+      if(len(jornadaList)>0):
+        _err = set([e for e in jornadaList if not self.validaJornada(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3E7(self, conn, return_dict):
@@ -1684,23 +1690,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.nivelList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaNivel(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      nivelList = self.convertirArray2DToList(list(set([m[4] for m in rows if m[4] is not None])))
+      if(len(nivelList)>0):
+        _err = set([e for e in nivelList if not self.validaNivel(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3E8(self, conn, return_dict):
@@ -1719,23 +1732,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.ramaList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaRama(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      ramaList = self.convertirArray2DToList(list(set([m[5] for m in rows if m[5] is not None])))
+      if(len(ramaList)>0):
+        _err = set([e for e in ramaList if not self.validaRama(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")     
+      return _r
 
   #VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3E9(self, conn, return_dict):
@@ -1754,23 +1774,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.sectorList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaSector(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      sectorList = self.convertirArray2DToList(list(set([m[6] for m in rows if m[6] is not None])))
+      if(len(sectorList)>0):
+        _err = set([e for e in sectorList if not self.validaSector(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True  
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
 
   #VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA
   def fn3EA(self, conn, return_dict):
@@ -1789,23 +1816,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.especialidadList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaEspecialidad(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      especialidadList = self.convertirArray2DToList(list(set([m[7] for m in rows if m[7] is not None])))
+      if(len(especialidadList)>0):
+        _err = set([e for e in especialidadList if not self.validaEspecialidad(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3EB(self, conn, return_dict):
@@ -1824,23 +1858,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.tipoCursoList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaTipoCurso(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      tipoCursoList = self.convertirArray2DToList(list(set([m[8] for m in rows if m[8] is not None])))
+      if(len(tipoCursoList)>0):
+        _err = set([e for e in tipoCursoList if not self.validaTipoCurso(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3EC(self, conn, return_dict):
@@ -1859,23 +1900,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.codigoEnseList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaCodigoEnse(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      codigoEnseList = self.convertirArray2DToList(list(set([m[9] for m in rows if m[9] is not None])))
+      if(len(codigoEnseList)>0):
+        _err = set([e for e in codigoEnseList if not self.validaCodigoEnse(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3ED(self, conn, return_dict):
@@ -1894,23 +1942,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.gradoList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaGrado(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      gradoList = self.convertirArray2DToList(list(set([m[10] for m in rows if m[10] is not None])))
+      if(len(gradoList)>0):
+        _err = set([e for e in gradoList if not self.validaGrado(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3EE(self, conn, return_dict):
@@ -1929,23 +1984,30 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-      _l = self.letraCursoList
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaLetraCurso(e)])
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+   
+    try:
+      letraCursoList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None])))
+      if(len(letraCursoList)>0):
+        _err = set([e for e in letraCursoList if not self.validaLetraCurso(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = -r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
 
   #VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
   def fn3EF(self, conn, return_dict):
