@@ -3792,9 +3792,9 @@ GROUP BY p.personId
           logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
           logger.info(f'Aprobado')
           _r = True
-        else:
-          logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
-          logger.error(f'Rechazado')
+      else:
+        logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
+        logger.error(f'Rechazado')
     except Exception as e:
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
