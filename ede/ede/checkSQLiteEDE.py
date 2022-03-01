@@ -409,9 +409,10 @@ class check:
     _r = False
     rows = []
     try:
-      rows = conn.execute("SELECT personId FROM PersonList;").fetchone()
+      rows = conn.execute("SELECT personId FROM PersonList;").fetchall()
     except Exception as e:
       logger.error(f"Error al ejecutar la función: {str(e)}")
+    
     try:
       if( len(rows) > 0 ): 
         _r = True
