@@ -1490,7 +1490,7 @@ GROUP BY p.personId
     try:
       logger.info(f"len(establecimientos): {len(rows)}")
       if( len(rows) > 0 ):
-        self.formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
+        formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
         logger.info(f"Aprobado")
         _r = True
       else:
@@ -1520,24 +1520,35 @@ GROUP BY p.personId
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """       
+    """ 
+    _r = False
+    rows = []
     try:
-      _l = self.formatoRBD
-      if(len(_l)>0):
-        _err = set([e for e in _l if not self.validaFormatoRBD(e)])
+      rows = conn.execute("""
+        SELECT Identifier 
+        FROM k12schoolList 
+          INNER JOIN organizationList 
+            USING(OrganizationId);""").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
+    try:
+      logger.info(f"len(establecimientos): {len(rows)}")
+      if( len(rows) > 0 ):
+        formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
+        _err = set([e for e in formatoRBD if not self.validaFormatoRBD(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DEL FORMATO DEL RBD DEL ESTABLECIMIENTO: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       else:
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      return _r
 
   #VERIFICA SI LA VISTA jerarquiasList contiene información
   def fn3E4(self, conn, return_dict):
