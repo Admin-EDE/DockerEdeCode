@@ -2995,7 +2995,7 @@ GROUP BY p.personId
           _err = True
 
       if (not _err):
-        logger.error(f"Aprobado")
+        logger.info(f"Aprobado")
         _r = True        
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
@@ -3564,7 +3564,7 @@ GROUP BY p.personId
                 _response = False                  
         if(_response):
           logger.info(f"datos de alumnos validados")
-          logger.error(f"Aprobado")
+          logger.info(f"Aprobado")
         return_dict[getframeinfo(currentframe()).function] = _response
         return _response
     except Exception as e:
@@ -7010,7 +7010,7 @@ GROUP BY Organizationid, date
             print(f"no se pudo eliminar {row[0]}")
       
       if(len(courseSections) == 0):
-        logger.error(f"Aprobado")  
+        logger.info(f"Aprobado")  
         _r = True
       else:
         logger.error(f"{len(courseSections)} Asignaturas tienen problemas con su planificación: {courseSections}")
@@ -8025,7 +8025,7 @@ where
           return_dict[getframeinfo(currentframe()).function] = False
           return False
       else:
-        logger.error(f"Aprobado")
+        logger.info(f"Aprobado")
         return_dict[getframeinfo(currentframe()).function] = True
         return True
 
@@ -8664,7 +8664,7 @@ where
       _q1 = conn.execute(_queryText)#.fetchall()
       if(_q1.returns_rows == 0):
         logger.error(f"El establecimientos no tiene alumnos de formación DUAL para revisar")
-        logger.error(f"Aprobado")
+        logger.info(f"Aprobado")
         return_dict[getframeinfo(currentframe()).function] = True
         return True
       
@@ -9101,7 +9101,7 @@ GROUP BY org
       pass
     try:
       if(not _result):
-        logger.error(f"Aprobado")
+        logger.info(f"Aprobado")
         return_dict[getframeinfo(currentframe()).function] = True
         return True  
       
