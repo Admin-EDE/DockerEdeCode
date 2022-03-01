@@ -3174,8 +3174,14 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
       rows = conn.execute("SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
+    try:
       logger.info(f"len(digitalRandomKey): {len(rows)}")
       if(len(rows)>0):
         # Valida los números de clave aleatoria de los docentes
@@ -3185,13 +3191,13 @@ GROUP BY p.personId
       else:
         logger.info("La BD no contiene clave aleatoria de los docentes")
         logger.info("S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
     except Exception as e:
       logger.error(f"No se pudieron validar los verificadores de indentidad: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
 
   # Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
   # Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
