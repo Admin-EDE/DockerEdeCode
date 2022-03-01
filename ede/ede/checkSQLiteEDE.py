@@ -1490,7 +1490,6 @@ GROUP BY p.personId
     try:
       logger.info(f"len(establecimientos): {len(rows)}")
       if( len(rows) > 0 ):
-        formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))
         logger.info(f"Aprobado")
         _r = True
       else:
@@ -1568,8 +1567,9 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
     try:
-      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso  FROM jerarquiasList;").fetchall()
+      rows = conn.execute("SELECT RBD,nombreEstablecimiento,modalidad,jornada,nivel,rama,sector,especialidad,tipoCurso,codigoEnseñanza,grado,letraCurso FROM jerarquiasList;").fetchall()
       logger.info(f"len(organizaciones): {len(rows)}")
       if(len(rows)>0):
         self.modalidadList = self.convertirArray2DToList(list(set([m[2] for m in rows if m[2] is not None])))
@@ -1592,8 +1592,10 @@ GROUP BY p.personId
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
   #VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA
   def fn3E5(self, conn, return_dict):
