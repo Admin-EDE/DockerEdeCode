@@ -53,8 +53,9 @@ class insert:
       r = requests.get(url_to_register_file, stream=True)
       with open('./ede/ede/RegistroEDE.csv','wb') as out:
         out.write(io.BytesIO(r.content).read()) ## Read bytes into file
+      logger.info("registroEDE.csv actualizado correctamente")
     except:
-      pass
+      logger.error("No se pudod descargar registroEDE.csv")
     try:
       url = './ede/ede/RegistroEDE.csv'
       df = pd.read_csv(url)
