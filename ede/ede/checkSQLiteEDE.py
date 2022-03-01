@@ -3441,137 +3441,111 @@ GROUP BY p.personId
       return _r
 
     try:
-      _response = True        
+      _response = True
+      _err = {}
       for fila in results:
-          if (fila[0] is None):
-            logger.error(f"alumno sin matricula")
-            logger.error(f"Rechazado")
+        _err[fila[39]] = []
+        if (fila[0] is None):
+          _err[fila[39]].append("alumno sin matricula")
+          _response = False
+        if (fila[1] is None):
+          _err[fila[39]].append("alumno sin RUN")
+          _response = False
+        if (fila[2] is None ):
+          _err[fila[39]].append("alumno sin nombre")
+          _response = False
+        if (fila[4] is None):
+          _err[fila[39]].append("alumno sin apellido paterno")
+          _response = False
+        if (fila[5] is None):
+          _err[fila[39]].append("alumno sin apellido materno")
+          _response = False
+        if (fila[6] is None):
+          _err[fila[39]].append("alumno sin tribalAffillation")
+          _response = False
+        if (fila[7] is None):
+          _err[fila[39]].append("alumno sin rol")
+          _response = False
+        if (fila[8] is None):
+          _err[fila[39]].append("alumno sin sexo")
+          _response = False
+        if (fila[9] is None):
+          _err[fila[39]].append("alumno sin fecha cumpleaños")
+          _response = False
+        if (fila[10] is None):
+          _err[fila[39]].append("alumno sin fecha de entrada")
+          _response = False
+        if (fila[11] is None):
+          _err[fila[39]].append("alumno sin pais")
+          _response = False
+        if (fila[12] is None):
+          _err[fila[39]].append("alumno sin region")
+          _response = False
+        if (fila[13] is None):
+          _err[fila[39]].append("alumno sin ciudad")
+          _response = False
+        if (fila[14] is None):
+          _err[fila[39]].append("alumno sin comuna")
+          _response = False
+        if (fila[15] is None or fila[16] is None or fila[17] is None):
+          _err[fila[39]].append("alumno sin dirección")
+          _response = False
+        if (fila[18] is None):
+          _err[fila[39]].append("alumno sin codigo postal")
+          _response = False
+        if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
+          if (fila[19] is None):
+            _err[fila[39]].append("apoderado alumno sin nombre")
             _response = False
-          if (fila[1] is None):
-            logger.error(f"alumno sin RUN")
-            logger.error(f"Rechazado")
+          if (fila[21] is None):
+            _err[fila[39]].append("apoderado alumno sin apellido paterno")
             _response = False
-          if (fila[2] is None ):
-            logger.error(f"alumno sin nombre")
-            logger.error(f"Rechazado")
+          if (fila[22] is None):
+            _err[fila[39]].append("apoderado alumno sin apellido materno")
             _response = False
-          if (fila[4] is None):
-            logger.error(f"alumno sin apellido paterno")
-            logger.error(f"Rechazado")
+          if (fila[23] is None):
+            _err[fila[39]].append("apoderado alumno sin pais")
             _response = False
-          if (fila[5] is None):
-            logger.error(f"alumno sin apellido materno")
-            logger.error(f"Rechazado")
+          if (fila[24] is None):
+            _err[fila[39]].append("apoderado alumno sin region")
             _response = False
-          if (fila[6] is None):
-            logger.error(f"alumno sin tribalAffillation")
-            logger.error(f"Rechazado")
+          if (fila[25] is None):
+            _err[fila[39]].append("apoderado alumno sin ciudad")
             _response = False
-          if (fila[7] is None):
-            logger.error(f"alumno sin rol")
-            logger.error(f"Rechazado")
+          if (fila[26] is None):
+            _err[fila[39]].append("apoderado alumno sin comuma")
             _response = False
-          if (fila[8] is None):
-            logger.error(f"alumno sin sexo")
-            logger.error(f"Rechazado")
+          if (fila[27] is None or fila[28] is None or fila[29] is None):
+            _err[fila[39]].append("apoderado alumno sin direccion")
             _response = False
-          if (fila[9] is None):
-            logger.error(f"alumno sin fecha cumpleaños")
-            logger.error(f"Rechazado")
+          if (fila[30] is None):
+            _err[fila[39]].append("apoderado alumno sin codigo postal")
             _response = False
-          if (fila[10] is None):
-            logger.error(f"alumno sin fecha de entrada")
-            logger.error(f"Rechazado")
+          if (fila[32] is None):
+            _err[fila[39]].append("apoderado alumno sin numero telefonico")
             _response = False
-          if (fila[11] is None):
-            logger.error(f"alumno sin pais")
-            logger.error(f"Rechazado")
+          if (fila[33] is None):
+            _err[fila[39]].append("apoderado alumno sin tipo de numero telefonico")
             _response = False
-          if (fila[12] is None):
-            logger.error(f"alumno sin region")
-            logger.error(f"Rechazado")
+          if (fila[34] is None):
+            _err[fila[39]].append("apoderado alumno sin verificador de numero primario")
             _response = False
-          if (fila[13] is None):
-            logger.error(f"alumno sin ciudad")
-            logger.error(f"Rechazado")
+          if (fila[35] is None):
+            _err[fila[39]].append("apoderado alumno sin email")
             _response = False
-          if (fila[14] is None):
-            logger.error(f"alumno sin comuna")
-            logger.error(f"Rechazado")
+          if (fila[36] is None):
+            _err[fila[39]].append("apoderado alumno sin tipo de email")
             _response = False
-          if (fila[15] is None or fila[16] is None or fila[17] is None):
-            logger.error(f"alumno sin dirección")
-            logger.error(f"Rechazado")
-            _response = False
-          if (fila[18] is None):
-            logger.error(f"alumno sin codigo postal")
-            logger.error(f"Rechazado")
-            _response = False
-          if(fila[40] == 'Apoderado(a)/Tutor(a)'): #Verifica si existe un apoderado asignado al estudiante
-            if (fila[19] is None):
-              logger.error(f"apoderado alumno sin nombre")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[21] is None):
-              logger.error(f"apoderado alumno sin apellido paterno")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[22] is None):
-              logger.error(f"apoderado alumno sin apellido materno")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[23] is None):
-              logger.error(f"apoderado alumno sin pais")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[24] is None):
-              logger.error(f"apoderado alumno sin region")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[25] is None):
-              logger.error(f"apoderado alumno sin ciudad")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[26] is None):
-              logger.error(f"apoderado alumno sin comuma")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[27] is None or fila[28] is None or fila[29] is None):
-              logger.error(f"apoderado alumno sin direccion")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[30] is None):
-              logger.error(f"apoderado alumno sin codigo postal")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[32] is None):
-              logger.error(f"apoderado alumno sin numero telefonico")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[33] is None):
-              logger.error(f"apoderado alumno sin tipo de numero telefonico")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[34] is None):
-              logger.error(f"apoderado alumno sin verificador de numero primario")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[35] is None):
-              logger.error(f"apoderado alumno sin email")
-              logger.error(f"Rechazado")
-              _response = False
-            if (fila[36] is None):
-              logger.error(f"apoderado alumno sin tipo de email")
-              logger.error(f"Rechazado")
-              _response = False
           else:
-              logger.error(f"El estudiante no tiene un apoderdo asignado")
-              logger.error(f"Rechazado")
-              _response = False                  
+            _err[fila[39]].append("El estudiante no tiene un apoderdo asignado")
+            _response = False                  
       if(_response):
         logger.info(f"datos de alumnos validados")
         logger.info(f"Aprobado")
         _r = True
+      else: 
+        logger.error(f"Rechazado")
+        logger.error(f"errores encontrados{_err}")
     except Exception as e:
       logger.info(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
@@ -4488,8 +4462,10 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False    
+    results = []
     try:
-        results = conn.execute("""
+      _query = """
         SELECT opr.PersonId,
               (SELECT o2.OrganizationId
                 from OrganizationPersonRole opr2
@@ -4521,47 +4497,53 @@ GROUP BY p.personId
           and k12se.RefEnrollmentStatusId = 2
           and cast(strftime('%Y', k12se.FirstEntryDateIntoUSSchool) as integer) =
               cast(strftime('%Y', current_timestamp) as integer)
-          and ps.RefPersonStatusTypeId = 26;
-        """).fetchall()
-        if(len(results)>0):
-            lista = list(set([m[0] for m in results if m[0] is not None]))
-            lista2 = list(set([m[4] for m in results if m[4] is not None]))
-            con=len(lista)
-            x=0
-            for l1 in lista:
-                grado=(lista2[x][4])
-                if (grado[-8:-1].lower()=="3° medio"):
-                    results2 = conn.execute("""
-                    SELECT opr.organizationid
-                    FROM OrganizationPersonRole opr
-                            join K12StudentCourseSection k12cs on opr.OrganizationPersonRoleId = k12cs.OrganizationPersonRoleId
-                            join Organization o on o.OrganizationId = opr.OrganizationId
-                    where PersonId = ?
-                      and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
-                      and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
-                    """,[l1]).fetchall()
-                    if (len(results2))<1:
-                        logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
-                        logger.error(f"Rechazado")
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                x+=x
-            logger.info(f"todos los alumnos de practica cumplen con los requisitos")
-            logger.info(f"Aprobado")
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
+          and ps.RefPersonStatusTypeId = 26
+      """
+      results = conn.execute(_query).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {results} -> {str(e)}")
 
-        else:
-            logger.info(f"S/Datos")
-            logger.info(f"No existen alumnos en practica registrados")
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
-
+    if(len(results) == 0):
+      logger.info(f"S/Datos")
+      logger.info(f"No existen alumnos en practica registrados")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r     
+    
+    try:
+      lista = list(set([m[0] for m in results if m[0] is not None]))
+      lista2 = list(set([m[4] for m in results if m[4] is not None]))
+      con=len(lista)
+      x=0
+      for l1 in lista:
+          grado=(lista2[x][4])
+          if (grado[-8:-1].lower()=="3° medio"):
+              results2 = conn.execute("""
+              SELECT opr.organizationid
+              FROM OrganizationPersonRole opr
+                      join K12StudentCourseSection k12cs on opr.OrganizationPersonRoleId = k12cs.OrganizationPersonRoleId
+                      join Organization o on o.OrganizationId = opr.OrganizationId
+              where PersonId = ?
+                and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
+                and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
+              """,[l1]).fetchall()
+              if (len(results2))<1:
+                  logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
+                  logger.error(f"Rechazado")
+                  return_dict[getframeinfo(currentframe()).function] = False
+                  return False
+          x+=x
+      logger.info(f"todos los alumnos de practica cumplen con los requisitos")
+      logger.info(f"Aprobado")
+      _r = True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r  
   ## Fin fn29A WC ##
 
   ## Inicio fn29B WC ##
