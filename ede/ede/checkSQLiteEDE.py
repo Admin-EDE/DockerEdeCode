@@ -7309,7 +7309,6 @@ GROUP BY pid.Identifier
                 WHERE A.IncidentId = ?;"""
 
       #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
-      logger.info(f"VERIFICA LA EXISTENCIA DE REGISTRO DE RETIROS DE ESTUDIANTES DEL ESTABLECIMIENTO.")
       _r = conn.execute(_s1).fetchall()
       if(len(_r)>0):
         _p = self.convertirArray2DToList(list([m[0] for m in _r if m[0] is not None]))
@@ -7912,8 +7911,6 @@ where
     """      
     try:
       _l1 = []
-      logger.info(f"fn6E2 - Valida que no exista asistencia registrada para los dias definidos con suspension de clases.")
-
       _s1 = """SELECT a.Date,c.RUN
                 FROM RoleAttendanceEvent a
                 JOIN OrganizationPersonRole b
@@ -7964,7 +7961,6 @@ where
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
-    logger.info(f"fn6D0 - Valida que las altas y bajas de los alumnos esten registradas en el sistema. El registro debe estar en las tablas PersonStatus y OrganizationPersonRole, y sus fechas deben ser las mismas.")
     try:
       _l = []
       _l2 = []
@@ -8072,7 +8068,6 @@ where
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
-    logger.info(f"fn6D0 - Valida que no exista asistencia anterior al ingreso o posterior al retiro de un alumno en el establecimiento.")
     try:
       _l = []
       _l2 = []
@@ -8168,7 +8163,6 @@ where
           ]
     """      
     try:
-      logger.info(f"fn6C0 - Valida que los alumnos excedentes SIN derecho a pago solo tengan asistencia a nivel de asignatura y NO de curso.")
       _l1 = []
       _s1 = """SELECT c.RUN, A.OrganizationPersonRoleId
                 FROM OrganizationPersonRole A
