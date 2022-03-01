@@ -2182,8 +2182,9 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    MaximumCapacityErrors = []
     try:
-      MaximumCapacityErrors = []
       MaximumCapacityErrors = conn.execute("""
         -- Selecciona los Organizaciones de tipo ASIGNATURA que no cumplen con el criterio de la expresión regular
         SELECT OrganizationId, MaximumCapacity
@@ -2194,9 +2195,10 @@ GROUP BY p.personId
           MaximumCapacity NOT REGEXP "^[1-9]{1}\d{1,3}$"
       """).fetchall()
     except Exception as e:
-      pass
+      logger.info(f"Resultado: {MaximumCapacityErrors} -> {str(e)}")
+    
+    organizationMalAsignadas = []
     try:  
-      organizationMalAsignadas = []
       organizationMalAsignadas = conn.execute("""
           -- Selecciona las Organizaciones que no son de tipo ASIGNATURA 
           SELECT OrganizationId
@@ -2212,7 +2214,7 @@ GROUP BY p.personId
                   )
       """).fetchall()
     except Exception as e:
-      pass
+      logger.info(f"Resultado: {organizationMalAsignadas} -> {str(e)}")
     
     try:      
       logger.info(f"MaximunCapacity mal asignados: {len(MaximumCapacityErrors)}, Tabla CourseSection con organizacion mal asignadas: {len(organizationMalAsignadas)}")
@@ -2230,16 +2232,16 @@ GROUP BY p.personId
         if (_c1 > 0 or _c2 > 0):
           logger.error(f"Rechazado")
           return_dict[getframeinfo(currentframe()).function] = False
-          return False          
       else:
         logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
+        _r = True
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
 
   # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
   #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
