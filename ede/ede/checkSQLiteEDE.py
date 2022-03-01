@@ -2737,6 +2737,8 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    _ExistData = []
     try:
       _ExistData = conn.execute("""
         SELECT count(OrganizationId)
@@ -2744,11 +2746,18 @@ GROUP BY p.personId
         OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
         WHERE RefOrganizationType.Description IN ('Course','Course Section')
       """).fetchall()
-      if(_ExistData[0][0]==0):
-        logger.info(f"S/Datos")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True      
-      
+    except Exception as e:
+      logger.info(f"Resultado: {_ExistData} -> {str(e)}")
+
+    if(_ExistData[0][0]==0):
+      logger.info(f"S/Datos")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+    
+    locations = []
+    try:
       locations = conn.execute("""
         /*
         * Entrega la lista de organizaciones que no contiene bien definida su ubicación dentro del establecimiento.
@@ -2793,28 +2802,33 @@ GROUP BY p.personId
                 AND
                 City NOT NULL
         ));
-      """)
-      if(locations.returns_rows==0):
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
-      
-      locations = locations.fetchall()
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {locations} -> {str(e)}")
+
+    if( len(locations) == 0 ):
+      logger.info(f"Aprobado")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
+
+    try:
       logger.info(f"Localidades mal asignadas: {len(locations)}")
-      if(len(locations)>0):
+      if( len(locations) > 0 ):
         data1 = list(set([m[0] for m in locations if m[0] is not None]))
         _c1 = len(set(data1))
         _err1 = f"Los siguientes organizaciones no tienen sus ubicaciones bien asignadas: {data1}"
         if (_c1 > 0):
           logger.error(_err1)
           logger.error(f"Rechazado")
-          return_dict[getframeinfo(currentframe()).function] = False
-          return False          
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
 
 ### INICIO fn3DD ###
   def fn3DD(self, conn, return_dict):
