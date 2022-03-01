@@ -3987,6 +3987,8 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    _query = []
     try:
         _query = conn.execute("""
         SELECT LA.LearnerActivityId
@@ -3996,64 +3998,80 @@ GROUP BY p.personId
                 JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
         ORDER BY LA.LearnerActivityId;
         """).fetchall()
-        if(len(_query)>0):
-            _organizationCalendarSession = conn.execute("""
-            SELECT OrganizationCalendarSessionId
-            FROM LearnerActivity
-            WHERE LearnerActivityId IN (
-                SELECT LA.LearnerActivityId
-                FROM Assessment A
-                        JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                        JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
-                        JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-                ORDER BY LA.LearnerActivityId)
-              AND OrganizationCalendarSessionId IS NOT NULL
-            GROUP BY OrganizationCalendarSessionId;
-            """).fetchall()
-            if(len(_organizationCalendarSession)>0):
-                _calendar = conn.execute("""
-                SELECT 'Descripcion' as Descrip
-                FROM OrganizationCalendarSession
-                WHERE Description IS NOT NULL
-                  AND Description <> ''
-                  AND OrganizationCalendarSessionId in (
-                    SELECT OrganizationCalendarSessionId
-                    FROM LearnerActivity
-                    WHERE LearnerActivityId IN (
-                        SELECT LA.LearnerActivityId
-                        FROM Assessment A
-                                JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
-                                JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
-                                JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-                        ORDER BY LA.LearnerActivityId)
-                      AND OrganizationCalendarSessionId IS NOT NULL
-                    GROUP BY OrganizationCalendarSessionId)
-                """).fetchall()
-                if(len(_calendar) == len(_organizationCalendarSession)):
-                  logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
-                  logger.info(f'Aprobado')
-                  return_dict[getframeinfo(currentframe()).function] = True
-                  return True
-                else:
-                  logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
-                  logger.error(f'Rechazado')
-                  return_dict[getframeinfo(currentframe()).function] = False
-                  return False
-            else:
-                logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
-                logger.error(f'Rechazdo')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-        else:
-            logger.error(f'No evaluaciones registradas en el establecimiento ')
-            logger.error(f'S/Datos')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+    except Exception as e:
+      logger.info(f"Resultado: {_query} -> {str(e)}")
+
+    if( len(_query) == 0 ):
+      logger.error(f'No evaluaciones registradas en el establecimiento ')
+      logger.error(f'S/Datos')
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+    
+    _organizationCalendarSession = []
+    try:
+      _organizationCalendarSession = conn.execute("""
+      SELECT OrganizationCalendarSessionId
+      FROM LearnerActivity
+      WHERE LearnerActivityId IN (
+          SELECT LA.LearnerActivityId
+          FROM Assessment A
+                  JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                  JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
+                  JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+          ORDER BY LA.LearnerActivityId)
+        AND OrganizationCalendarSessionId IS NOT NULL
+      GROUP BY OrganizationCalendarSessionId;
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {_organizationCalendarSession} -> {str(e)}")
+    
+    if( len(_organizationCalendarSession) == 0 ):
+      logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
+      logger.error(f'Rechazdo')
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+    
+    _calendar = []
+    try:
+      _calendar = conn.execute("""
+          SELECT 'Descripcion' as Descrip
+          FROM OrganizationCalendarSession
+          WHERE Description IS NOT NULL
+            AND Description <> ''
+            AND OrganizationCalendarSessionId in (
+              SELECT OrganizationCalendarSessionId
+              FROM LearnerActivity
+              WHERE LearnerActivityId IN (
+                  SELECT LA.LearnerActivityId
+                  FROM Assessment A
+                          JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
+                          JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
+                          JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+                  ORDER BY LA.LearnerActivityId)
+                AND OrganizationCalendarSessionId IS NOT NULL
+              GROUP BY OrganizationCalendarSessionId)
+          """).fetchall()
+
+    except Exception as e:
+      logger.info(f"Resultado: {_calendar} -> {str(e)}")
+    
+    try:
+      if(len(_calendar) == len(_organizationCalendarSession)):
+        logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
+        logger.info(f'Aprobado')
+        _r = True
+      else:
+        logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
+        logger.error(f'Rechazado')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
   ## Fin fn7F5 WC ##
 
   ## Inicio fn2DA WC ##
