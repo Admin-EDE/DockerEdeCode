@@ -2005,7 +2005,7 @@ GROUP BY p.personId
       logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
       logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = -r
+      return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")      
       return _r
 
