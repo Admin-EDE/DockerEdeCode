@@ -49,6 +49,13 @@ class insert:
 
   def getPublicKeyFromEmail(self,email):
     try:
+      url_to_register_file = f'https://docs.google.com/spreadsheets/d/1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A/export?format=csv&id=1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A'
+      r = requests.get(url_to_register_file, stream=True)
+      with open('./ede/ede/RegistroEDE.csv','wb') as out:
+        out.write(io.BytesIO(r.content).read()) ## Read bytes into file
+    except:
+      pass
+    try:
       url = './ede/ede/RegistroEDE.csv'
       df = pd.read_csv(url)
       _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
