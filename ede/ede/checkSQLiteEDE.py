@@ -3821,49 +3821,60 @@ GROUP BY p.personId
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    _query = []
     try:
-        _query = conn.execute("""
-        SELECT LA.LearnerActivityId,
-            LA.PersonId,
-            LA.Weight,
-            R.ScoreValue
-        FROM LearnerActivity LA
-                JOIN AssessmentRegistration AR ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
-                JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
-                JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
-                JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
-        WHERE A.RefAssessmentTypeId IN (28, 29)
-        AND R.RefScoreMetricTypeId IN (1, 2);
-        """).fetchall()
-        if(len(_query)>0):
-            _weight = (list([m[2] for m in _query if m[2] is not None]))
-            for x in _weight:
-                if (x is None or x > 100 or x <= 0):
-                    logger.error(f'El peso de la/s calificacion/es esta mal ingresado')
-                    logger.error(f'Rechazado')
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-            _scoreValue = (list([m[3] for m in _query if m[3] is not None]))
-            for y in _scoreValue:
-                if (y is None):
-                    logger.error(f'Existen Calificaciones mal ingresadas en el establecimiento')
-                    logger.error(f'Rechazado')
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-            logger.info(f'Calificaciones con su ponderacion ingresadas correctamente')
-            logger.info(f'Aprobado')
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
-        else:
-            logger.error(f'S/Datos')
-            logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+      _query = conn.execute("""
+      SELECT LA.LearnerActivityId,
+          LA.PersonId,
+          LA.Weight,
+          R.ScoreValue
+      FROM LearnerActivity LA
+              JOIN AssessmentRegistration AR ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
+              JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
+              JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
+              JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
+      WHERE A.RefAssessmentTypeId IN (28, 29)
+      AND R.RefScoreMetricTypeId IN (1, 2);
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {_query} -> {str(e)}")
+    
+    if( len(_query) == 0 ):
+      logger.error(f'S/Datos')
+      logger.error(f'No se encuentran evaluaciones registradas en el establecimiento')
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+
+    try:
+      _err = True
+      _weight = (list([m[2] for m in _query if m[2] is not None]))
+      for x in _weight:
+          if (x is None or x > 100 or x <= 0):
+              logger.error(f'El peso de la/s calificacion/es esta mal ingresado')
+              logger.error(f'Rechazado')
+              _err = False
+
+      _scoreValue = (list([m[3] for m in _query if m[3] is not None]))
+      for y in _scoreValue:
+          if (y is None):
+              logger.error(f'Existen Calificaciones mal ingresadas en el establecimiento')
+              logger.error(f'Rechazado')
+              _err = False
+      
+      if(_err):
+        logger.info(f'Calificaciones con su ponderacion ingresadas correctamente')
+        logger.info(f'Aprobado')
+        _r = True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r
+
   ## Fin fn7F3 WC ##
 
   ## Inicio fn7F4 WC ##
