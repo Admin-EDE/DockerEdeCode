@@ -5461,6 +5461,7 @@ GROUP BY est.personId
     
     try:
       errorList = []
+      _err = {}
       for row in rows:
         if(row[2] is None):
           errorList.append('EL curso no tiene letra asignada')
@@ -5491,10 +5492,14 @@ GROUP BY est.personId
         if(len(errorList) > 0):
           _err = {f"{row[0]}": errorList }
         
-      if(len(_err.values) > 0):
+      if(len(_err) == 0):
         logger.info("Se validaron todos los datos")
         logger.info(f"Aprobado")
         _r = True
+      else:
+        logger.error(f"Rechazado")
+        logger.error(f"personId con errores: {_err}")
+      
     except Exception as e:
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
