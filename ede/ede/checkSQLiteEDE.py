@@ -4464,80 +4464,83 @@ GROUP BY p.personId
           ]
     """      
     _r = False    
-    results = []
+    rows = []
     try:
-      _query = """
-        SELECT opr.PersonId,
-              (SELECT o2.OrganizationId
-                from OrganizationPersonRole opr2
-                        join Organization o2 on o2.OrganizationId = opr2.OrganizationId
-                where RefOrganizationTypeId = 21
-                  and opr2.PersonId = opr.PersonId)                              as seccion,
+      rows = conn.execute("""
+        SELECT est.personid
+        FROM person est
+        JOIN PersonStatus ps
+          ON ps.personId = est.personId
+          AND ps.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description = 'En práctica')
+    """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
+    if(len(rows) == 0):
+      logger.info(f"S/Datos")      
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r  
+      
+    results = []    
+    try:
+      results = conn.execute("""
+SELECT est.personid
+FROM person est
+JOIN PersonStatus ps
+	ON ps.personId = est.personId
+	AND ps.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description = 'En práctica')
 
-              (SELECT opr3.OrganizationPersonRoleId
-                from OrganizationPersonRole opr3
-                where opr3.PersonId = opr.PersonId)                              as personrole,
+JOIN (
+	SELECT opr.personId, o.OrganizationId
+	FROM OrganizationPersonRole opr
+	JOIN Organization o
+		ON o.OrganizationId = opr.OrganizationId
+		AND o.RefOrganizationTypeId IN (SELECT RefOrganizationTypeId FROM RefOrganizationType WHERE Code = 'Course')
+) orgCurso	
+ON orgCurso.personid = est.personId
 
-              (SELECT grado.OrganizationId
-                from Organization grado
-                        join RefOrganizationType rft on grado.RefOrganizationTypeId = rft.RefOrganizationTypeId
-                        join OrganizationRelationship or1 on or1.OrganizationId = grado.OrganizationId
-                        join OrganizationRelationship or2 on or1.OrganizationId = or2.Parent_OrganizationId
-                where or2.OrganizationId = (SELECT o2.OrganizationId
-                                            from OrganizationPersonRole opr2
-                                                    join Organization o2 on o2.OrganizationId = opr2.OrganizationId
-                                            where o2.RefOrganizationTypeId = 21
-                                              and opr2.PersonId = opr.PersonId)) as grado,
-              o3.Name
-        FROM OrganizationPersonRole opr
-                join Organization o on o.OrganizationId = opr.OrganizationId
-                join K12StudentEnrollment k12se on k12se.OrganizationPersonRoleId = personrole
-                join Organization o3 on o3.OrganizationId = grado
-                join PersonStatus ps on opr.PersonId = ps.PersonId
-        where o.RefOrganizationTypeId = 47 /*cambiar a id respectivo, este id hace referencia a el nuevo tipo de organizacion agregado para practicaProfesional*/
-          and k12se.RefEnrollmentStatusId = 2
-          and cast(strftime('%Y', k12se.FirstEntryDateIntoUSSchool) as integer) =
-              cast(strftime('%Y', current_timestamp) as integer)
-          and ps.RefPersonStatusTypeId = 26
-      """
-      results = conn.execute(_query).fetchall()
+JOIN (
+SELECT  DISTINCT OrganizationIdDelCurso
+FROM jerarquiasList
+WHERE grado like '%3º medio%'
+) jer 
+ON jer.OrganizationIdDelCurso = orgCurso.OrganizationId
+
+OUTER LEFT JOIN (
+	SELECT opr.personId
+	FROM OrganizationPersonRole opr
+	JOIN Organization o
+		ON o.OrganizationId = opr.OrganizationId
+		AND o.RefOrganizationTypeId IN (SELECT RefOrganizationTypeId FROM RefOrganizationType WHERE Code = 'practicaProfesional')
+) orgPractica	
+ON orgPractica.personid = est.personId
+      """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {results} -> {str(e)}")
 
     if(len(results) == 0):
-      logger.info(f"S/Datos")
-      logger.info(f"No existen alumnos en practica registrados")
-      _r = True
+      logger.info(f"Rechazado")
+      logger.info(f"Alumnos mal asignados en su practica profesional: {rows}")
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")
       return _r     
     
     try:
-      lista = list(set([m[0] for m in results if m[0] is not None]))
-      lista2 = list(set([m[4] for m in results if m[4] is not None]))
-      con=len(lista)
-      x=0
-      for l1 in lista:
-          grado=(lista2[x][4])
-          if (grado[-8:-1].lower()=="3° medio"):
-              results2 = conn.execute("""
-              SELECT opr.organizationid
-              FROM OrganizationPersonRole opr
-                      join K12StudentCourseSection k12cs on opr.OrganizationPersonRoleId = k12cs.OrganizationPersonRoleId
-                      join Organization o on o.OrganizationId = opr.OrganizationId
-              where PersonId = ?
-                and k12cs.RefCourseSectionEnrollmentStatusTypeId = 6
-                and cast(strftime('%Y', opr.EntryDate) as integer) = cast(strftime('%Y', current_timestamp) as integer);
-              """,[l1]).fetchall()
-              if (len(results2))<1:
-                  logger.error(f"alumno en practica  de 3 año sin requisito de semestre cumplido")
-                  logger.error(f"Rechazado")
-                  return_dict[getframeinfo(currentframe()).function] = False
-                  return False
-          x+=x
-      logger.info(f"todos los alumnos de practica cumplen con los requisitos")
-      logger.info(f"Aprobado")
-      _r = True
+      listaDeEstudiantesEnPractica = list(set([m[0] for m in results if m[0] is not None]))
+      faltantes = []
+      for row in rows:
+        personIdEstudiante = row[0]
+        if(personIdEstudiante not in listaDeEstudiantesEnPractica):
+          faltantes.append(personIdEstudiante)
+      if(len(faltantes) == 0):
+        logger.info(f"todos los alumnos de practica cumplen con los requisitos")
+        logger.info(f"Aprobado")
+        _r = True
+      else:
+        logger.info(f"Rechazado")
+        logger.info(f"Alumnos mal asignados en su practica profesional: {faltantes}")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
