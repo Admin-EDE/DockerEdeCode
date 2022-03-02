@@ -5349,158 +5349,159 @@ JOIN RefIncidentBehavior rInBh
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False
+    rows = []
     try:
-    #trae todos los datos bases del alumno y de su apoderado por curso
-        idorga = conn.execute("""
-        SELECT
-            organizationId,
-            name
-        from Organization
-        where RefOrganizationTypeId = 21
-        """).fetchall()
-        x=0
-        for org in idorga:
-            listaAlumno = conn.execute("""
-            SELECT op.personid,
-                  op.organizationpersonroleid,
-                  StudentListNumber                                                                        as "numero de lista",
-                  Identifier                                                                               as rut,
-                  p.Birthdate                                                                              as "fecha de nacimiento",
-                  k12SE.FirstEntryDateIntoUSSchool,
-                  rf.Definition                                                                            as sexo,
-                  pad.StreetNumberAndName                                                                  as direccion
-                    ,
-                  (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName)     as "nombre completo"
-                    ,
-                  (p2.FirstName || ' ' || p2.MiddleName || ' ' || p2.LastName || ' ' || p2.SecondLastName) as "apoderado",
-                  pad2.StreetNumberAndName                                                                 as "domicilio Apoderado"
-                    ,
-                  pt2.TelephoneNumber                                                                      as "fono apoderado",
-                  pea2.EmailAddress                                                                        as "email apoderado"
-                    ,
-                  k12SE.FirstEntryDateIntoUSSchool                                                         as "fecha de inicio"
-            FROM K12StudentEnrollment k12SE
-                    JOIN OrganizationPersonRole op 
-        on k12SE.OrganizationPersonRoleId = op.OrganizationPersonRoleId
-        and op.RoleId IN (
-          SELECT RoleId
-          from Role
-          WHERE role.Name IN ('Estudiante')
-        )
-                    JOIN PersonIdentifier PI 
-        on op.PersonId = PI.PersonId
-          and PI.RefPersonIdentificationSystemId IN (
-          Select RefPersonIdentificationSystemId
-          from RefPersonIdentificationSystem rpi
-          where rpi.Description IN ('ROL UNICO NACIONAL')
-          )
-      JOIN Person p on op.PersonId = p.PersonId
-                    JOIN RefSex rf on p.RefSexId = rf.RefSexId
-                    LEFT join PersonAddress pad on p.PersonId = pad.PersonId
-                    JOIN PersonRelationship pr 
-                      on p.PersonId = pr.RelatedPersonId
-                      and pr.RefPersonRelationshipId IN (
-                        Select RefPersonRelationshipId
-                        from RefPersonRelationship
-                        where RefPersonRelationship.Description IN ('Apoderado(a)/Tutor(a)')
-                      )
-                    LEFT join Person p2 on p2.PersonId = pr.PersonId -- Datos Apoderado
-                    LEFT join PersonAddress pad2 on pad2.PersonId = p2.PersonId  -- Datos Apoderado
-                    LEFT join PersonTelephone pt2 on pt2.PersonId = p2.PersonId  -- Datos Apoderado
-                    LEFT join PersonEmailAddress pea2 on pea2.PersonId = p2.PersonId  -- Datos Apoderado
-            WHERE
-              op.organizationid = ?
-            GROUP by op.PersonId;
-            """,([org[0]])).fetchall()
-            if(len(listaAlumno)> 0):
-                x=x+1
-                for alumno in listaAlumno:
-                    #por cada alumno trae a los profesorees que interactuan con el
-                    idAlumno=alumno[0]
-                    idAlumnorole=alumno[1]
-                    listaProfesionales = conn.execute("""
-                    SELECT (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo"
-                    FROM OrganizationPersonRole op
-                            join OrganizationPersonRole op2 on op.OrganizationId = op2.OrganizationId
-                            join Person p on op.PersonId = p.PersonId
-                    WHERE op.roleid != 6
-                      AND op2.PersonId = ?
-                      AND op2.OrganizationID = ?
-                    GROUP by op.PersonId
-                    """,(idAlumno,org[0])).fetchall()
-                    #lista de becas e identificacion de estudiante preferente, prioritario, etc de ser requerido
-                    listaPrograma = conn.execute("""
-                    SELECT rpt.description
-                    FROM RefParticipationType rpt
-                            join PersonProgramParticipation ppp on rpt.RefParticipationTypeId = ppp.RefParticipationTypeId
-                    WHERE ppp.OrganizationPersonRoleId = ?;
-                    """,([idAlumnorole])).fetchall()
-                    #trae las asignaturas en las que se encuentra el alumno
-                    organizacion = conn.execute("""
-                    SELECT op.OrganizationId, personid
-                    FROM OrganizationPersonRole op
-                            join Organization o on op.OrganizationId = o.OrganizationId
-                    WHERE personid in (?);""",([idAlumno])).fetchall()
-                    organi=[]
-                    evalua_=[]
-                    for org2 in organizacion:
-                        #por cada asignatura trae el calendario
-                        calendario = conn.execute("""
-                        SELECT
-                            BeginDate,
-                            EndDate,
-                            SessionStartTime,
-                            SessionEndTime
-                        FROM calendarList
-                        WHERE OrganizationId = ?
-                        and "RefSessionType.Description" like '%Semester%';
-                            """,([org2[0]])).fetchall()
-                        if(calendario):
-                            organi.append(calendario)
-                        # por cada asignatura trae las evaluaciones
-                        evaluaciones = conn.execute("""
-                        select aao.OrganizationId
-                        from AssessmentAdministration_Organization aao
-                        join CourseSection cs on aao.OrganizationId=cs.OrganizationId
-                        where CourseId= ?;
-                        """,([org2[0]])).fetchall()
-                        if (evaluaciones):
-                            evalua_.append(evaluaciones)
-                becasprogramas=(list([m[0] for m in listaPrograma if m[0] is not None]))
-                evalua=(list([m[0] for m in evalua_ if m[0] is not None]))
-                profe=(list([m[0] for m in listaProfesionales if m[0] is not None]))
-                calenda=(list([m[0] for m in organi if m[0] is not None]))
-                print(profe)
-                if not profe:
-                    logger.error(f"Sin profesor jefe, o profesor de asignaturas")
-                    logger.error(f"Rechazado")
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-                elif not calenda:
-                    logger.error(f"Sin calendario")
-                    logger.error(f"Rechazado")
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-                elif not evalua:
-                    logger.error(f"Sin evaluaciones")
-                    logger.error(f"Rechazado")
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-            else:
-                logger.error(f"Sin Datos de alumnos: {org}")
-        if x==0:
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = False
-          return False
+      rows = conn.execute("""
+SELECT 
+	  est.personId
+	, orgCurso.OrganizationId as cursoId
+	, orgCurso.name as cursoName
+	, (est.FirstName || ' ' || est.MiddleName || ' ' || est.LastName || ' ' || est.SecondLastName)     as "nombre_Estudiante"
+	, group_concat(DISTINCT run_ipe_Est.Identifier) as 'run_ipe_estudiante'
+	, group_concat(DISTINCT numListaEst.Identifier) as 'numero_Lista'
+	, group_concat(DISTINCT numMatriculaEst.Identifier) as 'numero_matricula_estudiante'
+	, est.Birthdate as 'fecha_nacimiento_estudiante'
+	, CASE 
+		WHEN sexo_est.Definition = 'Male' THEN 'M'
+		WHEN sexo_est.Definition = 'female' THEN 'F'
+		ELSE NULL
+	  END as 'sexo_estudiante'
+	, pa_est.StreetNumberAndName as 'direccion_estudiante'
+	, group_concat(DISTINCT rpst_est.Description) as 'PersonStatus_Estudiante'
+	, group_concat(DISTINCT profJefe.name) as 'profesor_jefe_curso'
+	, count(DISTINCT asignaturas.Organizationid) as 'asignaturasId'
+	, count(DISTINCT asignaturas.name) as 'asignaturas_nombre'
+	, count(DISTINCT prof_educ.name) as 'nombre_profesionales_educación'
+	, count(DISTINCT prof_educ.RUN) as 'run_profesionales_educación'
+-------------- información del ESTUDIANTE -------------------
+FROM Person est
+
+JOIN OrganizationPersonRole opr
+	on opr.personId = est.personId
+	and opr.RoleId IN (SELECT RoleId from Role WHERE role.Name IN ('Estudiante'))
+
+JOIN Organization orgCurso
+	ON opr.Organizationid = orgCurso.OrganizationId
+	AND orgCurso.RefOrganizationTypeId IN (SELECT RefOrganizationTypeId FROM RefOrganizationType rotcurso WHERE rotcurso.Code IN ('Course'))
+	
+OUTER LEFT JOIN PersonIdentifier run_ipe_Est 
+	on est.PersonId = run_ipe_Est.PersonId
+	and run_ipe_Est.RefPersonIdentificationSystemId IN (Select RefPersonIdentificationSystemId from RefPersonIdentificationSystem rpi where rpi.code IN ('RUN','IPE'))
+
+OUTER LEFT JOIN PersonIdentifier numListaEst 
+	on est.PersonId = numListaEst.PersonId
+	and numListaEst.RefPersonIdentificationSystemId IN (Select RefPersonIdentificationSystemId from RefPersonIdentificationSystem rpi where rpi.code IN ('listNumber'))
+
+OUTER LEFT JOIN PersonIdentifier numMatriculaEst 
+	on est.PersonId = numMatriculaEst.PersonId
+	and numMatriculaEst.RefPersonIdentificationSystemId IN (Select RefPersonIdentificationSystemId from RefPersonIdentificationSystem rpi where rpi.code IN ('SchoolNumber'))
+
+OUTER LEFT JOIN RefSex sexo_est 
+	on est.RefSexId = sexo_est.RefSexId	
+	
+OUTER LEFT JOIN PersonAddress pa_est
+	on est.PersonId = pa_est.PersonId
+
+OUTER LEFT JOIN PersonStatus ps_estudiante
+	ON est.personId = ps_estudiante.personId
+
+OUTER LEFT JOIN RefPersonStatusType rpst_est 
+	ON ps_estudiante.RefPersonStatusTypeId = rpst_est.RefPersonStatusTypeId
+	
+-------------- información del profesor jefe  -------------------
+OUTER LEFT JOIN (
+			SELECT 
+				(p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as name
+				,orgCurso.Organizationid as OrganizationId
+			FROM Person p
+			JOIN OrganizationPersonRole op 
+				ON op.PersonId = p.PersonId
+				AND op.roleid IN (SELECT RoleId FROM Role WHERE name = 'Profesor(a) Jefe')
+			JOIN Organization orgCurso
+				ON op.Organizationid = orgCurso.OrganizationId
+				AND orgCurso.RefOrganizationTypeId IN ( SELECT RefOrganizationTypeId FROM RefOrganizationType WHERE Code IN ('Course')	)
+			) profJefe
+			ON orgCurso.Organizationid = profJefe.OrganizationId
+
+-------------- información del asignaturas -------------------
+OUTER LEFT JOIN (
+	SELECT Parent_OrganizationId, orgAsignatura.OrganizationId, orgAsignatura.name as name
+	from OrganizationRelationship orgRelAsig
+	JOIN Organization orgAsignatura
+		ON orgAsignatura.Organizationid = orgRelAsig.OrganizationId
+		AND orgAsignatura.RefOrganizationTypeId IN (SELECT RefOrganizationTypeId FROM RefOrganizationType rotAsig WHERE rotAsig.Code IN ('CourseSection'))
+
+) as asignaturas 
+ON asignaturas.Parent_OrganizationId = orgCurso.Organizationid
+
+-------------- profesionales de la educación que interactúan con el estudiante -------------------
+OUTER LEFT JOIN (
+	SELECT opr.OrganizationId, (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as name, pi.Identifier as RUN
+	from person p
+	JOIN OrganizationPersonRole opr
+		ON opr.personId = p.personId
+		AND opr.roleid NOT IN (SELECT RoleId FROM Role WHERE name IN ('Profesor(a) Jefe','Estudiante'))
+	JOIN PersonIdentifier pi
+		on p.PersonId = pi.PersonId
+		and pi.RefPersonIdentificationSystemId IN (Select RefPersonIdentificationSystemId from RefPersonIdentificationSystem rpi where rpi.code IN ('RUN'))
+) as prof_educ
+ON asignaturas.organizationId = prof_educ.Organizationid
+
+GROUP BY est.personId
+                          """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+      
+    if(len(rows) == 0):
+      logger.info(f"S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r      
+    
+    try:
+      errorList = []
+      for row in rows:
+        if(row[2] is None):
+          errorList.append('EL curso no tiene letra asignada')
+          
+        if(row[3] is None):
+          errorList.append('Estudiante sin nombre')
+        if(row[4] is None):
+          errorList.append('estudiante sin RUT o IPE')
+        if(row[5] is None):
+          errorList.append('estudiante sin número de lista')
+        if(row[6] is None):
+          errorList.append('estudiante sin número de matrícula')
+        if(row[7] is None):
+          errorList.append('estudiante sin fecha de nacimiento')
+        if(row[8] is None):
+          errorList.append('estudiante sin sexo asignado')
+        if(row[9] is None):
+          errorList.append('estudiante sin dirección')
+        if('Estudiante asignado a un curso, se crea número de lista' not in row[10]
+           or 'Estudiante con matrícula definitiva' not in row[10]):
+          errorList.append('estudiante sin los estatus minimos asignados')
+        if(row[11] is None):
+          errorList.append('estudiante sin profesor jefe asignado')
+        if(row[12] != row[13]):
+          errorList.append('la cantidad de IDs de asignaturas y nombres no coinciden')
+        if(row[13] != row[14]):
+          errorList.append('Los profesionales que trabajan en las asignaturas debería ser >= que las asignaturas registradas')
+        if(len(errorList) > 0):
+          _err = {f"{row[0]}": errorList }
+        
+      if(len(_err.values) > 0):
         logger.info("Se validaron todos los datos")
         logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
+        _r = True
     except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+      logger.error(f"Rechazado")
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
   ## Fin fn4FA WC ##
 
   ## Inicio fn5F0 WC ##
