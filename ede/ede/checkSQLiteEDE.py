@@ -5460,9 +5460,9 @@ GROUP BY est.personId
       return _r      
     
     try:
-      errorList = []
       _err = {}
       for row in rows:
+        errorList = []
         if(row[2] is None):
           errorList.append('EL curso no tiene letra asignada')
           
