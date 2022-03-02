@@ -28,6 +28,7 @@ class consoleMenu:
     parser_insert.add_argument('-d','--debug', help='Aumenta el detalle de la salida', action="store_true")
     parser_insert.add_argument('-e','--email', type=str, help='Indica el email del destinatario')    
     parser_insert.add_argument('-o','--output', type=str, help='Indica el nombre del archivo de salida')
+    parser_check.add_argument('-t','--time', type=int, help='Especifica el tiempo máximo de la verificación', default=300)    
     parser_insert.set_defaults(func=self.insert)
     
     # create the parser for the "check" command
@@ -37,7 +38,7 @@ class consoleMenu:
     parser_check.add_argument('-d','--debug', help='Aumenta el detalle de la salida', action="store_true")
     parser_check.add_argument('-j','--json', help='El archivo de resultados en formato JSON', action="store_true")
     parser_check.add_argument('-f','--function', type=str, help='Especifica la función que se desea revisar')    
-    parser_check.add_argument('-t','--time', type=int, help='Especifica el tiempo máximo de cada verificación')    
+    parser_check.add_argument('-t','--time', type=int, help='Especifica el tiempo máximo de la verificación', default=300)    
     parser_check.set_defaults(func=self.check)
     
   def module_from_file(self,module_name, file_path):
@@ -84,7 +85,6 @@ class consoleMenu:
     if(not args.NoValidate):
       args.secPhase = insertCSVtoSQLite.args.secPhase
       args.path_to_DB_file = insertCSVtoSQLite.args.path_to_DB_file
-      args.time = 300
       self.check(args)
     else:
       logging.warning("No se realiza validación de los datos, el parámetro '--NoValidate' se encuentra activado...")
