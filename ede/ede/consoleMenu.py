@@ -84,6 +84,7 @@ class consoleMenu:
     if(not args.NoValidate):
       args.secPhase = insertCSVtoSQLite.args.secPhase
       args.path_to_DB_file = insertCSVtoSQLite.args.path_to_DB_file
+      args.time = 300
       self.check(args)
     else:
       logging.warning("No se realiza validación de los datos, el parámetro '--NoValidate' se encuentra activado...")
