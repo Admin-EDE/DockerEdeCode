@@ -338,10 +338,7 @@ class check:
       logger.error(f"ERROR al realizar la conexión con la BD: {str(e)}")
       return False 
     try:
-      if(self.args.time):
-          logger.info(f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
-      else:
-        self.args.time = 300
+      logger.info(f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
         
       manager = Manager()
       return_dict = manager.dict()
