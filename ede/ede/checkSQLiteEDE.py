@@ -5462,10 +5462,10 @@ GROUP BY est.personId
     try:
       _err = {}
       for row in rows:
+        print(row)
         errorList = []
         if(row[2] is None):
           errorList.append('EL curso no tiene letra asignada')
-          
         if(row[3] is None):
           errorList.append('Estudiante sin nombre')
         if(row[4] is None):
@@ -5489,8 +5489,9 @@ GROUP BY est.personId
           errorList.append('la cantidad de IDs de asignaturas y nombres no coinciden')
         if(row[13] != row[14]):
           errorList.append('Los profesionales que trabajan en las asignaturas debería ser >= que las asignaturas registradas')
+
         if(len(errorList) > 0):
-          _err = {f"{row[0]}": errorList }
+          _err[row[0]] = errorList
         
       if(len(_err) == 0):
         logger.info("Se validaron todos los datos")
