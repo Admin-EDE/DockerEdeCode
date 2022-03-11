@@ -5561,7 +5561,7 @@ WHERE Description IN ('Course Section')
 ) 
 JOIN OrganizationCalendar oc
 --ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-ON oc.OrganizationId = O.Organizationid--'2000096080'
+ON oc.OrganizationId = O.Organizationid --'2000096080'
 JOIN OrganizationCalendarSession ocs
 ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
 AND ocs.FirstInstructionDate NOT NULL
@@ -5724,7 +5724,7 @@ JOIN (
   FROM dates 		
 ) occ 
 ON occ.org = Organizationid
-AND (occ.fechasCrisis) NOT LIKE "%" || date || "%"
+AND date NOT LIKE "%" || (occ.fechasCrisis) || "%"
 -- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
 JOIN (
 SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
@@ -5737,7 +5737,7 @@ AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')
 GROUP BY oc.Organizationid
 ) oce 
 ON oce.org = Organizationid
-AND (oce.fechasEventos) NOT LIKE "%" || date || "%"	 
+AND date NOT LIKE "%" || (oce.fechasEventos) || "%"	 
 WHERE 
 CAST(strftime('%w',date) as INTEGER) between 1 and 5
 --AND result.idAsignatura NOT NULl
@@ -7800,160 +7800,137 @@ GROUP BY pid.Identifier
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
-    arr=[]
+    _r = False
+    _q1 = []
     try:
-      """
-SELECT 
-	CAST(julianday('2021-11-26')-julianday('2021-11-25') as INTEGER) as workDays      
-      
-WITH RECURSIVE dates(date) AS (
-  VALUES('2021-03-01')
-  UNION ALL
-  SELECT date(date, '+1 day')
-  FROM dates
-  WHERE 
-	-- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
-	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','2021-10-30') 
-	AND
-	strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
-)
-SELECT date 
-FROM dates
-WHERE CAST(strftime('%w',date) as INTEGER) between 1 and 5      
-      """
-      
-           # select para listar todos los colegios de tabla organizacion
+      # select para listar todos los colegios de tabla organizacion
       _S1= """
 SELECT 
-  org.OrganizationId,
-  org.Name,
-  b.OrganizationCalendarId,
-  strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate,
-  strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
+    org.OrganizationId
+  , org.Name
+  , b.OrganizationCalendarId
+  , strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate
+  , strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
+  , occ.StartDate as 'fecha_inicio_crisis'
+  , occ.StartDate as 'fecha_fin_crisis'
+  , count(DISTINCT oce.OrganizationCalendarEventId) as count_OrganizationCalendarEventId
+  , opr.*
 FROM Organization org
-  JOIN OrganizationCalendar b 
+
+JOIN OrganizationCalendar b 
 	ON org.OrganizationId = b.OrganizationId
-  JOIN OrganizationCalendarSession c
+JOIN OrganizationCalendarSession c
 	ON b.organizationcalendarid = c.organizationcalendarid 
+	
+OUTER LEFT JOIN (
+	SELECT
+            strftime('%Y-%m-%d',StartDate) as StartDate
+          , strftime('%Y-%m-%d',EndDate) as EndDate 
+		  , occ.OrganizationId
+	FROM OrganizationCalendarCrisis occ
+) occ
+  ON occ.Organizationid = org.OrganizationId
+  
+OUTER LEFT JOIN (
+	SELECT * 
+	FROM OrganizationCalendarEvent oce
+) oce
+  ON oce.OrganizationCalendarId = b.OrganizationCalendarId
+  
+OUTER LEFT JOIN (
+	SELECT
+		  b.RUN
+		, strftime('%Y-%m-%d',a.EntryDate) as EntryDate
+		, strftime('%Y-%m-%d',a.ExitDate) as ExitDate 
+		, a.OrganizationId
+	FROM OrganizationPersonRole a
+	JOIN personlist b on a.personid=b.personId 
+	WHERE roleId=6
+) opr
+  ON opr.OrganizationId = org.OrganizationId
+  
 WHERE 
 	org.RefOrganizationTypeId IN (
 		SELECT RefOrganizationTypeId
 		FROM RefOrganizationType
 		WHERE RefOrganizationType.description IN ('K12 School')
 	)
-      """
-
-      # trae la fechas para calcular los dias feriados 
-      _s2=""" 
-        select 
-          strftime('%Y-%m-%d',StartDate) as StartDate,
-          strftime('%Y-%m-%d',EndDate) as EndDate 
-        from OrganizationCalendarCrisis 
-        where OrganizationId = ?;
-      """
-
-       # select para ver todos los dias de eventos por cada organizacion 
-      _s3=""" 
-        select * 
-        from OrganizationCalendarEvent 
-        where OrganizationCalendarId = ?;"""
-
-       # contabilizar las crisis de un colegio 
-      _s4=""" 
-        select 
-          b.RUN,
-          strftime('%Y-%m-%d',a.EntryDate) as EntryDate,
-          strftime('%Y-%m-%d',a.ExitDate) as ExitDate 
-        from OrganizationPersonRole a
-          join personlist b
-            on a.personid=b.personId 
-        where 
-          OrganizationId = ? 
-          and 
-          roleId=6
-      """
-      now=datetime.now()
+      """     
       _q1 = conn.execute(_S1).fetchall()
-      if(len(_q1)!=0):
-        for q1 in _q1:
-          org_id=str(q1[0])
-          org_ca=str(q1[2])
-          fecha_in=str(q1[3])
-          fecha_ter=str(q1[4])
-          f1=datetime.strftime(now, '%Y-%m-%d')
+    except Exception as e:
+      logger.info(f"Resultado: {_q1} -> {str(e)}")
+
+    if( len(_q1) == 0 ):
+      logger.error(f"No hay informacion de establecimiento.")
+      logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
+      logger.info(f"{current_process().name} finalizando...")      
+      return False   
+    
+    now=datetime.now()
+    arr=[]
+    try:
+      for q1 in _q1:
+        fecha_in=str(q1[3])
+        f1=datetime.strftime(now, '%Y-%m-%d')        
+        fecha_ter = f1 if(f1 <= str(q1[4])) else str(q1[4])
+        diastotal=int(np.busday_count(fecha_in,fecha_ter))
+
+        if( len(str(q1[5])) !=0 ):
+          f2x=str(q1[5])
+          f2=str(q1[6])
           if (f1 <= fecha_ter):
-            fecha_ter=f1          
-          diastotal=int(np.busday_count(fecha_in,fecha_ter))  
-          _q2 = conn.execute(_s2,org_id).fetchall()
-          if(len(_q2)!=0):
-            for q2 in _q2:
-                f2x=str(q2[0])
-                f2=str(q2[1])
-                if (f1 <= fecha_ter):
-                  f2=f1               
-                diastotal2=int(np.busday_count(f2x,f2))
-                if diastotal2 > diastotal :
-                  contador2 = diastotal2 - diastotal
-                else:
-                  contador2 = diastotal - diastotal2
-          elif(len(_q2)==0): 
-            contador2= diastotal          
-          _q3 = conn.execute(_s3,org_ca).fetchall()
-          if(len(_q3)!=0):
-            xx=len(_q3)
-            if int(xx)>contador2:
-              contador3=int(xx)-contador2
-            else:
-              contador3=contador2-int(xx)
-          elif(len(_q3)==0):
-            contador3=contador2
-           
-          _q4 = conn.execute(_s4,int(org_id)).fetchall()
-          if(len(_q4)!=0):
-            for w1 in _q4:
-              personid=str(w1[0])
-              fecha1w=str(w1[1])
-              fecha2w=str(w1[2])
-              if w1[1] is None:
-                fecha1w=fecha_in
-              if w1[2] is None:
-                fecha2w=fecha_ter              
-              if (f1 <= fecha1w):
-                fecha2w=f1
-              diastotal3=int(np.busday_count(fecha1w,fecha2w))
-              if diastotal3 < (contador2 + contador3):
-                diastotal3 = (contador2 + contador3)-diastotal3
-              else:
-                diastotal3 = diastotal3 - (contador2 + contador3)              
-              if(contador3!=diastotal3):
-                arr.append(personid)
-            if(len(arr)!=0):
-              logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
-              logger.error(f"Rechazado")
-              return_dict[getframeinfo(currentframe()).function] = False
-              return False 
-            else:
-              logger.info(f"Aprobado")
-              return_dict[getframeinfo(currentframe()).function] = True
-              return True
+            f2=f1               
+          diastotal2=int(np.busday_count(f2x,f2))
+          if diastotal2 > diastotal :
+            contador2 = diastotal2 - diastotal
+          else:
+            contador2 = diastotal - diastotal2
+        elif( len(str(q1[5])) == 0 ): 
+          contador2= diastotal          
 
-          else:  
-              logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
-              logger.error(f"Rechazado")
-              return_dict[getframeinfo(currentframe()).function] = False
-              return False   
-
+        _q3 = int(q1[7])
+        if( _q3 != 0 ):
+          if _q3 > contador2:
+            contador3 = _q3 - contador2
+          else:
+            contador3 = contador2 - _q3
+        elif( _q3 == 0 ):
+          contador3=contador2
+          
+        if(q1[8] is not None):
+          run=str(q1[8])
+          fecha1w=str(q1[9])
+          fecha2w=str(q1[10])
+          if q1[9] is None:
+            fecha1w=fecha_in
+          if q1[10] is None:
+            fecha2w=fecha_ter              
+          if (f1 <= fecha1w):
+            fecha2w=f1
+          diastotal3=int(np.busday_count(fecha1w,fecha2w))
+          if diastotal3 < (contador2 + contador3):
+            diastotal3 = (contador2 + contador3)-diastotal3
+          else:
+            diastotal3 = diastotal3 - (contador2 + contador3)              
+          if(contador3!=diastotal3):
+            arr.append(run)
+        else:  
+            logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
+      
+      if(len(arr) == 0):
+        logger.info(f"Aprobado")
+        _r = True
       else:
-        logger.error(f"No hay informacion de establecimiento.")
         logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False   
-
+        logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")        
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
 ### fin fn6F0 ###
 
 ### inicio fn6F1 ###
@@ -9302,8 +9279,9 @@ GROUP BY org
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """      
+    _r = False    
+    _rightList = []
     try:
-      _rightList = []
       _rightList = conn.execute("""
 	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
 		SELECT 
@@ -9399,10 +9377,10 @@ GROUP BY org
 	FROM cte_Attendance 
       """).fetchall()
     except:
-      pass
+      logger.info(f"Resultado: {_rightList} -> {str(e)}")
 
+    _errorsList = []
     try:
-      _errorsList = []
       _errorsList = conn.execute("""
 SELECT *
 FROM RoleAttendanceEvent rae
@@ -9520,7 +9498,8 @@ WHERE
 	rae.RecordStartDateTime != Date	
       """).fetchall()
     except:
-      pass
+      logger.info(f"Resultado: {_errorsList} -> {str(e)}")
+    
     try:
       _ids = (list([m[0] for m in _rightList if m[0] is not None]))      
       if(not _errorsList and not _ids):
