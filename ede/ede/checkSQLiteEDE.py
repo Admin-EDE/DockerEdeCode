@@ -2026,7 +2026,7 @@ GROUP BY p.personId
     _r = False
     courses1 = []
     try:
-      courses1 = conn.execute("SELECT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
+      courses1 = conn.execute("SELECT DISTINCT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
     except Exception as e:
       logger.info(f"Resultado: {courses1} -> {str(e)}")
 
