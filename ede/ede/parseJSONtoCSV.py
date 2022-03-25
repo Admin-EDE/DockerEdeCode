@@ -29,7 +29,8 @@ class parse:
       _t = f'Procesando Grupo:{row[0][0]}>Tabla:{row[0][1]}'; logger.info(_t)
       records = self.leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(jsonData,elem)
       
-      self.crearCSV(jsonFileName,self.args.path_to_dir_csv_file+elem['TableName']+'.csv',
+      if(records):
+        self.crearCSV(jsonFileName,self.args.path_to_dir_csv_file+elem['TableName']+'.csv',
                elem['TableName'],
                elem['ColumnList'],
                records)
