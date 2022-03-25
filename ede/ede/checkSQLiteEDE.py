@@ -1417,16 +1417,23 @@ GROUP BY p.personId
     rows = []
     try:
       rows = conn.execute("""
-      SELECT
-        personId
-        ,DegreeOrCertificateTitleOrSubject
-        ,DegreeOrCertificateTypeDescription
-        ,AwardDate
-        ,NameOfInstitution
-        ,higherEducationInstitutionAccreditationStatusDescription
-        ,educationVerificationMethodDescription
-      FROM PersonList
-      WHERE Role like '%Docente%';
+SELECT DISTINCT
+	 pdc.personId 
+	 ,pdc.DegreeOrCertificateTitleOrSubject
+	 ,RefDegreeOrCertificateType.Description
+	 ,pdc.AwardDate
+	 ,pdc.NameOfInstitution
+	 ,RefHigherEducationInstitutionAccreditationStatus.Description
+	 ,RefEducationVerificationMethod.Description
+	 ,pdc.idoneidadDocente
+	 ,role.Name as 'RoleName'
+FROM PersonDegreeOrCertificate pdc
+OUTER LEFT JOIN RefDegreeOrCertificateType USING(RefDegreeOrCertificateTypeId)
+OUTER LEFT JOIN RefHigherEducationInstitutionAccreditationStatus USING(RefHigherEducationInstitutionAccreditationStatusId)
+OUTER LEFT JOIN RefEducationVerificationMethod USING(RefEducationVerificationMethodId)
+JOIN OrganizationPersonRole USING(personId)
+JOIN Role USING(RoleId)
+WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe','Docente','Asistente de la Educación','Técnica(o) de párvulo','Paradocente','Profesor(a) de reemplazo')
     """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
@@ -1441,7 +1448,8 @@ GROUP BY p.personId
         Institution         = self.convertirArray2DToList(list([m[4] for m in rows if m[4] is not None]))
         AccreditationStatus = self.convertirArray2DToList(list([m[5] for m in rows if m[5] is not None]))
         VerificationMethod  = self.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None]))
-        _r = len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod)
+        idoneidadDocente  = self.convertirArray2DToList(list([m[6] for m in rows if m[7] is not None]))
+        _r = len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod) == len(idoneidadDocente)
         _t = f"VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema: {_r}."
         logger.info(_t) if _r else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
