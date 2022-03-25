@@ -75,16 +75,18 @@ class parse:
       #Mapeo de tipos de datos SQL -> Pyhton
       records = []
       grupo = None
-      tbl = None      
-      indice = None
-      col = None      
       for grupo in jsonData[elem['JSONGroupName']]:
+        tbl = None              
         for tbl in grupo[elem['TableName']]:
           record = []
+          indice = None
+          col = None                
           for indice,col in enumerate(elem['ColumnList']):
             dt = elem['DataType'][indice]
+            _tipo = ''
             _tipo = ''.join([s for s in list(dt) if s.isalpha()])
             
+            value = ''
             value = tbl.get(col) if (tbl.get(col,None) is not None) else ''
             
             if(_tipo in {'bit', 'bigint', 'int', 'smallint', 'tinyint'} and value!=''):
