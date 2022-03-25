@@ -6714,11 +6714,11 @@ GROUP BY Organizationid, date
           incidentDesc = incident[5]
           RefIncidentBehaviorId = incident[6]
           isJsonValidRegulationViolatedDesc = validateJSON(incident[16])
-          refIncidentBehaviorDesc = incident[64]
-          PersonId = incident[70]
-          refIncidentPersonId = incident[72]
-          incidentPersonDate = incident[74]
-          refDisciplinaryActionTaken = incident[80]
+          refIncidentBehaviorDesc = incident[66]
+          PersonId = incident[72]
+          refIncidentPersonId = incident[75]
+          incidentPersonDate = incident[76]
+          refDisciplinaryActionTaken = incident[81]
           #print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
           
           if(     incidentId is None
