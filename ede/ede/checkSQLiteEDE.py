@@ -7823,8 +7823,8 @@ SELECT
   , b.OrganizationCalendarId
   , strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate
   , strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
-  , ifnull(occ.StartDate,'1900-01-01') as 'fecha_inicio_crisis'
-  , ifnull(occ.StartDate,'1900-01-01') as 'fecha_fin_crisis'
+  , occ.StartDate as 'fecha_inicio_crisis'
+  , occ.StartDate as 'fecha_fin_crisis'
   , count(DISTINCT oce.OrganizationCalendarEventId) as count_OrganizationCalendarEventId
   , opr.*
 FROM Organization org
@@ -7849,7 +7849,7 @@ OUTER LEFT JOIN (
 ) oce
   ON oce.OrganizationCalendarId = b.OrganizationCalendarId
   
-OUTER LEFT JOIN (
+JOIN (
 	SELECT
 		  b.RUN
 		, strftime('%Y-%m-%d',a.EntryDate) as EntryDate
@@ -7872,7 +7872,7 @@ WHERE
     except Exception as e:
       logger.info(f"Resultado: {_q1} -> {str(e)}")
 
-    if( len(_q1) == 0 ):
+    if( len(_q1) >= 1 ):
       logger.error(f"No hay informacion de establecimiento.")
       logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = False
@@ -7883,17 +7883,18 @@ WHERE
     arr=[]
     try:
       for q1 in _q1:
-        fecha_in=str(q1[3])
-        f1=datetime.strftime(now, '%Y-%m-%d')        
-        fecha_ter = f1 if(f1 <= str(q1[4])) else str(q1[4])
-        diastotal=int(np.busday_count(fecha_in,fecha_ter))
+        fechaActual=datetime.strftime(now, '%Y-%m-%d')        
+        FirstInstructionDate = str(q1[3])
+        LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
+        fecha_inicio_crisis = str(q1[5])
+        fecha_fin_crisis = str(q1[6])
+        count_OrganizationCalendarEventId = q1[7]
+        diastotal=int(np.busday_count(FirstInstructionDate,LastInstructionDate))
 
-        if( len(str(q1[5])) !=0 ):
-          f2x=str(q1[5])
-          f2=str(q1[6])
-          if (f1 <= fecha_ter):
-            f2=f1               
-          diastotal2=int(np.busday_count(f2x,f2))
+        if( len(fecha_inicio_crisis) !=0 and fecha_inicio_crisis is not None and fecha_fin_crisis is not None):
+          if (fechaActual <= LastInstructionDate):
+            fecha_fin_crisis=fechaActual               
+          diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis)) if fecha_fin_crisis != '' and fecha_inicio_crisis != '' else 0
           if diastotal2 > diastotal :
             contador2 = diastotal2 - diastotal
           else:
@@ -7915,11 +7916,11 @@ WHERE
           fecha1w=str(q1[9])
           fecha2w=str(q1[10])
           if q1[9] is None:
-            fecha1w=fecha_in
+            fecha1w=FirstInstructionDate
           if q1[10] is None:
-            fecha2w=fecha_ter              
-          if (f1 <= fecha1w):
-            fecha2w=f1
+            fecha2w=LastInstructionDate              
+          if (fechaActual <= fecha1w):
+            fecha2w=fechaActual
           diastotal3=int(np.busday_count(fecha1w,fecha2w))
           if diastotal3 < (contador2 + contador3):
             diastotal3 = (contador2 + contador3)-diastotal3
