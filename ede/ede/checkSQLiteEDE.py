@@ -7823,8 +7823,8 @@ SELECT
   , b.OrganizationCalendarId
   , strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate
   , strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
-  , occ.StartDate as 'fecha_inicio_crisis'
-  , occ.StartDate as 'fecha_fin_crisis'
+  , ifnull(occ.StartDate,'1900-01-01') as 'fecha_inicio_crisis'
+  , ifnull(occ.StartDate,'1900-01-01') as 'fecha_fin_crisis'
   , count(DISTINCT oce.OrganizationCalendarEventId) as count_OrganizationCalendarEventId
   , opr.*
 FROM Organization org
