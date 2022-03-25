@@ -2434,7 +2434,7 @@ GROUP BY p.personId
     RoleAttendanceEvent = []
     try:
       RoleAttendanceEvent = conn.execute("""
-        -- Lista todos los IDs que no cumplan con la empresión regular.
+        -- Lista todos los IDs que no cumplan con la expresión regular.
         SELECT RoleAttendanceEventId, Date
         FROM RoleAttendanceEvent
         WHERE 
@@ -9632,11 +9632,11 @@ WHERE
     _flag2 = 0
     try:
       #OBTENGO LAS FECHAS CON SUSPENSION DE CLASES
-      _s1 = """SELECT rexNumber,rexDate,fileScanBase64
+      _s1 = """SELECT numeroREX, fechaREX, fileScanBase64
                 FROM OrganizationCalendarEvent
                 WHERE indicadorSinClases = 1;"""
       
-      _s2="""SELECT rexNumber,rexNumber,fileScanBase64
+      _s2="""SELECT numeroREX, fechaREX, fileScanBase64
               FROM OrganizationCalendarSession
               WHERE claseRecuperadaId != NULL;"""
 
