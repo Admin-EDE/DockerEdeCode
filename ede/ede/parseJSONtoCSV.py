@@ -74,13 +74,13 @@ class parse:
     try:
       #Mapeo de tipos de datos SQL -> Pyhton
       records = []
-      grupo = None
+      grupo = ''
       for grupo in jsonData[elem['JSONGroupName']]:
-        tbl = None              
+        tbl = ''              
         for tbl in grupo[elem['TableName']]:
           record = []
-          indice = None
-          col = None                
+          indice = ''
+          col = ''                
           for indice,col in enumerate(elem['ColumnList']):
             dt = elem['DataType'][indice]
             _tipo = ''
