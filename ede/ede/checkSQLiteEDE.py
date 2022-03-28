@@ -7038,10 +7038,11 @@ GROUP BY Organizationid, date
       _query = conn.execute("""
           SELECT
               O.OrganizationId
-            , group_concat(CSS.ClassMeetingDays) ClassMeetingDays
-            , group_concat(CSS.ClassBeginningTime) ClassBeginningTime
-            , group_concat(CSS.ClassEndingTime) ClassEndingTime
-            , group_concat(CSS.ClassPeriod) ClassPeriod
+            , group_concat(DISTINCT CSS.ClassMeetingDays) ClassMeetingDays
+            , group_concat(DISTINCT CSS.ClassBeginningTime) ClassBeginningTime
+            , group_concat(DISTINCT CSS.ClassEndingTime) ClassEndingTime
+            , group_concat(DISTINCT CSS.ClassPeriod) ClassPeriod
+			, count(DISTINCT ocs.OrganizationCalendarSessionId) as OrganizationCalendarSessionCount
           FROM Organization O
             JOIN CourseSection CS 
               ON CS.OrganizationId = O.OrganizationId
@@ -7051,6 +7052,14 @@ GROUP BY Organizationid, date
               AND CSS.RecordEndDateTime IS NULL
             JOIN OrganizationRelationship ors
               ON ors.OrganizationId = O.OrganizationId		
+			  
+            JOIN OrganizationCalendar orgCal
+              ON orgCal.OrganizationId = O.OrganizationId
+              AND CSS.RecordEndDateTime IS NULL
+            JOIN OrganizationCalendarSession ocs
+              ON ocs.OrganizationCalendarId = orgCal.OrganizationCalendarId		
+
+			  
           WHERE
             O.RefOrganizationTypeId IN (
               SELECT RefOrganizationTypeId 
@@ -7078,7 +7087,9 @@ GROUP BY Organizationid, date
         logger.info(f"primer registro encontrado: {_query[0]} de {len(_query)}")        
         for row in _query:
           try:
-            courseSections.remove(row[0])
+            OrganizationCalendarSessionCount = row[5]
+            if(OrganizationCalendarSessionCount > 0): #Verifica que tenga asociado, al menos, un organizationCalendarSession
+              courseSections.remove(row[0])
           except:
             print(f"no se pudo eliminar {row[0]}")
       
