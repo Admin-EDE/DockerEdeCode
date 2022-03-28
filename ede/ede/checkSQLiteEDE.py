@@ -7726,9 +7726,7 @@ WHERE
         incidentDate = row[8]
         incidentKey = row[9]
         incidentFile = row[10]
-        
-        logger.info(f"{row}")
-        
+              
         if(estudianteId
            and
            estudianteRUN
@@ -7758,6 +7756,7 @@ WHERE
         _r = True  
       else:
         logger.error(f"Rechazado")
+        logger.info(f"{_resp}")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
     finally:
