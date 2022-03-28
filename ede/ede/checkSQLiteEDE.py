@@ -7671,6 +7671,7 @@ SELECT DISTINCT
 	, incP.Date	
 	, incP.digitalRandomKey
 	, incP.fileScanBase64
+	, doc.fileScanBase64 
 
 FROM PersonStatus pst
 
@@ -7695,6 +7696,9 @@ OUTER LEFT JOIN OrganizationPersonRole oprApoderado
 OUTER LEFT JOIN IncidentPerson incP
 	ON incP.personId = prshApoderado.personId
 	AND incP.RefIncidentPersonTypeId IN (SELECT RefIncidentPersonTypeId FROM RefIncidentPersonType WHERE Description IN ('Apoderado','Parent/guardian'))
+ 
+OUTER LEFT JOIN Document doc
+	ON incP.fileScanBase64 = documentId
 
 OUTER LEFT JOIN Incident Inc
 	ON inc.IncidentId = incP.IncidentId
@@ -7726,6 +7730,7 @@ WHERE
         incidentDate = row[8]
         incidentKey = row[9]
         incidentFile = row[10]
+        fileScanBase64 = row[11]
               
         if(not (estudianteId
            and
@@ -7746,7 +7751,10 @@ WHERE
            incidentType
            and
            incidentDate
-           and (incidentKey or incidentFile))
+           and 
+           (incidentKey or incidentFile))
+           and
+           fileScanBase64
            ):
           _resp.append(row)
 
