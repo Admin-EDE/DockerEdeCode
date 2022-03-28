@@ -9638,7 +9638,7 @@ WHERE
     _flag2 = 0
     try:
       #OBTENGO LAS FECHAS CON SUSPENSION DE CLASES
-      _s1 = """SELECT numeroREX, fechaREX, fileScanBase64
+      _s1 = """SELECT rexNumber, rexDate, fileScanBase64
                 FROM OrganizationCalendarEvent
                 WHERE indicadorSinClases = 1;"""
       
