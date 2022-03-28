@@ -7064,7 +7064,7 @@ GROUP BY Organizationid, date
             AND CS.CourseId = ors.Parent_OrganizationId
             AND CS.MaximumCapacity IS NOT NULL
             AND CS.VirtualIndicator IS NOT NULL
-            AND CS.OrganizationCalendarSessionId IS NOT NULL
+            --AND CS.OrganizationCalendarSessionId IS NOT NULL
             AND CS.RefInstructionLanguageId IS NOT NULL
             
           GROUP BY O.OrganizationId
