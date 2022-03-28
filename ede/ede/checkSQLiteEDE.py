@@ -3545,9 +3545,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
           if (fila[36] is None):
             _errList.append("apoderado alumno sin tipo de email")
             _response = False
-          else:
-            _errList.append("El estudiante no tiene un apoderdo asignado")
-            _response = False                  
+        else:
+          _errList.append("El estudiante no tiene un apoderdo asignado")
+          _response = False                  
       
         if( len(_errList) > 0 ):
           _err[fila[39]] = _errList
@@ -7654,141 +7654,116 @@ GROUP BY pid.Identifier
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """    
+    _r = False
+    rows = []      
     try:
-      _l = []
-      _l2 = []
-      _l3 = 0
-      # OBTENGO LISTADO DE ALUMNOS
-      _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
-                FROM PersonStatus A
-                JOIN PersonIdentifier B
-                ON A.personId = B.personId
-                JOIN OrganizationPersonRole C
-                ON A.personId = C.personId
-                where A.RefPersonStatusTypeId = 30;"""
+      rows = conn.execute("""
+SELECT DISTINCT
+	 pst.personId as 'estudianteId'
+	, pid.Identifier as 'RUN'
+	, oprAlumno.RoleId
+	, prshApoderado.personId as 'ApoderadoId'
+	, prshApoderado.RefPersonRelationshipId
+	, oprApoderado.RoleId
+	, incP.IncidentId
+	, incP.RefIncidentPersonTypeId
+	, incP.Date	
+	, incP.digitalRandomKey
+	, incP.fileScanBase64
 
-      # OBTENGO INFORMACION DE PERSONAS RELACIONADAS CON ALUMNO REGISTRADAS EN EL SISTEMA
-      _s2 = """SELECT A.RelatedPersonId,D.RUN
-                FROM PersonRelationship A
-                JOIN OrganizationPersonRole B
-                  ON A.personId = B.personId
-                JOIN Role C
-                  ON B.RoleId = C.RoleId
-                JOIN personList D
-                  ON A.RelatedPersonId = D.personId
-                WHERE 
-                  A.RelatedPersonId = ?
-                  AND
-                  B.RoleId = 15;"""
+FROM PersonStatus pst
 
-      # OBTENGO ID DE REGISTRO DE ENTREGA DE INFORMACION DE INTERES A LOS APODERADOS
-      _s3 = """SELECT A.IncidentId
-            FROM IncidentPerson A
-            INNER JOIN Incident B ON A.IncidentId = B.IncidentId
-            WHERE A.personId = ?
-            AND B.RefIncidentBehaviorId = 36;
-          """
+-- RESCATA INFORMACIÓN DEL ESTUDIANTE
+OUTER LEFT JOIN PersonIdentifier pid
+	ON pst.personId = pid.personId
+	AND pid.RefPersonIdentificationSystemId IN (SELECT RefPersonIdentificationSystemId FROM RefPersonIdentificationSystem WHERE CODE IN ('RUN'))
+OUTER LEFT JOIN OrganizationPersonRole oprAlumno
+	ON pst.personId = oprAlumno.personId
+	AND oprAlumno.RoleId IN (SELECT RoleId FROM Role WHERE Name IN ('Estudiante'))
 
-      # OBTENGO DETALLE DE EVENTO Y VALIDO FIRMA DE DOCENTE/ADMINISTRATIVO Y DOCUMENTO DIGITALIZADO
-      _s4 = """SELECT A.RefIncidentPersonTypeId,A.digitalRandomKey,A.fileScanBase64,C.run
-                FROM IncidentPerson A
-                JOIN personList C
-                ON A.personId = C.personId
-                WHERE A.IncidentId = ?;"""
+-- RESCATA INFORMACIÓN DEL APODERADO O TUTOR ENCARGADO DEL ESTUDIANTE
+OUTER LEFT JOIN PersonRelationship prshApoderado
+	ON prshApoderado.RelatedPersonId = pst.personId
+	AND prshApoderado.RefPersonRelationshipId IN (SELECT RefPersonRelationshipId FROM RefPersonRelationship WHERE Code IN ('Apoderado(a)/Tutor(a)'))
 
-      _q1 = conn.execute(_s1).fetchall()
-      if(len(_q1)!=0):
-        for q1 in _q1:
-          _p = str(q1[0])
-          _r = str(q1[0])
+OUTER LEFT JOIN OrganizationPersonRole oprApoderado
+	ON oprApoderado.personId = prshApoderado.personId
+	AND oprApoderado.RoleId IN (SELECT RoleId FROM Role WHERE Name IN ('Padre, madre o apoderado'))
+	
+-- RESCATA INFORMACIÓN RELACIONADA CON LA ENTREGA DE INFORMACIÓN
+OUTER LEFT JOIN IncidentPerson incP
+	ON incP.personId = prshApoderado.personId
+	AND incP.RefIncidentPersonTypeId IN (SELECT RefIncidentPersonTypeId FROM RefIncidentPersonType WHERE Description IN ('Apoderado','Parent/guardian'))
 
-          _q2 = conn.execute(_s2,_p).fetchall()
-          if(len(_q2)!=0):
-            for q2 in _q2:
-              _p1 = str(q2[0])
-              _r2 = str(q2[1])
-
-              _q3 = conn.execute(_s3,_p1).fetchall()
-              if(len(_q3)!=0):
-                for q3 in _q3:
-                  _i = str(q3[0])
-                  if(_i is None):
-                    _l2.append(_r2)
-                  else:                  
-                    _q4 = conn.execute(_s4,_i).fetchall()
-                    if(len(_q4)!=0):
-                      _lst = self.convertirArray2DToList(list([str(m[0]) for m in _q4 if m[0] is not None]))
-                      if '44' in _lst and '43' in _lst:
-                        for q4 in _q4:
-                          _pr = str(q4[0])
-                          if(str(_pr)=="44"): #docente
-                            _rdk = str(q4[1])
-                            if(_rdk is None):
-                              logger.error(f"No hay registro de firma de docente/administrativo para evento.")
-                              logger.error(f"Rechazado")
-                              return_dict[getframeinfo(currentframe()).function] = False
-                              return False
-                            else:
-                              _l3 = 1
-                          elif(str(_pr)=="43"): #apoderado
-                              _fsb = str(q4[2])
-                              if(_fsb is None):
-                                logger.error(f"No hay registro de documento digitalizado entregado a apoderado para evento.")
-                                logger.error(f"Rechazado")
-                                return_dict[getframeinfo(currentframe()).function] = False
-                                return False
-                              else:
-                                _l3 = 1
-                      else:
-                        logger.error(f"No har registro de docente y/o apoderado para evento.")
-                        logger.error(f"Rechazado")
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-
-                    else:
-                      logger.error(f"No hay registro de personas asociadas al evento.")
-                      logger.error(f"Rechazado")
-                      return_dict[getframeinfo(currentframe()).function] = False
-                      return False
-
-                if(len(_l2)>0):
-                  logger.error(f"Los siguientes apoderados no tienen registro de evento: {str(_l2)}")
-                  logger.error(f"Rechazado")
-                  return_dict[getframeinfo(currentframe()).function] = False
-                  return False
-
-              else:
-                logger.error(f"No hay registro de entrega de informacion al apoderado.")
-                logger.error(f"Rechazado")
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-
-          else:
-            _l.append(_r)
-
-        if(len(_l)>0):
-          logger.error(f"Los siguientes alumnos no tienen informacion de apoderado asociado en el sistema: {str(_l)}")
-          logger.error(f"Rechazado")
-          return_dict[getframeinfo(currentframe()).function] = False
-          return False
-
-      if(_l3 == 1):
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
-      
-      if(_l3 == 0):
-        logger.info(f"S/Datos")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
+OUTER LEFT JOIN Incident Inc
+	ON inc.IncidentId = incP.IncidentId
+	AND inc.RefIncidentBehaviorId IN (SELECT RefIncidentBehaviorId FROM RefIncidentBehavior WHERE Description IN ('Entrega de información para continuidad de estudios') )
+	
+WHERE 
+	pst.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description IN ('Estudiante retirado definitivamente'))                          
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {rows} -> {str(e)}")
+    
+    if(len(rows)<=0):
+      _r = True
+      logger.info(f"S/Datos")
+      return_dict[getframeinfo(currentframe()).function] = _r
+      return _r
+    
+    _resp = []
+    try:     
+      for row in rows:
+        estudianteId = row[0]
+        estudianteRUN = row[1]
+        estudianteRole = row[2]
+        apoderadoId = row[3]
+        apoderadoRefPersonRelationShip = row[4]
+        apoderadoRole = row[5]
+        incidentId = row[6]
+        incidentType = row[7]
+        incidentDate = row[8]
+        incidentKey = row[9]
+        incidentFile = row[10]
         
+        logger.info(f"{row}")
+        
+        if(estudianteId
+           and
+           estudianteRUN
+           and
+           estudianteRole
+           and
+           apoderadoId
+           and
+           apoderadoId
+           and
+           apoderadoRefPersonRelationShip
+           and 
+           apoderadoRole
+           and
+           incidentId
+           and 
+           incidentType
+           and
+           incidentDate
+           and (incidentKey or incidentFile)
+           ):
+          _resp.append(row)
 
+
+      if(len(_resp) > 0):
+        logger.info(f"Aprobado")
+        _r = True  
+      else:
+        logger.error(f"Rechazado")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+    finally:
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")
+      return _r      
 ### fin fn1FC ###
 
 ### inicio fn6F0  ##
