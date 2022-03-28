@@ -7727,7 +7727,7 @@ WHERE
         incidentKey = row[9]
         incidentFile = row[10]
               
-        if(estudianteId
+        if(not (estudianteId
            and
            estudianteRUN
            and
@@ -7746,12 +7746,12 @@ WHERE
            incidentType
            and
            incidentDate
-           and (incidentKey or incidentFile)
+           and (incidentKey or incidentFile))
            ):
           _resp.append(row)
 
 
-      if(len(_resp) > 0):
+      if(len(_resp) <= 0):
         logger.info(f"Aprobado")
         _r = True  
       else:
