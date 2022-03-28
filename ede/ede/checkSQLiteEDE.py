@@ -6537,7 +6537,7 @@ GROUP BY Organizationid, date
               WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
             );
         """).fetchall()
-        if(len(incident)>0):
+        if (len(incident)>0):
             listIncident = (list([m[0] for m in incident if m[0] is not None]))
             for x in listIncident:
                 try:
@@ -6629,12 +6629,12 @@ GROUP BY Organizationid, date
                     return False
             logger.info(f'Reuniones validas')
             logger.info(f'Aprobado')
-            return_dict[getframeinfo(currentframe()).function] = False
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin registros de actividades familiares o comunitarias")
-            return_dict[getframeinfo(currentframe()).function] = False
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
