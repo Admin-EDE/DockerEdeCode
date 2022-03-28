@@ -7752,9 +7752,9 @@ WHERE
            and
            incidentDate
            and 
-           (incidentKey or incidentFile))
+           (incidentKey or incidentFile)
            and
-           fileScanBase64
+           fileScanBase64)
            ):
           _resp.append(row)
 
