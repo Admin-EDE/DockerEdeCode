@@ -6773,7 +6773,11 @@ GROUP BY Organizationid, date
 
   ## Inicio fn5E2 WC ##
   def fn5E2(self, conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    6.2 Contenido mínimo, letra b.2
+    Validar que los reemplazos no idóneos sean registrados por el director o quien él designe y que exista la observación indicando la falta del docente, 
+    junto al nombre y verificador de identidad de quien reemplaza.
+    
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -6849,8 +6853,8 @@ GROUP BY Organizationid, date
             return True
         else:
             logger.info(f"S/Datos")
-            logger.info(f"Sin clases en las que no hay docente/s")
-            return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"No existen clases en las que haya faltado algún docente")
+            return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
