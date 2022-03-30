@@ -5386,9 +5386,9 @@ SELECT
 	, group_concat(DISTINCT rpst_est.Description) as 'PersonStatus_Estudiante'
 	, group_concat(DISTINCT profJefe.name) as 'profesor_jefe_curso'
 	, count(DISTINCT asignaturas.Organizationid) as 'asignaturasId'
-	, count(DISTINCT asignaturas.name) as 'asignaturas_nombre'
-	, count(DISTINCT prof_educ.name) as 'nombre_profesionales_educación'
-	, count(DISTINCT prof_educ.RUN) as 'run_profesionales_educación'
+	, group_concat(DISTINCT asignaturas.name) as 'asignaturas_nombre'
+	, count(prof_educ.name) as 'nombre_profesionales_educación'
+	, group_concat(DISTINCT prof_educ.RUN) as 'run_profesionales_educación'
 -------------- información del ESTUDIANTE -------------------
 FROM Person est
 
@@ -5456,7 +5456,7 @@ OUTER LEFT JOIN (
 	from person p
 	JOIN OrganizationPersonRole opr
 		ON opr.personId = p.personId
-		AND opr.roleid NOT IN (SELECT RoleId FROM Role WHERE name IN ('Profesor(a) Jefe','Estudiante'))
+		AND opr.roleid IN (SELECT RoleId FROM Role WHERE name IN ('Docente','Asistente de la Educación','Técnica(o) de párvulo','Paradocente','Tutor(a) práctica profesional','Profesor(a) de reemplazo'))
 	JOIN PersonIdentifier pi
 		on p.PersonId = pi.PersonId
 		and pi.RefPersonIdentificationSystemId IN (Select RefPersonIdentificationSystemId from RefPersonIdentificationSystem rpi where rpi.code IN ('RUN'))
@@ -5501,9 +5501,7 @@ GROUP BY est.personId
           errorList.append('estudiante sin los estatus minimos asignados')
         if(row[11] is None):
           errorList.append('estudiante sin profesor jefe asignado')
-        if(row[12] != row[13]):
-          errorList.append('la cantidad de IDs de asignaturas y nombres no coinciden')
-        if(row[13] != row[14]):
+        if(row[12] <= row[14]):
           errorList.append('Los profesionales que trabajan en las asignaturas debería ser >= que las asignaturas registradas')
 
         if(len(errorList) > 0):
@@ -5998,7 +5996,6 @@ GROUP BY Organizationid, date
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
             for x in _incidentId:
-
                 _queryIncidentPerson = conn.execute("""
                 SELECT DISTINCT
                 I.IncidentId,
