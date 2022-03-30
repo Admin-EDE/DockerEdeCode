@@ -3725,10 +3725,36 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
     _query = []
     try:
         _query = conn.execute("""
-        SELECT DISTINCT PS.PersonId
+        SELECT 
+			  DISTINCT PS.PersonId
+			,orgCodEns.name as 'cod_enseñanza'			  
+			,orgGrado.name as 'grado'
+			, ORG.name			
         FROM OrganizationPersonRole OPR
-                JOIN Person P ON OPR.PersonId = P.PersonId
-                JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+
+        JOIN Person P 
+					ON OPR.PersonId = P.PersonId
+        JOIN PersonStatus PS 
+					ON P.PersonId = PS.PersonId
+				JOIN Organization ORG 
+					ON ORG.OrganizationId = OPR.OrganizationId
+				JOIN RefOrganizationType ROT 
+					ON ROT.RefOrganizationTypeId = ORG.RefOrganizationTypeId
+					AND ROT.Description IN ('Course')
+
+				JOIN OrganizationRelationship orsh 
+					ON orsh.OrganizationId = ORG.OrganizationId
+				JOIN Organization orgGrado 
+					ON orgGrado.OrganizationId = orsh.Parent_OrganizationId
+					AND orgGrado.name NOT IN ('110.01:1º Básico')
+
+			JOIN OrganizationRelationship orsh2
+					ON orsh2.OrganizationId = orgGrado.OrganizationId
+				JOIN Organization orgCodEns
+					ON orgCodEns.OrganizationId = orsh2.Parent_OrganizationId
+					AND orgCodEns.name IN ('110:Enseñanza Básica','310:Enseñanza Media H-C niños y jóvenes','410:Enseñanza Media T-P Comercial Niños y Jóvenes','510:Enseñanza Media T-P Industrial Niños y Jóvenes','610:Enseñanza Media T-P Técnica Niños y Jóvenes','710:Enseñanza Media T-P Agrícola Niños y Jóvenes','810:Enseñanza Media T-P Marítima Niños y Jóvenes','910:Enseñanza Media Artística Niños y Jóvenes')	
+
+	
         WHERE OPR.RoleId = 6
           AND PS.RefPersonStatusTypeId = 28;
         """).fetchall()
@@ -3746,7 +3772,7 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
     _scoreQuery = []
     try:
       _scoreQuery = conn.execute("""
-      SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0)
+      SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0), R.RefScoreMetricTypeId as 'tipo'
       FROM AssessmentResult R
               JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
               JOIN AssessmentAdministration AA ON AR.AssessmentAdministrationId = AA.AssessmentAdministrationId
@@ -3760,6 +3786,25 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
                               FROM OrganizationPersonRole OPR
                                       JOIN Person P ON OPR.PersonId = P.PersonId
                                       JOIN PersonStatus PS ON P.PersonId = PS.PersonId
+                                      
+                                      JOIN Organization ORG 
+                                        ON ORG.OrganizationId = OPR.OrganizationId
+                                      JOIN RefOrganizationType ROT 
+                                        ON ROT.RefOrganizationTypeId = ORG.RefOrganizationTypeId
+                                        AND ROT.Description IN ('Course')
+
+                                      JOIN OrganizationRelationship orsh 
+                                        ON orsh.OrganizationId = ORG.OrganizationId
+                                      JOIN Organization orgGrado 
+                                        ON orgGrado.OrganizationId = orsh.Parent_OrganizationId
+                                        AND orgGrado.name NOT IN ('110.01:1º Básico')
+
+                                    JOIN OrganizationRelationship orsh2
+                                        ON orsh2.OrganizationId = orgGrado.OrganizationId
+                                      JOIN Organization orgCodEns
+                                        ON orgCodEns.OrganizationId = orsh2.Parent_OrganizationId
+                                        AND orgCodEns.name IN ('110:Enseñanza Básica','310:Enseñanza Media H-C niños y jóvenes','410:Enseñanza Media T-P Comercial Niños y Jóvenes','510:Enseñanza Media T-P Industrial Niños y Jóvenes','610:Enseñanza Media T-P Técnica Niños y Jóvenes','710:Enseñanza Media T-P Agrícola Niños y Jóvenes','810:Enseñanza Media T-P Marítima Niños y Jóvenes','910:Enseñanza Media Artística Niños y Jóvenes')	
+                                                                           
                               WHERE OPR.RoleId = 6
                                 AND PS.RefPersonStatusTypeId = 28
       )
@@ -3772,8 +3817,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
     try:      
       if(len(_scoreQuery)>0):
           _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
+          _tipo = (list([m[1] for m in _scoreQuery if m[1] is not None]))
           for x in _score:
-            if x < 4:
+            if(str(_tipo) in ('1','2') and x < 4):
               logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
               logger.error(f'Rechazado')
           logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
