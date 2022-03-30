@@ -3663,6 +3663,24 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
                 JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
                 JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
                 JOIN OrganizationPersonRole OPR ON OPR.PersonId = ASSR.PersonId
+                
+                JOIN Organization ORG 
+                  ON ORG.OrganizationId = OPR.OrganizationId
+                JOIN RefOrganizationType ROT 
+                  ON ROT.RefOrganizationTypeId = ORG.RefOrganizationTypeId
+                  AND ROT.Description IN ('Course')
+
+                JOIN OrganizationRelationship orsh 
+                  ON orsh.OrganizationId = ORG.OrganizationId
+                JOIN Organization orgGrado 
+                  ON orgGrado.OrganizationId = orsh.Parent_OrganizationId
+
+              JOIN OrganizationRelationship orsh2
+                  ON orsh2.OrganizationId = orgGrado.OrganizationId
+                JOIN Organization orgCodEns
+                  ON orgCodEns.OrganizationId = orsh2.Parent_OrganizationId
+                  AND orgCodEns.name IN ('110:Enseñanza Básica','310:Enseñanza Media H-C niños y jóvenes','410:Enseñanza Media T-P Comercial Niños y Jóvenes','510:Enseñanza Media T-P Industrial Niños y Jóvenes','610:Enseñanza Media T-P Técnica Niños y Jóvenes','710:Enseñanza Media T-P Agrícola Niños y Jóvenes','810:Enseñanza Media T-P Marítima Niños y Jóvenes','910:Enseñanza Media Artística Niños y Jóvenes')	
+                
         WHERE A.RefAssessmentTypeId = 29
           AND R.RefScoreMetricTypeId IN (1, 2)
           AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
@@ -3868,7 +3886,7 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
               JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
               JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
       WHERE A.RefAssessmentTypeId IN (28, 29)
-      AND R.RefScoreMetricTypeId IN (1, 2);
+      AND R.RefScoreMetricTypeId IN (1, 2, 3);
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {_query} -> {str(e)}")
