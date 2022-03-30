@@ -1329,11 +1329,11 @@ GROUP BY p.personId
       logger.info(f"Resultado: {_lCL} y {personIdEX} -> {str(e)}")
     try:
       if( len(_lCL) > 0 or len(personIdEX) > 0 ):
+        _r = True
         studentNumber = len( personIdEX ) + len( personIdCL )
         _t = f"Se encontraron {studentNumber} estudiantes con información de Pais, Región y cuidad de nacimiento: {_r}."
         logger.info(_t) if _lCL else logger.error(_t)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-        _r = True
       else:
         logger.info("S/Datos")
     except Exception as e:
