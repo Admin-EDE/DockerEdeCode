@@ -5501,7 +5501,7 @@ GROUP BY est.personId
           errorList.append('estudiante sin los estatus minimos asignados')
         if(row[11] is None):
           errorList.append('estudiante sin profesor jefe asignado')
-        if(row[12] <= row[14]):
+        if(row[12] > row[14]):
           errorList.append('Los profesionales que trabajan en las asignaturas debería ser >= que las asignaturas registradas')
 
         if(len(errorList) > 0):
