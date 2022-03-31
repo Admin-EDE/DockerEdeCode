@@ -6113,7 +6113,6 @@ GROUP BY Organizationid, date
     _e = []
     try:
       for i,_incident in enumerate(_queryIncident):
-        logger.info(_incident)
         _err = lambda msg: {"incidentId":_incident[0], "errorDescription": msg}
 
         if not _incident[1]: _e.append(_err(f"Campo incidentDate is NULL"))
@@ -6169,6 +6168,8 @@ GROUP BY Organizationid, date
                
       if(len(_e)==0):
         _r = True
+      else:
+        logger.error(_e)
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
