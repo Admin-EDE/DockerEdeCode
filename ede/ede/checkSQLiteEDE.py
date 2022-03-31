@@ -4794,6 +4794,7 @@ ON orgPractica.personid = est.personId
           ]
     """      
     _r = False
+    _ExistData = []
     try:
         _ExistData = conn.execute("""
             SELECT DISTINCT 
@@ -5987,7 +5988,17 @@ GROUP BY Organizationid, date
 
   ## Inicio fn8F2 WC ##
   def fn8F2(self,conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+      6.2 Contenido mínimo, letra e
+      Verificar el contenido de cada registro de convivencia
+      
+      Grupo _Incidentes debería contener todo lo necesario.
+
+      Identificación del estudiante
+      Identificación del apoderado
+      Fecha, asignatura y observación
+      Fecha, profesor y datos de la entrevista con el apoderado      
+    
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -5995,144 +6006,175 @@ GROUP BY Organizationid, date
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+          Retorna True y "S/Datos" a través de logger, solo si no encuentra ningún registro
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - 
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """ 
+    _r = False
+    _queryIncident = []        
     try:
-        _queryIncident = conn.execute("""
+          _queryIncident = conn.execute("""
         SELECT DISTINCT
-            I.IncidentId,
-            I.IncidentDate,
-            I.IncidentTime,
-            I.RefIncidentTimeDescriptionCodeId,
-            I.IncidentDescription,
-            I.OrganizationPersonRoleId,
-            OPR.RoleId
+			  I.incidentId                                                                         --00
+			, I.incidentDate                                                                       --01
+			, I.incidentTime                                                                       --02
+			, RefIncidentTimeDescriptionCode.Description 'refIncidentTimeDescriptionCode'          --03
+			, I.incidentDescription                                                                --04
+			, RefIncidentBehavior.Description 'refIncidentBehavior'                                --05
+			, RefIncidentInjuryType.Description 'refIncidentInjuryType'                            --06
+			, RefWeaponType.Description 'refWeaponType'                                            --07
+			, I.incidentCost                                                                       --08
+			, I.organizationPersonRoleId                                                           --10
+			, I.incidentReporterId                                                                 --11
+			, RefIncidentReporterType.Description 'refIncidentReporterType'                        --12
+			, RefIncidentLocation.Description 'refIncidentLocation'                                --13
+			, RefFirearmType.Description 'refFirearmType'                                          --14
+			, json_valid(I.RegulationViolatedDescription) as regulationViolatedDescriptionBoolean  --15		 
+			, I.regulationViolatedDescription			                                                 --16
+			, I.relatedToDisabilityManifestationInd                                                --17
+			, I.reportedToLawEnforcementInd                                                        --18
+			, RefIncidentMultipleOffenseType.Description 'refIncidentMultipleOffenseType'          --19
+			, RefIncidentPerpetratorInjuryType.Description 'refIncidentPerpetratorInjuryType'      --20
+			, I.organizationId			                                                               --21
+			
+			, incP.personId                                                                        --22
+			, RefIncidentPersonRoleType.Description 'refIncidentPersonRoleType'                    --23
+			, incP.identifier                                                                      --24
+			, RefIncidentPersonType.Description 'refIncidentPersonType'                            --25
+			, incP.date                                                                            --26
+			, incP.fileScanBase64                                                                  --27
+			, incP.digitalRandomKey                                                                --28
+			
+			, k12disc.k12StudentDisciplineId                                                       --29
+			, k12disc.organizationPersonRoleId                                                     --30
+			, k12disc.refDisciplineReasonId                                                        --31
+			, k12disc.refDisciplinaryActionTakenId                                                 --32
+			, k12disc.disciplinaryActionStartDate                                                  --33
+			, k12disc.disciplinaryActionEndDate                                                    --34
+			, k12disc.durationOfDisciplinaryAction                                                 --35
+			, k12disc.refDisciplineLengthDifferenceReasonId                                        --36
+			, k12disc.fullYearExpulsion                                                            --37
+			, k12disc.shortenedExpulsion                                                           --38
+			, k12disc.educationalServicesAfterRemoval                                              --39
+			, k12disc.refIdeaInterimRemovalId                                                      --40
+			, k12disc.refIdeaInterimRemovalReasonId                                                --41
+			, k12disc.relatedToZeroTolerancePolicy                                                 --42
+			, k12disc.iEPPlacementMeetingIndicator                                                 --43
+			, k12disc.refDisciplineMethodFirearmsId                                                --44
+			, k12disc.refDisciplineMethodOfCwdId                                                   --45
+			, k12disc.refIDEADisciplineMethodFirearmId                                             --46
+			, k12disc.personId                                                                     --47
+			
             FROM Incident I
-            JOIN OrganizationPersonRole OPR on I.OrganizationPersonRoleId = OPR.OrganizationPersonRoleId
-            WHERE OPR.RoleId = 6;
-            """).fetchall()
-        if(len(_queryIncident)>0):
-            _incidentId = (list([m[0] for m in _queryIncident if m[0] is not None]))
-            if not _incidentId:
-                logger.error(f"Sin Incidentes")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            _incidentDate = (list([m[1] for m in _queryIncident if m[1] is not None]))
-            if not _incidentDate:
-                logger.error(f"Sin Fecha registrada para los incidentes")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            _incidentTime = (list([m[2] for m in _queryIncident if m[2] is not None]))
-            if not _incidentTime:
-                logger.error(f"Sin Time registrada para los incidentes")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            _incidentTimeDescriptionCodeId = (list([m[3] for m in _queryIncident if m[3] is not None]))
-            if not _incidentTimeDescriptionCodeId:
-                logger.error(f"Sin time code en el incidente")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            _incidentDescription = (list([m[4] for m in _queryIncident if m[4] is not None]))
-            if not _incidentDescription:
-                logger.error(f"Sin descripcion para el incidente")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            _organizationPersonRoleId = (list([m[5] for m in _queryIncident if m[5] is not None]))
-            if not _organizationPersonRoleId:
-                logger.error(f"Sin estudiante en incidente")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            _roleId = (list([m[6] for m in _queryIncident if m[6] is not None]))
-            if _roleId[0] != 6:
-                logger.error(f"Sin estudiante en incidente")
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
-            for x in _incidentId:
-                _queryIncidentPerson = conn.execute("""
-                SELECT DISTINCT
-                I.IncidentId,
-                I.PersonId,
-                I.RefIncidentPersonRoleTypeId,
-                OPR.RoleId
-                FROM IncidentPerson I
-                        JOIN Person P on I.PersonId = P.PersonId
-                        JOIN OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
-                WHERE I.IncidentId =?
-                """,x ).fetchall()
-                if (len(_queryIncidentPerson)>0):
-                    _personId = (list([m[1] for m in _queryIncidentPerson if m[1] is not None]))
-                    _refRoleType = (list([m[2] for m in _queryIncidentPerson if m[2] is not None]))
-                    _role = (list([m[3] for m in _queryIncidentPerson if m[3] is not None]))
-                    if not _personId:
-                        logger.error(f"Sin personas registradas para el incidente")
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                    _profe = 0 #4,5
-                    _apoderado = 0 #15
-                    _entrevistado = 0  #5
-                    _entrevistador = 0 #6
-                    for y in _refRoleType:
-                        for z in _role:
-                            if y == 5:
-                                _entrevistado += 1
-                            if y == 6:
-                                _entrevistador += 1
-                            if z == 4 or z == 5:
-                                _profe += 1
-                            if z == 15:
-                                _apoderado += 1
-                    if _entrevistado == 0:
-                        logger.error(f'Sin entrevistado en reunion de incidente')
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                    if _entrevistador == 0:
-                        logger.error(f'Sin entrevistador en reunion de incidente')
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                    if _profe == 0:
-                        logger.error(f'Sin profesor asignado a incidente')
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                    if _apoderado == 0:
-                        logger.error(f'Sin apoderado en incidente')
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
-                else:
-                    logger.error(f"Sin personas registradas para el incidente")
-                    logger.error(f"Rechazado")
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-            logger.info(f'Incidentes validados')
-            logger.info(f'Aprobado')
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
-        else:
-            logger.error(f"S/Datos ")
-            logger.error(f"Sin incidentes registrados")
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
+
+			OUTER LEFT JOIN IncidentPerson incP
+				ON I.IncidentId = incP.IncidentId
+
+			OUTER LEFT JOIN K12StudentDiscipline k12disc
+				ON I.IncidentId = k12disc.IncidentId
+				
+			OUTER LEFT JOIN RefIncidentTimeDescriptionCode USING(RefIncidentTimeDescriptionCodeId)
+			OUTER LEFT JOIN RefIncidentBehavior USING(RefIncidentBehaviorId)
+			OUTER LEFT JOIN RefIncidentInjuryType USING(RefIncidentInjuryTypeId)
+			OUTER LEFT JOIN RefWeaponType USING(RefWeaponTypeId)
+			
+			OUTER LEFT JOIN RefIncidentReporterType USING(RefIncidentReporterTypeId)
+			OUTER LEFT JOIN RefIncidentLocation USING(RefIncidentLocationId)
+			OUTER LEFT JOIN RefFirearmType USING(RefFirearmTypeId)
+			
+			OUTER LEFT JOIN RefIncidentMultipleOffenseType USING(RefIncidentMultipleOffenseTypeId)
+			OUTER LEFT JOIN RefIncidentPerpetratorInjuryType USING(RefIncidentPerpetratorInjuryTypeId)
+			
+			OUTER LEFT JOIN RefIncidentPersonRoleType USING(RefIncidentPersonRoleTypeId)
+			OUTER LEFT JOIN RefIncidentPersonType USING(RefIncidentPersonTypeId)
+	
+            WHERE  
+				I.RecordEndDateTime IS NULL
+				AND 
+				incP.RecordEndDateTime IS NULL
+				AND 
+				k12disc.RecordEndDateTime IS NULL
+			ORDER BY I.incidentId
+    """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
+    
+    if(len(_queryIncident)<=0):
+      logger.error(f"S/Datos ")
+      logger.error(f"Sin incidentes registrados")
+      _r = True
+      return_dict[getframeinfo(currentframe()).function] = _r
+      return _r
+    
+    _e = []
+    try:
+      for i,_incident in enumerate(_queryIncident):
+        logger.info(_incident)
+        _err = lambda msg: {"incidentId":_incident[0], "errorDescription": msg}
+
+        if not _incident[1]: _e.append(_err(f"Campo incidentDate is NULL"))
+        if not _incident[2]: _e.append(_err(f"Campo incidentTime is NULL"))
+        if not _incident[3]: _e.append(_err(f"Campo refIncidentTimeDescriptionCode is NULL"))
+        if not _incident[4]: _e.append(_err(f"Campo incidentDescription is NULL"))
+        if not _incident[5]: _e.append(_err(f"Campo refIncidentBehavior is NULL"))
+        if not _incident[11]: _e.append(_err(f"Campo incidentReporterId is NULL"))
+
+        if(str(_incident[5]) not in ('31','32','33','34','35','36')):
+          pass
+        
+        if(str(_incident[5]) in ('33','35','36')):
+          pass
+
+        if(str(_incident[5]) == '31'):
+          pass
+
+        if(str(_incident[5]) == '32'):
+          pass
+
+        # _personId = (list([m[1] for m in _queryIncidentPerson if m[1] is not None]))
+        # _refRoleType = (list([m[2] for m in _queryIncidentPerson if m[2] is not None]))
+        # _role = (list([m[3] for m in _queryIncidentPerson if m[3] is not None]))
+        # if not _personId:
+        #   logger.error(f"Sin personas registradas para el incidente")
+        # _profe = 0 #4,5
+        # _apoderado = 0 #15
+        # _entrevistado = 0  #5
+        # _entrevistador = 0 #6
+        # for y in _refRoleType:
+        #   for z in _role:
+        #     if y == 5:
+        #       _entrevistado += 1
+        #     if y == 6:
+        #       _entrevistador += 1
+        #     if z == 4 or z == 5:
+        #       _profe += 1
+        #     if z == 15:
+        #       _apoderado += 1
+        # if _entrevistado == 0:
+        #   logger.error(f'Sin entrevistado en reunion de incidente')
+        # if _entrevistador == 0:
+        #   logger.error(f'Sin entrevistador en reunion de incidente')
+        # if _profe == 0:
+        #   logger.error(f'Sin profesor asignado a incidente')
+        # if _apoderado == 0:
+        #   logger.error(f'Sin apoderado en incidente')
+
+
+        
+
+               
+      if(len(_e)==0):
+        _r = True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+    finally:
+      logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r      
   ## Fin fn8F2 WC ##
 
   ## Inicio fn2AA WC ##
