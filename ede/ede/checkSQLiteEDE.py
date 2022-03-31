@@ -26,6 +26,8 @@ from sqlalchemy.orm import sessionmaker
 def sqlite_engine_connect(dbapi_connection, connection_record):
     dbapi_connection.create_function("regexp", 2, sqlite_regexp)
     dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
+    dbapi_connection.create_function("json_valid", 1, validateJSON)
+    
 
 def validateJSON(jsonData):
   try:
