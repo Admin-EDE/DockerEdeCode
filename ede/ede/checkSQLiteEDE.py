@@ -6123,8 +6123,7 @@ GROUP BY Organizationid, date
         if not _incident[11]: _e.append(_err(f"Campo incidentReporterId is NULL"))
 
         if(str(_incident[5]) not in ('31','32','33','34','35','36')):
-          logger.info(_incident[15])
-          if not _incident[15] or _incident[15] == False or _incident[15] == 0: _e.append(_err(f"Campo regulationViolatedDescriptionBoolean is NOT JSON"))
+          if not validateJSON(_incident[16]): _e.append(_err(f"Campo regulationViolatedDescription is NOT JSON"))
         
         if(str(_incident[5]) in ('33','35','36')):
           pass
