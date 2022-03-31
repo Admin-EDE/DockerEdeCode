@@ -6112,8 +6112,13 @@ GROUP BY Organizationid, date
     
     _e = []
     try:
+      entrevistado = 0
+      entrevistador = 0
+      asistente = 0
+      dirige = 0
       for i,_incident in enumerate(_queryIncident):
         _err = lambda msg: {"incidentId":_incident[0], "errorDescription": msg}
+        _incidentePrevio = None if ( i > 0) else _queryIncident[i-1][0]
 
         if not _incident[1]: _e.append(_err(f"Campo incidentDate is NULL"))
         if not _incident[2]: _e.append(_err(f"Campo incidentTime is NULL"))
@@ -6121,50 +6126,45 @@ GROUP BY Organizationid, date
         if not _incident[4]: _e.append(_err(f"Campo incidentDescription is NULL"))
         if not _incident[5]: _e.append(_err(f"Campo refIncidentBehavior is NULL"))
         if not _incident[11]: _e.append(_err(f"Campo incidentReporterId is NULL"))
+        if not _incident[12]: _e.append(_err(f"Campo refIncidentReporterType is NULL"))
+        
+        if not _incident[22]: _e.append(_err(f"Campo personId is NULL"))
+        if not _incident[23]: _e.append(_err(f"Campo refIncidentPersonRoleType is NULL"))
+        if not _incident[25]: _e.append(_err(f"Campo date is NULL"))
+        if not _incident[26]: _e.append(_err(f"Campo refIncidentPersonType is NULL"))
+        if not _incident[27] and not _incident[28]: _e.append(_err(f"Campo digitalRandomKey y fileScanBase64 are NULL"))
 
-        if(str(_incident[5]) not in ('31','32','33','34','35','36')):
+        if(_incident[5] not in ('Entrevista','Reunión con apoderados','Entrega de documentos retiro de un estudiante','Anotación positiva','Entrega de documentos de interés general','Entrega de información para continuidad de estudios')): #Anotaciones negativas
           if not validateJSON(_incident[16]): _e.append(_err(f"Campo regulationViolatedDescription is NOT JSON"))
         
-        if(str(_incident[5]) in ('33','35','36')):
+        if(_incident[5] in ('Entrega de documentos retiro de un estudiante','Entrega de documentos de interés general','Entrega de información para continuidad de estudios')):
           pass
 
-        if(str(_incident[5]) == '31'):
-          pass
+        if(_incident[5] == 'Entrevista'):
+          if not (_incident[23] == 'Entrevistado' and _incident[25] in ('Apoderado','Adulto responsable o conocido del estudiante','Parent/guardian')): 
+            _e.append(_err(f"Campo Tipo 'Adulto responsable o conocido del estudiante' está mal aplicado"))
+            entrevistado+=1
+          if not (_incident[23] == 'Entrevistador' and _incident[25] in ('Docente','Profesional de la educación','Substitute teacher','Personal Administrativo')): 
+            _e.append(_err(f"Campo Tipo 'Dirige reunión de apoderados' está mal aplicado"))
+            entrevistador+=1
+          if(_incidentePrevio is not None and _incidentePrevio != _incident[0]):
+            if(entrevistado == 0): _e.append(_err(f"Falto definir el entrevistado en el incidente")); entrevistado = 0
+            if(entrevistador == 0): _e.append(_err(f"Falto definir el entrevistador en el incidente")); entrevistador = 0            
 
-        if(str(_incident[5]) == '32'):
-          pass
+        if(_incident[5] == 'Reunión con apoderados'):
+          if not (_incident[23] == 'Asiste a reunión de apoderados' and _incident[25] in ('Apoderado','Adulto responsable o conocido del estudiante','Parent/guardian')): 
+            _e.append(_err(f"Campo Tipo 'Adulto responsable o conocido del estudiante' está mal aplicado"))
+            asistente+=1
+          if not (_incident[23] == 'Dirige reunión de apoderados' and _incident[25] in ('Docente','Profesional de la educación','Substitute teacher')): 
+            _e.append(_err(f"Campo Tipo 'Dirige reunión de apoderados' está mal aplicado"))
+            dirige+=1
+          if(_incidentePrevio is not None and _incidentePrevio != _incident[0]):
+            if(asistente == 0): _e.append(_err(f"Falto definir el asistente en el incidente")); asistente = 0
+            if(dirige == 0): _e.append(_err(f"Falto definir el dirige en el incidente")); dirige = 0
 
-        # _personId = (list([m[1] for m in _queryIncidentPerson if m[1] is not None]))
-        # _refRoleType = (list([m[2] for m in _queryIncidentPerson if m[2] is not None]))
-        # _role = (list([m[3] for m in _queryIncidentPerson if m[3] is not None]))
-        # if not _personId:
-        #   logger.error(f"Sin personas registradas para el incidente")
-        # _profe = 0 #4,5
-        # _apoderado = 0 #15
-        # _entrevistado = 0  #5
-        # _entrevistador = 0 #6
-        # for y in _refRoleType:
-        #   for z in _role:
-        #     if y == 5:
-        #       _entrevistado += 1
-        #     if y == 6:
-        #       _entrevistador += 1
-        #     if z == 4 or z == 5:
-        #       _profe += 1
-        #     if z == 15:
-        #       _apoderado += 1
-        # if _entrevistado == 0:
-        #   logger.error(f'Sin entrevistado en reunion de incidente')
-        # if _entrevistador == 0:
-        #   logger.error(f'Sin entrevistador en reunion de incidente')
-        # if _profe == 0:
-        #   logger.error(f'Sin profesor asignado a incidente')
-        # if _apoderado == 0:
-        #   logger.error(f'Sin apoderado en incidente')
-
-
-        
-
+        if(_incident[5] == 'Anotación positiva'):
+          if not validateJSON(_incident[16]): _e.append(_err(f"Campo regulationViolatedDescription is NOT JSON"))
+          
                
       if(len(_e)==0):
         _r = True
