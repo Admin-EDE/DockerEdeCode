@@ -8028,16 +8028,14 @@ WHERE
         if(q1[8] is not None):
           run=str(q1[8])
           fecha_inicio_Estudiante=str(q1[9])
-          fecha_fin_Estudiante=str(q1[10])
-          if (fechaActual <= fecha_inicio_Estudiante):
-            fecha_fin_Estudiante=fechaActual
+          fecha_fin_Estudiante= fechaActual if(fechaActual <= str(q1[10])) else str(q1[10])
           diastotal3= int(np.busday_count(fecha_inicio_Estudiante,fecha_fin_Estudiante))
           logger.debug(f"diastotal3: {diastotal3}")          
           if diastotal3 < (contador2 + contador3):
-            diastotal3 = (contador2 + contador3)-diastotal3
+            diastotal3 = (contador2 + contador3) - diastotal3
           else:
             diastotal3 = diastotal3 - (contador2 + contador3)              
-          if(contador3!=diastotal3):
+          if(contador3 != diastotal3):
             arr.append(run)
           logger.debug(f"diastotal3: {diastotal3}")
         else:  
