@@ -7975,23 +7975,23 @@ WHERE
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
-
-    logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
-    _organizationId = rows[0][0]
-    if( _organizationId is None ):
-      logger.error(f"No hay informacion de establecimiento.")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-    
+   
     now=datetime.now()
     arr=[]
     try:
+      logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
+      if( rows[0][0] is None ):
+        raise ValueError(f"No hay informacion de establecimiento.")
+      
       for q1 in rows:
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
         LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
+
+        logger.debug(f"FirstInstructionDate: {FirstInstructionDate}, LastInstructionDate: {str(q1[4])}, fechaActual: {fechaActual}")
+        if( FirstInstructionDate <= LastInstructionDate):
+          raise ValueError(f"Fecha de inicio es mayor a la fecha actual o a la fecha de termino del sistema.")
+        
         fecha_inicio_crisis = str(q1[5])
         fecha_fin_crisis = str(q1[6])
         count_OrganizationCalendarEventId = int(q1[7])
@@ -8049,7 +8049,7 @@ WHERE
       else:
         logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de información: {str(e)}")
+      logger.error(f"{str(e)}")
     finally:
       logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = _r
