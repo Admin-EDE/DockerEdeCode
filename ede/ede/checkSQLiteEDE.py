@@ -7939,7 +7939,7 @@ JOIN OrganizationCalendar b
 JOIN OrganizationCalendarSession c
 	ON b.organizationcalendarid = c.organizationcalendarid 
 	
-OUTER LEFT JOIN (
+JOIN (
 	SELECT
             strftime('%Y-%m-%d',StartDate) as StartDate
           , strftime('%Y-%m-%d',EndDate) as EndDate 
@@ -7948,7 +7948,7 @@ OUTER LEFT JOIN (
 ) occ
   ON occ.Organizationid = org.OrganizationId
   
-OUTER LEFT JOIN (
+JOIN (
 	SELECT * 
 	FROM OrganizationCalendarEvent oce
 ) oce
@@ -7988,6 +7988,10 @@ WHERE
       if( rows[0][0] is None ): raise ValueError(f"No hay informacion de establecimiento.")
       
       for q1 in rows:
+        run=str(q1[8])
+        logger.debug(f"RUN: {run}")
+        if( run is None ): raise ValueError(f"Alumno sin RUN.")      
+        
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
         LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
@@ -8025,21 +8029,17 @@ WHERE
           contador3=contador2
 
         logger.debug(f"contador3: {contador3}")          
-        if(q1[8] is not None):
-          run=str(q1[8])
-          fecha_inicio_Estudiante=str(q1[9])
-          fecha_fin_Estudiante= fechaActual if(fechaActual <= str(q1[10]) and q1[10] != '1900-01-01') else str(q1[10])
-          diastotal3= int(np.busday_count(fecha_inicio_Estudiante,fecha_fin_Estudiante)) if (fecha_inicio_Estudiante < fecha_fin_Estudiante ) else 0
-          logger.debug(f"diastotal3: {diastotal3}")          
-          if diastotal3 < (contador2 + contador3):
-            diastotal3 = (contador2 + contador3) - diastotal3
-          else:
-            diastotal3 = diastotal3 - (contador2 + contador3)              
-          if(contador3 != diastotal3):
-            arr.append(run)
-          logger.debug(f"diastotal3: {diastotal3}")
-        else:  
-            logger.error(f"No hubo informacion de registros de estudiantes asociados del establecimiento. ")
+        fecha_inicio_Estudiante=str(q1[9])
+        fecha_fin_Estudiante= fechaActual if(fechaActual <= str(q1[10]) and q1[10] != '1900-01-01') else str(q1[10])
+        diastotal3= int(np.busday_count(fecha_inicio_Estudiante,fecha_fin_Estudiante)) if (fecha_inicio_Estudiante < fecha_fin_Estudiante ) else 0
+        logger.debug(f"diastotal3: {diastotal3}")          
+        if diastotal3 < (contador2 + contador3):
+          diastotal3 = (contador2 + contador3) - diastotal3
+        else:
+          diastotal3 = diastotal3 - (contador2 + contador3)              
+        if(contador3 != diastotal3):
+          arr.append(run)
+        logger.debug(f"diastotal3: {diastotal3}")
 
       if(len(arr) == 0):
         _r = True
