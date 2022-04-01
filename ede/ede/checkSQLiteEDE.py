@@ -8007,7 +8007,8 @@ WHERE
           contador2= diastotal          
 
         logger.info(f"contador2: {contador2}")
-
+        logger.info(f"count_OrganizationCalendarEventId: {count_OrganizationCalendarEventId}")
+        
         if( count_OrganizationCalendarEventId != 0 ):
           if count_OrganizationCalendarEventId > contador2:
             contador3 = count_OrganizationCalendarEventId - contador2
@@ -8028,6 +8029,7 @@ WHERE
           if (fechaActual <= fecha1w):
             fecha2w=fechaActual
           diastotal3=int(np.busday_count(fecha1w,fecha2w))
+          logger.info(f"diastotal3: {diastotal3}")          
           if diastotal3 < (contador2 + contador3):
             diastotal3 = (contador2 + contador3)-diastotal3
           else:
@@ -8037,7 +8039,7 @@ WHERE
         else:  
             logger.error(f"No hubo informacion de registros de estudiantes asociados del establecimiento. ")
 
-        logger.info(f"diastotal3: {diastotal3}")          
+        logger.info(f"diastotal3: {diastotal3}")
             
 
       if(len(arr) == 0):
