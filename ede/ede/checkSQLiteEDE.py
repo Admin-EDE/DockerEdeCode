@@ -8004,7 +8004,7 @@ WHERE
         if( FirstInstructionDate > LastInstructionDate): raise ValueError(f"Fecha de inicio es mayor a la fecha actual o a la fecha de termino del sistema.")
         
         fecha_inicio_crisis = str(q1[5])
-        fecha_fin_crisis = fechaActual if(fechaActual <= str(q1[16])) else str(q1[16])
+        fecha_fin_crisis = fechaActual if(fechaActual <= str(q1[6])) else str(q1[6])
         
         count_OrganizationCalendarEventId = int(q1[7])
         diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate))
