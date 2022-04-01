@@ -8039,11 +8039,9 @@ WHERE
             diastotal3 = diastotal3 - (contador2 + contador3)              
           if(contador3!=diastotal3):
             arr.append(run)
+          logger.debug(f"diastotal3: {diastotal3}")
         else:  
             logger.error(f"No hubo informacion de registros de estudiantes asociados del establecimiento. ")
-
-        logger.debug(f"diastotal3: {diastotal3}")
-            
 
       if(len(arr) == 0):
         _r = True
