@@ -8004,7 +8004,8 @@ WHERE
         if( FirstInstructionDate > LastInstructionDate): raise ValueError(f"Fecha de inicio es mayor a la fecha actual o a la fecha de termino del sistema.")
         
         fecha_inicio_crisis = str(q1[5])
-        fecha_fin_crisis = str(q1[6])
+        fecha_fin_crisis = fechaActual if(fechaActual <= str(q1[16])) else str(q1[16])
+        
         count_OrganizationCalendarEventId = int(q1[7])
         diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate))
         logger.debug(f"diastotal: {diastotal}")
@@ -8012,7 +8013,7 @@ WHERE
         if( fecha_inicio_crisis != '1900-01-01'):
           if (fechaActual <= LastInstructionDate):
             fecha_fin_crisis=fechaActual               
-          diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis))
+          diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis)) if (fecha_inicio_crisis <= fechaActual) else 0
           logger.debug(f"diastotal2: {diastotal2}")
           if diastotal2 > diastotal :
             contador2 = diastotal2 - diastotal
