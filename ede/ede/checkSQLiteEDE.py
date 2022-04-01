@@ -7989,7 +7989,7 @@ WHERE
         LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
 
         logger.debug(f"FirstInstructionDate: {FirstInstructionDate}, LastInstructionDate: {str(q1[4])}, fechaActual: {fechaActual}")
-        if( FirstInstructionDate <= LastInstructionDate):
+        if( FirstInstructionDate > LastInstructionDate):
           raise ValueError(f"Fecha de inicio es mayor a la fecha actual o a la fecha de termino del sistema.")
         
         fecha_inicio_crisis = str(q1[5])
