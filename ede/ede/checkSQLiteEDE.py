@@ -7976,6 +7976,7 @@ WHERE
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
 
+    logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
     _organizationId = rows[0][0]
     if( _organizationId is not None == 0 ):
       logger.error(f"No hay informacion de establecimiento.")
