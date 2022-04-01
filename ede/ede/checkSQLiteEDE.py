@@ -7927,7 +7927,7 @@ SELECT
   , strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate
   , strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
   , occ.StartDate as 'fecha_inicio_crisis'
-  , occ.StartDate as 'fecha_fin_crisis'
+  , occ.EndDate as 'fecha_fin_crisis'
   , count(DISTINCT oce.OrganizationCalendarEventId) as count_OrganizationCalendarEventId
   , opr.*
 FROM Organization org
