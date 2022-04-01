@@ -7990,7 +7990,9 @@ WHERE
       for q1 in rows:
         run = str(q1[8])
         logger.debug(f"RUN: {run}")
-        if( run is None ): raise ValueError(f"Alumno sin RUN.");break
+        if( run is None ): 
+          raise ValueError(f"Alumno sin RUN.")
+          break
         
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
