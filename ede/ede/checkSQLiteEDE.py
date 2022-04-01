@@ -7998,7 +7998,7 @@ WHERE
         diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate))
         logger.debug(f"diastotal: {diastotal}")
 
-        if( len(fecha_inicio_crisis) !=0):
+        if( fecha_inicio_crisis != '1900-01-01'):
           if (fechaActual <= LastInstructionDate):
             fecha_fin_crisis=fechaActual               
           diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis))
@@ -8007,7 +8007,7 @@ WHERE
             contador2 = diastotal2 - diastotal
           else:
             contador2 = diastotal - diastotal2
-        elif( len(str(q1[5])) == 0 ): 
+        else: 
           contador2= diastotal          
 
         logger.debug(f"contador2: {contador2}")
