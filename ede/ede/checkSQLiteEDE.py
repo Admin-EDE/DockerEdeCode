@@ -7988,9 +7988,9 @@ WHERE
       if( rows[0][0] is None ): raise ValueError(f"No hay informacion de establecimiento.")
       
       for q1 in rows:
-        run=str(q1[8])
+        run = str(q1[8])
         logger.debug(f"RUN: {run}")
-        if( run is None ): raise ValueError(f"Alumno sin RUN.")      
+        if( run is None ): raise ValueError(f"Alumno sin RUN.");break
         
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
@@ -8033,10 +8033,12 @@ WHERE
         fecha_fin_Estudiante= fechaActual if(fechaActual <= str(q1[10]) and q1[10] != '1900-01-01') else str(q1[10])
         diastotal3= int(np.busday_count(fecha_inicio_Estudiante,fecha_fin_Estudiante)) if (fecha_inicio_Estudiante < fecha_fin_Estudiante ) else 0
         logger.debug(f"diastotal3: {diastotal3}")          
+
         if diastotal3 < (contador2 + contador3):
           diastotal3 = (contador2 + contador3) - diastotal3
         else:
           diastotal3 = diastotal3 - (contador2 + contador3)              
+
         if(contador3 != diastotal3):
           arr.append(run)
         logger.debug(f"diastotal3: {diastotal3}")
