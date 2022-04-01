@@ -7978,7 +7978,7 @@ WHERE
 
     logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
     _organizationId = rows[0][0]
-    if( _organizationId is not None ):
+    if( _organizationId is None ):
       logger.error(f"No hay informacion de establecimiento.")
       logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = _r
