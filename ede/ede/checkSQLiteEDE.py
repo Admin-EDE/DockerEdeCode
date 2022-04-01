@@ -8032,14 +8032,13 @@ WHERE
             arr.append(run)
         else:  
             logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
-      
+
       if(len(arr) == 0):
         _r = True
       else:
         logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de información: {str(e)}")
     finally:
       logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = _r
