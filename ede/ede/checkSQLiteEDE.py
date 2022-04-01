@@ -7924,12 +7924,14 @@ SELECT
     org.OrganizationId
   , org.Name
   , b.OrganizationCalendarId
-  , strftime('%Y-%m-%d',c.FirstInstructionDate) as FirstInstructionDate
-  , strftime('%Y-%m-%d',c.LastInstructionDate) AS  LastInstructionDate
-  , occ.StartDate as 'fecha_inicio_crisis'
-  , occ.EndDate as 'fecha_fin_crisis'
+  , ifnull(strftime('%Y-%m-%d',c.FirstInstructionDate),'1900-01-01') as FirstInstructionDate
+  , ifnull(strftime('%Y-%m-%d',c.LastInstructionDate),'1900-01-01') AS  LastInstructionDate
+  , ifnull(occ.StartDate,'1900-01-01') as 'fecha_inicio_crisis'
+  , ifnull(occ.EndDate,'1900-01-01') as 'fecha_fin_crisis'
   , count(DISTINCT oce.OrganizationCalendarEventId) as count_OrganizationCalendarEventId
-  , opr.*
+  , opr.RUN
+  , opr.EntryDate
+  , opr.ExitDate
 FROM Organization org
 
 JOIN OrganizationCalendar b 
@@ -7974,7 +7976,8 @@ WHERE
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
 
-    if( len(rows) == 0 ):
+    _organizationId = rows[0][0]
+    if( _organizationId is not None == 0 ):
       logger.error(f"No hay informacion de establecimiento.")
       logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = _r
@@ -7986,10 +7989,10 @@ WHERE
     try:
       for q1 in rows:
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
-        FirstInstructionDate = str(q1[3])  if q1[3] is not None else '1900-01-01'
-        LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4]) if q1[4] is not None else '1900-01-01'
-        fecha_inicio_crisis = str(q1[5]) if q1[5] is not None else '1900-01-01'
-        fecha_fin_crisis = str(q1[6])  if q1[5] is not None else '1900-01-01'
+        FirstInstructionDate = str(q1[3])
+        LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
+        fecha_inicio_crisis = str(q1[5])
+        fecha_fin_crisis = str(q1[6])
         count_OrganizationCalendarEventId = int(q1[7])
         diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate))
         logger.debug(f"diastotal: {diastotal}")
