@@ -7916,10 +7916,10 @@ WHERE
           ]
     """      
     _r = False
-    _q1 = []
+    rows = []
     try:
       # select para listar todos los colegios de tabla organizacion
-      _S1= """
+      rows = conn.execute("""
 SELECT 
     org.OrganizationId
   , org.Name
@@ -7970,22 +7970,21 @@ WHERE
 		FROM RefOrganizationType
 		WHERE RefOrganizationType.description IN ('K12 School')
 	)
-      """     
-      _q1 = conn.execute(_S1).fetchall()
+      """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_q1} -> {str(e)}")
+      logger.info(f"Resultado: {rows} -> {str(e)}")
 
-    if( len(_q1) >= 1 ):
+    if( len(rows) == 0 ):
       logger.error(f"No hay informacion de establecimiento.")
       logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
+      return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")      
-      return False   
+      return _r
     
     now=datetime.now()
     arr=[]
     try:
-      for q1 in _q1:
+      for q1 in rows:
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
         LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
@@ -8035,15 +8034,14 @@ WHERE
             logger.error(f"No hubo informacion de resgistros de estudiantes asociados del establecimiento. ")
       
       if(len(arr) == 0):
-        logger.info(f"Aprobado")
         _r = True
       else:
-        logger.error(f"Rechazado")
-        logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")        
+        logger.error(f"Los siguientes alumnos no tienen la cantidad asistencia igual que el establecimiento : {str(arr)} ")
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
     finally:
+      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")      
       return _r
