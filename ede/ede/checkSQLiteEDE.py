@@ -7988,7 +7988,7 @@ WHERE
       if( rows[0][0] is None ): raise ValueError(f"No hay informacion de establecimiento.")
       
       for q1 in rows:
-        run = str(q1[8])
+        run = q1[8]
         logger.debug(f"RUN: {run}")
         if( run is None ): 
           raise ValueError(f"Alumno sin RUN.")
