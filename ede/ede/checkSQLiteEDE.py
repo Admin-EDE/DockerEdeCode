@@ -7991,7 +7991,7 @@ WHERE
         fecha_inicio_crisis = str(q1[5]) if q1[5] is not None else '1900-01-01'
         fecha_fin_crisis = str(q1[6])  if q1[5] is not None else '1900-01-01'
         count_OrganizationCalendarEventId = int(q1[7])
-        diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate)) if (FirstInstructionDate and LastInstructionDate) else 0
+        diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate))
         logger.debug(f"diastotal: {diastotal}")
 
         if( len(fecha_inicio_crisis) !=0):
