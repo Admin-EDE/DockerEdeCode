@@ -7932,6 +7932,7 @@ SELECT
   , opr.RUN
   , ifnull(opr.EntryDate,'1900-01-01') as 'fecha_inicio_Estudiante'
   , ifnull(opr.ExitDate,'1900-01-01') as 'fecha_fin_Estudiante'
+  , pid.personId
 FROM Organization org
 
 JOIN OrganizationCalendar b 
@@ -7960,6 +7961,7 @@ JOIN (
 		, strftime('%Y-%m-%d', opr.EntryDate) as EntryDate
 		, strftime('%Y-%m-%d', opr.ExitDate) as ExitDate 
 		, opr.OrganizationId
+    , pid.personId
 	FROM OrganizationPersonRole opr
 
 	JOIN PersonIdentifier pid 
@@ -7991,6 +7993,7 @@ WHERE
         run = q1[8]
         logger.debug(f"RUN: {run}")
         if( run is None ): 
+          arr.append(f'Alumno sin RUN, personId: {q1[11]}')
           continue
         
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
