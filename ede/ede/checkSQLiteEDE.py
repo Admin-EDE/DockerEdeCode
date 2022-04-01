@@ -7992,7 +7992,7 @@ WHERE
         logger.debug(f"RUN: {run}")
         if( run is None ): 
           raise ValueError(f"Alumno sin RUN.")
-          break
+          continue
         
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
