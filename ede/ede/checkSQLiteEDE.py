@@ -7991,7 +7991,6 @@ WHERE
         run = q1[8]
         logger.debug(f"RUN: {run}")
         if( run is None ): 
-          raise ValueError(f"Alumno sin RUN.")
           continue
         
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
