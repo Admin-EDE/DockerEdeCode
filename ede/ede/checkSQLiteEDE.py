@@ -7986,8 +7986,8 @@ WHERE
     try:
       for q1 in rows:
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
-        FirstInstructionDate = str(q1[3])
-        LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
+        FirstInstructionDate = str(q1[3])  if q1[3] is not None else '1900-01-01'
+        LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4]) if q1[4] is not None else '1900-01-01'
         fecha_inicio_crisis = str(q1[5]) if q1[5] is not None else '1900-01-01'
         fecha_fin_crisis = str(q1[6])  if q1[5] is not None else '1900-01-01'
         count_OrganizationCalendarEventId = int(q1[7])
@@ -7997,7 +7997,6 @@ WHERE
         if( len(fecha_inicio_crisis) !=0):
           if (fechaActual <= LastInstructionDate):
             fecha_fin_crisis=fechaActual               
-          logger.debug(f"fecha_inicio_crisis: {fecha_inicio_crisis}, fecha_fin_crisis: {fecha_fin_crisis}")            
           diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis))
           logger.debug(f"diastotal2: {diastotal2}")
           if diastotal2 > diastotal :
