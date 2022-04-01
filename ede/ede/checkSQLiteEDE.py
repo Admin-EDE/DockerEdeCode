@@ -7997,6 +7997,7 @@ WHERE
         if( len(fecha_inicio_crisis) !=0 and fecha_inicio_crisis is not None and fecha_fin_crisis is not None):
           if (fechaActual <= LastInstructionDate):
             fecha_fin_crisis=fechaActual               
+          logger.debug(f"fecha_inicio_crisis: {fecha_inicio_crisis}, fecha_fin_crisis: {fecha_fin_crisis}")            
           diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis)) if (fecha_fin_crisis and fecha_inicio_crisis) else 0
           logger.debug(f"diastotal2: {diastotal2}")
           if diastotal2 > diastotal :
