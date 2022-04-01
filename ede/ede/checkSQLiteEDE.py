@@ -7930,8 +7930,8 @@ SELECT
   , ifnull(occ.EndDate,'1900-01-01') as 'fecha_fin_crisis'
   , count(DISTINCT oce.OrganizationCalendarEventId) as count_OrganizationCalendarEventId
   , opr.RUN
-  , opr.EntryDate
-  , opr.ExitDate
+  , ifnull(opr.EntryDate,'1900-01-01') as 'fecha_inicio_Estudiante'
+  , ifnull(opr.ExitDate,'1900-01-01') as 'fecha_fin_Estudiante'
 FROM Organization org
 
 JOIN OrganizationCalendar b 
@@ -7956,13 +7956,18 @@ OUTER LEFT JOIN (
   
 JOIN (
 	SELECT
-		  b.RUN
-		, strftime('%Y-%m-%d',a.EntryDate) as EntryDate
-		, strftime('%Y-%m-%d',a.ExitDate) as ExitDate 
-		, a.OrganizationId
-	FROM OrganizationPersonRole a
-	JOIN personlist b on a.personid=b.personId 
-	WHERE roleId=6
+		  pid.Identifier as 'RUN'
+		, strftime('%Y-%m-%d', opr.EntryDate) as EntryDate
+		, strftime('%Y-%m-%d', opr.ExitDate) as ExitDate 
+		, opr.OrganizationId
+	FROM OrganizationPersonRole opr
+
+	JOIN PersonIdentifier pid 
+            ON pid.personId = pid.personId
+            AND pid.RecordEndDateTime IS NULL
+			AND pid.RefPersonIdentificationSystemId IN (SELECT RefPersonIdentificationSystemId FROM RefPersonIdentificationSystem WHERE description In ('ROL UNICO NACIONAL'))
+
+	WHERE roleId IN (SELECT RoleId FROM Role WHERE Name IN ('Estudiante'))
 ) opr
   ON opr.OrganizationId = org.OrganizationId
   
@@ -7980,8 +7985,7 @@ WHERE
     arr=[]
     try:
       logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
-      if( rows[0][0] is None ):
-        raise ValueError(f"No hay informacion de establecimiento.")
+      if( rows[0][0] is None ): raise ValueError(f"No hay informacion de establecimiento.")
       
       for q1 in rows:
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
@@ -7989,8 +7993,7 @@ WHERE
         LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
 
         logger.debug(f"FirstInstructionDate: {FirstInstructionDate}, LastInstructionDate: {str(q1[4])}, fechaActual: {fechaActual}")
-        if( FirstInstructionDate > LastInstructionDate):
-          raise ValueError(f"Fecha de inicio es mayor a la fecha actual o a la fecha de termino del sistema.")
+        if( FirstInstructionDate > LastInstructionDate): raise ValueError(f"Fecha de inicio es mayor a la fecha actual o a la fecha de termino del sistema.")
         
         fecha_inicio_crisis = str(q1[5])
         fecha_fin_crisis = str(q1[6])
@@ -8024,15 +8027,11 @@ WHERE
         logger.debug(f"contador3: {contador3}")          
         if(q1[8] is not None):
           run=str(q1[8])
-          fecha1w=str(q1[9])
-          fecha2w=str(q1[10])
-          if q1[9] is None:
-            fecha1w=FirstInstructionDate
-          if q1[10] is None:
-            fecha2w=LastInstructionDate              
-          if (fechaActual <= fecha1w):
-            fecha2w=fechaActual
-          diastotal3= int(np.busday_count(fecha1w,fecha2w)) if (fecha1w and fecha2w) else 0
+          fecha_inicio_Estudiante=str(q1[9])
+          fecha_fin_Estudiante=str(q1[10])
+          if (fechaActual <= fecha_inicio_Estudiante):
+            fecha_fin_Estudiante=fechaActual
+          diastotal3= int(np.busday_count(fecha_inicio_Estudiante,fecha_fin_Estudiante))
           logger.debug(f"diastotal3: {diastotal3}")          
           if diastotal3 < (contador2 + contador3):
             diastotal3 = (contador2 + contador3)-diastotal3
