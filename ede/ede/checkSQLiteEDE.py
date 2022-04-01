@@ -7992,13 +7992,13 @@ WHERE
         fecha_fin_crisis = str(q1[6])
         count_OrganizationCalendarEventId = int(q1[7])
         diastotal=int(np.busday_count(FirstInstructionDate,LastInstructionDate))
-        logger.info(f"diastotal: {diastotal}")
+        logger.debug(f"diastotal: {diastotal}")
 
         if( len(fecha_inicio_crisis) !=0 and fecha_inicio_crisis is not None and fecha_fin_crisis is not None):
           if (fechaActual <= LastInstructionDate):
             fecha_fin_crisis=fechaActual               
           diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis)) if fecha_fin_crisis != '' and fecha_inicio_crisis != '' else 0
-          logger.info(f"diastotal2: {diastotal2}")
+          logger.debug(f"diastotal2: {diastotal2}")
           if diastotal2 > diastotal :
             contador2 = diastotal2 - diastotal
           else:
@@ -8006,8 +8006,8 @@ WHERE
         elif( len(str(q1[5])) == 0 ): 
           contador2= diastotal          
 
-        logger.info(f"contador2: {contador2}")
-        logger.info(f"count_OrganizationCalendarEventId: {count_OrganizationCalendarEventId}")
+        logger.debug(f"contador2: {contador2}")
+        logger.debug(f"count_OrganizationCalendarEventId: {count_OrganizationCalendarEventId}")
         
         if( count_OrganizationCalendarEventId != 0 ):
           if count_OrganizationCalendarEventId > contador2:
@@ -8017,7 +8017,7 @@ WHERE
         elif( count_OrganizationCalendarEventId == 0 ):
           contador3=contador2
 
-        logger.info(f"contador3: {contador3}")          
+        logger.debug(f"contador3: {contador3}")          
         if(q1[8] is not None):
           run=str(q1[8])
           fecha1w=str(q1[9])
@@ -8029,7 +8029,7 @@ WHERE
           if (fechaActual <= fecha1w):
             fecha2w=fechaActual
           diastotal3=int(np.busday_count(fecha1w,fecha2w))
-          logger.info(f"diastotal3: {diastotal3}")          
+          logger.debug(f"diastotal3: {diastotal3}")          
           if diastotal3 < (contador2 + contador3):
             diastotal3 = (contador2 + contador3)-diastotal3
           else:
@@ -8039,7 +8039,7 @@ WHERE
         else:  
             logger.error(f"No hubo informacion de registros de estudiantes asociados del establecimiento. ")
 
-        logger.info(f"diastotal3: {diastotal3}")
+        logger.debug(f"diastotal3: {diastotal3}")
             
 
       if(len(arr) == 0):
