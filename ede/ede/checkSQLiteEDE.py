@@ -7991,7 +7991,7 @@ WHERE
         fecha_inicio_crisis = str(q1[5])
         fecha_fin_crisis = str(q1[6])
         count_OrganizationCalendarEventId = int(q1[7])
-        diastotal=int(np.busday_count(FirstInstructionDate,LastInstructionDate))
+        diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate)) if (FirstInstructionDate and LastInstructionDate) else 0
         logger.debug(f"diastotal: {diastotal}")
 
         if( len(fecha_inicio_crisis) !=0 and fecha_inicio_crisis is not None and fecha_fin_crisis is not None):
@@ -8028,7 +8028,7 @@ WHERE
             fecha2w=LastInstructionDate              
           if (fechaActual <= fecha1w):
             fecha2w=fechaActual
-          diastotal3=int(np.busday_count(fecha1w,fecha2w))
+          diastotal3= int(np.busday_count(fecha1w,fecha2w)) if (fecha1w and fecha2w) else 0
           logger.debug(f"diastotal3: {diastotal3}")          
           if diastotal3 < (contador2 + contador3):
             diastotal3 = (contador2 + contador3)-diastotal3
