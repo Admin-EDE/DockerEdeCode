@@ -7988,17 +7988,17 @@ WHERE
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
         FirstInstructionDate = str(q1[3])
         LastInstructionDate = fechaActual if(fechaActual <= str(q1[4])) else str(q1[4])
-        fecha_inicio_crisis = str(q1[5])
-        fecha_fin_crisis = str(q1[6])
+        fecha_inicio_crisis = str(q1[5]) if q1[5] is not None else '1900-01-01'
+        fecha_fin_crisis = str(q1[6])  if q1[5] is not None else '1900-01-01'
         count_OrganizationCalendarEventId = int(q1[7])
         diastotal= int(np.busday_count(FirstInstructionDate,LastInstructionDate)) if (FirstInstructionDate and LastInstructionDate) else 0
         logger.debug(f"diastotal: {diastotal}")
 
-        if( len(fecha_inicio_crisis) !=0 and fecha_inicio_crisis is not None and fecha_fin_crisis is not None):
+        if( len(fecha_inicio_crisis) !=0):
           if (fechaActual <= LastInstructionDate):
             fecha_fin_crisis=fechaActual               
           logger.debug(f"fecha_inicio_crisis: {fecha_inicio_crisis}, fecha_fin_crisis: {fecha_fin_crisis}")            
-          diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis)) if (fecha_inicio_crisis is not None and fecha_fin_crisis is not None) else 0
+          diastotal2 = int(np.busday_count(fecha_inicio_crisis,fecha_fin_crisis))
           logger.debug(f"diastotal2: {diastotal2}")
           if diastotal2 > diastotal :
             contador2 = diastotal2 - diastotal
