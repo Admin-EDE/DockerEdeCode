@@ -7993,7 +7993,7 @@ WHERE
         run = q1[8]
         logger.debug(f"RUN: {run}")
         if( run is None ): 
-          arr.append(f'Alumno sin RUN, personId: {q1[11]}')
+          arr.append(f'"personId": {q1[11]}')
           continue
         
         fechaActual=datetime.strftime(now, '%Y-%m-%d')        
@@ -8044,7 +8044,7 @@ WHERE
           diastotal3 = diastotal3 - (contador2 + contador3)              
 
         if(contador3 != diastotal3):
-          arr.append(run)
+          arr.append(f'"personId": {q1[11]}')
         logger.debug(f"diastotal3: {diastotal3}")
 
       if(len(arr) == 0):
