@@ -7932,7 +7932,7 @@ SELECT
   , opr.RUN
   , ifnull(opr.EntryDate,'1900-01-01') as 'fecha_inicio_Estudiante'
   , ifnull(opr.ExitDate,'1900-01-01') as 'fecha_fin_Estudiante'
-  , pid.personId
+  , opr.personId
 FROM Organization org
 
 JOIN OrganizationCalendar b 
