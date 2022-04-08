@@ -5897,7 +5897,7 @@ GROUP BY Organizationid, date
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
-      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{ e}")
+      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
       logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
       logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = False
