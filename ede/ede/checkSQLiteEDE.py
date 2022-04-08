@@ -5809,7 +5809,7 @@ LEFT JOIN (
   SELECT Organizationid as 'org',  group_concat(date) as 'fechasCrisis'
   FROM dates 		
 ) occ 
-ON occ.org = Organizationid
+ON occ.org = OrgSchool
 -- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
 LEFT JOIN (
 SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
@@ -5821,7 +5821,7 @@ ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
 AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
 GROUP BY oc.Organizationid
 ) oce 
-ON oce.org = OrgSchool
+ON oce.org = Organizationid
 WHERE 
 CAST(strftime('%w',date) as INTEGER) between 1 and 5
 AND date NOT LIKE "%" || ifnull(oce.fechasEventos,'1900-01-01') || "%"	 
