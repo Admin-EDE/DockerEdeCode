@@ -5855,9 +5855,9 @@ GROUP BY Organizationid, date
         CourseSectionId = asignaturaRow[2]
         courseSectionName = asignaturaRow[3]
         totalStudents = asignaturaRow[9]
-        presentStudents = asignaturaRow[10]
-        ausentStudents = asignaturaRow[12]
-        Latestudent = asignaturaRow[14]
+        presentStudents = asignaturaRow[10] if (asignaturaRow[10]) else 0
+        ausentStudents = asignaturaRow[12]  if (asignaturaRow[12]) else 0
+        Latestudent = asignaturaRow[14]  if (asignaturaRow[14]) else 0
         tokenRegistered = asignaturaRow[16]
         descriptionClass = asignaturaRow[17]
         
