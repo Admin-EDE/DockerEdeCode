@@ -5593,7 +5593,17 @@ GROUP BY est.personId
 
   ## Inicio fn5F0 WC ##
   def fn5F0(self, conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    6.2 Contenido mínimo, letra b.1
+    Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
+    
+    '- día de clases
+- mes respectivo
+- hora pedagógica
+- nombre de la asignatura o sector
+- total de estudiantes presentes, atrasados y ausentes
+- observaciones de la clase
+- Verificador de identidad del docente a cargo
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
