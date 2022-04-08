@@ -5671,7 +5671,7 @@ WHERE ocs.LastInstructionDate NOT NULL
 AND
 strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
 )
-SELECT (SELECT OrganizationId FROM Organization WHERE RefOrganizationTypeId = 10) as 'OrgSchool', Organizationid, date, result.*
+SELECT Organizationid, date, result.*, (SELECT OrganizationId FROM Organization WHERE RefOrganizationTypeId = 10) as 'OrgSchool'
 FROM dates 
 -- con el OrganizationId se hace un cruce con la consulta que calcula los datos a validar
 LEFT JOIN (
