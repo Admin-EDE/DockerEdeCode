@@ -5670,7 +5670,7 @@ WHERE ocs.LastInstructionDate NOT NULL
 AND
 strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
 )
-SELECT Organizationid, date, result.*
+SELECT (SELECT OrganizationId FROM Organization WHERE RefOrganizationTypeId = 10) as 'OrgSchool', Organizationid, date, result.*
 FROM dates 
 -- con el OrganizationId se hace un cruce con la consulta que calcula los datos a validar
 LEFT JOIN (
@@ -5693,27 +5693,27 @@ CASE
   WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
 END as 'diaSemana', -- rescata solo el dpia de la semana desde rae.Date [idx 4]	
 CASE 
-  WHEN strftime('%m', rae.Date) = '1' THEN 'Enero'
-  WHEN strftime('%m', rae.Date) = '2' THEN 'Febrero'
-  WHEN strftime('%m', rae.Date) = '3' THEN 'Marzo'
-  WHEN strftime('%m', rae.Date) = '4' THEN 'Abril'
-  WHEN strftime('%m', rae.Date) = '5' THEN 'Mayo'
-  WHEN strftime('%m', rae.Date) = '6' THEN 'Junio'
-  WHEN strftime('%m', rae.Date) = '7' THEN 'Julio'
-  WHEN strftime('%m', rae.Date) = '8' THEN 'Agosto'
-  WHEN strftime('%m', rae.Date) = '9' THEN 'Septiembre'
+  WHEN strftime('%m', rae.Date) = '01' THEN 'Enero'
+  WHEN strftime('%m', rae.Date) = '02' THEN 'Febrero'
+  WHEN strftime('%m', rae.Date) = '03' THEN 'Marzo'
+  WHEN strftime('%m', rae.Date) = '04' THEN 'Abril'
+  WHEN strftime('%m', rae.Date) = '05' THEN 'Mayo'
+  WHEN strftime('%m', rae.Date) = '06' THEN 'Junio'
+  WHEN strftime('%m', rae.Date) = '07' THEN 'Julio'
+  WHEN strftime('%m', rae.Date) = '08' THEN 'Agosto'
+  WHEN strftime('%m', rae.Date) = '09' THEN 'Septiembre'
   WHEN strftime('%m', rae.Date) = '10' THEN 'Octubre'
   WHEN strftime('%m', rae.Date) = '11' THEN 'Noviembre'
   WHEN strftime('%m', rae.Date) = '12' THEN 'Diciembre'		
 END as 'Mes', -- rescata solo el mes desde rae.Date [idx 5]
 strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date [idx 6]
-count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
-sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- [idx 8]
-group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista', -- [idx 9]
-sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- [idx 10]
-group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista', -- [idx 11]
-sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- [idx 12]
-group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista', -- [idx 13]
+count(rae.RoleAttendanceEventId) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
+sum(CASE WHEN rae.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- [idx 8]
+group_concat(CASE WHEN rae.refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista', -- [idx 9]
+sum(CASE WHEN rae.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- [idx 10]
+group_concat(CASE WHEN rae.refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista', -- [idx 11]
+sum(CASE WHEN rae.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- [idx 12]
+group_concat(CASE WHEN rae.refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista', -- [idx 13]
 count(rae.digitalRandomKey) as 'cantidadRegistrosFirmados', -- [idx 14]
 group_concat(DISTINCT '"' || ocs.description || '"') as 'observacionesLeccionario' -- [idx 15]
 FROM Organization O
@@ -5727,6 +5727,11 @@ JOIN RefOrganizationType rot
 JOIN OrganizationPersonRole opr 
   ON O.OrganizationId = opr.OrganizationId
   AND opr.RecordEndDateTime IS NULL
+  AND opr.RoleId IN (
+    SELECT RoleId
+    FROM Role
+    WHERE Name IN ('Estudiante')
+  )  
 JOIN RoleAttendanceEvent rae
   ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
   AND rae.RecordEndDateTime IS NULL
@@ -5738,23 +5743,17 @@ JOIN PersonIdentifier pid
     WHERE Code IN ('listNumber')
   )
   AND pid.RecordEndDateTime IS NULL
-JOIN Role rol
-  ON opr.RoleId = rol.RoleId
-  AND opr.RoleId IN (
-    SELECT RoleId
-    FROM Role
-    WHERE Name IN ('Estudiante')
-  )
 JOIN OrganizationCalendar oc 
   ON O.OrganizationId = oc.OrganizationId
   AND oc.RecordEndDateTime IS NULL
 JOIN OrganizationCalendarSession ocs
   ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
   AND ocs.RecordEndDateTime IS NULL
+  AND ocs.BeginDate = fecha  													--AGREGADO 2022/04/08
+  AND hora between ocs.SessionStartTime and ocs.SessionEndTime					--AGREGADO 2022/04/08  
 JOIN CourseSectionSchedule css
   ON O.OrganizationId = css.OrganizationId
   AND css.RecordEndDateTime IS NULL
---GROUP BY rae.Date
 
 WHERE 
 -- Verifica que se encuentre cargado el leccionario
@@ -5790,7 +5789,7 @@ GROUP BY rae.Date
 ON result.idAsignatura = OrganizationId
 AND result.fecha = date
 -- Rescata las fechas desde OrganizationCalendarCrisis y las saca de la lista de días hábiles
-JOIN (
+LEFT JOIN (
   WITH RECURSIVE dates(Organizationid, date) AS (
     SELECT Organizationid, StartDate
     FROM OrganizationCalendarCrisis O
@@ -5811,9 +5810,8 @@ JOIN (
   FROM dates 		
 ) occ 
 ON occ.org = Organizationid
-AND date NOT LIKE "%" || (occ.fechasCrisis) || "%"
 -- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
-JOIN (
+LEFT JOIN (
 SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
 FROM OrganizationCalendarEvent oce
 JOIN OrganizationCalendar oc
@@ -5823,10 +5821,11 @@ ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
 AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
 GROUP BY oc.Organizationid
 ) oce 
-ON oce.org = Organizationid
-AND date NOT LIKE "%" || (oce.fechasEventos) || "%"	 
+ON oce.org = OrgSchool
 WHERE 
 CAST(strftime('%w',date) as INTEGER) between 1 and 5
+AND date NOT LIKE "%" || ifnull(oce.fechasEventos,'1900-01-01') || "%"	 
+AND date NOT LIKE "%" || ifnull(occ.fechasCrisis,'1900-01-01') || "%"
 --AND result.idAsignatura NOT NULl
 GROUP BY Organizationid, date
 """).fetchall()
