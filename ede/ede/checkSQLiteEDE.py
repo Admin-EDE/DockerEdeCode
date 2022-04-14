@@ -5890,7 +5890,7 @@ GROUP BY Organizationid, date
             descriptionClassErrors.append(organizationId)
             
       if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
-        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
+        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendario sin información registrada: {workDayWithoutInfo}')
         if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
         if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
         if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
@@ -8181,10 +8181,10 @@ GROUP BY Organizationid, date
             tokenRegisteredErrors.append(organizationId)
                         
       if(workDayWithoutInfo or courseNameErrors or totalStudentsErrors or tokenRegisteredErrors): 
-        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendatio sin información registrada: {workDayWithoutInfo}')
-        if(courseNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseNameErrors}')
-        if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
-        if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
+        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendario sin información registrada: {workDayWithoutInfo}')
+        if(courseNameErrors): logger.error(f'Se encontraron cursos sin ningún nombre registrado: {courseNameErrors}')
+        if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes en los siguientes cursos: {totalStudentsErrors}')
+        if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en los siguientes cursos: {tokenRegisteredErrors}')
       else:
         _r = True
     except Exception as e:
