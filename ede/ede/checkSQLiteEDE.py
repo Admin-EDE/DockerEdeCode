@@ -4983,8 +4983,8 @@ ON orgPractica.personid = est.personId
     except Exception as e:
         logger.error(f'Rechazado')
         logger.info(f'No cumple con los criterios de la consulta: {e}')
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
+        return_dict[getframeinfo(currentframe()).function] = False
+        return False
     try:
         if(len(asistencia)>0):
             totalEstudiantes = list([m[4] for m in asistencia if m[4] is not None])
@@ -5010,10 +5010,12 @@ ON orgPractica.personid = est.personId
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
+      logger.error(f"{str(e)}")
     finally:
+      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
       return _r
   ## Fin fn5E0 WC ##
 
