@@ -3235,7 +3235,7 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
     rows = []
     try:
       rows = conn.execute("""
-      SELECT ast.Description as 'RefAttendanceStatus',aet.Description as 'AttendanceEventType', orgt.Description as 'OrganizationType'
+      SELECT DISTINCT ast.Description as 'RefAttendanceStatus',aet.Description as 'AttendanceEventType', orgt.Description as 'OrganizationType'
       FROM RoleAttendanceEvent rae
       INNER JOIN OrganizationPersonRole opr on opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
       INNER JOIN Organization org on org.OrganizationId = opr.OrganizationId
