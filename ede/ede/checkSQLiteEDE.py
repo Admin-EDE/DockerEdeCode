@@ -8144,7 +8144,7 @@ GROUP BY Organizationid, date
     totalStudentsErrors = []
     tokenRegisteredErrors = []
     try:
-      logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
+      #logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
       if(not rows):
         logger.error(f"S/Datos")
         logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
