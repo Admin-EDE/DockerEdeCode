@@ -5655,7 +5655,8 @@ JOIN OrganizationCalendar oc
 JOIN OrganizationCalendarSession ocs
 	ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
 	AND ocs.FirstInstructionDate NOT NULL
--------------------------------------------------------------------------------------------------------------------------------------------------------------------UNION ALL
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UNION ALL
 SELECT Organizationid, date(date, '+1 day')
 FROM dates
 WHERE 
