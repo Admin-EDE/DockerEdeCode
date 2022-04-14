@@ -3166,7 +3166,8 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       _r = True
     elif (e[0] == 'Reingreso autorizado' and e[2] == 'K12 School'):
       _r = True
-
+    elif (e[0] == 'Asistencia al establecimiento' and e[2] == 'K12 School'):
+      _r = True
     return _r
 
   # VERIFICA DATOS DE LAS ORGANIZACIONES
