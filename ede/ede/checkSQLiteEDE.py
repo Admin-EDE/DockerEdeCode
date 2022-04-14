@@ -4493,7 +4493,7 @@ WHERE
            and
            fileScanBase64)
            ):
-          _erroresDetalle.append(estudianteId)
+          _erroresDetalle.append(row)
       
       if(len(_erroresDetalle) > 0):
         logger.error(f"A los siguientes estudiantes no se les entregó correctamente sus documentos de retiro: {_erroresDetalle}")
