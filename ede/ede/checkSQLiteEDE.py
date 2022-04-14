@@ -5637,23 +5637,25 @@ GROUP BY est.personId
 -- crea una lista de días hábiles en los cuales deberían haber tenido clases
 -- los estudiantes del establecimiento.
 WITH RECURSIVE dates(Organizationid, date) AS (
-SELECT O.Organizationid, FirstInstructionDate
---FROM OrganizationCalendarSession ocs
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SELECT 
+	DISTINCT O.Organizationid
+	, FirstInstructionDate
 FROM Organization O
 JOIN RefOrganizationType rot
-ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
-AND O.RefOrganizationTypeId IN (
-SELECT RefOrganizationTypeId 
-FROM RefOrganizationType
-WHERE Description IN ('Course Section')
-) 
+	ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+	AND O.RefOrganizationTypeId IN 
+		(
+			SELECT RefOrganizationTypeId 
+			FROM RefOrganizationType
+			WHERE Description IN ('Course Section')
+		) 
 JOIN OrganizationCalendar oc
---ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-ON oc.OrganizationId = O.Organizationid --'2000096080'
+	ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
 JOIN OrganizationCalendarSession ocs
-ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
-AND ocs.FirstInstructionDate NOT NULL
-UNION ALL
+	ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+	AND ocs.FirstInstructionDate NOT NULL
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------UNION ALL
 SELECT Organizationid, date(date, '+1 day')
 FROM dates
 WHERE 
