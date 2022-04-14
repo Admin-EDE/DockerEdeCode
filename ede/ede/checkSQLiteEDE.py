@@ -6218,8 +6218,8 @@ GROUP BY Organizationid, date
         
         if not _incident[22]: _e.append(_err(f"Campo personId is NULL"))
         if not _incident[23]: _e.append(_err(f"Campo refIncidentPersonRoleType is NULL"))
-        if not _incident[25]: _e.append(_err(f"Campo date is NULL"))
-        if not _incident[26]: _e.append(_err(f"Campo refIncidentPersonType is NULL"))
+        if not _incident[25]: _e.append(_err(f"Campo refIncidentPersonType is NULL"))        
+        if not _incident[26]: _e.append(_err(f"Campo date is NULL"))
         if not _incident[27] and not _incident[28]: _e.append(_err(f"Campo digitalRandomKey y fileScanBase64 are NULL"))
 
         if(_incident[5] not in ('Entrevista','Reunión con apoderados','Entrega de documentos retiro de un estudiante','Anotación positiva','Entrega de documentos de interés general','Entrega de información para continuidad de estudios')): #Anotaciones negativas
