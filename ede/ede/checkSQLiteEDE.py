@@ -4446,12 +4446,12 @@ WHERE
 	pst.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description IN ('Estudiante retirado definitivamente')) 
         """).fetchall()
     except Exception as e:
-      logger.error(f"Resultado: {str(e)}")
+      logger.info(f"Resultado: {str(e)}")
 
     _erroresDetalle = []
     try:
       if(not _query):
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
         _r = True
         raise Exception(f"Sin informacion para verificar")
       
@@ -4500,7 +4500,7 @@ WHERE
       else:
         _r = True
     except Exception as e:
-      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
+      logger.info(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
       logger.error(f"{str(e)}")
     finally:
       logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
