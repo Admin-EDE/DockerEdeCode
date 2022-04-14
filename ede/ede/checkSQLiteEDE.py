@@ -6214,14 +6214,16 @@ GROUP BY Organizationid, date
         if not _incident[3]: _e.append(_err(f"Campo refIncidentTimeDescriptionCode is NULL"))
         if not _incident[4]: _e.append(_err(f"Campo incidentDescription is NULL"))
         if not _incident[5]: _e.append(_err(f"Campo refIncidentBehavior is NULL"))
-        if not _incident[11]: _e.append(_err(f"Campo incidentReporterId is NULL"))
-        if not _incident[12]: _e.append(_err(f"Campo refIncidentReporterType is NULL"))
+        if _incident[5] not in ('Entrevista','Reunión con apoderados'):
+          if not _incident[11]: _e.append(_err(f"Campo incidentReporterId is NULL"))
+          if not _incident[12]: _e.append(_err(f"Campo refIncidentReporterType is NULL"))
         
         if not _incident[22]: _e.append(_err(f"Campo personId is NULL"))
         if not _incident[23]: _e.append(_err(f"Campo refIncidentPersonRoleType is NULL"))
         if not _incident[25]: _e.append(_err(f"Campo refIncidentPersonType is NULL"))        
         if not _incident[26]: _e.append(_err(f"Campo date is NULL"))
-        if not _incident[27] and not _incident[28]: _e.append(_err(f"Campo digitalRandomKey y fileScanBase64 are NULL"))
+        if(_incident[25] in ('Docente','Profesional de la educación','Personal Administrativo')):
+          if not _incident[27] and not _incident[28]: _e.append(_err(f"Campo digitalRandomKey y fileScanBase64 are NULL"))
 
         if(_incident[5] not in ('Entrevista','Reunión con apoderados','Entrega de documentos retiro de un estudiante','Anotación positiva','Entrega de documentos de interés general','Entrega de información para continuidad de estudios')): #Anotaciones negativas
           if not validateJSON(_incident[16]): _e.append(_err(f"Campo regulationViolatedDescription is NOT JSON"))
