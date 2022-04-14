@@ -6116,6 +6116,7 @@ GROUP BY Organizationid, date
 			, RefIncidentInjuryType.Description 'refIncidentInjuryType'                            --06
 			, RefWeaponType.Description 'refWeaponType'                                            --07
 			, I.incidentCost                                                                       --08
+      , 1                                                                                    --09
 			, I.organizationPersonRoleId                                                           --10
 			, I.incidentReporterId                                                                 --11
 			, RefIncidentReporterType.Description 'refIncidentReporterType'                        --12
