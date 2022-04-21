@@ -9054,7 +9054,7 @@ where
       #_q1 = conn.execute(_S1).fetchall()
       _q1 = conn.execute(_queryText)#.fetchall()
       if(_q1.returns_rows == 0):
-        logger.error(f"El establecimientos no tiene alumnos de formación DUAL para revisar")
+        logger.info(f"El establecimientos no tiene alumnos de formación DUAL para revisar")
         logger.info(f"Aprobado")
         return_dict[getframeinfo(currentframe()).function] = True
         return True
