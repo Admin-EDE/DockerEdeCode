@@ -8910,7 +8910,15 @@ where
 
 ### inicio  fn680 ###
   def fn680(self,conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    6.2 Contenido mínimo, letra c.8
+    verificar que los registros reportados semanalmente por la empresa 
+    se encuentren cargados en el sistema
+
+El medio de verificación de la asistencia debería ser un documento reportado por la empresa, el cual debe estar cargado en el sistema en los campos fileScanBase64 y observaciones.
+
+[revisar si es necesario cargar el documento o solo dejar la observación]
+
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
