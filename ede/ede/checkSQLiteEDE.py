@@ -3728,7 +3728,16 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
 
   ## Inicio fn7F2 WC ##
   def fn7F2(self,conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    6.2 Contenido mínimo, letra d
+verificar que la calificación final mínima de aprobación del estudiante sea un 4.0.
+
+Verificar que si en la tabla PersonStatus el estudiante tiene el estado promovido, su calificación final sea, al menos, de un cuatro (4,00)
+
+Tablas PersonStatus y Assessment Result
+
+RefPersonStatusType = 28 (Estudiante promovido)
+
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -3801,7 +3810,7 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
               JOIN Assessment A ON AA.AssessmentId = A.AssessmentId
               JOIN AssessmentSession ASN ON ASN.AssessmentAdministrationId = AA.AssessmentAdministrationId
               JOIN AssessmentSessionStaffRole ASSR ON ASN.AssessmentSessionId = ASSR.AssessmentSessionId
-      WHERE A.RefAssessmentTypeId = 28
+      WHERE A.RefAssessmentTypeId IN (28, 29)
         AND R.RefScoreMetricTypeId IN (1, 2)
         AND ASSR.RefAssessmentSessionStaffRoleTypeId = 6
         AND ASSR.PersonId IN (SELECT DISTINCT PS.PersonId
