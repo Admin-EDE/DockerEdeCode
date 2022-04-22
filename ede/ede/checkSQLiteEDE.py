@@ -5872,7 +5872,7 @@ LEFT JOIN (
         AND
         -- Agrega a la lista todos los registros que no cumplan con la expresión regular
         rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
-    GROUP BY O.organization, rae.Date
+    GROUP BY O.organizationId, rae.Date
 ) result 
 ON result.idAsignatura = OrganizationId
 AND result.fecha = date
