@@ -6241,23 +6241,27 @@ GROUP BY Organizationid, date
           pass
 
         if(_incident[5] == 'Entrevista'):
-          if not (_incident[23] == 'Entrevistado' and _incident[25] in ('Apoderado','Adulto responsable o conocido del estudiante','Parent/guardian')) and _incident[23] != 'Entrevistador': 
-            _e.append(_err(f"Campo Tipo 'Adulto responsable o conocido del estudiante' está mal aplicado. (1){_incident[5]}...{_incident[23]}...{_incident[25]}"))
-            entrevistado+=1
-          if not (_incident[23] == 'Entrevistador' and _incident[25] in ('Docente','Profesional de la educación','Substitute teacher','Personal Administrativo')) and _incident[23] != 'Entrevistado': 
-            _e.append(_err(f"Campo Tipo 'Dirige reunión de apoderados' está mal aplicado. (2){_incident[5]}...{_incident[23]}...{_incident[25]}"))
-            entrevistador+=1
+          if(_incident[23] == 'Entrevistado'):
+            if (_incident[25] not in ('Apoderado','Adulto responsable o conocido del estudiante','Parent/guardian')): 
+              _e.append(_err(f"Campo Tipo 'Adulto responsable o conocido del estudiante' está mal aplicado. (1){_incident[5]}...{_incident[23]}...{_incident[25]}"))
+              entrevistado+=1
+          if(_incident[23] == 'Entrevistador'):
+            if(_incident[25] not in ('Docente','Profesional de la educación','Substitute teacher','Personal Administrativo')): 
+              _e.append(_err(f"Campo Tipo 'Dirige reunión de apoderados' está mal aplicado. (2){_incident[5]}...{_incident[23]}...{_incident[25]}"))
+              entrevistador+=1
           if(_incidentePrevio is not None and _incidentePrevio != _incident[0]):
             if(entrevistado == 0): _e.append(_err(f"Falto definir el entrevistado en el incidente")); entrevistado = 0
             if(entrevistador == 0): _e.append(_err(f"Falto definir el entrevistador en el incidente")); entrevistador = 0            
 
         if(_incident[5] == 'Reunión con apoderados'):
-          if not (_incident[23] == 'Asiste a reunión de apoderados' and _incident[25] in ('Apoderado','Adulto responsable o conocido del estudiante','Parent/guardian')): 
-            _e.append(_err(f"Campo Tipo 'Adulto responsable o conocido del estudiante' está mal aplicado. (3){_incident[5]}...{_incident[23]}...{_incident[25]}"))
-            asistente+=1
-          if not (_incident[23] == 'Dirige reunión de apoderados' and _incident[25] in ('Docente','Profesional de la educación','Substitute teacher')): 
-            _e.append(_err(f"Campo Tipo 'Dirige reunión de apoderados' está mal aplicado. (4){_incident[5]}...{_incident[23]}...{_incident[25]}"))
-            dirige+=1
+          if(_incident[23] == 'Asiste a reunión de apoderados'):
+            if(_incident[25] not in ('Apoderado','Adulto responsable o conocido del estudiante','Parent/guardian')): 
+              _e.append(_err(f"Campo Tipo 'Adulto responsable o conocido del estudiante' está mal aplicado. (3){_incident[5]}...{_incident[23]}...{_incident[25]}"))
+              asistente+=1
+          if(_incident[23] == 'Dirige reunión de apoderados'):
+            if (_incident[25] not in ('Docente','Profesional de la educación','Substitute teacher')):
+              _e.append(_err(f"Campo Tipo 'Dirige reunión de apoderados' está mal aplicado. (4){_incident[5]}...{_incident[23]}...{_incident[25]}"))
+              dirige+=1
           if(_incidentePrevio is not None and _incidentePrevio != _incident[0]):
             if(asistente == 0): _e.append(_err(f"Falto definir el asistente en el incidente")); asistente = 0
             if(dirige == 0): _e.append(_err(f"Falto definir el dirige en el incidente")); dirige = 0
