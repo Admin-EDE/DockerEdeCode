@@ -8186,7 +8186,7 @@ LEFT JOIN (
         AND
         -- Agrega a la lista todos los registros que no cumplan con la expresión regular
         rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
-    GROUP BY rae.Date
+    GROUP BY O.organizationId, rae.Date
 ) result 
 ON result.idCurso = OrganizationId
 AND result.fecha = date
@@ -8523,7 +8523,6 @@ where
           _l.append(_r)
         elif(_exitDate != _statusEndDate):
           _l2.append(_r)
-          
       
       if(len(_l)!=0):
         logger.error(f"Hay alumnos sin rergistro de fecha de alta/baja: {str(_l)}")
