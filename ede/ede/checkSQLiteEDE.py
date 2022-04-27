@@ -1021,34 +1021,79 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
     try:
       rows = conn.execute("""
 SELECT 
-(SELECT count(numLista.Identifier)
-FROM person p
-OUTER LEFT JOIN PersonIdentifier numLista
-	ON p.personid = numLista.personid
-JOIN RefPersonIdentificationSystem rfiLista 
-  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
-  AND rfiLista.code IN ('listNumber')) as 'cantidadNumeroLista'
-,(SELECT count(numMatri.Identifier)
-FROM person p
-JOIN PersonIdentifier numMatri
-	ON p.personid = numMatri.personid
-JOIN RefPersonIdentificationSystem rfiMatri
-  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
-  AND rfiMatri.code IN ('SchoolNumber')) as 'cantidadNumeroMatricula'
-,(SELECT count(rpst.Description)
-FROM person p
-JOIN PersonStatus ps
-	ON ps.personId = p.personId
-JOIN RefPersonStatusType rpst
-  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-  AND rpst.Description IN ('Estudiante con matrícula definitiva')) as 'cantidadMatriDefinitiva'
-,(SELECT count(rpst.Description)
-FROM person p
-JOIN PersonStatus ps
-	ON ps.personId = p.personId
-JOIN RefPersonStatusType rpst
-  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')) as 'cantidadNumerosListaAsignados'  
+(
+	SELECT count(p.personId)
+	FROM person p
+	JOIN PersonIdentifier numLista
+		ON p.personid = numLista.personid
+	JOIN RefPersonIdentificationSystem rfiLista 
+	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
+	  AND rfiLista.code IN ('listNumber')
+) as 'cantidadNumeroLista'
+,(
+	SELECT count(p.personId)
+	FROM person p
+	JOIN PersonIdentifier numMatri
+		ON p.personid = numMatri.personid
+	JOIN RefPersonIdentificationSystem rfiMatri
+	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
+	  AND rfiMatri.code IN ('SchoolNumber')
+) as 'cantidadNumeroMatricula'
+,(
+	SELECT count(p.personId)
+	FROM person p
+	JOIN PersonStatus ps
+		ON ps.personId = p.personId
+	JOIN RefPersonStatusType rpst
+	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
+	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
+) as 'cantidadMatriDefinitiva'
+,(
+	SELECT count(p.personId)
+	FROM person p
+	JOIN PersonStatus ps
+		ON ps.personId = p.personId
+	JOIN RefPersonStatusType rpst
+	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
+	  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')
+) as 'cantidadNumerosListaAsignados'
+, (
+	SELECT group_concat(p.personId)
+	FROM person p
+	JOIN PersonIdentifier numLista
+		ON p.personid = numLista.personid
+	JOIN RefPersonIdentificationSystem rfiLista 
+	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
+	  AND rfiLista.code IN ('listNumber')
+	WHERE p.personId NOT IN (
+		SELECT p.personId
+		FROM person p
+		JOIN PersonStatus ps
+			ON ps.personId = p.personId
+		JOIN RefPersonStatusType rpst
+		  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
+		  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')	
+	)
+	
+) as 'personIdsNumListWithProblems'
+, (
+	SELECT group_concat(p.personId)
+	FROM person p
+	JOIN PersonIdentifier numMatri
+		ON p.personid = numMatri.personid
+	JOIN RefPersonIdentificationSystem rfiMatri
+	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
+	  AND rfiMatri.code IN ('SchoolNumber')
+	WHERE p.personId NOT IN (
+		SELECT p.personId
+	FROM person p
+	JOIN PersonStatus ps
+		ON ps.personId = p.personId
+	JOIN RefPersonStatusType rpst
+	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
+	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
+	)	
+) as 'personIdsNumMatriculaWithProblems'
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
@@ -1059,9 +1104,11 @@ JOIN RefPersonStatusType rpst
         cantidadNumeroMatricula = rows[0][1]
         cantidadMatriDefinitiva = rows[0][2]
         cantidadNumerosListaAsignados = rows[0][3]
+        listNumerosListaAsignados = rows[0][4]
+        listNumerosMatAsignados = rows[0][5]
         _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
-        _t1 = f"Verifica: {_r}. PERSON_IDENTIFIER -> NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}"
-        _t2 = f"Verifica: {_r}. PERSON_STATUS     ->  NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}"
+        _t1 = f"Verifica: {_r}. PERSON_IDENTIFIER -> NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}. personIds: {listNumerosListaAsignados}"
+        _t2 = f"Verifica: {_r}. PERSON_STATUS     ->  NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}. personids: {listNumerosMatAsignados}"
         logger.info(_t1) if _r else logger.error(_t1)
         logger.info(_t2) if _r else logger.error(_t2)
         logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
