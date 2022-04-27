@@ -4594,8 +4594,8 @@ WHERE
             return_dict[getframeinfo(currentframe()).function] = False
             return False
         else:
-            logger.error(f'S/Datos')
-            logger.error(f'No existen alumnos excedentes en el establecimiento')
+            logger.info(f'S/Datos')
+            logger.info(f'No existen alumnos excedentes en el establecimiento')
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
