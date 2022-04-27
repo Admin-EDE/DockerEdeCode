@@ -5323,6 +5323,11 @@ JOIN RefIncidentBehavior rInBh
                 ) 
               OUTER LEFT JOIN OrganizationPersonRole opr_
                 ON O.OrganizationId = opr_.OrganizationId
+              JOIN Role rol
+                ON opr_.RoleId = rol.roleId
+                AND opr_.roleId in (
+                  SELECT roleId from role where Name in ("Estudiante")
+                )
               OUTER LEFT JOIN RoleAttendanceEvent rae_
                 ON opr_.OrganizationPersonRoleId = rae_.OrganizationPersonRoleId
               OUTER LEFT JOIN
@@ -5345,6 +5350,7 @@ JOIN RefIncidentBehavior rInBh
                 sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura', -- [idx 5]
                 sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura', -- [idx 6]
                 sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura' -- [idx 7]
+                strftime('%H:%M', rae.Date, substr(rae.Date, length(rae.Date)-5,6)) as 'hora' -- rescata solo la hora [idc 8]
                 
               FROM Organization O
                 JOIN RefOrganizationType rot
@@ -5380,6 +5386,8 @@ JOIN RefIncidentBehavior rInBh
                 JOIN OrganizationCalendarSession ocs
                   ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
                   AND ocs.RecordEndDateTime IS NULL
+                  AND ocs.BeginDate = fechaAsistenciaAsignatura
+                  AND hora between ifnull(ocs.SessionStartTime,'00:00') and ifnull(ocs.SessionEndTime,'00:00')
                 JOIN CourseSectionSchedule css
                   ON O.OrganizationId = css.OrganizationId
                   AND css.RecordEndDateTime IS NULL
