@@ -5349,7 +5349,7 @@ JOIN RefIncidentBehavior rInBh
                 count(refattendancestatusid) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 4]
                 sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentesAsignatura', -- [idx 5]
                 sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentesAsignatura', -- [idx 6]
-                sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura' -- [idx 7]
+                sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasadosAsignatura', -- [idx 7]
                 strftime('%H:%M', rae.Date, substr(rae.Date, length(rae.Date)-5,6)) as 'hora' -- rescata solo la hora [idc 8]
                 
               FROM Organization O
