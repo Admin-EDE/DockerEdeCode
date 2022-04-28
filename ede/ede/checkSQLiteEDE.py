@@ -3840,8 +3840,8 @@ RefPersonStatusType = 28 (Estudiante promovido)
       logger.info(f"Resultado: {_query} -> {str(e)}")
     
     if(len(_query) == 0):
-      logger.error(f'No existen estudiantes promovidos en el establecimiento')
-      logger.error(f'S/Datos')
+      logger.info(f'No existen estudiantes promovidos en el establecimiento')
+      logger.info(f'S/Datos')
       _r = True
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")
@@ -6257,8 +6257,8 @@ GROUP BY Organizationid, date
       logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
     
     if(len(_queryIncident)<=0):
-      logger.error(f"S/Datos ")
-      logger.error(f"Sin incidentes registrados")
+      logger.info(f"S/Datos ")
+      logger.info(f"Sin incidentes registrados")
       _r = True
       return_dict[getframeinfo(currentframe()).function] = _r
       return _r
