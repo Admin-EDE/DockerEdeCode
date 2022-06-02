@@ -6987,7 +6987,7 @@ GROUP BY Organizationid, date
           incidentDesc = incident[5]
           RefIncidentBehaviorId = incident[6]
           isJsonValidRegulationViolatedDesc = validateJSON(incident[16])
-          refIncidentBehaviorDesc = incident[66]
+          refIncidentBehaviorDesc = incident[67]
           PersonId = incident[72]
           refIncidentPersonId = incident[75]
           incidentPersonDate = incident[76]
