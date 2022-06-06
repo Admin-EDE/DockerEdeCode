@@ -5777,7 +5777,7 @@ GROUP BY est.personId
 WITH RECURSIVE dates(Organizationid, date) AS (
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------
   SELECT 
-    DISTINCT O.Organizationid
+    O.Organizationid
     , FirstInstructionDate
   FROM Organization O
   JOIN RefOrganizationType rot
@@ -5789,7 +5789,8 @@ WITH RECURSIVE dates(Organizationid, date) AS (
         WHERE Description IN ('Course Section')
       ) 
   JOIN OrganizationCalendar oc
-    ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+    --ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+    	ON oc.OrganizationId = o.OrganizationId
   JOIN OrganizationCalendarSession ocs
     ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
     AND ocs.FirstInstructionDate NOT NULL
