@@ -5813,7 +5813,21 @@ WITH RECURSIVE dates(Organizationid, date) AS (
   ) 
   AND strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
 ) -- END RECURSIVE
-SELECT Organizationid, date, result.*, (SELECT OrganizationId FROM Organization WHERE RefOrganizationTypeId = 10) as 'OrgSchool'
+SELECT 
+	Organizationid
+	, date
+	, result.*
+	, (SELECT OrganizationId FROM Organization WHERE RefOrganizationTypeId = 10) as 'OrgSchool'
+	, md.cssClassMeetingDays
+	,CASE 
+      WHEN strftime('%w', date) = '0' THEN 'Domingo'
+      WHEN strftime('%w', date) = '1' THEN 'Lunes'
+      WHEN strftime('%w', date) = '2' THEN 'Martes'
+      WHEN strftime('%w', date) = '3' THEN 'Miércoles'
+      WHEN strftime('%w', date) = '4' THEN 'Jueves'
+      WHEN strftime('%w', date) = '5' THEN 'Viernes'
+      WHEN strftime('%w', date) = '6' THEN 'Sabado'
+    END as 'diaSemanaCalendar'
 FROM dates 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- con el OrganizationId se hace un cruce con la consulta que calcula los datos a validar
@@ -5969,11 +5983,19 @@ LEFT JOIN (
 ) oce 
 ON oce.org = Organizationid
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+JOIN (
+	SELECT OrganizationId as cssOrgId, group_concat(DISTINCT ClassMeetingDays) as cssClassMeetingDays
+	FROM CourseSectionSchedule css
+	GROUP BY organizationId
+) md 
+ON md.cssOrgId = Organizationid
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WHERE 
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
   AND date NOT LIKE "%" || ifnull(oce.fechasEventos,'1900-01-01') || "%"	 
   AND date NOT LIKE "%" || ifnull(occ.fechasCrisis,'1900-01-01') || "%"
   --AND result.idAsignatura NOT NULl
+  AND md.cssClassMeetingDays like "%" || diaSemanaCalendar || "%"	   
 GROUP BY Organizationid, date
 """).fetchall()
     except Exception as e:
