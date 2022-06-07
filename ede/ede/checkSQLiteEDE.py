@@ -5755,9 +5755,61 @@ GROUP BY est.personId
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
+    _r = False
+    _ExistData = []
     try:
-      _r = False
+      _ExistData = conn.execute("""
+WITH RECURSIVE dates(Organizationid, date) AS (
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  SELECT 
+    O.Organizationid
+    , FirstInstructionDate
+  FROM Organization O
+  JOIN RefOrganizationType rot
+    ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
+    AND O.RefOrganizationTypeId IN 
+      (
+        SELECT RefOrganizationTypeId 
+        FROM RefOrganizationType
+        WHERE Description IN ('Course Section')
+      ) 
+  JOIN OrganizationCalendar oc
+    --ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+    	ON oc.OrganizationId = o.OrganizationId
+  JOIN OrganizationCalendarSession ocs
+    ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
+    AND ocs.FirstInstructionDate NOT NULL
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  UNION ALL
+  SELECT Organizationid, date(date, '+1 day')
+  FROM dates
+  WHERE 
+  -- Considera la menor fecha entre LastInstructionDate y la fecha actual (now)
+  strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d', 
+    ( 
+    -- Rescata el último día 
+    SELECT LastInstructionDate 
+    FROM OrganizationCalendarSession ocs 
+    JOIN OrganizationCalendar oc 
+      ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId 
+      AND oc.OrganizationId = Organizationid
+    WHERE ocs.LastInstructionDate NOT NULL
+    )
+  ) 
+  AND strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
+) -- END RECURSIVE
+SELECT * FROM dates                                   
+        """).fetchall()
+      if(not _ExistData):
+        raise Exception("No hay registros de información")
+    except Exception as e:
+        logger.error(f"S/Datos")
+        logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
+        logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r
+    try:
       asignaturas = []
       asignaturas = conn.execute("""
 --6.2 Contenido mínimo, letra b.1
