@@ -24,13 +24,13 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 
 @event.listens_for(Engine, "connect")
-def sqlite_engine_connect(dbapi_connection, connection_record):
+def sqlite_engine_connect(dbapi_connection: Engine, connection_record: str):
     dbapi_connection.create_function("regexp", 2, sqlite_regexp)
     dbapi_connection.create_function("REGEXP_REPLACE", 3, sqlite_regexp_replace)
     dbapi_connection.create_function("json_valid", 1, validateJSON)
     
 
-def validateJSON(jsonData):
+def validateJSON(jsonData: str) -> bool:
   try:
     dictData = json.loads(jsonData)
     if(    dictData.get("ArtículoProtocolo",None) is not None 
@@ -41,7 +41,7 @@ def validateJSON(jsonData):
     pass
   return False
 
-def sqlite_regexp(expr, item):
+def sqlite_regexp(expr: str, item: str) -> re.Match[str]|bool:
     if(not item): return False
     #logger.info(f"expr: {type(expr)} => {expr}, \nitem: {type(item)} => {item}")
     #reg = re.compile(expr, re.IGNORECASE)
@@ -54,7 +54,7 @@ def sqlite_regexp(expr, item):
         print(f'ERROR: {e}')
         return False
 
-def sqlite_regexp_replace(item, find, repl):
+def sqlite_regexp_replace(item: str, find:str , repl:str):
     reg = re.compile(find, re.IGNORECASE)
     return reg.sub(repl, item)
 

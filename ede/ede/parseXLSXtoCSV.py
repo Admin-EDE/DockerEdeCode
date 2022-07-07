@@ -8,6 +8,7 @@ import json
 import os
 import csv
 from anytree import Node, RenderTree, PreOrderIter, findall
+from typing import Tuple, Dict, Literal
 #import re
 
 class parse:
@@ -15,7 +16,7 @@ class parse:
     self.args = args;
     logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}");
 
-  def execute(self):
+  def execute(self) -> Literal[True]:
     xd = self.cargarPlanillaConDatosDelModelo()
     df,fileName = self.readExcelData(self.args.path_to_file,self.args.nozip)
     node = self.leerTodosLosRegistrosDeLGrupoOrganizaciones(df,xd[(xd["JSONGroup"] == '_Organizaciones') | (xd["JSONGroup"] == '_Cursos')].copy())
@@ -25,7 +26,7 @@ class parse:
     return True
 
   #Carga planilla con todas las tablas y campos del modelo https://ceds.ed.gov
-  def cargarPlanillaConDatosDelModelo(self):
+  def cargarPlanillaConDatosDelModelo(self) -> pd.DataFrame:
     #idFile = '1gBhiRXswoCN6Ub2PHtyr5cb6w9VMQgll'
     #url = f'http://drive.google.com/uc?export=download&id={idFile}'
     url = './ede/ede/NDS-Reference-v7_1.xlsx';
@@ -33,7 +34,7 @@ class parse:
     _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
     return xd
 
-  def readExcelData(self,path_to_file,nozip):
+  def readExcelData(self, path_to_file: str, nozip: bool) -> Tuple[pd.DataFrame, str]:
     # Descomprime el contenido del archivo ZIP y lo carga en memoria
     if(path_to_file):
       if(not nozip):
@@ -53,7 +54,7 @@ class parse:
 
     return df,file
 
-  def getRefOrganizationType(self):
+  def getRefOrganizationType(self) -> Dict:
     #NO CAMBIAR el orden del diccionario
     return {
         'K12School':10,
@@ -70,23 +71,23 @@ class parse:
         'CourseSection':22,
         }
 
-  def compareList(self,l1,l2):
+  def compareList(self, l1: list, l2: list) -> bool:
     l1.sort();l2.sort();
     return l1 == l2;
   
-  def match_regex(self,node,attr):
+  def match_regex(self, node: pd.DataFrame, attr):
     expresion = f"getattr(node, '{attr}', None)"
     attrValue = eval(expresion)
     if attrValue is not None:
       return node
 
-  def leerTodosLosRegistrosDeLGrupoPersonas(self,dfXls,elem,node):
+  def leerTodosLosRegistrosDeLGrupoPersonas(self, dfXls: pd.DataFrame, elem: pd.DataFrame, node: pd.DataFrame) -> None:
     #Mapeo de tipos de datos SQL -> Pyhton
     for column in dfXls.columns:
       print("leerTodosLosRegistrosDeLGrupoPersonas->",column)
 
 
-  def leerTodosLosRegistrosDeLGrupoOrganizaciones(self,dfXls,elem):
+  def leerTodosLosRegistrosDeLGrupoOrganizaciones(self, dfXls: pd.DataFrame, elem: pd.DataFrame) -> Node:
     #Mapeo de tipos de datos SQL -> Pyhton
     records = []
     elem.sort_values(by=['OrderTable','OrderColumn'],inplace=True);
@@ -234,7 +235,7 @@ class parse:
     self.crearCSV(elem,root)
     return root
 
-  def crearCSV(self, elem, root):
+  def crearCSV(self, elem: pd.DataFrame, root: Node) -> Literal[True]:
     # Se crea un DF por tabla. 
     # Primero se rescata los datos y condiciones de cada tabla desde la planilla publicada. 
     # Segundo, se realiza una busqueda de todos los nodos del árbol que cumplen con la condición. 

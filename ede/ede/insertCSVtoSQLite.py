@@ -17,6 +17,7 @@ import io
 from sqlalchemy import create_engine
 import string, random
 import shutil
+from typing import Dict, Literal
 
 class insert:
   def __init__(self, args):
@@ -36,7 +37,7 @@ class insert:
   def execute(self):
     return self.transferCSVToSQL_withPandas(self.args.path_to_dir_csv_file, self.args.path_to_DB_file, self.args.secPhase)
     
-  def cargarBaseDeDatos(self, fileName):
+  def cargarBaseDeDatos(self, fileName: str) -> str:
     #idFile = '1hqAjAknc6dY720X5zO_ZU2FqI_mZa3nB'
     #url_to_zipDB_file = f'http://drive.google.com/uc?export=download&id={idFile}'
     #r = requests.get(url_to_zipDB_file, stream=True)
@@ -47,7 +48,7 @@ class insert:
     _t=f"Base de datos: '{path_to_DB_file}' creada exitosamente "; logger.info(_t)
     return path_to_DB_file
 
-  def getPublicKeyFromEmail(self,email):
+  def getPublicKeyFromEmail(self, email: str) -> None|str:
     try:
       url_to_register_file = f'https://docs.google.com/spreadsheets/d/1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A/export?format=csv&id=1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A'
       r = requests.get(url_to_register_file, stream=True)
@@ -68,7 +69,7 @@ class insert:
       return None
       
   # CAMBIA CLAVE A LA BD SQLCipher
-  def encriptarBD(self, DB_NAME):
+  def encriptarBD(self, DB_NAME: str) -> str:
     secPhase = 'BD en blanco solo con parámetros definidos por Enlaces-Mineduc'
     engine = create_engine(f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000")
     conn = engine.connect()
@@ -87,7 +88,7 @@ class insert:
       #r = requests.get(url_to_pem_file, verify=False, stream=True)
       #path_to_public_pem_file = io.BytesIO(r.content).read()
       #publickey = RSA.importKey(path_to_public_pem_file)
-  def encryptTextUsingSiePublicKey(self, txt):
+  def encryptTextUsingSiePublicKey(self, txt: str):
     pubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxfLqdKTtAFwh8lPf/sjE6N3rPZqyjHNYglGQRPJ6sHHs0Ciw18v8R4eVEIwdGslFDvg3usP1PMQrW9Nyy16Sz4T5lUyPTZFgvQ0xyB1HH9gqyprxV7Rcdb5iRLj3HuUG8Bg/4mWvp5I69GpZcpPFwm0T7Y8Np1ouErf6f+Yp6c4X0JQ5Cm8EIGmom0mRw93uouYXZ+P8WMd/EEdgRl8vJpgkewt99lm5SPsW3742bgfnsT38Z2vJMziXtVIPVsdH5yKGe0arAYIY6UHC+JnOS/KjBZ609Px5Z785ZrppXiVEX0K4e294S5xhpzPuNLTAsYPfLWDjwaLZGN8hGvFSCwIDAQAB"
     if (self.args.email):
       _t = f'email: {self.args.email}.';logger.info(_t)
@@ -103,14 +104,14 @@ class insert:
     encrypted = encryptor.encrypt(bytes(txt,"utf-8"))
     return encrypted
 
-  def encriptarClaveParaLaSuperintendencia(self):
+  def encriptarClaveParaLaSuperintendencia(self) -> Literal[True]:
     text_file = open(f"{self.args.t_stamp}_key.txt", "w");text_file.write(self.args.secPhase);text_file.close()      
     secPhaseEncripted = self.encryptTextUsingSiePublicKey(self.args.secPhase)
     text_file = open(f"{self.args.t_stamp}_key.encrypted", "wb");text_file.write(secPhaseEncripted);text_file.close()
     _t = 'Archivo encriptado de la SIE generado exitosamente';logger.info(_t)
     return True
 
-  def dict_factory(self, rows, tbl):
+  def dict_factory(self, rows, tbl) -> Dict:
     _dTypes = {
         "bit": [pd.api.types.is_bool_dtype, pd.Int64Dtype(), "bool"],
         "integer": [pd.api.types.is_integer_dtype, pd.Int64Dtype(), "int32"],
@@ -133,7 +134,7 @@ class insert:
         d[col[1]] = np.unicode_
     return d
 
-  def transferCSVToSQL_withPandas(self, path_to_dir_csv_file, DB_NAME, secPhase):
+  def transferCSVToSQL_withPandas(self, path_to_dir_csv_file, DB_NAME: str, secPhase: str) -> bool:
     _r = True
     engine = create_engine(f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000")
     conn = engine.connect()

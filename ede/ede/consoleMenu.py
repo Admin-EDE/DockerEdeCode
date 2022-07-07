@@ -2,6 +2,7 @@ import argparse #Librería usada en funcion main() para crear el menú de la con
 import importlib.util #utilizada en función module_from_file para cargar las librerías del estándar
 import logging
 import os
+from types import ModuleType
 logger = logging.getLogger('root')
 
 class consoleMenu:
@@ -41,7 +42,7 @@ class consoleMenu:
     parser_check.add_argument('-t','--time', type=int, help='Especifica el tiempo máximo de la verificación', default=300)    
     parser_check.set_defaults(func=self.check)
     
-  def module_from_file(self,module_name, file_path):
+  def module_from_file(self, module_name: str, file_path: str) -> ModuleType:
     spec = importlib.util.spec_from_file_location(module_name, file_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -50,7 +51,7 @@ class consoleMenu:
   #----------------------------------------------------------------------------
   # Clean or Create CSV directory
   #----------------------------------------------------------------------------
-  def cleanDirectory(self, d):
+  def cleanDirectory(self, d: str) -> bool:
     if(not os.path.exists(d)):
         os.mkdir(d)
     else:
