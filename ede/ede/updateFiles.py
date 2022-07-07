@@ -1,6 +1,6 @@
-import logging
+
 import requests, io
-logger = logging.getLogger('root')
+from ede.ede._logger import logger
 
 import os, sys
 from git import Repo

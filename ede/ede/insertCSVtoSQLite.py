@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging
-logger = logging.getLogger('root')
+from ede.ede._logger import logger
 
 import pandas as pd 
 import numpy as np
@@ -17,7 +16,7 @@ import io
 from sqlalchemy import create_engine
 import string, random
 import shutil
-from typing import Dict, Literal
+from typing import Dict, Literal, Union
 
 class insert:
   def __init__(self, args):
@@ -48,7 +47,7 @@ class insert:
     _t=f"Base de datos: '{path_to_DB_file}' creada exitosamente "; logger.info(_t)
     return path_to_DB_file
 
-  def getPublicKeyFromEmail(self, email: str) -> None|str:
+  def getPublicKeyFromEmail(self, email: str) -> Union[str,None]:
     try:
       url_to_register_file = f'https://docs.google.com/spreadsheets/d/1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A/export?format=csv&id=1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A'
       r = requests.get(url_to_register_file, stream=True)

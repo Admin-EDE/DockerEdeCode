@@ -1,9 +1,9 @@
 import argparse #Librería usada en funcion main() para crear el menú de la consola
 import importlib.util #utilizada en función module_from_file para cargar las librerías del estándar
-import logging
+from ede.ede._logger import logger
 import os
 from types import ModuleType
-logger = logging.getLogger('root')
+
 
 class consoleMenu:
   def __init__(self):
@@ -88,7 +88,7 @@ class consoleMenu:
       args.path_to_DB_file = insertCSVtoSQLite.args.path_to_DB_file
       self.check(args)
     else:
-      logging.warning("No se realiza validación de los datos, el parámetro '--NoValidate' se encuentra activado...")
+      logger.warning("No se realiza validación de los datos, el parámetro '--NoValidate' se encuentra activado...")
     
   def check(self, args):
     logger.info(f"Iniciando check: args")

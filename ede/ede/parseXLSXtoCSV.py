@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #https://medium.com/swlh/python-flask-with-graphql-server-with-sqlalchemy-and-graphene-and-sqlite-ac9fcc9d3d83
-import logging
-logger = logging.getLogger('root');
+from ede.ede._logger import logger
 import pandas as pd 
 from zipfile import ZipFile
 import json

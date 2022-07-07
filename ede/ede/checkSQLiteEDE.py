@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from inspect import formatargspec, getfullargspec, getframeinfo, currentframe
 from time import sleep
-import logging
+
 import sys
-logger = logging.getLogger('root')
+from ede.ede._logger import logger
 
 from validate_email import validate_email
 from multiprocessing import current_process, Process, Manager
@@ -22,6 +22,7 @@ from sqlalchemy import event, func
 from sqlalchemy.sql import label
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
+from typing import Union
 
 @event.listens_for(Engine, "connect")
 def sqlite_engine_connect(dbapi_connection: Engine, connection_record: str):
@@ -41,7 +42,7 @@ def validateJSON(jsonData: str) -> bool:
     pass
   return False
 
-def sqlite_regexp(expr: str, item: str) -> re.Match[str]|bool:
+def sqlite_regexp(expr: str, item: str) -> Union[re.Match,bool]:
     if(not item): return False
     #logger.info(f"expr: {type(expr)} => {expr}, \nitem: {type(item)} => {item}")
     #reg = re.compile(expr, re.IGNORECASE)
