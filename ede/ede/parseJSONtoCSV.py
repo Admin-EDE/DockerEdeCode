@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-logger = logging.getLogger('root');
+logger = logging.getLogger('root')
 
 import pandas as pd 
 from zipfile import ZipFile
@@ -10,8 +10,8 @@ import csv
 
 class parse:
   def __init__(self, args):
-    self.args = args;
-    logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}");
+    self.args = args
+    logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}")
 
   def execute(self):
     xd = self.cargarPlanillaConDatosDelModelo()
@@ -26,15 +26,16 @@ class parse:
         "SIERequired": list(row[1]["SIERequired"])
         }
     
-      _t = f'Procesando Grupo:{row[0][0]}>Tabla:{row[0][1]}'; logger.info(_t);
+      _t = f'Procesando Grupo:{row[0][0]}>Tabla:{row[0][1]}'; logger.info(_t)
       records = self.leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(jsonData,elem)
       
-      self.crearCSV(jsonFileName,self.args.path_to_dir_csv_file+elem['TableName']+'.csv',
+      if(records):
+        self.crearCSV(jsonFileName,self.args.path_to_dir_csv_file+elem['TableName']+'.csv',
                elem['TableName'],
                elem['ColumnList'],
                records)
       
-    _t = 'Archivo JSON completamente transformado.'; logger.info(_t);
+    _t = 'Archivo JSON completamente transformado.'; logger.info(_t)
     return True
 
   #Carga planilla con todas las tablas y campos del modelo https://ceds.ed.gov
@@ -74,6 +75,12 @@ class parse:
     try:
       #Mapeo de tipos de datos SQL -> Pyhton
       records = []
+      grupo = None
+      indice = None
+      col = None                 
+      tbl = None                  
+      _tipo = None      
+      value = None    
       for grupo in jsonData[elem['JSONGroupName']]:
         for tbl in grupo[elem['TableName']]:
           record = []
@@ -81,7 +88,7 @@ class parse:
             dt = elem['DataType'][indice]
             _tipo = ''.join([s for s in list(dt) if s.isalpha()])
             
-            value = tbl.get(col) if (tbl.get(col) is not None) else ''
+            value = tbl.get(col) if (tbl.get(col,None) is not None) else ''
             
             if(_tipo in {'bit', 'bigint', 'int', 'smallint', 'tinyint'} and value!=''):
               value = int(value)

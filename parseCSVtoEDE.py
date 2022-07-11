@@ -8,6 +8,7 @@ import io, os, sys
 from datetime import datetime
 from pytz import timezone 
 from time import time #importamos la función time para capturar tiempos
+from pathlib import Path
 
 def module_from_file(module_name, file_path):
     spec = importlib.util.spec_from_file_location(module_name, file_path)
@@ -17,7 +18,7 @@ def module_from_file(module_name, file_path):
 
 def setup_custom_logger(name, t_stamp):
   _nameLogFile = f'./{t_stamp}_LOG.txt'
-  stream_formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(levelname)s - %(message)s')
+  stream_formatter = logging.Formatter('%(asctime)s, %(levelname)s, %(module)s, %(lineno)d, %(funcName)s, %(message)s')
   file_formatter=logging.Formatter(
     '{"time": "%(asctime)s", "name": "%(name)s", "module": "%(module)s", "funcName": "%(funcName)s", \
       "lineno": "%(lineno)d", "levelname": "%(levelname)s", "message": "%(message)s", "pathname": "%(pathname)s"}'
@@ -41,6 +42,7 @@ def main():
   t_stamp = str(int(datetime.timestamp(datetime.now(timezone('Chile/Continental')))))
   logger = setup_custom_logger('root', t_stamp)
 
+  logger.info("\n******************************************************************************************************************************\n")
   logger.info("Iniciando ejecución desde 'parseCSVtoEDE.py'...")
 
   if(len(sys.argv) < 2):
@@ -59,8 +61,26 @@ def main():
     args.func(args); #Ejecuta la función por defecto
   else:
     logger.info(parser.format_help())
-    
-  zipFile = ZipFile(f'./{t_stamp}_Data.zip','a')
+
+  try:
+    args.output
+  except AttributeError:
+    output = f'{t_stamp}_Data.zip'
+  else:
+    if (args.output is not None):
+      output = args.output
+    else:
+      output = f'{t_stamp}_Data.zip'
+  try:
+    destination = f'./{output}'
+    Path(os.path.dirname(destination)).mkdir(parents=True, exist_ok=True)
+    zipFile = ZipFile(destination, 'a')
+  except Exception as e:
+    logger.error(f"Error de comprimible: '{str(e)}'")
+    sys.exit(str(e))
+
+  logger.info(f"Comprimido en: '{destination}'")
+
   listFiles = [
     f'./{t_stamp}_key.txt',
     f'./{t_stamp}_key.encrypted',

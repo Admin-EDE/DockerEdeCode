@@ -7,8 +7,8 @@ __pycache__/
 /ede/ede/__pycache__/
 !/csv/
 /csv/*.csv
+BDs/
 
-ede/ede/agregaColumnsEdeModel.py
 
 #exclude *.pyc files
 *.pyc
@@ -16,3 +16,4 @@ ede/ede/agregaColumnsEdeModel.py
 #exclude *.txt and *.zip
 *.txt
 *.zip
+*.sh

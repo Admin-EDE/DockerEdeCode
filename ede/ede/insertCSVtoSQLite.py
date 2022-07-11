@@ -48,12 +48,25 @@ class insert:
     return path_to_DB_file
 
   def getPublicKeyFromEmail(self,email):
-    url = './ede/ede/RegistroEDE.csv'
-    df = pd.read_csv(url)
-    _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
-    _t=f"clave pública: {df[df['Dirección de correo electrónico']=='admin@ede.mineduc.cl']['Clave Pública'].values[0]}"; logger.info(_t)
-    return df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
-  
+    try:
+      url_to_register_file = f'https://docs.google.com/spreadsheets/d/1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A/export?format=csv&id=1cicAFFfrVQPfqh7j40So3bQqvrte_LtdPwTHLXh8F_A'
+      r = requests.get(url_to_register_file, stream=True)
+      with open('./ede/ede/RegistroEDE.csv','wb') as out:
+        out.write(io.BytesIO(r.content).read()) ## Read bytes into file
+      logger.info("registroEDE.csv actualizado correctamente")
+    except:
+      logger.error("No se pudo descargar registroEDE.csv")
+    try:
+      url = './ede/ede/RegistroEDE.csv'
+      df = pd.read_csv(url)
+      _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
+      clavePublica = df[df['Dirección de correo electrónico']==email]['Clave Pública'].values[0].replace('-----BEGIN PUBLIC KEY-----','').replace('-----END PUBLIC KEY-----','')
+      _t=f"clave pública: {clavePublica}"; logger.info(_t)
+      return clavePublica
+    except:
+      _t=f"clave pública: SIN INFORMACIÓN"; logger.error(_t)      
+      return None
+      
   # CAMBIA CLAVE A LA BD SQLCipher
   def encriptarBD(self, DB_NAME):
     secPhase = 'BD en blanco solo con parámetros definidos por Enlaces-Mineduc'
@@ -75,11 +88,15 @@ class insert:
       #path_to_public_pem_file = io.BytesIO(r.content).read()
       #publickey = RSA.importKey(path_to_public_pem_file)
   def encryptTextUsingSiePublicKey(self, txt):
+    pubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxfLqdKTtAFwh8lPf/sjE6N3rPZqyjHNYglGQRPJ6sHHs0Ciw18v8R4eVEIwdGslFDvg3usP1PMQrW9Nyy16Sz4T5lUyPTZFgvQ0xyB1HH9gqyprxV7Rcdb5iRLj3HuUG8Bg/4mWvp5I69GpZcpPFwm0T7Y8Np1ouErf6f+Yp6c4X0JQ5Cm8EIGmom0mRw93uouYXZ+P8WMd/EEdgRl8vJpgkewt99lm5SPsW3742bgfnsT38Z2vJMziXtVIPVsdH5yKGe0arAYIY6UHC+JnOS/KjBZ609Px5Z785ZrppXiVEX0K4e294S5xhpzPuNLTAsYPfLWDjwaLZGN8hGvFSCwIDAQAB"
     if (self.args.email):
       _t = f'email: {self.args.email}.';logger.info(_t)
-      pubkey = self.getPublicKeyFromEmail(self.args.email)
-    else:
-      pubkey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxfLqdKTtAFwh8lPf/sjE6N3rPZqyjHNYglGQRPJ6sHHs0Ciw18v8R4eVEIwdGslFDvg3usP1PMQrW9Nyy16Sz4T5lUyPTZFgvQ0xyB1HH9gqyprxV7Rcdb5iRLj3HuUG8Bg/4mWvp5I69GpZcpPFwm0T7Y8Np1ouErf6f+Yp6c4X0JQ5Cm8EIGmom0mRw93uouYXZ+P8WMd/EEdgRl8vJpgkewt99lm5SPsW3742bgfnsT38Z2vJMziXtVIPVsdH5yKGe0arAYIY6UHC+JnOS/KjBZ609Px5Z785ZrppXiVEX0K4e294S5xhpzPuNLTAsYPfLWDjwaLZGN8hGvFSCwIDAQAB"
+      _key = self.getPublicKeyFromEmail(self.args.email)
+      if(_key):
+        _t = f'Lectura de la clave pública del email: {self.args.email} cargada correctamente.';logger.error(_t)
+        pubkey = _key
+      else:
+        _t = f'falló  lectura de la clave pública del email: {self.args.email}. Se ocupará clave de la SIE';logger.error(_t)
     keyDER = b64decode(pubkey)
     publickey = RSA.importKey(keyDER)
     encryptor = PKCS1_OAEP.new(publickey)
@@ -93,7 +110,7 @@ class insert:
     _t = 'Archivo encriptado de la SIE generado exitosamente';logger.info(_t)
     return True
 
-  def dict_factory(self, rows):
+  def dict_factory(self, rows, tbl):
     _dTypes = {
         "bit": [pd.api.types.is_bool_dtype, pd.Int64Dtype(), "bool"],
         "integer": [pd.api.types.is_integer_dtype, pd.Int64Dtype(), "int32"],
@@ -101,18 +118,18 @@ class insert:
         "nvarchar":  [pd.api.types.is_string_dtype, np.unicode_, "str"],
         "char":  [pd.api.types.is_string_dtype, np.unicode_, "str"],            
         "numeric": [pd.api.types.is_float_dtype, np.float_, "float64"],
-        "NUMERIC": [pd.api.types.is_float_dtype, np.float_, "float64"],      
         "datetime": [pd.api.types.is_string_dtype, np.unicode_, "str"],     
-        "TEXT": [pd.api.types.is_string_dtype, np.unicode_, "str"],     
+        "text": [pd.api.types.is_string_dtype, np.unicode_, "str"],     
         }    
   
     d = {}
     for col in rows:
       logger.info(col)
       try:
-        d[col[1]] = _dTypes[''.join([s for s in list(col[2]) if s.isalpha()])][1]
+        _k = ''.join([s for s in list(col[2]) if s.isalpha()])
+        d[col[1]] = _dTypes[_k.lower()][1]
       except:
-        logger.info(f"ERROR: Tipo de datos {col[2]} no encontrado, se procesará como 'np.unicode_' ...")
+        logger.info(f"ERROR: Tipo de datos {tbl}->{col[2]} no encontrado, se procesará como 'np.unicode_' ...")
         d[col[1]] = np.unicode_
     return d
 
@@ -130,7 +147,7 @@ class insert:
           logger.info(f"No existe tabla con el nombre: '{tbl}', no se procesará el archivo...")
           continue
 
-        jsonCol = self.dict_factory(rows)
+        jsonCol = self.dict_factory(rows, tbl)
         logger.info(f"jsonCol: {jsonCol}")
 
         _fileName = os.path.join(root, name)
