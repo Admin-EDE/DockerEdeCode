@@ -4,12 +4,13 @@ from time import sleep
 
 import sys
 from ede.ede._logger import logger
+import ede.ede.check_utils as check_utils
 
 from validate_email import validate_email
 from multiprocessing import current_process, Process, Manager
 import re
 import json
-from itertools import cycle
+
 from datetime import datetime
 from pytz import timezone
 import os
@@ -63,6 +64,7 @@ def sqlite_regexp_replace(item: str, find:str , repl:str):
 #PASO N° 20 - Transformar el archivo JSON en archivos CSV's. Uno por tabla.
 #----------------------------------------------------------------------------
 
+import ede.ede.validation_functions_facade as facade
 class check:
   def __init__(self, args):
     self.args = args
@@ -86,20 +88,20 @@ class check:
       "fn29C": self.fn29C,
       "fn28A": self.fn28A,
       "fn28B": self.fn28B,
-      "fn3F0": self.fn3F0,
-      "fn3F1": self.fn3F1,
-      "fn3F2": self.fn3F2,
-      "fn3F3": self.fn3F3,
-      "fn3F4": self.fn3F4,
-      "fn3F5": self.fn3F5,
-      "fn3F6": self.fn3F6,
-      "fn3F7": self.fn3F7,
-      "fn3F8": self.fn3F8,
-      "fn3F9": self.fn3F9,
-      "fn3FA": self.fn3FA,
-      "fn3FB": self.fn3FB,
-      "fn3FC": self.fn3FC,
-      "fn3FD": self.fn3FD,
+      "fn3F0": facade.fn3F0,
+      "fn3F1": facade.fn3F1,
+      "fn3F2": facade.fn3F2,
+      "fn3F3": facade.fn3F3,
+      "fn3F4": facade.fn3F4,
+      "fn3F5": facade.fn3F5,
+      "fn3F6": facade.fn3F6,
+      "fn3F7": facade.fn3F7,
+      "fn3F8": facade.fn3F8,
+      "fn3F9": facade.fn3F9,
+      "fn3FA": facade.fn3FA,
+      "fn3FB": facade.fn3FB,
+      "fn3FC": facade.fn3FC,
+      "fn3FD": facade.fn3FD,
       "fn3FE": self.fn3FE,
       "fn3FF": self.fn3FF,
       "fn3E0": self.fn3E0,
@@ -211,20 +213,20 @@ class check:
       "fn29C": "self.fn29C(conn, return_dict)",
       "fn28A": "self.fn28A(conn, return_dict)",
       "fn28B": "self.fn28B(conn, return_dict)",
-      "fn3F0": "self.fn3F0(conn, return_dict)",
-      "fn3F1": "self.fn3F1(conn, return_dict)",
-      "fn3F2": "self.fn3F2(conn, return_dict)",
-      "fn3F3": "self.fn3F3(conn, return_dict)",
-      "fn3F4": "self.fn3F4(conn, return_dict)",
-      "fn3F5": "self.fn3F5(conn, return_dict)",
-      "fn3F6": "self.fn3F6(conn, return_dict)",
-      "fn3F7": "self.fn3F7(conn, return_dict)",
-      "fn3F8": "self.fn3F8(conn, return_dict)",
-      "fn3F9": "self.fn3F9(conn, return_dict)",
-      "fn3FA": "self.fn3FA(conn, return_dict)",
-      "fn3FB": "self.fn3FB(conn, return_dict)",
-      "fn3FC": "self.fn3FC(conn, return_dict)",
-      "fn3FD": "self.fn3FD(conn, return_dict)",
+      "fn3F0": "facade.fn3F0(conn, return_dict)",
+      "fn3F1": "facade.fn3F1(conn, return_dict, self.args)",
+      "fn3F2": "facade.fn3F2(conn, return_dict)",
+      "fn3F3": "facade.fn3F3(conn, return_dict)",
+      "fn3F4": "facade.fn3F4(conn, return_dict)",
+      "fn3F5": "facade.fn3F5(conn, return_dict)",
+      "fn3F6": "facade.fn3F6(conn, return_dict)",
+      "fn3F7": "facade.fn3F7(conn, return_dict)",
+      "fn3F8": "facade.fn3F8(conn, return_dict)",
+      "fn3F9": "facade.fn3F9(conn, return_dict)",
+      "fn3FA": "facade.fn3FA(conn, return_dict)",
+      "fn3FB": "facade.fn3FB(conn, return_dict)",
+      "fn3FC": "facade.fn3FC(conn, return_dict)",
+      "fn3FD": "facade.fn3FD(conn, return_dict)",
       "fn3FE": "self.fn3FE(conn, return_dict)",
       "fn3FF": "self.fn3FF(conn, return_dict)",
       "fn3E0": "self.fn3E0(conn, return_dict)",
@@ -323,7 +325,7 @@ class check:
         self.functions = {self.args.function:__value}
 
     self.args._FKErrorsFile = f'./{self.args.t_stamp}_ForenKeyErrors.csv'
-    self.listValidations = self.cargarPlanillaConListasParaValidar()
+    
    
   #----------------------------------------------------------------------------
   # Transforma archivo JSON en un DataFrame de pandas con todas sus columnas.
@@ -352,7 +354,10 @@ class check:
           logger.info(f"{key} iniciando...")
 
           fnTarget = self.functionsMultiProcess[key]
-          p = Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
+          if key == "fn3F1":
+            p = Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,self.args,))
+          else:
+            p = Process(target=fnTarget, name=fnTarget.__name__, args=(conn,return_dict,))
           jobs.append(p)
           p.start()
 
@@ -379,864 +384,6 @@ class check:
       conn.close() #closind database connection
       return _result
 
-  #Carga planilla con todas las listas de validación desde Google Drive
-  #https://drive.google.com/open?id=1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s
-  def cargarPlanillaConListasParaValidar(self):
-    #idFile = '1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s'
-    #url = f'https://docs.google.com/spreadsheets/d/{idFile}/export?format=xlsx&id={idFile}'
-    url = './ede/ede/listValidationData.xlsx'
-    xd = pd.read_excel(url,'ListValidations')
-    _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
-    return xd
-
-  ### INICIO fn3F0 ###
-  def fn3F0(self, conn, return_dict):
-    """Verifica la conexión con la base de datos SQLCypher
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - desencriptar la base de datos, 
-            - obtener su clave secreta, 
-            - establecer la conexión y 
-            - obtener al menos un registro de la vista personList. 
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("SELECT personId FROM PersonList;").fetchall()
-    except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
-    
-    try:
-      if( len(rows) > 0 ): 
-        _r = True
-      logger.info("Aprobado") if _r else logger.error("Rechazado")
-    except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F0 ###
-  
-  ### INICIO fn3F1 ###
-  def fn3F1(self, conn, return_dict):
-    """Verifica la integridad referencial de los datos
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Regresa True y "Aprobado" a través de logger, ssi puede:
-            - No contiene errores de integridad referencial en la BD.
-          En todo otro caso:
-            - Agrega un archivo “_ForenKeyErrors.csv” al “_Data.ZIP” que contiene el resultado final de la revisión y
-            - Regresa False y “Rechazado” a través de logger.
-          ]
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    try:
-      if( len(rows) > 0 ):
-        pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
-            self.args._FKErrorsFile,sep=self.args._sep,encoding=self.args._encode,index=False)
-        logger.error(f"BD con errores de integridad referencial, más detallen en {self.args._FKErrorsFile}")
-      else:
-        _r = True
-      logger.info("Aprobado") if _r else logger.error("Rechazado")
-    except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  # FIN fn3F1 ###
-
-  ### INICIO fn3F2 ###
-  def fn3F2(self, conn, return_dict):
-    """
-    Integridad: Verifica que lista personList contenga información
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - encontrar la información mínima solicitada en la BD
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """ 
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT
-          RUN
-        FROM PersonList;
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    try:
-      if(len(rows)>0):
-        logger.info(f"len(personList): {len(rows)}")
-        logger.info(f"Aprobado")
-        _r = True        
-      else:
-        logger.info(f"S/Datos")
-    except Exception as e:
-      logger.error(f"No se pudo ejecutar la consulta a la vista personList: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  ### FIN fn3F2 ###
-
-  ### INICIO fn3F3 ###
-  def fn3F3(self,conn, return_dict):
-    """ 
-    Integridad: Verifica que los RUT's ingresados sean válidos
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verificar que el dígito verificador del rut corresponda con el ingresado 
-            - y que el RUN sea menor a 47 millones.
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT identifier 
-        FROM PersonIdentifier pi
-        JOIN RefPersonIdentificationSystem rfi 
-          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-          AND rfi.code IN ('RUN')
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not self.validarRUN(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F3 ###
-  
-  ### INICIO fn3F4 ###
-  def fn3F4(self,conn, return_dict):
-    """ 
-    Integridad: Verifica si los IPE ingresados son válidos
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Revisa que el dígito verificador del campo corresponda
-          con el número del dígito de verificación
-            - y que el RUN sea mayor a 100 millones.
-          Retorna True y “S/Datos” a través de logger si no encuentra información.
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT identifier 
-        FROM PersonIdentifier pi
-        JOIN RefPersonIdentificationSystem rfi 
-          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-          AND rfi.code IN ('IPE')
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not self.validarIpe(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL IPE DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-        _r = True
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F4 ###
-  
-  ### INICIO fn3F5 ###  
-  def fn3F5(self,conn, return_dict):
-    """ 
-    Integridad: Verifica si los e-mails ingresados cumplen con el formato
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y "S/Datos" a través de logger si no encuentra información
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - validar el formato del correo electrónico
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """   
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT emailAddress
-        from PersonEmailAddress
-        UNION ALL
-        SELECT ElectronicMailAddress
-        FROM OrganizationEmail
-    """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not validate_email(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DE FORMATO DE LOS E-MAILS DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-      _r = True
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  ### FIN fn3F5 ###  
-  
-  ### INICIO fn3F6 ###
-  def fn3F6(self,conn, return_dict):
-    """ 
-    Integridad: Verifica la lista de teléfonos
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y "S/Datos" a través de logger si no encuentra información
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verificar que teléfonos ingresados cumplan con el formato E164
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """       
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT TelephoneNumber
-        from PersonTelephone
-        UNION ALL
-        SELECT TelephoneNumber
-        FROM OrganizationTelephone
-    """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not self.validaFormatoE164Telefono(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DE LOS TELEFONOS DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-      _r  = True
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...") 
-      return _r
-  ### FIN fn3F6 ###
-  
-  ### INICIO fn3F7 ###
-  def fn3F7(self,conn, return_dict):
-    """ 
-    Integridad: Verifica que el número de lista cumpla con el formato
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verifica que el campo cumpla con la siguiente expresión regular: ^\d{0,4}$
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT identifier 
-        FROM PersonIdentifier pi
-        JOIN RefPersonIdentificationSystem rfi 
-          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-          AND rfi.code IN ('listNumber')
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not self.validaFormatoNumero(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL FORMATO DEL NUMERO DE LISTA DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...") 
-      return _r
-  ### FIN fn3F7 ###
-  
-  ### INICIO fn3F8 ###
-  def fn3F8(self,conn, return_dict):
-    """
-    Integridad: Verifica que el número de matrícula cumpla con el formato
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verifica que el campo cumpla con la siguiente expresión regular: ^\d{0,4}$
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT identifier 
-        FROM PersonIdentifier pi
-        JOIN RefPersonIdentificationSystem rfi 
-          ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
-          AND rfi.code IN ('SchoolNumber')
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not self.validaFormatoNumero(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL NUMERO DE MATRICULA DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F8 ###
-  
-  ### INICIO fn3F9 ###
-  def fn3F9(self,conn, return_dict):
-    """
-    Integridad: Verifica que las fechas ingresadas cumplan con el formato
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verifica que el campo cumpla con la siguiente expresión regular:
-^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """       
-    _r = False
-    shortDateAllRecords = []
-    try:
-      shortDateQuery = """
-          SELECT DISTINCT shortDate
-          FROM (
-            SELECT StartDate as shortDate
-            FROM organizationCalendarCrisis
-            UNION ALL
-            SELECT EndDate
-            FROM organizationCalendarCrisis
-            UNION ALL
-            SELECT CrisisEndDate
-            FROM organizationCalendarCrisis
-            UNION ALL
-            SELECT Birthdate
-            FROM Person
-            UNION ALL
-            SELECT AwardDate
-            FROM PersonDegreeOrCertificate
-            UNION ALL
-            SELECT IncidentDate
-            FROM Incident
-            UNION ALL
-            SELECT Date
-            FROM IncidentPerson
-            UNION ALL
-            SELECT DisciplinaryActionStartDate
-            FROM K12StudentDiscipline
-            UNION ALL
-            SELECT DisciplinaryActionEndDate
-            FROM K12StudentDiscipline
-            UNION ALL
-            SELECT StatusStartDate
-            FROM PersonStatus
-            UNION ALL
-            SELECT StatusEndDate
-            FROM PersonStatus
-            UNION ALL
-            SELECT StatusStartDate
-            FROM RoleStatus
-            UNION ALL
-            SELECT StatusEndDate
-            FROM RoleStatus
-            UNION ALL
-            SELECT rexDate
-            FROM OrganizationCalendarEvent
-            UNION ALL
-            SELECT BeginDate
-            FROM OrganizationCalendarSession
-            UNION ALL
-            SELECT EndDate
-            FROM OrganizationCalendarSession
-            UNION ALL
-            SELECT FirstInstructionDate
-            FROM OrganizationCalendarSession
-            UNION ALL
-            SELECT LastInstructionDate
-            FROM OrganizationCalendarSession
-          )
-          WHERE 
-            shortDate IS NOT NULL
-      """
-      shortDateAllRecords = conn.execute(shortDateQuery).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {shortDateAllRecords} -> {str(e)}")
-    
-    try:
-      shortDateQueryWithRegexp = shortDateQuery + """ AND shortDate NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))$" """
-      shortDateDataWithErrors = conn.execute(shortDateQueryWithRegexp).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {shortDateDataWithErrors} -> {str(e)}")
-
-    fullDateTimeAllRecords = []
-    try:
-      fullDateTimeQuery ="""
-          SELECT DISTINCT fullDateTime
-          FROM (
-            SELECT Date as fullDateTime
-            FROM RoleAttendanceEvent
-            UNION ALL
-            SELECT digitalRandomKeyDate as fullDateTime
-            FROM RoleAttendanceEvent
-            UNION ALL
-            SELECT EntryDate
-            FROM OrganizationPersonRole
-            UNION ALL
-            SELECT ExitDate
-            FROM OrganizationPersonRole	
-          )
-          WHERE 
-            fullDateTime IS NOT NULL
-      """
-      fullDateTimeAllRecords = conn.execute(fullDateTimeQuery).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {fullDateTimeAllRecords} -> {str(e)}")
-      
-    try:
-      fullDateTimeQueryWithRegexp = fullDateTimeQuery + """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$" """      
-      fullDateTimeDataWithErrors = conn.execute(fullDateTimeQueryWithRegexp).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
-    
-    try:
-      shortDateAllData = self.convertirArray2DToList(list([m[0] for m in shortDateAllRecords if m[0] is not None])) # Valida lista de rut ingresados a la BD 
-      fullDateTimeAllData = self.convertirArray2DToList(list([m[0] for m in fullDateTimeAllRecords if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      
-      if(len(shortDateAllData) == 0 and len(fullDateTimeAllData) == 0):
-        logger.info("S/Datos")
-      else:     
-        shortDateData = self.convertirArray2DToList(list([m[0] for m in shortDateDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD 
-        fullDateTimeData = self.convertirArray2DToList(list([m[0] for m in fullDateTimeDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-
-        if(len(shortDateData) == 0 and len(fullDateTimeData) == 0):
-          logger.info("Aprobado")
-          _r = True
-        elif( len(shortDateData) >= 0 or len(fullDateTimeData) >= 0):
-          logger.error(f"Rechazado")
-          logger.error(f"shortDateData: {set(shortDateData)}")
-          logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
-        
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F9 ###
-  
-  ### INICIO fn3FA ###
-  def fn3FA(self,conn, return_dict):
-    """
-    Integridad: Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y "S/Datos" a través de logger si no encuentra información
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verifica que el texto del campo se encuentre dentro de la lista de asignación disponibles.
-Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s/edit?usp=drive_open&ouid=116365379129523371463 para más detalles.
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]     
-    """
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-          SELECT rta.Description
-          from person p
-          JOIN RefTribalAffiliation rta
-            ON p.RefTribalAffiliationId = rta.RefTribalAffiliationId     
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      datos = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not self.validaTribalAffiliation(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DE LA LISTA DE AFILIACIONES TRIBALES DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-        _r = True
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  ### FIN fn3FA ###
-  
-  ### INICIO fn3FB ###
-  def fn3FB(self,conn, return_dict):
-    """
-    Integridad: Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - verifica que la cantidad de números de matrícula, números de lista y fechas de incorporación sean iguales.
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]          
-    """       
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-SELECT 
-(
-	SELECT count(p.personId)
-	FROM person p
-	JOIN PersonIdentifier numLista
-		ON p.personid = numLista.personid
-	JOIN RefPersonIdentificationSystem rfiLista 
-	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
-	  AND rfiLista.code IN ('listNumber')
-) as 'cantidadNumeroLista'
-,(
-	SELECT count(p.personId)
-	FROM person p
-	JOIN PersonIdentifier numMatri
-		ON p.personid = numMatri.personid
-	JOIN RefPersonIdentificationSystem rfiMatri
-	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
-	  AND rfiMatri.code IN ('SchoolNumber')
-) as 'cantidadNumeroMatricula'
-,(
-	SELECT count(p.personId)
-	FROM person p
-	JOIN PersonStatus ps
-		ON ps.personId = p.personId
-	JOIN RefPersonStatusType rpst
-	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
-) as 'cantidadMatriDefinitiva'
-,(
-	SELECT count(p.personId)
-	FROM person p
-	JOIN PersonStatus ps
-		ON ps.personId = p.personId
-	JOIN RefPersonStatusType rpst
-	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-	  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')
-) as 'cantidadNumerosListaAsignados'
-, (
-	SELECT group_concat(p.personId)
-	FROM person p
-	JOIN PersonIdentifier numLista
-		ON p.personid = numLista.personid
-	JOIN RefPersonIdentificationSystem rfiLista 
-	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
-	  AND rfiLista.code IN ('listNumber')
-	WHERE p.personId NOT IN (
-		SELECT p.personId
-		FROM person p
-		JOIN PersonStatus ps
-			ON ps.personId = p.personId
-		JOIN RefPersonStatusType rpst
-		  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-		  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')	
-	)
-	
-) as 'personIdsNumListWithProblems'
-, (
-	SELECT group_concat(p.personId)
-	FROM person p
-	JOIN PersonIdentifier numMatri
-		ON p.personid = numMatri.personid
-	JOIN RefPersonIdentificationSystem rfiMatri
-	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
-	  AND rfiMatri.code IN ('SchoolNumber')
-	WHERE p.personId NOT IN (
-		SELECT p.personId
-	FROM person p
-	JOIN PersonStatus ps
-		ON ps.personId = p.personId
-	JOIN RefPersonStatusType rpst
-	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
-	)	
-) as 'personIdsNumMatriculaWithProblems'
-      """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      if(len(rows) > 0 and rows[0][0] != 0):
-        cantidadNumeroLista = rows[0][0]
-        cantidadNumeroMatricula = rows[0][1]
-        cantidadMatriDefinitiva = rows[0][2]
-        cantidadNumerosListaAsignados = rows[0][3]
-        listNumerosListaAsignados = rows[0][4]
-        listNumerosMatAsignados = rows[0][5]
-        _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
-        _t1 = f"Verifica: {_r}. PERSON_IDENTIFIER -> NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}. personIds: {listNumerosListaAsignados}"
-        _t2 = f"Verifica: {_r}. PERSON_STATUS     ->  NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}. personids: {listNumerosMatAsignados}"
-        logger.info(_t1) if _r else logger.error(_t1)
-        logger.info(_t2) if _r else logger.error(_t2)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-    except Exception as e:
-      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3FB ###
-  
-  ### INICIO fn3FC ###
-  def fn3FC(self,conn, return_dict):
-    """
-    Integridad: Verifica que la cantidad de emails corresponda con los tipos de emails ingresados
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y "S/Datos" a través de logger si no encuentra información
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verifica que cada e-mail tenga su asignación de tipo
-            - Verifica que las comparaciones realizadas se cumplan.
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """       
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT count(emailAddress), count(RefEmailTypeId)
-        from PersonEmailAddress
-        UNION ALL
-        SELECT count(ElectronicMailAddress), count(RefEmailTypeId)
-        FROM OrganizationEmail
-    """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      if(len(rows) > 0):
-        personEmails = rows[0][0]
-        personEmailsType = rows[0][1]
-        orgEmails = rows[1][0]
-        orgEmailsType = rows[1][1]
-        _r1 = personEmails == personEmailsType and personEmails != 0
-        _r2 = orgEmails == orgEmailsType and orgEmails != 0
-        _r = _r1 and _r2
-        _t = f"VERIFICA que la cantidad de e-mails corresponda con los tipos de e-mails registrados: {_r}. "
-        logger.info(_t) if _r else logger.error(_t)
-        _t = f"personEmails: {personEmails}, personEmailsType: {personEmailsType}, orgEmails: {orgEmails}, orgEmailsType: {orgEmailsType}"
-        logger.info(_t) if _r else logger.error(_t)       
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-        _r = True
-    except Exception as e:
-      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3FC ###
-  
-  ### INICIO fn3FD ###
-  def fn3FD(self,conn, return_dict):
-    """
-    Integridad: Verifica que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados
-    Args:
-        conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
-    Returns:
-        [Boolean]: [
-          Retorna True y "S/Datos" a través de logger si no encuentra información
-          Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - Verifica que cada teléfini tenga su asignación de tipo
-            - Verifica que las comparaciones realizadas se cumplan.
-          En todo otro caso, retorna False y "Rechazado" a través de logger.
-          ]
-    """       
-    _r = False
-    rows = []
-    try:
-      rows = conn.execute("""
-        SELECT count(TelephoneNumber), count(RefPersonTelephoneNumberTypeId)
-        from PersonTelephone
-        UNION ALL
-        SELECT count(TelephoneNumber), count(RefInstitutionTelephoneTypeId)
-        FROM OrganizationTelephone
-    """).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    try:
-      if(len(rows) > 0):
-        personPhone= rows[0][0]
-        personPhoneType = rows[0][1]
-        orgPhone = rows[1][0]
-        orgPhoneType = rows[1][1]
-        _r1 = personPhone == personPhoneType and personPhone != 0
-        _r2 = orgPhone == orgPhoneType and orgPhone != 0
-        _r = _r1 and _r2
-        _t = f"VERIFICA que la cantidad de teléfonos corresponda con los tipos de teléfonos registrados: {_r}. "
-        logger.info(_t) if _r else logger.error(_t)
-        _t = f"personPhone {personPhone}, personPhoneType: {personPhoneType}, orgPhone: {orgPhone}, orgPhoneType: {orgPhoneType}"
-        logger.info(_t) if _r else logger.error(_t)       
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
-        _r = True
-    except Exception as e:
-      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
-    finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3FD ###
   
   ### INICIO fn3F3 ###
   def fn3FE(self, conn, return_dict):
@@ -1369,12 +516,12 @@ GROUP BY p.personId
       
     try:
       logger.info(f"len(estudiantes): {len(rows)}")        
-      personIdCL  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
-      personIdEX  = self.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
-      cuidadNacCl   = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
-      regionNacCL   = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
-      paisNacCL     = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
-      statusCL      = self.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
+      personIdCL  = check_utils.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
+      personIdEX  = check_utils.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
+      cuidadNacCl   = check_utils.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
+      regionNacCL   = check_utils.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
+      paisNacCL     = check_utils.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
+      statusCL      = check_utils.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
       _lCL = [len(personIdCL) == len(cuidadNacCl) == len(regionNacCL) == len(paisNacCL) == len(statusCL)]
     except Exception as e:
       logger.info(f"Resultado: {_lCL} y {personIdEX} -> {str(e)}")
@@ -1492,14 +639,14 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"len(docentes): {len(rows)}")
 
       if( len( rows ) > 0 ):
-        personId            = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
-        title               = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))
-        Type                = self.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None]))
-        AwardDate           = self.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None]))
-        Institution         = self.convertirArray2DToList(list([m[4] for m in rows if m[4] is not None]))
-        AccreditationStatus = self.convertirArray2DToList(list([m[5] for m in rows if m[5] is not None]))
-        VerificationMethod  = self.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None]))
-        idoneidadDocente  = self.convertirArray2DToList(list([m[6] for m in rows if m[7] is not None]))
+        personId            = check_utils.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None]))
+        title               = check_utils.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))
+        Type                = check_utils.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None]))
+        AwardDate           = check_utils.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None]))
+        Institution         = check_utils.convertirArray2DToList(list([m[4] for m in rows if m[4] is not None]))
+        AccreditationStatus = check_utils.convertirArray2DToList(list([m[5] for m in rows if m[5] is not None]))
+        VerificationMethod  = check_utils.convertirArray2DToList(list([m[6] for m in rows if m[6] is not None]))
+        idoneidadDocente  = check_utils.convertirArray2DToList(list([m[6] for m in rows if m[7] is not None]))
         _r = len(personId) == len(title) == len(Type) == len(AwardDate) == len(Institution) == len(AccreditationStatus) == len(VerificationMethod) == len(idoneidadDocente)
         _t = f"VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema: {_r}."
         logger.info(_t) if _r else logger.error(_t)
@@ -1590,9 +737,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
     
     try:
       logger.info(f"len(establecimientos): {len(rows)}")
-      formatoRBD = self.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))     
+      formatoRBD = check_utils.convertirArray2DToList(list(set([m[0] for m in rows if m[0] is not None])))     
       if( len(formatoRBD) > 0 ):
-        _err = set([e for e in formatoRBD if not self.validaFormatoRBD(e)])
+        _err = set([e for e in formatoRBD if not check_utils.validaFormatoRBD(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICACION DEL FORMATO DEL RBD DEL ESTABLECIMIENTO: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1670,9 +817,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      modalidadList = self.convertirArray2DToList(list(set([m[2] for m in rows if m[2] is not None])))
+      modalidadList = check_utils.convertirArray2DToList(list(set([m[2] for m in rows if m[2] is not None])))
       if(len(modalidadList)>0):
-        _err = set([e for e in modalidadList if not self.validaModalidad(e)])
+        _err = set([e for e in modalidadList if not check_utils.validaModalidad(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1712,9 +859,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      jornadaList = self.convertirArray2DToList(list(set([m[3] for m in rows if m[3] is not None])))
+      jornadaList = check_utils.convertirArray2DToList(list(set([m[3] for m in rows if m[3] is not None])))
       if(len(jornadaList)>0):
-        _err = set([e for e in jornadaList if not self.validaJornada(e)])
+        _err = set([e for e in jornadaList if not check_utils.validaJornada(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA JORNADA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1754,9 +901,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      nivelList = self.convertirArray2DToList(list(set([m[4] for m in rows if m[4] is not None])))
+      nivelList = check_utils.convertirArray2DToList(list(set([m[4] for m in rows if m[4] is not None])))
       if(len(nivelList)>0):
-        _err = set([e for e in nivelList if not self.validaNivel(e)])
+        _err = set([e for e in nivelList if not check_utils.validaNivel(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL NIVEL ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1796,9 +943,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      ramaList = self.convertirArray2DToList(list(set([m[5] for m in rows if m[5] is not None])))
+      ramaList = check_utils.convertirArray2DToList(list(set([m[5] for m in rows if m[5] is not None])))
       if(len(ramaList)>0):
-        _err = set([e for e in ramaList if not self.validaRama(e)])
+        _err = set([e for e in ramaList if not check_utils.validaRama(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1838,9 +985,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      sectorList = self.convertirArray2DToList(list(set([m[6] for m in rows if m[6] is not None])))
+      sectorList = check_utils.convertirArray2DToList(list(set([m[6] for m in rows if m[6] is not None])))
       if(len(sectorList)>0):
-        _err = set([e for e in sectorList if not self.validaSector(e)])
+        _err = set([e for e in sectorList if not check_utils.validaSector(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1880,9 +1027,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      especialidadList = self.convertirArray2DToList(list(set([m[7] for m in rows if m[7] is not None])))
+      especialidadList = check_utils.convertirArray2DToList(list(set([m[7] for m in rows if m[7] is not None])))
       if(len(especialidadList)>0):
-        _err = set([e for e in especialidadList if not self.validaEspecialidad(e)])
+        _err = set([e for e in especialidadList if not check_utils.validaEspecialidad(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1922,9 +1069,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      tipoCursoList = self.convertirArray2DToList(list(set([m[8] for m in rows if m[8] is not None])))
+      tipoCursoList = check_utils.convertirArray2DToList(list(set([m[8] for m in rows if m[8] is not None])))
       if(len(tipoCursoList)>0):
-        _err = set([e for e in tipoCursoList if not self.validaTipoCurso(e)])
+        _err = set([e for e in tipoCursoList if not check_utils.validaTipoCurso(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -1964,9 +1111,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      codigoEnseList = self.convertirArray2DToList(list(set([m[9] for m in rows if m[9] is not None])))
+      codigoEnseList = check_utils.convertirArray2DToList(list(set([m[9] for m in rows if m[9] is not None])))
       if(len(codigoEnseList)>0):
-        _err = set([e for e in codigoEnseList if not self.validaCodigoEnse(e)])
+        _err = set([e for e in codigoEnseList if not check_utils.validaCodigoEnse(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL CODIGO DE ENSEÑANZA ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -2006,9 +1153,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      gradoList = self.convertirArray2DToList(list(set([m[10] for m in rows if m[10] is not None])))
+      gradoList = check_utils.convertirArray2DToList(list(set([m[10] for m in rows if m[10] is not None])))
       if(len(gradoList)>0):
-        _err = set([e for e in gradoList if not self.validaGrado(e)])
+        _err = set([e for e in gradoList if not check_utils.validaGrado(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE EL GRADO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -2048,9 +1195,9 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       logger.info(f"Resultado: {rows} -> {str(e)}")
    
     try:
-      letraCursoList = self.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None])))
+      letraCursoList = check_utils.convertirArray2DToList(list(set([m[11] for m in rows if m[11] is not None])))
       if(len(letraCursoList)>0):
-        _err = set([e for e in letraCursoList if not self.validaLetraCurso(e)])
+        _err = set([e for e in letraCursoList if not check_utils.validaLetraCurso(e)])
         _r   = False if len(_err)>0 else True
         _t = f"VERIFICA QUE LA LETRA DEL CURSO ESTE DENTRO DE LA LISTA PERMITIDA: {_r}. {_err}"
         logger.info(_t) if _r else logger.error(_t)
@@ -3066,158 +2213,6 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       return _r
 ### FIN fn3DD ###    
 
-  def separaRUT(self, *args):
-    if (len(args) > 0) and (args[0] is not None):
-      dv = ''.join([c for c in list(args[0].upper()) if c.isalpha()])
-      aux = ''.join([c for c in list(args[0]) if c.isdigit()])
-      if(dv == ''):
-        dv = aux[-1:]
-        aux = aux[:-1]
-    else:
-      aux=0
-      dv=0
-    return aux,dv
-
-  def validarRut(self, aux,dv):
-    revertido = map(int, reversed(str(aux)))
-    factors = cycle(range(2,8))
-    s = sum(d * f for d, f in zip(revertido,factors))
-    res = (-s)%11
-    if ((str(res) == dv) or (dv=="K" and res==10)):
-      return True
-    return False
-
-  #VERIFICA SI EL RUT INGRESADO ES VALIDO
-  def validarRUN(self, *args):
-    aux,dv = self.separaRUT(*args)
-    if(aux!=0 and dv!=0):
-      if(self.validarRut(aux,dv)):
-        if(int(aux)<=47000000):
-          return True
-    return False
-
-  def validarIpe(self, *args):
-    aux,dv = self.separaRUT(*args)
-    if(aux!=0 and dv!=0):
-      if(self.validarRut(aux,dv)):
-        if(int(aux)>=100000000):
-          return True
-    return False
-
-  def convertirArray2DToList(self, text):
-    _l = []
-    for e in text:
-      if "|" not in str(e):
-        _l.append(e)
-      else:
-        for subE in e.split("|"):
-          _l.append(subE)
-    return _l
-
-  def imprimeErrores(self, lista,fn,msg):
-    _l = self.convertirArray2DToList(lista)
-    _err = set([e for e in _l if not fn(e)])
-    _r   = False if len(_err)>0 else True
-    _t = f"{msg}: {_r}. {_err}";logger.info(_t)
-    return _err,_r
-
-  def validaFormatoE164Telefono(self, e):
-    r = re.compile('^\+56\d{9,15}$')
-    if(isinstance(e,str)):
-      return r.match(e) is not None
-    return False
-
-  def validaFormatoNumero(self, e):
-    r = re.compile('^\d{0,4}$')
-    if(isinstance(e,str)):
-      return r.match(e) is not None
-    return False
-
-  def validaFormatoFecha(self, e):
-    r = re.compile('^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$')
-    if(isinstance(e,str)):
-      return r.match(e) is not None
-    return False
-
-  def validaTribalAffiliation(self, e):
-    _lista = list(set(self.listValidations['TribalAffiliationDescriptionList']))
-    return True if e in _lista else False
-
-  def validaBoolean(self, e):
-    return e
-
-  # VERIFICA DATOS DE LAS ORGANIZACIONES
-  # VERIFICA JERARQUIA DE LOS DATOS
-  # la jerarquí es:
-  #  RBD -> Modalidad -> Jornada -> Niveles -> Rama ->
-  #  Sector Económico -> Especialidad ->
-  #  Tipo de Curso -> COD_ENSE -> Grado -> Curso -> Asignatura
-  def validaFormatoRBD(self, e):
-    r = re.compile('^RBD\d{5}$')
-    if(isinstance(e,str)):
-      return r.match(e) is not None
-    return False
-
-  def validaModalidad(self, e):
-    _lista = list(set(self.listValidations['modalidadesList']))
-    return True if e in _lista else False
-
-  def validaJornada(self, e):
-    _lista =  list(set(self.listValidations['jornadasList']))
-    return True if e in _lista else False
-
-  def validaNivel(self, e):
-    _lista =  list(set(self.listValidations['nivelList']))
-    return True if e in _lista else False
-
-  def validaRama(self, e):
-    _lista =  list(set(self.listValidations['ramaList']))
-    return True if e in _lista else False
-
-  def validaSector(self, e):
-    _lista =  list(set(self.listValidations['sectorList']))
-    return True if e in _lista else False
-
-  def validaEspecialidad(self, e):
-    _lista =  list(set(self.listValidations['especialidadList']))
-    return True if e in _lista else False
-
-  def validaTipoCurso(self, e):
-    _lista =  list(set(self.listValidations['tipoCursoList']))
-    return True if e in _lista else False
-
-  def validaCodigoEnse(self, e):
-    _lista =  list(set(self.listValidations['codigoEnseList']))
-    return True if e in _lista else False
-
-  def validaGrado(self, e):
-    _lista =  list(set(self.listValidations['gradoList']))
-    return True if e in _lista else False
-
-  def validaLetraCurso(self, e):
-    r = re.compile('^[A-Z]{1,2}$')
-    if(isinstance(e,str)):
-      return r.match(e) is not None
-    return False
-
-  def validaFormatoClaveAleatoria(self, e):
-    r = re.compile('^[0-9]{6}([-]{1}[0-9kK]{1})?$')
-    if(isinstance(e,str)):
-      return r.match(e) is not None
-    return False
-
-  def validaEventosDeAsistencia(self, e):
-    _r = False
-    if (e[1] == 'Class/section attendance' and e[2] == 'Course Section'):
-      _r = True
-    elif (e[1] == 'Daily attendance' and e[2] == 'Course'):
-      _r = True
-    elif (e[0] == 'Reingreso autorizado' and e[2] == 'K12 School'):
-      _r = True
-    elif (e[1] == 'Asistencia al establecimiento' and e[2] == 'K12 School'):
-      _r = True
-    return _r
-
   # VERIFICA DATOS DE LAS ORGANIZACIONES
   def fn3C5(self, conn, return_dict):
     """ Breve descripción de la función
@@ -3247,7 +2242,7 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       if(len(rows)>0):
         # Valida los números de clave aleatoria de los docentes
         data = list(set([m[0] for m in rows if m[0] is not None])) + list(set([m[1] for m in rows if m[1] is not None]))
-        _err,_r = self.imprimeErrores(data,self.validaFormatoClaveAleatoria,"VERIFICA FORMATO Clave Aleatoria Docente")
+        _err,_r = check_utils.imprimeErrores(data,check_utils.validaFormatoClaveAleatoria,"VERIFICA FORMATO Clave Aleatoria Docente")
         logger.info(f"Aprobado") if _r else logger.error(_err)
       else:
         logger.info("La BD no contiene clave aleatoria de los docentes")
@@ -3298,7 +2293,7 @@ WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe'
       if(len(rows)>0):
         # Siempre deberían existir elementos de asistencia
         data = list(set([(m[0],m[1],m[2]) for m in rows if m[0] is not None]))
-        _err,_r = self.imprimeErrores(data,self.validaEventosDeAsistencia,"VERIFICA que los eventos de asistencia se encuentren correctamente asignados")
+        _err,_r = check_utils.imprimeErrores(data,check_utils.validaEventosDeAsistencia,"VERIFICA que los eventos de asistencia se encuentren correctamente asignados")
         logger.info(f"Aprobado") if _r else logger.error(_err)
       else:
         logger.info("La BD no contiene información de asistencia cargada")
@@ -5444,21 +4439,21 @@ JOIN RefIncidentBehavior rInBh
       _result = []      
       if( len(_query) > 0 ):
         #print(_query)
-        _totalCurso = self.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
+        _totalCurso = check_utils.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
         #print(_totalCurso)
-        _totalAsign = self.convertirArray2DToList(list([m[11] for m in _query if m[11] is not None]))
+        _totalAsign = check_utils.convertirArray2DToList(list([m[11] for m in _query if m[11] is not None]))
         #print(_totalAsign)
         
-        _estPresentesCurso = self.convertirArray2DToList(list([m[3] for m in _query if m[3] is not None]))
+        _estPresentesCurso = check_utils.convertirArray2DToList(list([m[3] for m in _query if m[3] is not None]))
         #print(_estPresentesCurso)
-        _estPresentesAsign = self.convertirArray2DToList(list([m[12] for m in _query if m[12] is not None]))
+        _estPresentesAsign = check_utils.convertirArray2DToList(list([m[12] for m in _query if m[12] is not None]))
         #print(_estPresentesAsign)
-        _estAtradadosAsign = self.convertirArray2DToList(list([m[14] for m in _query if m[14] is not None]))                
+        _estAtradadosAsign = check_utils.convertirArray2DToList(list([m[14] for m in _query if m[14] is not None]))                
         #print(_estAtradadosAsign)
 
-        _estAusentesCurso = self.convertirArray2DToList(list([m[4] for m in _query if m[4] is not None]))
+        _estAusentesCurso = check_utils.convertirArray2DToList(list([m[4] for m in _query if m[4] is not None]))
         #print(_estAusentesCurso)
-        _estAusentesAsign = self.convertirArray2DToList(list([m[13] for m in _query if m[13] is not None]))
+        _estAusentesAsign = check_utils.convertirArray2DToList(list([m[13] for m in _query if m[13] is not None]))
         #print(_estAusentesAsign)
 
         for idx_,el_ in enumerate(_totalCurso):
@@ -7537,8 +6532,8 @@ GROUP BY pid.Identifier
       c_ = 0
       rutConProblemas = []      
       if( len(rows) > 0 ):
-        rutList = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
-        cantidadList = self.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))        
+        rutList = check_utils.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
+        cantidadList = check_utils.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))        
 
         for i,cantidad in enumerate(cantidadList):
           if( int(cantidad) > 0 ): 
@@ -7606,7 +6601,7 @@ GROUP BY pid.Identifier
               ON ras.RefAttendanceStatusId = rae.RefAttendanceStatusId
               AND ras.Code IN ('EarlyDeparture')
       """).fetchall()
-      Allrows = self.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
+      Allrows = check_utils.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
     except Exception as e:
       logger.info(f"Resultado: {Allrows} -> {str(e)}")
 
@@ -7841,10 +6836,10 @@ GROUP BY pid.Identifier
       #VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
       _r = conn.execute(_s1).fetchall()
       if(len(_r)>0):
-        _p = self.convertirArray2DToList(list([m[0] for m in _r if m[0] is not None]))
-        _i = self.convertirArray2DToList(list([m[1] for m in _r if m[1] is not None]))
-        _opr = self.convertirArray2DToList(list([m[2] for m in _r if m[2] is not None]))
-        _ed = self.convertirArray2DToList(list([m[3] for m in _r if m[3] is not None])) 
+        _p = check_utils.convertirArray2DToList(list([m[0] for m in _r if m[0] is not None]))
+        _i = check_utils.convertirArray2DToList(list([m[1] for m in _r if m[1] is not None]))
+        _opr = check_utils.convertirArray2DToList(list([m[2] for m in _r if m[2] is not None]))
+        _ed = check_utils.convertirArray2DToList(list([m[3] for m in _r if m[3] is not None])) 
         #VALIDO QUE REIGISTRO DE RETIRO TENGA FECHA DEL EVENTO
         if (len(_p)>len(_ed)):
           logger.error(f"Existen registros de retiros de estudiantes del establecimiento sin fecha de evento.")
