@@ -2,6 +2,19 @@ from itertools import cycle
 import re
 import pandas as pd
 from ede.ede._logger import logger
+import json
+
+def validateJSON(jsonData: str) -> bool:
+  try:
+    dictData = json.loads(jsonData)
+    if(    dictData.get("ArtículoProtocolo",None) is not None 
+       and dictData.get("Severidad",None) is not None 
+       and dictData.get("Procedimiento",None) is not None):
+      return True
+  except:
+    pass
+  return False
+
 
 #https://drive.google.com/open?id=1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3TyWl9C-s
 def cargarPlanillaConListasParaValidar():

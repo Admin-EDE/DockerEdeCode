@@ -23,13 +23,11 @@ def fn3F1(conn, return_dict, selfargs):
     _r = False
     rows = []
     try:
-      logger.info(f"to execute sql")
       rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
     except Exception as e:
       logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
       if( len(rows) > 0 ):
-        logger.info(f"selfargs: {selfargs}")
         pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
             selfargs._FKErrorsFile,sep=selfargs._sep,encoding=selfargs._encode,index=False)
         logger.error(f"BD con errores de integridad referencial, más detallen en {selfargs._FKErrorsFile}")
