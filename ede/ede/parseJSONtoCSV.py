@@ -7,13 +7,14 @@ from zipfile import ZipFile
 import json
 import os
 import csv
+from typing import Literal, Tuple, Any
 
 class parse:
   def __init__(self, args):
     self.args = args
     logger.info(f"typo de argumento: {type(self.args)}, valores: {self.args}")
 
-  def execute(self):
+  def execute(self) -> Literal[True]:
     xd = self.cargarPlanillaConDatosDelModelo()
     jsonData,jsonFileName = self.readJsonData(self.args.path_to_file,self.args.nozip)
             
@@ -39,7 +40,7 @@ class parse:
     return True
 
   #Carga planilla con todas las tablas y campos del modelo https://ceds.ed.gov
-  def cargarPlanillaConDatosDelModelo(self):
+  def cargarPlanillaConDatosDelModelo(self) -> pd.DataFrame:
     #idFile = '1gBhiRXswoCN6Ub2PHtyr5cb6w9VMQgll'
     #url = f'http://drive.google.com/uc?export=download&id={idFile}'
     url = './ede/ede/NDS-Reference-v7_1.xlsx'
@@ -47,7 +48,7 @@ class parse:
     _t=f'Planilla {url} cargada satisfactoriamente'; logger.info(_t)
     return xd
 
-  def readJsonData(self,path_to_file, nozip):
+  def readJsonData(self, path_to_file: str, nozip: bool) -> Tuple[Any, str]:
     # Descomprime el contenido del archivo ZIP y lo carga en memoria
     if(path_to_file):
       if(not nozip):
@@ -71,7 +72,7 @@ class parse:
     
     return jsonData,file
 
-  def leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(self,jsonData,elem):
+  def leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(self, jsonData: Any, elem: Any) -> list|None:
     try:
       #Mapeo de tipos de datos SQL -> Pyhton
       records = []
@@ -110,7 +111,7 @@ class parse:
         _t+=f"value:{value}.\n"
       logger.info(_t)
 
-  def eliminarDuplicados(self,mylist):
+  def eliminarDuplicados(self, mylist: list) -> list:
     seen = set()
     newlist = []
     for item in mylist:
@@ -120,7 +121,7 @@ class parse:
         seen.add(t)
     return newlist
 
-  def crearCSV(self, jsonFileName, fileName, TableName, columnList, unique_records):
+  def crearCSV(self, jsonFileName: str, fileName: str, TableName: str, columnList: list, unique_records: list) -> bool|None:
     #https://pymotw.com/2/csv/
     try:
       csv.register_dialect('escaped', delimiter=self.args._sep, lineterminator ='\n',
