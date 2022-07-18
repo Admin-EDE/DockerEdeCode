@@ -318,8 +318,8 @@ ON md.cssOrgId = Organizationid
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WHERE 
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
-  AND date NOT LIKE "%" || ifnull(oce.fechasEventos,'1900-01-01') || "%"	 
-  AND date NOT LIKE "%" || ifnull(occ.fechasCrisis,'1900-01-01') || "%"
+  AND ifnull(oce.fechasEventos,'1900-01-01') NOT LIKE "%"  || date || "%"	 
+  AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
   --AND result.idAsignatura NOT NULl
   AND md.cssClassMeetingDays like "%" || diaSemanaCalendar || "%"	   
 GROUP BY Organizationid, date

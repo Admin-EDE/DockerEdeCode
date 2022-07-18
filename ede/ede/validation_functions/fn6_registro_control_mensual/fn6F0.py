@@ -225,8 +225,8 @@ ON oce.org = Organizationid
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WHERE 
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
-  AND date NOT LIKE "%" || ifnull(oce.fechasEventos,'1900-01-01') || "%"	 
-  AND date NOT LIKE "%" || ifnull(occ.fechasCrisis,'1900-01-01') || "%"
+  AND ifnull(oce.fechasEventos,'1900-01-01') NOT LIKE "%"  || date || "%"	 
+  AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
 GROUP BY Organizationid, date
       """).fetchall()
     except Exception as e:
