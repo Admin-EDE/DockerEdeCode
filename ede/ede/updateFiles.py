@@ -1,6 +1,6 @@
-import logging
+
 import requests, io
-logger = logging.getLogger('root')
+from ede.ede._logger import logger
 
 import os, sys
 from git import Repo
@@ -32,7 +32,7 @@ class updateFiles:
     for idFile, fileName in self.filesDict.items():
           self.downloadFile(idFile,fileName)
 
-  def downloadFile(self, idFile, fileName):
+  def downloadFile(self, idFile: str, fileName: str) -> str:
     urlFile = f'http://drive.google.com/uc?export=download&id={idFile}'
     urlFile2 = f'https://docs.google.com/spreadsheets/d/{idFile}/export?format=csv&id={idFile}'
     if "--debug" in sys.argv: http.client.HTTPConnection.debuglevel = 1

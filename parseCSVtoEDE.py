@@ -2,7 +2,8 @@
 import logging
 
 #import argparse #Librería usada en funcion main() para crear el menú de la consola
-import importlib.util #utilizada en función module_from_file para cargar las librerías del estándar
+import importlib.util
+from types import ModuleType #utilizada en función module_from_file para cargar las librerías del estándar
 from zipfile import ZipFile
 import io, os, sys 
 from datetime import datetime
@@ -10,13 +11,13 @@ from pytz import timezone
 from time import time #importamos la función time para capturar tiempos
 from pathlib import Path
 
-def module_from_file(module_name, file_path):
+def module_from_file(module_name: str, file_path: str) -> ModuleType:
     spec = importlib.util.spec_from_file_location(module_name, file_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
-def setup_custom_logger(name, t_stamp):
+def setup_custom_logger(name: str, t_stamp: str) -> logging.Logger:
   _nameLogFile = f'./{t_stamp}_LOG.txt'
   stream_formatter = logging.Formatter('%(asctime)s, %(levelname)s, %(module)s, %(lineno)d, %(funcName)s, %(message)s')
   file_formatter=logging.Formatter(
@@ -60,7 +61,7 @@ def main():
   if('func' in args): 
     args.func(args); #Ejecuta la función por defecto
   else:
-    logger.info(parser.format_help())
+    logger.info(menu.parser.format_help())
 
   try:
     args.output
