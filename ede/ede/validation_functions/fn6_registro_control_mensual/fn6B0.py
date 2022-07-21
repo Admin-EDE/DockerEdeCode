@@ -22,7 +22,7 @@ def fn6B0(conn, return_dict):
     _r = False    
     _rightList = []
     try:
-      _rightList = conn.execute("""
+      _rightList = conn.execute("""--sql
 	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
 		SELECT 
 			 rae.RoleAttendanceEventId
@@ -45,7 +45,7 @@ def fn6B0(conn, return_dict):
 			ON opr.RoleId = rol_e.RoleId
 			AND rol_e.Name IN ('Estudiante')
 		WHERE 
-			rae.RecordEndDateTime IS NOT NULL
+			rae.RecordEndDateTime IS NOT NULL --registros con cambios
 			AND
 			rae.RecordStartDateTime IS NOT NULL
 			AND
@@ -70,7 +70,7 @@ def fn6B0(conn, return_dict):
 			,rae.Date, rae.RecordEndDateTime
 		FROM RoleAttendanceEvent rae
 		JOIN cte_Attendance cte 
-			ON cte.RecordEndDateTime = rae.Date
+			ON cte.RecordEndDateTime = rae.Date --cuando termina el registro, empieza automaticamente el nuevo
 			AND cte.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
 			AND rae.RecordStartDateTime IS NOT NULL
 		JOIN OrganizationPersonRole opr 
