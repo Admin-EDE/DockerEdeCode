@@ -6,7 +6,19 @@ from ede.ede._logger import logger
 
 
 def fn2BA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    "5.5 De los estudiantes excedentes
+    Validar que exista cargada en el sistema la resolución que autoriza al estudiante."
+    ---------------------------------------------------------------------
+    NOTA: 
+    - File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
+    - Una resolución es un documento público que emite el Ministerio de Educación en 
+    ciertos casos. Cada resolución tiene un número y una fecha de total tramitación. 
+    Para este caso se debe validar que exista el documento cargado en el sistema y 
+    sus datos cargados en la tabla. 
+    Casos en que aplica: 
+    PersonStatus.RefPersonStatusTypeId == (24 OR 31 OR 25) + 
+    PersonStatus.fileScanBase64 + PersonStatus.docNumber + PersonStatus.StatusStartDate
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

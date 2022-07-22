@@ -6,7 +6,18 @@ from ede.ede._logger import logger
 
 
 def fn29C(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.7 De los estudiantes en práctica
+    Validar que los estudiantes egresados de cuarto medio y que estén realizando 
+    su práctica tengan asignado un profesor tutor.
+    -------------------------------------------------------------------------
+    En la tabla roleAttendanceEvent debería registrarse la asistencia de los estudiantes 
+    a las asignaturas de practica profesional y, este tipo de asignaturas debería tener asignado 
+    un o varios profesores tutores dependiendo de la especialidad.
+    Un estudiante de formación DUAL tiene una asignatura especial asignada y el curso tiene el 
+    identificador RefWorkbasedLearningOpportunityTypeId asignado. 
+    Se agrega en refOrgantizationType el tipo practicaProfesional para identificar este tipo de asignaturas.
+    La tabla Role asigna el código 17 al Tutor(a) práctica profesional.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

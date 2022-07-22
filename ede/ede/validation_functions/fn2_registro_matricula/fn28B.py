@@ -6,7 +6,16 @@ from ede.ede._logger import logger
 
 
 def fn28B(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.8 De los estudiantes migrantes
+    Validar que el certificado de convalidación de estudios y
+    los cursos convalidados se encuentre cargado en el sistema.
+    ---------------------------------------------------------------------
+    Este tipo de casos se registrará a través de la tabla 
+    PersonStatus.refPersonStatusTypeId == 34 (Convalidación de estudios) y 
+    los campos personStatus.docNumber, personStatus.Description y 
+    personStatus.fileScanBase64 se utilizanrán para almacenar la información 
+    de respaldo de este proceso extraordinario.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

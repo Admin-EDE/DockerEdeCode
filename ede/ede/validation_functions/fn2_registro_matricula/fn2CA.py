@@ -6,7 +6,9 @@ from ede.ede._logger import logger
 
 
 def fn2CA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.4 De las bajas en el registro de matrícula
+    Validar que exista la fecha, motivo y la declaración jurada del requirente o su verificador de identidad cargado en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

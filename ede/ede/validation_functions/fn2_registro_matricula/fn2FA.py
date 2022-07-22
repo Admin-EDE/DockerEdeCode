@@ -6,7 +6,35 @@ from ede.ede._logger import logger
 
 
 def fn2FA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.1 Estructura del registro de matrícula.
+    Validar que el total de alumnos matriculados menos las bajas, 
+    sea igual a la suma de los estudiantes inscritos en los libros de clases 
+    de los diferentes cursos, por nivel y modalidad.
+    ---------------------------------------------------------------------
+    Contar estudiantes por curso
+    OrganizationPersonRole.OrganizationId == IdCurso & 
+    OrganizationPersonRole.RoleId == estudiantes & OrganizationPersonRole.PersonId == IdEstudiante
+
+    Validar ExitDate por si hay algún retiro anticipado. 
+    No contar dos veces al estudiante que este reciebiendo formación dual
+
+    Calcular alumnosMatriculados Activos
+    AlumnosMatriculados = #numeroMatricula(c/fechaincorporación) - #numeroMatricula(c/fechaRetiroEstudiante)
+
+    Calcular NumerosLista Activos
+    #numLista == #fechaIncorporacionEstudiante
+
+    #numeroMatricula(c/fechaRetiroEstudiante) == #fechaRetiroEstudiante == 
+    # #numLista(c/fechaRetiroEstudiante) == #motivoRetiro
+
+    k12StudentEnrollment.active identifica si un estudiante está activo o no en el curso. 
+    Los campos RecordStartDateTime y RecordEndDateTime identifican los cambios en la tabla, 
+    similar a un log, por lo tanto el campo que tenga el registro RecordEndDateTime en blanco 
+    debería ser el activo. Además, en la tabla PersonStatus.refPersonStatusTypeId=32 identifica 
+    la asignación de un estudiante a un curso para identificar los cambios de cursos y la 
+    tabla personIdentifier le agregué un refPersonIdentificationSystemId = 54 para 
+    identificar los números de lista de los estudiantes.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -6,7 +6,9 @@ from ede.ede._logger import logger
 
 
 def fn29A(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.7 De los estudiantes en práctica
+    Validar que los estudiantes en práctica hayan terminado al menos el primer semestre del tercer año.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -6,7 +6,13 @@ from ede.ede._logger import logger
 
 
 def fn2DA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    "5.3 De las altas en el registro de matrícula.
+    Validar que los alumnos nuevos tengan el certificado de promoción del estudiante
+    y el certificado de traslado o baja de matrícula del establecimiento de origen.
+    -----------------------------------------------------------
+    Los alumnos nuevos se pueden identificar a través de 
+    PersonStatus.RefPersonStatusTypeId == 27 (Estudiante nuevo con matrícula definitiva)
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

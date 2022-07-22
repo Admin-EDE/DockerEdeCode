@@ -6,7 +6,11 @@ from ede.ede._logger import logger
 
 
 def fn2AA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.6 De los estudiantes de intercambio
+    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
+    -----------------------------------------------------------------------
+    NOTA: File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

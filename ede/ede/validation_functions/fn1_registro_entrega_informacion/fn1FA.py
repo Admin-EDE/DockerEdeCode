@@ -6,6 +6,29 @@ from ede.ede._logger import logger
 
 
 def fn1FA(conn, return_dict):
+    """ 
+    Validar para cada entrega si ésta se hizo a través de un medio digital o en papel.
+    --------------------------------------------------------------------
+    Revisar que la entrega de documentos se encuentre cargada en las incidencias
+    como un tipo de reunión con el apoderado.
+
+    En tabla Indicent.RefIncidentBehaviorId == 33 
+    (Entrega de documentos de un retiro de un estudiante) y 
+    IncidentPerson.digitalRandomKey OR fileScanBase64 según sea el caso
+    Args:
+        conn ([sqlalchemy.engine.Connection]): [
+          Objeto que establece la conexión con la base de datos.
+          Creado previamente a través de la función execute(self)
+          ]
+    Returns:
+        [Boolean]: [
+          Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - A
+          Retorna True y “Aprobado” a través de logger, solo si se puede: 
+            - A
+          En todo otro caso, retorna False y "Rechazado" a través de logger.
+          ]
+    """
     _Apo = []
     try:
 
