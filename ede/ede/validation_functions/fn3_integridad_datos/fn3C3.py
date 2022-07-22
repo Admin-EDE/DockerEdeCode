@@ -42,9 +42,29 @@ def fn3C3(conn, return_dict):
       logger.info(f"{current_process().name} finalizando...")
       return _r
     
+    org_loc_id = []
+    try:
+      org_loc_id = conn.execute("""--sql
+      SELECT O.OrganizationId, OL.OrganizationId, OL.Locationid 
+      FROM Organization O
+ JOIN OrganizationLocation OL ON O.OrganizationId=OL.OrganizationId
+WHERE OL.LocationId != (
+SELECT CSL.Locationid FROM Organization O
+ JOIN CourseSectionLocation CSL ON O.OrganizationId=CSL.OrganizationId)
+ORDER BY O.OrganizationId
+      """).fetchall()
+    except Exception as e:
+      logger.info(f"Resultado: {org_loc_id} -> {str(e)}")
+    if len(org_loc_id) > 0:
+      logger.error(f"Error de consistencia, LocationId debe ser consistente en diferentes tablas: {org_loc_id}")
+      logger.error(f"Rechazado")
+      _r = False
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r
     locations = []
     try:
-      locations = conn.execute("""
+      locations = conn.execute("""--sql
         /*
         * Entrega la lista de organizaciones que no contiene bien definida su ubicación dentro del establecimiento.
         * Los campos obligatorios son: 
@@ -111,6 +131,7 @@ def fn3C3(conn, return_dict):
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
       logger.error(f"Rechazado")
+      _r = False
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")
