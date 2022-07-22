@@ -107,12 +107,12 @@ def fn3DA(conn, return_dict):
         WHERE 
         RefOrganizationType.Description IN ('Course') AND
         -- Filtra solo aquellos casos en que la información no coincide
-        NOT (AttendanceRate_o = AttendanceRate_r AND NumberOfDaysInAttendance_o = NumberOfDaysInAttendance_r AND NumberOfDaysAbsent_o = NumberOfDaysAbsent_r)
+        NOT (abs(AttendanceRate_o - AttendanceRate_r) < 0.00001 AND NumberOfDaysInAttendance_o = NumberOfDaysInAttendance_r AND NumberOfDaysAbsent_o = NumberOfDaysAbsent_r)
       """).fetchall()
     except Exception as e:
       logger.info(f"Resultado: {RoleAttendance} -> {str(e)}")
     
-    logger.info(f"Localidades mal asignadas: {len(RoleAttendance)}")      
+    logger.info(f"Tasa de asistencia mal calculadas: {len(RoleAttendance)}")      
     try:
         if( len(RoleAttendance) > 0 ):
           data1 = list(set([m[0] for m in RoleAttendance if m[0] is not None]))

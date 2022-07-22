@@ -56,7 +56,8 @@ ORDER BY O.OrganizationId
     except Exception as e:
       logger.info(f"Resultado: {org_loc_id} -> {str(e)}")
     if len(org_loc_id) > 0:
-      logger.info(f"Error de consistencia, LocationId debe ser consistente en diferentes tablas: {org_loc_id}")
+      logger.error(f"Error de consistencia, LocationId debe ser consistente en diferentes tablas: {org_loc_id}")
+      logger.error(f"Rechazado")
       _r = False
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")      
