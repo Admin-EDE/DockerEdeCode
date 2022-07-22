@@ -21,11 +21,11 @@ def fn3C4(conn, return_dict):
             y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     RoleAttendanceEvent = []
     try:
-      RoleAttendanceEvent = conn.execute("""
+        RoleAttendanceEvent = conn.execute("""
         -- Lista todos los IDs que no cumplan con la expresión regular.
         SELECT RoleAttendanceEventId, Date
         FROM RoleAttendanceEvent
@@ -36,10 +36,10 @@ def fn3C4(conn, return_dict):
 		    Date NOT NUll        
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {RoleAttendanceEvent} -> {str(e)}")
+        logger.info(f"Resultado: {RoleAttendanceEvent} -> {str(e)}")
     OrganizationPersonRole = []
-    try:      
-      OrganizationPersonRole = conn.execute("""
+    try:
+        OrganizationPersonRole = conn.execute("""
         -- Lista todos los IDs que no cumplan con la empresión regular.
         SELECT OrganizationPersonRoleId, EntryDate, ExitDate
         FROM OrganizationPersonRole
@@ -54,29 +54,31 @@ def fn3C4(conn, return_dict):
       ( EntryDate NOT NULL OR ExitDate NOT NULL )
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {OrganizationPersonRole} -> {str(e)}")
-    try:      
-      if(len(RoleAttendanceEvent)>0 or len(OrganizationPersonRole)>0):
-        data1 = list(set([m[0] for m in RoleAttendanceEvent if m[0] is not None]))
-        data2 = list(set([m[0] for m in OrganizationPersonRole if m[0] is not None]))
-        _c1 = len(set(data1))
-        _c2 = len(set(data2))
-        _err1 = f"Las siguientes registros tiene mal formateado el campo Date: {data1}"
-        _err2 = f"Las siguientes registros tienen mal formateado el campo EntryDate o ExitDate: {data2}"
-        if (_c1 > 0):
-          logger.error(_err1)
-        if (_c2 > 0):
-          logger.error(_err2)
-        if (_c1 > 0 or _c2 > 0):
-          logger.error(f"Rechazado")
-      else:
-        logger.info(f"Aprobado")
-        _r = True
+        logger.info(f"Resultado: {OrganizationPersonRole} -> {str(e)}")
+    try:
+        if(len(RoleAttendanceEvent) > 0 or len(OrganizationPersonRole) > 0):
+            data1 = list(
+                set([m[0] for m in RoleAttendanceEvent if m[0] is not None]))
+            data2 = list(
+                set([m[0] for m in OrganizationPersonRole if m[0] is not None]))
+            _c1 = len(set(data1))
+            _c2 = len(set(data2))
+            _err1 = f"Las siguientes registros tiene mal formateado el campo Date: {data1}"
+            _err2 = f"Las siguientes registros tienen mal formateado el campo EntryDate o ExitDate: {data2}"
+            if (_c1 > 0):
+                logger.error(_err1)
+            if (_c2 > 0):
+                logger.error(_err2)
+            if (_c1 > 0 or _c2 > 0):
+                logger.error(f"Rechazado")
+        else:
+            logger.info(f"Aprobado")
+            _r = True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-### FIN fn3C4 ###    
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn2DB(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn2DB(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _query = conn.execute("""
         SELECT DISTINCT P.PersonId
@@ -29,8 +30,8 @@ def fn2DB(conn, return_dict):
         where OPR.RoleId = 6
           and PS.RefPersonStatusTypeId = 33;
         """).fetchall()
-        if(len(_query)>0):
-          _queryType = conn.execute("""
+        if(len(_query) > 0):
+            _queryType = conn.execute("""
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT P.PersonId
@@ -42,8 +43,8 @@ def fn2DB(conn, return_dict):
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 33
           """).fetchall()
-          if(len(_queryType) == len(_query)):
-            _file = conn.execute("""
+            if(len(_queryType) == len(_query)):
+                _file = conn.execute("""
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -59,24 +60,28 @@ def fn2DB(conn, return_dict):
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 33);
             """).fetchall()
-            if(len(_file) == len(_query)):
-              logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
-              logger.info(f'Aprobado')
-              return_dict[getframeinfo(currentframe()).function] = True
-              return True
+                if(len(_file) == len(_query)):
+                    logger.info(
+                        f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
+                    logger.info(f'Aprobado')
+                    return_dict[getframeinfo(currentframe()).function] = True
+                    return True
+                else:
+                    logger.error(
+                        f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
+                    logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
             else:
-              logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
-              logger.error(f'Rechazado')
-              return_dict[getframeinfo(currentframe()).function] = False
-              return False
-          else:
-            logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
-            logger.error(f'Rechazado')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+                logger.error(
+                    f'No existe documento para los alumnos matriculados bajo el decreto 152')
+                logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
         else:
             logger.info(f"S/Datos")
-            logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
+            logger.info(
+                f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
@@ -84,4 +89,3 @@ def fn2DB(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn2DB WC ##

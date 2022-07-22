@@ -5,7 +5,6 @@ from multiprocessing import current_process
 from ede.ede._logger import logger
 
 
-  ## Inicio fn7F2 WC ##
 def fn7F2(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra d
@@ -30,7 +29,7 @@ RefPersonStatusType = 28 (Estudiante promovido)
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     _query = []
     try:
@@ -69,19 +68,19 @@ RefPersonStatusType = 28 (Estudiante promovido)
           AND PS.RefPersonStatusTypeId = 28;
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_query} -> {str(e)}")
-    
+        logger.info(f"Resultado: {_query} -> {str(e)}")
+
     if(len(_query) == 0):
-      logger.info(f'No existen estudiantes promovidos en el establecimiento')
-      logger.info(f'S/Datos')
-      _r = True
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-    
+        logger.info(f'No existen estudiantes promovidos en el establecimiento')
+        logger.info(f'S/Datos')
+        _r = True
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
     _scoreQuery = []
     try:
-      _scoreQuery = conn.execute("""
+        _scoreQuery = conn.execute("""
       SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0), R.RefScoreMetricTypeId as 'tipo'
       FROM AssessmentResult R
               JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
@@ -122,27 +121,29 @@ RefPersonStatusType = 28 (Estudiante promovido)
       ORDER BY ASSR.PersonId ASC;
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_scoreQuery} -> {str(e)}")
-    
-    try:      
-      if(len(_scoreQuery)>0):
-          _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
-          _tipo = (list([m[1] for m in _scoreQuery if m[1] is not None]))
-          for x in _score:
-            if(str(_tipo) in ('1','2') and x < 4):
-              logger.error(f'Existen alumnos promovidos con calificacion final inferior a 4,0')
-              logger.error(f'Rechazado')
-          logger.info(f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
-          logger.info(f'Aprobado')
-          _r = True
-      else:
-        logger.error(f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
-        logger.error(f'Rechazado')
+        logger.info(f"Resultado: {_scoreQuery} -> {str(e)}")
+
+    try:
+        if(len(_scoreQuery) > 0):
+            _score = (list([m[0] for m in _scoreQuery if m[0] is not None]))
+            _tipo = (list([m[1] for m in _scoreQuery if m[1] is not None]))
+            for x in _score:
+                if(str(_tipo) in ('1', '2') and x < 4):
+                    logger.error(
+                        f'Existen alumnos promovidos con calificacion final inferior a 4,0')
+                    logger.error(f'Rechazado')
+            logger.info(
+                f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
+            logger.info(f'Aprobado')
+            _r = True
+        else:
+            logger.error(
+                f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
+            logger.error(f'Rechazado')
     except Exception as e:
-      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ## Fin fn7F2 WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

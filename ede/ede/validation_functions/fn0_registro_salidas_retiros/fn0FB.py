@@ -5,8 +5,6 @@ import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
 
-
-### INICIO FN0FB ###
 def fn0FB(conn, return_dict):
     """
     SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
@@ -36,7 +34,7 @@ def fn0FB(conn, return_dict):
     _r = False
     Allrows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
             SELECT rae.RoleAttendanceEventId
             FROM RoleAttendanceEvent rae
             -- Antes de realizar cualquier acción se revisa que el estudiante tengan
@@ -45,18 +43,20 @@ def fn0FB(conn, return_dict):
               ON ras.RefAttendanceStatusId = rae.RefAttendanceStatusId
               AND ras.Code IN ('EarlyDeparture')
       """).fetchall()
-      Allrows = check_utils.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
+        Allrows = check_utils.convertirArray2DToList(
+            list([m[0] for m in rows if m[0] is not None]))
     except Exception as e:
-      logger.info(f"Resultado: {Allrows} -> {str(e)}")
+        logger.info(f"Resultado: {Allrows} -> {str(e)}")
 
-    if( len(Allrows) == 0 ):
-      logger.info(f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
-      logger.info(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True #si no hay registros de salida anticipada, no continúa la revisión 
+    if(len(Allrows) == 0):
+        logger.info(
+            f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
+        return True  # si no hay registros de salida anticipada, no continúa la revisión
     try:
-      if( len(Allrows) > 0 ):
-        rows = conn.execute("""
+        if(len(Allrows) > 0):
+            rows = conn.execute("""
             SELECT 
                 raeAlumnoAsignatura.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoAsignatura'
                 ,raeAlumnoEstablecimieto.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoEstablecimiento'
@@ -217,27 +217,29 @@ def fn0FB(conn, return_dict):
               strftime('%H:%M:%f',raeAlumnoAsignatura.Date) <= strftime('%H:%M:%f',raeApoderado.Date)
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    try:      
-      if( len( rows ) > 0 ):
-        for row in rows:
-          for i in range(3):
-            try:
-              Allrows.remove(row[i])
-            except:
-              pass
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+    try:
+        if(len(rows) > 0):
+            for row in rows:
+                for i in range(3):
+                    try:
+                        Allrows.remove(row[i])
+                    except:
+                        pass
 
-        if(len(Allrows) == 0):
-          _r = True
+            if(len(Allrows) == 0):
+                _r = True
+            else:
+                logger.info(
+                    f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
         else:
-          logger.info(f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
-      else:
-        logger.error(f"Rechazado")
-        logger.info(f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
+            logger.error(f"Rechazado")
+            logger.info(
+                f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta de retiros anticipados: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      return _r
-### FIN FN0FB ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r

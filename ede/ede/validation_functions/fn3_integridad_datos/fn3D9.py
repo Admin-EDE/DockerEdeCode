@@ -4,9 +4,10 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+# Revisar que los cursos del establecimiento tengan bien
+# calculada la información de la tabla RoleAttendance.
 
-  # Revisar que los cursos del establecimiento tengan bien 
-  # calculada la información de la tabla RoleAttendance.
+
 def fn3D9(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -26,7 +27,7 @@ def fn3D9(conn, return_dict):
     _r = False
     listInfoSuccesfull = []
     try:
-      listInfoSuccesfull = conn.execute("""
+        listInfoSuccesfull = conn.execute("""
         /*
         * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
         */
@@ -43,18 +44,18 @@ def fn3D9(conn, return_dict):
         AttendanceTermIndicator = 1
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
+        logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
 
     if(len(listInfoSuccesfull) <= 0):
-      logger.info("S/Datos")
-      _r = True
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
+        logger.info("S/Datos")
+        _r = True
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
 
     RoleAttendance = []
     try:
-      RoleAttendance = conn.execute("""
+        RoleAttendance = conn.execute("""
         /*
         * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
         */
@@ -88,24 +89,26 @@ def fn3D9(conn, return_dict):
         INNER JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {RoleAttendance} -> {str(e)}")
-    
-    logger.info(f"Eventos mal identificados: {len(RoleAttendance)}")  
+        logger.info(f"Resultado: {RoleAttendance} -> {str(e)}")
+
+    logger.info(f"Eventos mal identificados: {len(RoleAttendance)}")
     try:
-        if(len(RoleAttendance)>0):
-          data1 = list(set([m[0] for m in RoleAttendance if m[0] is not None]))
-          _c1 = len(set(data1))
-          _err1 = f"Las siguientes organizaciones no coinciden: {data1}"
-          if (_c1 > 0):
-            logger.error(_err1)
-            logger.error(f"Rechazado")
+        if(len(RoleAttendance) > 0):
+            data1 = list(
+                set([m[0] for m in RoleAttendance if m[0] is not None]))
+            _c1 = len(set(data1))
+            _err1 = f"Las siguientes organizaciones no coinciden: {data1}"
+            if (_c1 > 0):
+                logger.error(_err1)
+                logger.error(f"Rechazado")
         else:
-          logger.info(f"Aprobado")
-          _r = True
+            logger.info(f"Aprobado")
+            _r = True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

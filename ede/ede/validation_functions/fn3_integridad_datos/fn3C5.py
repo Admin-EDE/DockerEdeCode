@@ -4,8 +4,9 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
+# VERIFICA DATOS DE LAS ORGANIZACIONES
 
-  # VERIFICA DATOS DE LAS ORGANIZACIONES
+
 def fn3C5(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -21,28 +22,32 @@ def fn3C5(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     rows = []
     try:
-      rows = conn.execute("SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
+        rows = conn.execute(
+            "SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+
     try:
-      logger.info(f"len(digitalRandomKey): {len(rows)}")
-      if(len(rows)>0):
-        # Valida los números de clave aleatoria de los docentes
-        data = list(set([m[0] for m in rows if m[0] is not None])) + list(set([m[1] for m in rows if m[1] is not None]))
-        _err,_r = check_utils.imprimeErrores(data,check_utils.validaFormatoClaveAleatoria,"VERIFICA FORMATO Clave Aleatoria Docente")
-        logger.info(f"Aprobado") if _r else logger.error(_err)
-      else:
-        logger.info("La BD no contiene clave aleatoria de los docentes")
-        logger.info("S/Datos")
+        logger.info(f"len(digitalRandomKey): {len(rows)}")
+        if(len(rows) > 0):
+            # Valida los números de clave aleatoria de los docentes
+            data = list(set([m[0] for m in rows if m[0] is not None])) + \
+                list(set([m[1] for m in rows if m[1] is not None]))
+            _err, _r = check_utils.imprimeErrores(
+                data, check_utils.validaFormatoClaveAleatoria, "VERIFICA FORMATO Clave Aleatoria Docente")
+            logger.info(f"Aprobado") if _r else logger.error(_err)
+        else:
+            logger.info("La BD no contiene clave aleatoria de los docentes")
+            logger.info("S/Datos")
     except Exception as e:
-      logger.error(f"No se pudieron validar los verificadores de indentidad: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"No se pudieron validar los verificadores de indentidad: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

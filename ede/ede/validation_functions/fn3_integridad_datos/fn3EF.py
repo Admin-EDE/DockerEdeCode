@@ -3,10 +3,9 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+# VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
 
 
-
-  #VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
 def fn3EF(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -26,34 +25,37 @@ def fn3EF(conn, return_dict):
     _r = False
     courses1 = []
     try:
-      courses1 = conn.execute("SELECT DISTINCT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
+        courses1 = conn.execute(
+            "SELECT DISTINCT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {courses1} -> {str(e)}")
+        logger.info(f"Resultado: {courses1} -> {str(e)}")
 
     courses2 = []
     try:
-      courses2 = conn.execute("SELECT OrganizationIdCurso FROM cursoList;").fetchall()
+        courses2 = conn.execute(
+            "SELECT OrganizationIdCurso FROM cursoList;").fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {courses2} -> {str(e)}")
+        logger.info(f"Resultado: {courses2} -> {str(e)}")
 
     try:
-      if( len(courses1) > 0 and len(courses2) > 0):
-        # Valida que lista de cursos coincidan
-        curso1 = list(set([m[0] for m in courses1 if m[0] is not None]))
-        curso2 = list(set([m[0] for m in courses2 if m[0] is not None]))
-        _c = len(set(curso1) & set(curso2))
-        _err = "No coinciden los ID de Curso en las tablas Organization + Course + K12Course"
-        if _c == len(curso1) == len(curso2):
-          logger.info(f"Aprobado")
-          _r = True   
+        if(len(courses1) > 0 and len(courses2) > 0):
+            # Valida que lista de cursos coincidan
+            curso1 = list(set([m[0] for m in courses1 if m[0] is not None]))
+            curso2 = list(set([m[0] for m in courses2 if m[0] is not None]))
+            _c = len(set(curso1) & set(curso2))
+            _err = "No coinciden los ID de Curso en las tablas Organization + Course + K12Course"
+            if _c == len(curso1) == len(curso2):
+                logger.info(f"Aprobado")
+                _r = True
+            else:
+                logger.error(_err)
         else:
-          logger.error(_err)
-      else:
-        logger.info(f"S/Datos")
+            logger.info(f"S/Datos")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")     
-      return _r
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

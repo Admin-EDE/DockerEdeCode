@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn4FA(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,11 +20,11 @@ def fn4FA(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
 SELECT 
 	  est.personId
 	, orgCurso.OrganizationId as cursoId
@@ -122,60 +123,61 @@ ON asignaturas.organizationId = prof_educ.Organizationid
 GROUP BY est.personId
                           """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-      
-    if(len(rows) == 0):
-      logger.info(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r      
-    
-    try:
-      _err = {}
-      for row in rows:
-        #print(row)
-        errorList = []
-        if(row[2] is None):
-          errorList.append('EL curso no tiene letra asignada')
-        if(row[3] is None):
-          errorList.append('Estudiante sin nombre')
-        if(row[4] is None):
-          errorList.append('estudiante sin RUT o IPE')
-        if(row[5] is None):
-          errorList.append('estudiante sin número de lista')
-        if(row[6] is None):
-          errorList.append('estudiante sin número de matrícula')
-        if(row[7] is None):
-          errorList.append('estudiante sin fecha de nacimiento')
-        if(row[8] is None):
-          errorList.append('estudiante sin sexo asignado')
-        if(row[9] is None):
-          errorList.append('estudiante sin dirección')
-        if(row[10] is not None 
-           and ('Estudiante asignado a un curso, se crea número de lista' not in row[10]
-           or 'Estudiante con matrícula definitiva' not in row[10])):
-          errorList.append('estudiante sin los estatus minimos asignados')
-        if(row[11] is None):
-          errorList.append('estudiante sin profesor jefe asignado')
-        if(row[12] > row[14]):
-          errorList.append('Los profesionales que trabajan en las asignaturas debería ser >= que las asignaturas registradas')
+        logger.info(f"Resultado: {rows} -> {str(e)}")
 
-        if(len(errorList) > 0):
-          _err[row[0]] = errorList
-        
-      if(len(_err) == 0):
-        logger.info("Se validaron todos los datos")
-        logger.info(f"Aprobado")
-        _r = True
-      else:
-        logger.error(f"Rechazado")
-        logger.error(f"personId con errores: {_err}")
-      
+    if(len(rows) == 0):
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
+    try:
+        _err = {}
+        for row in rows:
+            # print(row)
+            errorList = []
+            if(row[2] is None):
+                errorList.append('EL curso no tiene letra asignada')
+            if(row[3] is None):
+                errorList.append('Estudiante sin nombre')
+            if(row[4] is None):
+                errorList.append('estudiante sin RUT o IPE')
+            if(row[5] is None):
+                errorList.append('estudiante sin número de lista')
+            if(row[6] is None):
+                errorList.append('estudiante sin número de matrícula')
+            if(row[7] is None):
+                errorList.append('estudiante sin fecha de nacimiento')
+            if(row[8] is None):
+                errorList.append('estudiante sin sexo asignado')
+            if(row[9] is None):
+                errorList.append('estudiante sin dirección')
+            if(row[10] is not None
+               and ('Estudiante asignado a un curso, se crea número de lista' not in row[10]
+               or 'Estudiante con matrícula definitiva' not in row[10])):
+                errorList.append(
+                    'estudiante sin los estatus minimos asignados')
+            if(row[11] is None):
+                errorList.append('estudiante sin profesor jefe asignado')
+            if(row[12] > row[14]):
+                errorList.append(
+                    'Los profesionales que trabajan en las asignaturas debería ser >= que las asignaturas registradas')
+
+            if(len(errorList) > 0):
+                _err[row[0]] = errorList
+
+        if(len(_err) == 0):
+            logger.info("Se validaron todos los datos")
+            logger.info(f"Aprobado")
+            _r = True
+        else:
+            logger.error(f"Rechazado")
+            logger.error(f"personId con errores: {_err}")
+
     except Exception as e:
-      logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  ## Fin fn4FA WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

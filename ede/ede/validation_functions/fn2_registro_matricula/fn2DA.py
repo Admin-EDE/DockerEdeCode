@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn2DA(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn2DA(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _query = conn.execute("""
         SELECT DISTINCT PS.PersonId
@@ -29,8 +30,8 @@ def fn2DA(conn, return_dict):
         WHERE OPR.RoleId = 6
           and PS.RefPersonStatusTypeId = 27
         """).fetchall()
-        if(len(_query)>0):
-          _personStatusFile = conn.execute("""
+        if(len(_query) > 0):
+            _personStatusFile = conn.execute("""
           SELECT fileScanBase64
           FROM PersonStatus
           WHERE PersonId in (
@@ -44,8 +45,8 @@ def fn2DA(conn, return_dict):
           AND fileScanBase64 is not null
           and RefPersonStatusTypeId = 27
           """).fetchall()
-          if (len(_query) == len(_personStatusFile)):
-              _file = conn.execute("""
+            if (len(_query) == len(_personStatusFile)):
+                _file = conn.execute("""
               SELECT documentId
               FROM Document
               WHERE fileScanBase64 IS NOT NULL
@@ -65,21 +66,24 @@ def fn2DA(conn, return_dict):
                       and RefPersonStatusTypeId = 27
                   );
               """).fetchall()
-              if(len(_file) == len(_query)):
-                logger.info(f'Todos los alumnos nuevos con matricula definitiva poseen documento')
-                logger.info(f'Aprobado')
-                return_dict[getframeinfo(currentframe()).function] = True
-                return True
-              else:
-                logger.error(f'los alumnos nuevos con matricula definitiva no poseen documento')
+                if(len(_file) == len(_query)):
+                    logger.info(
+                        f'Todos los alumnos nuevos con matricula definitiva poseen documento')
+                    logger.info(f'Aprobado')
+                    return_dict[getframeinfo(currentframe()).function] = True
+                    return True
+                else:
+                    logger.error(
+                        f'los alumnos nuevos con matricula definitiva no poseen documento')
+                    logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
+            else:
+                logger.error(
+                    f'Los alumnos nuevos con matricula definitiva no poseen documento')
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
-          else:
-            logger.error(f'Los alumnos nuevos con matricula definitiva no poseen documento')
-            logger.error(f'Rechazado')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
         else:
             logger.error(f'No existen alumnos nuevos con matricula definitiva')
             logger.error(f'S/Datos')
@@ -90,4 +94,3 @@ def fn2DA(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn2DA WC ##

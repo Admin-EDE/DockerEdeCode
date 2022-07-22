@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn29C(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn29C(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _queryStud = conn.execute("""
         SELECT OPR.OrganizationId
@@ -42,15 +43,17 @@ def fn29C(conn, return_dict):
         GROUP by P.PersonId,
                 OPR.OrganizationId;
         """).fetchall()
-        if((len(_queryStud)>0) and (len(_queryProf)>0)):
-            _organizationStu = (list([m[5] for m in _queryStud if m[0] is not None]))
-            if not _organizationStu :
+        if((len(_queryStud) > 0) and (len(_queryProf) > 0)):
+            _organizationStu = (
+                list([m[5] for m in _queryStud if m[0] is not None]))
+            if not _organizationStu:
                 logger.error(f"Sin Alumnos")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
-            _organizationProf = (list([m[5] for m in _queryProf if m[0] is not None]))
-            if not _organizationProf :
+            _organizationProf = (
+                list([m[5] for m in _queryProf if m[0] is not None]))
+            if not _organizationProf:
                 logger.error(f"Sin profesores")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
@@ -81,4 +84,3 @@ def fn29C(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn29C WC ##

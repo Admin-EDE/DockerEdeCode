@@ -5,7 +5,6 @@ from multiprocessing import current_process
 from ede.ede._logger import logger
 
 
-### INICIO fn3DD ###
 def fn3DD(conn, return_dict):
     """
     Integridad: Verifica la información mínima del establecimiento
@@ -36,7 +35,7 @@ def fn3DD(conn, return_dict):
     _r = False
     school = []
     try:
-      school = conn.execute("""
+        school = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
         SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
         FROM Organization
@@ -46,17 +45,17 @@ def fn3DD(conn, return_dict):
         RefOrganizationType.Description IN ('K12 School')
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {school} -> {str(e)}")
+        logger.info(f"Resultado: {school} -> {str(e)}")
 
-    if(len(school)==0):
-      logger.error(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-    
+    if(len(school) == 0):
+        logger.error(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
     webSite = []
     try:
-      webSite = conn.execute("""
+        webSite = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
         SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
         FROM Organization
@@ -68,11 +67,11 @@ def fn3DD(conn, return_dict):
         Website NOT REGEXP '^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})$'
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {webSite} -> {str(e)}")
-    
+        logger.info(f"Resultado: {webSite} -> {str(e)}")
+
     ElectronicMailAddress = []
     try:
-      ElectronicMailAddress = conn.execute("""
+        ElectronicMailAddress = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrado su email de contacto
         SELECT OrganizationId, ElectronicMailAddress
         FROM Organization
@@ -87,11 +86,11 @@ def fn3DD(conn, return_dict):
         RefEmailType.Description IN ('Organizational (school) address')
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {ElectronicMailAddress} -> {str(e)}")
-    
+        logger.info(f"Resultado: {ElectronicMailAddress} -> {str(e)}")
+
     phoneNumbers = []
     try:
-      phoneNumbers = conn.execute("""
+        phoneNumbers = conn.execute("""
         -- Revisa que la organización tipo Establecimiento tenga registrados sus teléfonos de contacto
         SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', TelephoneNumber, RefInstitutionTelephoneType.Description as 'phoneType'--, LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
         FROM Organization
@@ -106,11 +105,11 @@ def fn3DD(conn, return_dict):
         phoneType IN ('Main phone number','Administrative phone number')
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {phoneNumbers} -> {str(e)}")
-    
+        logger.info(f"Resultado: {phoneNumbers} -> {str(e)}")
+
     locations = []
     try:
-      locations = conn.execute("""
+        locations = conn.execute("""
         -- Revisa que las ubicaciones del establecimiento se encuentren bien definidas.
         SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
         FROM Organization
@@ -143,39 +142,41 @@ def fn3DD(conn, return_dict):
         )
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {locations} -> {str(e)}")
-    
+        logger.info(f"Resultado: {locations} -> {str(e)}")
+
     try:
-      _err = False      
-      if(len(webSite)>0 or len(ElectronicMailAddress)>0 or len(phoneNumbers)>0 or len(locations)>0):
-        data = list(set([m[0] for m in webSite if m[0] is not None]))
-        if (len(set(data)) > 0): 
-          logger.error(f"Website con formato erroneo: {data}")
-          _err = True
-        
-        data = list(set([m[0] for m in ElectronicMailAddress if m[0] is not None]))
-        if (len(set(data)) > 0): 
-          logger.error(f"ElectronicMailAddress con formato erroneo: {data}")
-          _err = True
+        _err = False
+        if(len(webSite) > 0 or len(ElectronicMailAddress) > 0 or len(phoneNumbers) > 0 or len(locations) > 0):
+            data = list(set([m[0] for m in webSite if m[0] is not None]))
+            if (len(set(data)) > 0):
+                logger.error(f"Website con formato erroneo: {data}")
+                _err = True
 
-        data = list(set([m[0] for m in phoneNumbers if m[0] is not None]))
-        if (len(set(data)) > 0): 
-          logger.error(f"phoneNumbers con formato erroneo: {data}")
-          _err = True
+            data = list(
+                set([m[0] for m in ElectronicMailAddress if m[0] is not None]))
+            if (len(set(data)) > 0):
+                logger.error(
+                    f"ElectronicMailAddress con formato erroneo: {data}")
+                _err = True
 
-        data = list(set([m[0] for m in locations if m[0] is not None]))
-        if (len(set(data)) > 0): 
-          logger.error(f"locations con formato erroneo: {data}")
-          _err = True
+            data = list(set([m[0] for m in phoneNumbers if m[0] is not None]))
+            if (len(set(data)) > 0):
+                logger.error(f"phoneNumbers con formato erroneo: {data}")
+                _err = True
 
-      if (not _err):
-        logger.info(f"Aprobado")
-        _r = True        
+            data = list(set([m[0] for m in locations if m[0] is not None]))
+            if (len(set(data)) > 0):
+                logger.error(f"locations con formato erroneo: {data}")
+                _err = True
+
+        if (not _err):
+            logger.info(f"Aprobado")
+            _r = True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-### FIN fn3DD ###    
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

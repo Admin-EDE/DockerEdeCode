@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn29B(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn29B(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         query = conn.execute("""
         SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
@@ -37,10 +38,11 @@ def fn29B(conn, return_dict):
         select OrganizationPersonRoleId
         from K12StudentEnrollment;
         """).fetchall()
-        if(len(query)>0 and len(k12StudentEnrollment)>0):
+        if(len(query) > 0 and len(k12StudentEnrollment) > 0):
             estudiantes = (list([m[2] for m in query if m[2] is not None]))
             organizaciones = (list([m[0] for m in query if m[0] is not None]))
-            organizacionesK12 = (list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
+            organizacionesK12 = (
+                list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
             for x in estudiantes:
                 if(x == 2):
                     logger.error(f"Matriculas repetidas")
@@ -55,7 +57,8 @@ def fn29B(conn, return_dict):
                             else:
                                 logger.error(f"Matricula/s no registrada/s")
                                 logger.error(f"Rechazado")
-                                return_dict[getframeinfo(currentframe()).function] = False
+                                return_dict[getframeinfo(
+                                    currentframe()).function] = False
                                 return False
             logger.info(f'Matriculas ingresadas correctamente')
             logger.info(f'Aprobado')
@@ -71,4 +74,3 @@ def fn29B(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn29B WC ##

@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn5D0(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn5D0(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _oPR = conn.execute("""
             SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
@@ -29,8 +30,8 @@ def fn5D0(conn, return_dict):
             AND RAE.RefAttendanceEventTypeId = 2
             group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
             """
-            ).fetchall()
-        if(len(_oPR)>0):
+                            ).fetchall()
+        if(len(_oPR) > 0):
             _count = (list([m[0] for m in _oPR if m[0] is not None]))
             _contador = 0
             for x in _count:
@@ -56,4 +57,3 @@ def fn5D0(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## fin fn5D0 WC ##

@@ -5,6 +5,7 @@ import sys
 
 from ede.ede._logger import logger
 
+
 def fn2CB(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -20,7 +21,7 @@ def fn2CB(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """ 
+    """
     _query = []
     _r = False
     try:
@@ -74,65 +75,66 @@ WHERE
 	pst.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description IN ('Estudiante retirado definitivamente')) 
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {str(e)}")
+        logger.info(f"Resultado: {str(e)}")
 
     _erroresDetalle = []
     try:
-      if(not _query):
-        logger.info(f"S/Datos")
-        _r = True
-        raise Exception(f"Sin informacion para verificar")
-      
-      for row in _query:
-        estudianteId = row[0]
-        estudianteRUN = row[1]
-        estudianteRole = row[2]
-        apoderadoId = row[3]
-        apoderadoRefPersonRelationShip = row[4]
-        apoderadoRole = row[5]
-        incidentId = row[6]
-        incidentType = row[7]
-        incidentDate = row[8]
-        incidentKey = row[9]
-        incidentFile = row[10]
-        fileScanBase64 = row[11]
+        if(not _query):
+            logger.info(f"S/Datos")
+            _r = True
+            raise Exception(f"Sin informacion para verificar")
 
-        if(not (estudianteId
-           and
-           estudianteRUN
-           and
-           estudianteRole
-           and
-           apoderadoId
-           and
-           apoderadoId
-           and
-           apoderadoRefPersonRelationShip
-           and 
-           apoderadoRole
-           and
-           incidentId
-           and 
-           incidentType
-           and
-           incidentDate
-           and 
-           (incidentKey or incidentFile)
-           and
-           fileScanBase64)
-           ):
-          _erroresDetalle.append(row)
-      
-      if(len(_erroresDetalle) > 0):
-        logger.error(f"A los siguientes estudiantes no se les entregó correctamente sus documentos de retiro: {_erroresDetalle}")
-      else:
-        _r = True
+        for row in _query:
+            estudianteId = row[0]
+            estudianteRUN = row[1]
+            estudianteRole = row[2]
+            apoderadoId = row[3]
+            apoderadoRefPersonRelationShip = row[4]
+            apoderadoRole = row[5]
+            incidentId = row[6]
+            incidentType = row[7]
+            incidentDate = row[8]
+            incidentKey = row[9]
+            incidentFile = row[10]
+            fileScanBase64 = row[11]
+
+            if(not (estudianteId
+               and
+               estudianteRUN
+               and
+               estudianteRole
+               and
+               apoderadoId
+               and
+               apoderadoId
+               and
+               apoderadoRefPersonRelationShip
+               and
+               apoderadoRole
+               and
+               incidentId
+               and
+               incidentType
+               and
+               incidentDate
+               and
+               (incidentKey or incidentFile)
+               and
+               fileScanBase64)
+               ):
+                _erroresDetalle.append(row)
+
+        if(len(_erroresDetalle) > 0):
+            logger.error(
+                f"A los siguientes estudiantes no se les entregó correctamente sus documentos de retiro: {_erroresDetalle}")
+        else:
+            _r = True
     except Exception as e:
-      logger.info(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
-      logger.error(f"{str(e)}")
+        logger.info(
+            f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
+        logger.error(f"{str(e)}")
     finally:
-      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  ## Fin fn2CB WC ##
+        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn1FC(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,11 +20,11 @@ def fn1FC(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """    
+    """
     _r = False
-    rows = []      
+    rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
 SELECT DISTINCT
 	 pst.personId as 'estudianteId'
 	, pid.Identifier as 'RUN'
@@ -73,67 +74,66 @@ WHERE
 	pst.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description IN ('Estudiante retirado definitivamente')) 
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
-    if(len(rows)<=0):
-      _r = True
-      logger.info(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      return _r
-    
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+
+    if(len(rows) <= 0):
+        _r = True
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r
+
     _resp = []
-    try:     
-      for row in rows:
-        estudianteId = row[0]
-        estudianteRUN = row[1]
-        estudianteRole = row[2]
-        apoderadoId = row[3]
-        apoderadoRefPersonRelationShip = row[4]
-        apoderadoRole = row[5]
-        incidentId = row[6]
-        incidentType = row[7]
-        incidentDate = row[8]
-        incidentKey = row[9]
-        incidentFile = row[10]
-        fileScanBase64 = row[11]
-              
-        if(not (estudianteId
-           and
-           estudianteRUN
-           and
-           estudianteRole
-           and
-           apoderadoId
-           and
-           apoderadoId
-           and
-           apoderadoRefPersonRelationShip
-           and 
-           apoderadoRole
-           and
-           incidentId
-           and 
-           incidentType
-           and
-           incidentDate
-           and 
-           (incidentKey or incidentFile)
-           and
-           fileScanBase64)
-           ):
-          _resp.append(row)
+    try:
+        for row in rows:
+            estudianteId = row[0]
+            estudianteRUN = row[1]
+            estudianteRole = row[2]
+            apoderadoId = row[3]
+            apoderadoRefPersonRelationShip = row[4]
+            apoderadoRole = row[5]
+            incidentId = row[6]
+            incidentType = row[7]
+            incidentDate = row[8]
+            incidentKey = row[9]
+            incidentFile = row[10]
+            fileScanBase64 = row[11]
 
+            if(not (estudianteId
+               and
+               estudianteRUN
+               and
+               estudianteRole
+               and
+               apoderadoId
+               and
+               apoderadoId
+               and
+               apoderadoRefPersonRelationShip
+               and
+               apoderadoRole
+               and
+               incidentId
+               and
+               incidentType
+               and
+               incidentDate
+               and
+               (incidentKey or incidentFile)
+               and
+               fileScanBase64)
+               ):
+                _resp.append(row)
 
-      if(len(_resp) <= 0):
-        logger.info(f"Aprobado")
-        _r = True  
-      else:
-        logger.error(f"Rechazado")
-        logger.info(f"{_resp}")
+        if(len(_resp) <= 0):
+            logger.info(f"Aprobado")
+            _r = True
+        else:
+            logger.error(f"Rechazado")
+            logger.info(f"{_resp}")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+        logger.error(
+            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r      
-### fin fn1FC ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

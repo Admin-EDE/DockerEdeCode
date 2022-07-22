@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn7F4(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn7F4(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """ 
+    """
     _r = False
     _query = []
     try:
@@ -29,14 +30,14 @@ def fn7F4(conn, return_dict):
         WHERE digitalRandomKey IS NOT NULL
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_query} -> {str(e)}")
-    
-    if( len(_query) == 0 ):
-      logger.error(f'No existen cambios realizados a las ponderaciones ')
-      logger.error(f'S/Datos')
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
+        logger.info(f"Resultado: {_query} -> {str(e)}")
+
+    if(len(_query) == 0):
+        logger.error(f'No existen cambios realizados a las ponderaciones ')
+        logger.error(f'S/Datos')
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
 
     _digitalRandom = []
     try:
@@ -52,18 +53,19 @@ def fn7F4(conn, return_dict):
         AND personIDDigitalRandomKey IS NOT NULL
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_digitalRandom} -> {str(e)}")
-          
+        logger.info(f"Resultado: {_digitalRandom} -> {str(e)}")
+
     if(len(_digitalRandom) != len(_query)):
-      logger.error(f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
-      logger.error(f'Rechazado')
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-         
+        logger.error(
+            f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
+        logger.error(f'Rechazado')
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
     _digitalRandomKeyPerson = []
     try:
-      _digitalRandomKeyPerson = conn.execute("""
+        _digitalRandomKeyPerson = conn.execute("""
       SELECT personIDDigitalRandomKey
       FROM LearnerActivity
       WHERE LearnerActivityId IN (SELECT LearnerActivityId
@@ -77,21 +79,22 @@ def fn7F4(conn, return_dict):
                                         WHERE OPR.RoleId IN (2, 4, 5));
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_digitalRandomKeyPerson} -> {str(e)}")
-     
+        logger.info(f"Resultado: {_digitalRandomKeyPerson} -> {str(e)}")
+
     try:
-      if(len(_digitalRandom) == len(_digitalRandomKeyPerson)):
-        logger.info(f'Las modificaciones a las ponderaciones cuentan con firma del Docente/UTP')
-        logger.info(f'Aprobado')
-        _r = True
-      else:
-        logger.error(f'Las firmas ingresadas no corresponden a las del Docente/UTP')
-        logger.error(f'Rechazado')
+        if(len(_digitalRandom) == len(_digitalRandomKeyPerson)):
+            logger.info(
+                f'Las modificaciones a las ponderaciones cuentan con firma del Docente/UTP')
+            logger.info(f'Aprobado')
+            _r = True
+        else:
+            logger.error(
+                f'Las firmas ingresadas no corresponden a las del Docente/UTP')
+            logger.error(f'Rechazado')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ## Fin fn7F4 WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

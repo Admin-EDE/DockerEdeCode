@@ -2,7 +2,8 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
 from ede.ede._logger import logger
-### INICIO fn3F0 ###
+
+
 def fn3F0(conn, return_dict):
     """Verifica la conexión con la base de datos SQLCypher
     Args:
@@ -23,18 +24,17 @@ def fn3F0(conn, return_dict):
     _r = False
     rows = []
     try:
-      rows = conn.execute("SELECT personId FROM PersonList;").fetchall()
+        rows = conn.execute("SELECT personId FROM PersonList;").fetchall()
     except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
-    
+        logger.error(f"Error al ejecutar la función: {str(e)}")
+
     try:
-      if( len(rows) > 0 ): 
-        _r = True
-      logger.info("Aprobado") if _r else logger.error("Rechazado")
+        if(len(rows) > 0):
+            _r = True
+        logger.info("Aprobado") if _r else logger.error("Rechazado")
     except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
+        logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F0 ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
