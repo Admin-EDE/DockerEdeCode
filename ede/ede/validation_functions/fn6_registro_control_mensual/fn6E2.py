@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn6E2(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,10 +20,10 @@ def fn6E2(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
-      _l1 = []
-      _s1 = """SELECT a.Date,c.RUN
+        _l1 = []
+        _s1 = """SELECT a.Date,c.RUN
                 FROM RoleAttendanceEvent a
                 JOIN OrganizationPersonRole b
                 ON a.OrganizationPersonRoleId = b.OrganizationPersonRoleId
@@ -31,26 +32,27 @@ def fn6E2(conn, return_dict):
                     OR (a.Date BETWEEN (SELECT StartDate 
                               FROM OrganizationCalendarCrisis) and  
                               (SELECT EndDate 
-                                FROM OrganizationCalendarCrisis)));"""     
+                                FROM OrganizationCalendarCrisis)));"""
 
-      _q1 = conn.execute(_s1).fetchall()
-      if(len(_q1)!=0):
-        for q in _q1:
-          _d = str(q[0])
-          _r = str(q[1])
-          _l1.append(_d+"-"+_r)
-          logger.error(f"Existen registros de asistencia para dias con suspension de clases: {str(_l1)}")
-          logger.error(f"Rechazado")
-          return_dict[getframeinfo(currentframe()).function] = False
-          return False
-      else:
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
+        _q1 = conn.execute(_s1).fetchall()
+        if(len(_q1) != 0):
+            for q in _q1:
+                _d = str(q[0])
+                _r = str(q[1])
+                _l1.append(_d+"-"+_r)
+                logger.error(
+                    f"Existen registros de asistencia para dias con suspension de clases: {str(_l1)}")
+                logger.error(f"Rechazado")
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
+        else:
+            logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
+            return True
 
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
-### fin fn6E2  ###
+        logger.error(
+            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+        logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
+        return False

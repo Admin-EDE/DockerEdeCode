@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn6D0(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,11 +20,11 @@ def fn6D0(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
         SELECT 
           opr.OrganizationPersonRoleId
           ,pid.Identifier
@@ -62,53 +63,57 @@ def fn6D0(conn, return_dict):
           )                          
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
+        logger.info(f"Resultado: {rows} -> {str(e)}")
 
     if(len(rows) <= 0):
-      _r = True
-      logger.info(f"No hay registros de alta/baja de alumnos en el establecimiento.")
-      logger.info(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      return _r  
-    
+        _r = True
+        logger.info(
+            f"No hay registros de alta/baja de alumnos en el establecimiento.")
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r
+
     try:
-      _l = []
-      _l2 = []
-      for q1 in rows:
-        _r = str(q1[1])
-        _entryDate = str(q1[2]) # rescata OrganizationPersonRole.entryDate
-        _exitDate = str(q1[3]) # rescata OrganizationPersonRole.exitDate
-        _statusStartDate = str(q1[4]) # rescata personStatus.statusStartDate
-        _statusEndDate = str(q1[5]) # rescata personStatus.statusEndDate
+        _l = []
+        _l2 = []
+        for q1 in rows:
+            _r = str(q1[1])
+            _entryDate = str(q1[2])  # rescata OrganizationPersonRole.entryDate
+            _exitDate = str(q1[3])  # rescata OrganizationPersonRole.exitDate
+            # rescata personStatus.statusStartDate
+            _statusStartDate = str(q1[4])
+            _statusEndDate = str(q1[5])  # rescata personStatus.statusEndDate
 
-        if(_entryDate is None) or (_statusStartDate is None):
-          _l.append(_r)
-        elif(_entryDate != _statusStartDate):
-          _l2.append(_r)
-          
-        if(_exitDate is None) or (_statusEndDate is None):
-          _l.append(_r)
-        elif(_exitDate != _statusEndDate):
-          _l2.append(_r)
-      
-      if(len(_l)!=0):
-        logger.error(f"Hay alumnos sin rergistro de fecha de alta/baja: {str(_l)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+            if(_entryDate is None) or (_statusStartDate is None):
+                _l.append(_r)
+            elif(_entryDate != _statusStartDate):
+                _l2.append(_r)
 
-      if(len(_l2)!=0):
-        logger.error(f"Hay alumnos con inconsistencia en registros de alta/baja: {str(_l2)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
-      
-      logger.info(f"Aprobado")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True
+            if(_exitDate is None) or (_statusEndDate is None):
+                _l.append(_r)
+            elif(_exitDate != _statusEndDate):
+                _l2.append(_r)
+
+        if(len(_l) != 0):
+            logger.error(
+                f"Hay alumnos sin rergistro de fecha de alta/baja: {str(_l)}")
+            logger.error(f"Rechazado")
+            return_dict[getframeinfo(currentframe()).function] = False
+            return False
+
+        if(len(_l2) != 0):
+            logger.error(
+                f"Hay alumnos con inconsistencia en registros de alta/baja: {str(_l2)}")
+            logger.error(f"Rechazado")
+            return_dict[getframeinfo(currentframe()).function] = False
+            return False
+
+        logger.info(f"Aprobado")
+        return_dict[getframeinfo(currentframe()).function] = True
+        return True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
-### fin fn6D0 ###
+        logger.error(
+            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+        logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
+        return False

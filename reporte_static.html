@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<!--<script src="/app/static/js/d3.v4.js"></script>-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
+<!--<link rel="stylesheet" href="/app/static/css/style.css">-->
+<style>
+  .qr-img { width:300px; height: 300px;  }
+.btn_link { padding: 10px 37px; border-radius: 10px; background-color:#6699CC; color:#ffffff; text-decoration: none; font-family: Helvetica, Arial, "sans-serif"; font-size: 14px; margin-left: 30px; }
+.reporte {margin: 20px}
+.aprobado {background-color:#70C156;}
+.rechazado {background-color:#F74B4B ;}
+.sin-datos {background-color:#9999CC ;}
+.no-verificado {background-color:#FF9933 ;}
+table {font-family: Helvetica, Arial, "sans-serif"; font-size: 13px;margin: 20px}
+</style>
+</head>
+<body>
+  Suba archivo con el resultado de la función check: &nbsp;
+<input class="btn_link" type="file" id="myfile" onchange="onMyfileChange(this)" />
+<div id="my_dataviz"></div>
+
+<table width="50%" border="0">
+  <tbody>
+    <tr>
+      <td>Aprobado</td>
+      <td>Rechazado</td>
+      <td>Sin Datos</td>
+      <td>No verificado</td>
+    </tr>
+    <tr>
+      <td class="aprobado">&nbsp;</td>
+      <td class="rechazado">&nbsp;</td>
+      <td class="sin-datos">&nbsp;</td>
+      <td class="no-verificado">&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+obj = {
+"children":
+[
+	{
+	"name":"Registro de salidas o retiros",
+	"children": 
+		[
+			{"group":"7.0", "fn":"[0FA]","name":"#/functions/fn0FA","value":10,"colname":"level3"},		
+			{"group":"7.0", "fn":"[0FB]","name":"#/functions/fn0FB","value":10,"colname":"level3"}
+		],
+	"colname":"level2"},	
+	{
+	"name":"Registro de la entrega de información",
+	"children":
+		[
+			{"group":"8.0", "fn":"[1FA]","name":"#/functions/fn1FA","value":10,"colname":"level3"},
+			{"group":"8.0", "fn":"[1FB]","name":"#/functions/fn1FB","value":10,"colname":"level3"},
+			{"group":"8.0", "fn":"[1FC]","name":"#/functions/fn1FC","value":10,"colname":"level3"}
+		],
+	"colname":"level2"},
+	{
+	"name":"REGISTRO DE MATRICULA",
+	"children": 
+		[
+			{"group":"5.1", "fn":"[2FA]","name":"#/functions/fn2FA","value":10,"colname":"level3"},
+			{"group":"5.2", "fn":"[2EA]","name":"#/functions/fn2EA","value":10,"colname":"level3"},
+			{"group":"5.3", "fn":"[2DA]","name":"#/functions/fn2DA","value":10,"colname":"level3"},
+			{"group":"5.3", "fn":"[2DB]","name":"#/functions/fn2DB","value":10,"colname":"level3"},
+			{"group":"5.4", "fn":"[2CA]","name":"#/functions/fn2CA","value":10,"colname":"level3"},
+			{"group":"5.4", "fn":"[2CB]","name":"#/functions/fn2CB","value":10,"colname":"level3"},
+			{"group":"5.5", "fn":"[2BA]","name":"#/functions/fn2BA","value":10,"colname":"level3"},
+			{"group":"5.6", "fn":"[2AA]","name":"#/functions/fn2AA","value":10,"colname":"level3"},
+			{"group":"5.7", "fn":"[29A]","name":"#/functions/fn29A","value":10,"colname":"level3"},
+			{"group":"5.7", "fn":"[29B]","name":"#/functions/fn29B","value":10,"colname":"level3"},
+			{"group":"5.7", "fn":"[29C]","name":"#/functions/fn29C","value":10,"colname":"level3"},
+			{"group":"5.8", "fn":"[28A]","name":"#/functions/fn28A","value":10,"colname":"level3"},
+			{"group":"5.8", "fn":"[28B]","name":"#/functions/fn28B","value":10,"colname":"level3"}
+		],
+	"colname":"level2"},
+	{
+	"name":"INTEGRIDAD DE LOS DATOS",
+	"children": 
+		[
+			{"group":"", "fn":"[3F0]","name":"#/functions/fn3F0","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F1]","name":"#/functions/fn3F1","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3F2]","name":"#/functions/fn3F2","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F3]","name":"#/functions/fn3F3","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F4]","name":"#/functions/fn3F4","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F5]","name":"#/functions/fn3F5","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3F6]","name":"#/functions/fn3F6","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F7]","name":"#/functions/fn3F7","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F8]","name":"#/functions/fn3F8","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3F9]","name":"#/functions/fn3F9","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3FA]","name":"#/functions/fn3FA","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3FB]","name":"#/functions/fn3FB","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3FC]","name":"#/functions/fn3FC","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3FD]","name":"#/functions/fn3FD","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3FE]","name":"#/functions/fn3FE","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3FF]","name":"#/functions/fn3FF","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E0]","name":"#/functions/fn3E0","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E1]","name":"#/functions/fn3E1","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3E2]","name":"#/functions/fn3E2","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E3]","name":"#/functions/fn3E3","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E4]","name":"#/functions/fn3E4","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E5]","name":"#/functions/fn3E5","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3E6]","name":"#/functions/fn3E6","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E7]","name":"#/functions/fn3E7","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E8]","name":"#/functions/fn3E8","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3E9]","name":"#/functions/fn3E9","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3EA]","name":"#/functions/fn3EA","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3EB]","name":"#/functions/fn3EB","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3EC]","name":"#/functions/fn3EC","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3ED]","name":"#/functions/fn3ED","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3EE]","name":"#/functions/fn3EE","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3EF]","name":"#/functions/fn3EF","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D0]","name":"#/functions/fn3D0","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D1]","name":"#/functions/fn3D1","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3D2]","name":"#/functions/fn3D2","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D3]","name":"#/functions/fn3D3","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D4]","name":"#/functions/fn3D4","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D5]","name":"#/functions/fn3D5","value":10,"colname":"level3"},			
+			{"group":"", "fn":"[3D6]","name":"#/functions/fn3D6","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D7]","name":"#/functions/fn3D7","value":10,"colname":"level3"},
+			{"group":"", "fn":"[3D8]","name":"#/functions/fn3D8","value":10,"colname":"level3"}
+		],
+	"colname":"level2"},
+	{
+	"name":"LIBRO DE CLASES DIGITAL",
+	"children":
+		[
+			{
+			"group":"REGISTRO DE ANTECEDENTES GENERALES DE LOS ESTUDIANTES POR CURSO",
+			"children":
+				[
+					{"group":"6.2a", "fn": "[4FA]","name":"#/functions/fn4FA","value":10,"colname":"level4"}
+				],
+			"colname":"level3"},
+			{
+			"name":"REGISTRO DE CONTROL DE ASIGNATURA",
+			"children":
+				[
+					{"group":"6.2b1", "fn":"[5F0]","name":"#/functions/fn5F0","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E0]","name":"#/functions/fn5E0","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E1]","name":"#/functions/fn5E1","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E2]","name":"#/functions/fn5E2","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E3]","name":"#/functions/fn5E3","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E4]","name":"#/functions/fn5E4","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E5]","name":"#/functions/fn5E5","value":10,"colname":"level4"},
+					{"group":"6.2b2", "fn":"[5E6]","name":"#/functions/fn5E6","value":10,"colname":"level4"},					
+					{"group":"6.2b3", "fn":"[5D0]","name":"#/functions/fn5D0","value":10,"colname":"level4"}					
+				],
+			"colname":"level3"},
+			{
+			"name":"REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES",
+			"children":
+				[
+					{"group":"6.2c1", "fn":"[6F0]","name":"#/functions/fn6F0","value":10,"colname":"level4"},
+					{"group":"6.2c1", "fn":"[6F1]","name":"#/functions/fn6F1","value":10,"colname":"level4"},
+					{"group":"6.2c2", "fn":"[6E0]","name":"#/functions/fn6E0","value":10,"colname":"level4"},
+					{"group":"6.2c2", "fn":"[6E1]","name":"#/functions/fn6E1","value":10,"colname":"level4"},
+					{"group":"6.2c2", "fn":"[6E2]","name":"#/functions/fn6E2","value":10,"colname":"level4"},
+					{"group":"6.2c2", "fn":"[6E3]","name":"#/functions/fn6E3","value":10,"colname":"level4"},
+					{"group":"6.2c2", "fn":"[6E4]","name":"#/functions/fn6E4","value":10,"colname":"level4"},
+					{"group":"6.2c2", "fn":"[6E5]","name":"#/functions/fn6E5","value":10,"colname":"level4"},
+					{"group":"6.2c3", "fn":"[6D0]","name":"#/functions/fn6D0","value":10,"colname":"level4"},					
+					{"group":"6.2c3", "fn":"[6D1]","name":"#/functions/fn6D1","value":10,"colname":"level4"},
+					{"group":"6.2c4", "fn":"[6C0]","name":"#/functions/fn6C0","value":10,"colname":"level4"},
+					{"group":"6.2c4", "fn":"[6C1]","name":"#/functions/fn6C1","value":10,"colname":"level4"},
+					{"group":"6.2c4", "fn":"[6C2]","name":"#/functions/fn6C2","value":10,"colname":"level4"},
+					{"group":"6.2c5", "fn":"[6B0]","name":"#/functions/fn6B0","value":10,"colname":"level4"},
+					{"group":"6.2c5", "fn":"[6B1]","name":"#/functions/fn6B1","value":10,"colname":"level4"},
+					{"group":"6.2c6", "fn":"[6A0]","name":"#/functions/fn6A0","value":10,"colname":"level4"},
+					{"group":"6.2c6", "fn":"[6A1]","name":"#/functions/fn6A1","value":10,"colname":"level4"},					
+					{"group":"6.2c6", "fn":"[6A2]","name":"#/functions/fn6A2","value":10,"colname":"level4"},
+					{"group":"6.2c6", "fn":"[6A3]","name":"#/functions/fn6A3","value":10,"colname":"level4"},
+					{"group":"6.2c7", "fn":"[690]","name":"#/functions/fn690","value":10,"colname":"level4"},
+					{"group":"6.2c8", "fn":"[680]","name":"#/functions/fn680","value":10,"colname":"level4"},
+					{"group":"6.2c8", "fn":"[681]","name":"#/functions/fn681","value":10,"colname":"level4"},
+					{"group":"6.2c8", "fn":"[682]","name":"#/functions/fn682","value":10,"colname":"level4"}
+				],
+			"colname":"level3"},
+			{
+			"name":"REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS",
+			"children":
+				[
+					{"group":"6.2d", "fn":"[7F0]","name":"#/functions/fn7F0","value":10,"colname":"level4"},
+					{"group":"6.2d", "fn":"[7F1]","name":"#/functions/fn7F1","value":10,"colname":"level4"},
+					{"group":"6.2d", "fn":"[7F2]","name":"#/functions/fn7F2","value":10,"colname":"level4"},
+					{"group":"6.2d", "fn":"[7F3]","name":"#/functions/fn7F3","value":10,"colname":"level4"},
+					{"group":"6.2d", "fn":"[7F4]","name":"#/functions/fn7F4","value":10,"colname":"level4"},
+					{"group":"6.2d", "fn":"[7F5]","name":"#/functions/fn7F5","value":10,"colname":"level4"},				
+					{"group":"6.2d", "fn":"[7F6]","name":"#/functions/fn7F6","value":10,"colname":"level4"}
+				],
+			"colname":"level3"},
+			{
+			"name":"REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE",
+			"children":
+				[
+					{"group":"6.2e", "fn":"[8F0]","name":"#/functions/fn8F0","value":10,"colname":"level4"},
+					{"group":"6.2e", "fn":"[8F1]","name":"#/functions/fn8F1","value":10,"colname":"level4"},
+					{"group":"6.2e", "fn":"[8F2]","name":"#/functions/fn8F2","value":10,"colname":"level4"},				
+					{"group":"6.2e", "fn":"[8F3]","name":"#/functions/fn8F3","value":10,"colname":"level4"}
+				],
+			"colname":"level3"},			
+			{
+			"name":"REGISTRO DE ATENCION DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACION DEL ESTUDIANTE",
+			"children":
+				[
+					{"group":"6.2f", "fn":"[9F0]","name":"#/functions/fn9F0","value":10,"colname":"level4"},
+					{"group":"6.2f", "fn":"[9F1]","name":"#/functions/fn9F1","value":10,"colname":"level4"},
+					{"group":"6.2f", "fn":"[9F2]","name":"#/functions/fn9F2","value":10,"colname":"level4"},					
+					{"group":"6.2f", "fn":"[9F3]","name":"#/functions/fn9F3","value":10,"colname":"level4"}
+				],
+			"colname":"level3"}
+		],
+	"colname":"level2"}
+],
+"name":"Reporte EDE",
+"functions":{
+    "fn0FA": "No/Verificado",
+    "fn0FB": "No/Verificado",
+    "fn1FA": "No/Verificado",
+    "fn1FB": "No/Verificado",
+    "fn1FC": "No/Verificado",
+    "fn2FA": "No/Verificado",
+    "fn2EA": "No/Verificado",
+    "fn2DA": "No/Verificado",
+    "fn2DB": "No/Verificado",
+    "fn2CA": "No/Verificado",
+    "fn2CB": "No/Verificado",
+    "fn2BA": "No/Verificado",
+    "fn2AA": "No/Verificado",
+    "fn29A": "No/Verificado",
+    "fn29B": "No/Verificado",
+    "fn29C": "No/Verificado",
+    "fn28A": "No/Verificado",
+    "fn28B": "No/Verificado",
+    "fn3F0": "No/Verificado",
+    "fn3F1": "No/Verificado",
+    "fn3F2": "No/Verificado",
+    "fn3F3": "No/Verificado",
+    "fn3F4": "No/Verificado",
+    "fn3F5": "No/Verificado",
+    "fn3F6": "No/Verificado",
+    "fn3F7": "No/Verificado",
+    "fn3F8": "No/Verificado",
+    "fn3F9": "No/Verificado",
+    "fn3FA": "No/Verificado",
+    "fn3FB": "No/Verificado",
+    "fn3FC": "No/Verificado",
+    "fn3FD": "No/Verificado",
+    "fn3FE": "No/Verificado",
+    "fn3FF": "No/Verificado",
+    "fn3E0": "No/Verificado",
+    "fn3E1": "No/Verificado",
+    "fn3E2": "No/Verificado",
+    "fn3E3": "No/Verificado",
+    "fn3E4": "No/Verificado",
+    "fn3E5": "No/Verificado",
+    "fn3E6": "No/Verificado",
+    "fn3E7": "No/Verificado",
+    "fn3E8": "No/Verificado",
+    "fn3E9": "No/Verificado",
+    "fn3EA": "No/Verificado",
+    "fn3EB": "No/Verificado",
+    "fn3EC": "No/Verificado",
+    "fn3ED": "No/Verificado",
+    "fn3EE": "No/Verificado",
+    "fn3EF": "No/Verificado",
+    "fn3D0": "No/Verificado",
+    "fn3D1": "No/Verificado",
+    "fn3D2": "No/Verificado",
+    "fn3D3": "No/Verificado",
+    "fn3D4": "No/Verificado",
+    "fn3D5": "No/Verificado",
+    "fn3D6": "No/Verificado",
+    "fn3D7": "No/Verificado",
+    "fn3D8": "No/Verificado",
+    "fn4FA": "No/Verificado",
+    "fn5F0": "No/Verificado",
+    "fn5E0": "No/Verificado",
+    "fn5E1": "No/Verificado",
+    "fn5E2": "No/Verificado",
+    "fn5E3": "No/Verificado",
+    "fn5E4": "No/Verificado",
+    "fn5E5": "No/Verificado",
+    "fn5E6": "No/Verificado",
+    "fn5D0": "No/Verificado",
+    "fn6F0": "No/Verificado",
+    "fn6F1": "No/Verificado",
+    "fn6E0": "No/Verificado",
+    "fn6E1": "No/Verificado",
+    "fn6E2": "No/Verificado",
+    "fn6E3": "No/Verificado",
+    "fn6E4": "No/Verificado",
+    "fn6E5": "No/Verificado",
+    "fn6D0": "No/Verificado",
+    "fn6D1": "No/Verificado",
+    "fn6C0": "No/Verificado",
+    "fn6C1": "No/Verificado",
+    "fn6C2": "No/Verificado",
+    "fn6B0": "No/Verificado",
+    "fn6B1": "No/Verificado",
+    "fn6A0": "No/Verificado",
+    "fn6A1": "No/Verificado",
+    "fn6A2": "No/Verificado",
+    "fn6A3": "No/Verificado",
+    "fn690": "No/Verificado",
+    "fn680": "No/Verificado",
+    "fn681": "No/Verificado",
+    "fn682": "No/Verificado",
+    "fn7F0": "No/Verificado",
+    "fn7F1": "No/Verificado",
+    "fn7F2": "No/Verificado",
+    "fn7F3": "No/Verificado",
+    "fn7F4": "No/Verificado",
+    "fn7F5": "No/Verificado",
+    "fn7F6": "No/Verificado",
+    "fn8F0": "No/Verificado",
+	"fn8F1": "No/Verificado",
+	"fn8F2": "No/Verificado",
+	"fn8F3": "No/Verificado",
+	"fn9F0": "No/Verificado",
+	"fn9F1": "No/Verificado",
+	"fn9F2": "No/Verificado",
+	"fn9F3": "No/Verificado"	
+}
+}
+
+</script>
+
+
+<script src="https://unpkg.com/jszip@3.7.1/dist/jszip.js" type="text/javascript"></script>
+
+
+
+<script>
+  //setea todas las funciones como no verificado, para resetear el objeto
+  function setear_NoVerificado(obj){
+  for(var ch of obj["children"]){
+    if (Object.keys(ch).indexOf("name") > -1){
+        ch["name"] = "No/Verificado"
+        console.log("no verificado")
+      
+    }
+    if (Object.keys(ch).indexOf("children") > -1){
+      setear_NoVerificado(ch) //llamada recursiva para buscar los hijos
+    }
+  }
+}
+// set the dimensions and margins of the graph
+
+
+// read json data
+/*d3.json({{json|tojson|safe}},function(data) {
+    if(data) { console.log("<true>",data) }
+    else {  
+        data = JSON.parse({{jsonData|tojson|safe}})
+        console.log("<false>", data)
+    }*/
+function updateGraph(data){
+  document.getElementById("my_dataviz").innerHTML = "" //elimina el gráfico ya dibujado (si hay)
+
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
+  width = 1800 - margin.left - margin.right,
+  height = 900 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
+
+  // get in the params here
+  // Give the data to this cluster layout:
+  var root = d3.hierarchy(data).sum(function(d){ return d.value}) // Here the size of each leave is given in the 'value' field in input data
+
+  // Then d3.treemap computes the position of each element of the hierarchy
+  d3.treemap()
+    .size([width, height])
+    .paddingTop(28)
+    .paddingRight(7)
+    .paddingInner(3)      // Padding between each rectangle
+    (root)
+
+  // prepare a color scale
+  var color = d3.scaleOrdinal()
+    .domain(["Rechazado", "S/Datos", "Aprobado", "No/Verificado"])
+    .range(["#F74B4B", "#9999CC", "#70C156", "#FF9933"])
+
+  // And a opacity scale
+  var opacity = d3.scaleLinear()
+    .domain([10, 30])
+    .range([.5,1])
+
+  // use this information to add rectangles:
+  svg
+    .selectAll("rect")
+    .data(root.leaves())
+    .enter()
+    .append("rect")
+    .attr('x', function (d) { return d.x0; })
+    .attr('y', function (d) { return d.y0; })
+    .attr('width', function (d) { return d.x1 - d.x0; })
+    .attr('height', function (d) { return d.y1 - d.y0; })
+    .style("fill", function(d){ return color(d.data.name)} )
+  // and to add the text labels
+  svg
+    .selectAll("text")
+    .data(root.leaves())
+    .enter()
+    .append("text")
+    .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
+    .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
+    .text(function(d){ return d.data.group+d.data.fn })
+    .attr("font-size", "14px")
+	  .attr("font-family", "Helvetica, Arial")
+    .attr("fill", "white")
+      
+  // and to add the text labels
+  svg
+    .selectAll("vals")
+    .data(root.leaves())
+    .enter()
+    .append("text")
+    .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
+    .attr("y", function(d){ return d.y0+35})    // +20 to adjust position (lower)
+    .text(function(d){ return d.data.name })
+    .attr("font-size", "10px")
+    .attr("font-family", "Helvetica, Arial")
+    .attr("fill", "white")
+
+  // Add title for the 3 groups
+  svg
+    .selectAll("titles")
+    .data(root.descendants().filter(function(d){return d.depth==1}))
+    .enter()
+    .append("text")
+    .attr("x", function(d){ return d.x0})
+    .attr("y", function(d){ return d.y0+21})
+    .text(function(d){ return d.data.name })
+    .style("stroke", "grey")
+    .attr("font-size", "14px")
+    .attr("font-family", "Helvetica, Arial")
+    .attr("fill",  "grey")
+
+  // Add title for the 3 groups
+  svg
+    .append("text")
+      .attr("x", 0)
+      .attr("y", 12)    // +20 to adjust position (lower)
+      .text("Estándar de Datos para la Educación (EDE) - Grupos de verificaciones")
+      .attr("font-size", "24px")
+      .attr("font-family", "Helvetica, Arial")
+      .style("stroke", "black")
+      .attr("fill",  "black" )
+}
+updateGraph(obj);
+</script>
+
+<script>
+  //asigna el resultado de la función ("cambiar") 
+  //al objeto correspondiente ("nombre")
+function recorrer(obj, nombre, cambiar){
+  for(var ch of obj["children"]){
+    if (Object.keys(ch).indexOf("fn") > -1){
+      if (ch["fn"] == nombre){
+        ch["name"] = cambiar
+        console.log("hecho")
+        return True
+      }
+    }
+    if (Object.keys(ch).indexOf("children") > -1){
+      recorrer(ch, nombre, cambiar)//lamada recursiva con el hijo del objeto
+    }
+  }
+}
+
+
+</script>
+
+
+<script type="text/javascript">
+  function onMyfileChange(fileInput) {//al subir un archivo
+    if(fileInput.files[0] == undefined) {//si no hay archivo, no hace nada
+        return ;
+    }
+    var filename = fileInput.files[0].name;
+    // var filesize = fileInput.files[0].size;
+    var reader = new FileReader();//inicializa objeto JSZip
+    reader.onload = function(ev) {
+        JSZip.loadAsync(ev.target.result).then(function(zip) {
+            console.log(zip)//contenido del zip
+              for(var f of Object.keys(zip.files)) {
+                console.log(f)//nombre del archivo dentro del zip
+                if(f.endsWith("_LOG.txt")){
+                  zip.files[f].async("string").then(function(data){//leer archivo como texto
+                    data = data.split("\n")
+                    //console.log(data)
+                    setear_NoVerificado(obj)//antes de asignar los resultados, se resetea el objeto
+                    for(var l of data){//por cada línea en el archivo
+                      //console.log(l)
+                      try{
+                        ljson = JSON.parse(l)
+                        //console.log(ljson)
+                        if(ljson["message"] == "S/Datos" || ljson["message"] == "Aprobado" || ljson["message"] == "Rechazado"){
+                          console.log(ljson["funcName"]+": "+ljson["message"])
+                          //asignar resultado de la función, a cada función
+                          recorrer(obj, "["+ljson["funcName"].substr(2)+"]", ljson["message"])
+                        }
+                      }catch(e){
+                        console.log("error en parse"+l+" error: "+e)
+                      }
+                      updateGraph(obj);
+                    }
+                    
+                  })
+                }
+                  
+                
+                
+              }
+            //zip.file.async("string").then(function(data) {
+                          // data is a string
+                          // TODO Your code goes here!
+                //          console.log(data)
+              //        })
+        }).catch(function(err) {
+            console.error("Failed to open", filename, " as ZIP file");
+        })
+    };
+    reader.onerror = function(err) {
+        console.error("Failed to read file", err);
+    }
+    reader.readAsArrayBuffer(fileInput.files[0]);//leer el primer archivo subido como zip 
+    //(en caso de haber varios archivos cambiar esto a un for)
+    //console.log(f1)
+  }
+  
+  </script>
+  </body>
+  </html>

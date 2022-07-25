@@ -5,7 +5,6 @@ from multiprocessing import current_process
 from ede.ede._logger import logger
 
 
-  ### INICIO fn3F3 ###
 def fn3FE(conn, return_dict):
     """
     Integridad: Verifica que los estudiantes tengan sus datos de nacimiento
@@ -20,11 +19,11 @@ def fn3FE(conn, return_dict):
             - Encontrar informacion en la consulta
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """       
+    """
     _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
 SELECT
 	  p.personId
 	, pbp.ciudadNacimiento
@@ -59,19 +58,19 @@ JOIN RefPersonStatusType rpst
 GROUP BY p.personId
     """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
+        logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
-      if(len(rows)>0):
-        logger.info(f"len(estudiantes): {len(rows)}")
-        logger.info(f"Aprobado")
-        _r = True
-      else:
-        logger.info(f"S/Datos")
+        if(len(rows) > 0):
+            logger.info(f"len(estudiantes): {len(rows)}")
+            logger.info(f"Aprobado")
+            _r = True
+        else:
+            logger.info(f"S/Datos")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por estudiantes: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la vista personList filtrada por estudiantes: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-### FIN fn3FE ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

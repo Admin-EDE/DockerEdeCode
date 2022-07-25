@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn9F1(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
@@ -22,11 +23,11 @@ def fn9F1(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     courseSections = []
     try:
-      courseSections = conn.execute("""
+        courseSections = conn.execute("""
         SELECT
           O.OrganizationId
         FROM Organization O
@@ -38,17 +39,18 @@ def fn9F1(conn, return_dict):
           )                              
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {courseSections} -> {str(e)}")
-   
-    if (len(courseSections)<=0):
-      logger.info(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
+        logger.info(f"Resultado: {courseSections} -> {str(e)}")
 
-    logger.info(f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
+    if (len(courseSections) <= 0):
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = False
+        return False
+
+    logger.info(
+        f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     _query = []
     try:
-      _query = conn.execute("""
+        _query = conn.execute("""
           SELECT
               O.OrganizationId
             , group_concat(DISTINCT CSS.ClassMeetingDays) ClassMeetingDays
@@ -92,30 +94,33 @@ def fn9F1(conn, return_dict):
           GROUP BY O.OrganizationId
       """).fetchall()
     except Exception as e:
-      logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
+        logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:
-      courseSections = list([m[0] for m in courseSections if m[0] is not None])
-      
-      if( len( _query ) > 0 ):
-        logger.info(f"primer registro encontrado: {_query[0]} de {len(_query)}")        
-        for row in _query:
-          try:
-            OrganizationCalendarSessionCount = row[5]
-            if(OrganizationCalendarSessionCount > 0): #Verifica que tenga asociado, al menos, un organizationCalendarSession
-              courseSections.remove(row[0])
-          except:
-            print(f"no se pudo eliminar {row[0]}")
-      
-      if(len(courseSections) == 0):
-        logger.info(f"Aprobado")  
-        _r = True
-      else:
-        logger.error(f"{len(courseSections)} Asignaturas tienen problemas con su planificación: {courseSections}")
-        logger.error(f"Rechazado")
+        courseSections = list([m[0]
+                              for m in courseSections if m[0] is not None])
+
+        if(len(_query) > 0):
+            logger.info(
+                f"primer registro encontrado: {_query[0]} de {len(_query)}")
+            for row in _query:
+                try:
+                    OrganizationCalendarSessionCount = row[5]
+                    # Verifica que tenga asociado, al menos, un organizationCalendarSession
+                    if(OrganizationCalendarSessionCount > 0):
+                        courseSections.remove(row[0])
+                except:
+                    print(f"no se pudo eliminar {row[0]}")
+
+        if(len(courseSections) == 0):
+            logger.info(f"Aprobado")
+            _r = True
+        else:
+            logger.error(
+                f"{len(courseSections)} Asignaturas tienen problemas con su planificación: {courseSections}")
+            logger.error(f"Rechazado")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      return _r
-  ## Fin fn9F1 WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r

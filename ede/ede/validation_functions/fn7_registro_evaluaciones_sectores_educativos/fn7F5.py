@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn7F5(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn7F5(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     _query = []
     try:
@@ -32,18 +33,18 @@ def fn7F5(conn, return_dict):
         ORDER BY LA.LearnerActivityId;
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_query} -> {str(e)}")
+        logger.info(f"Resultado: {_query} -> {str(e)}")
 
-    if( len(_query) == 0 ):
-      logger.error(f'No evaluaciones registradas en el establecimiento ')
-      logger.error(f'S/Datos')
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-    
+    if(len(_query) == 0):
+        logger.error(f'No evaluaciones registradas en el establecimiento ')
+        logger.error(f'S/Datos')
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
     _organizationCalendarSession = []
     try:
-      _organizationCalendarSession = conn.execute("""
+        _organizationCalendarSession = conn.execute("""
       SELECT OrganizationCalendarSessionId
       FROM LearnerActivity
       WHERE LearnerActivityId IN (
@@ -57,18 +58,19 @@ def fn7F5(conn, return_dict):
       GROUP BY OrganizationCalendarSessionId;
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_organizationCalendarSession} -> {str(e)}")
-    
-    if( len(_organizationCalendarSession) == 0 ):
-      logger.error(f'Las evaluaciones registradas no poseen registro en los calendarios')
-      logger.error(f'Rechazdo')
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-    
+        logger.info(f"Resultado: {_organizationCalendarSession} -> {str(e)}")
+
+    if(len(_organizationCalendarSession) == 0):
+        logger.error(
+            f'Las evaluaciones registradas no poseen registro en los calendarios')
+        logger.error(f'Rechazdo')
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
     _calendar = []
     try:
-      _calendar = conn.execute("""
+        _calendar = conn.execute("""
           SELECT 'Descripcion' as Descrip
           FROM OrganizationCalendarSession
           WHERE Description IS NOT NULL
@@ -88,21 +90,22 @@ def fn7F5(conn, return_dict):
           """).fetchall()
 
     except Exception as e:
-      logger.info(f"Resultado: {_calendar} -> {str(e)}")
-    
+        logger.info(f"Resultado: {_calendar} -> {str(e)}")
+
     try:
-      if(len(_calendar) == len(_organizationCalendarSession)):
-        logger.info(f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
-        logger.info(f'Aprobado')
-        _r = True
-      else:
-        logger.error(f'No se han ingresado en los calendarios la descripcion del contenido impartido')
-        logger.error(f'Rechazado')
+        if(len(_calendar) == len(_organizationCalendarSession)):
+            logger.info(
+                f'Todas las evaluaciones registradas en el establecimiento poseen registro de contenidos en los calendarios')
+            logger.info(f'Aprobado')
+            _r = True
+        else:
+            logger.error(
+                f'No se han ingresado en los calendarios la descripcion del contenido impartido')
+            logger.error(f'Rechazado')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ## Fin fn7F5 WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

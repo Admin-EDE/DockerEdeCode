@@ -4,8 +4,21 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn2BA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.5 De los estudiantes excedentes
+    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
+    ---------------------------------------------------------------------
+    NOTA: 
+    - File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
+    - Una resolución es un documento público que emite el Ministerio de Educación en 
+    ciertos casos. Cada resolución tiene un número y una fecha de total tramitación. 
+    Para este caso se debe validar que exista el documento cargado en el sistema y 
+    sus datos cargados en la tabla. 
+    Casos en que aplica: 
+    PersonStatus.RefPersonStatusTypeId == (24 OR 31 OR 25) + 
+    PersonStatus.fileScanBase64 + PersonStatus.docNumber + PersonStatus.StatusStartDate
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -19,7 +32,7 @@ def fn2BA(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _query = conn.execute("""
         SELECT DISTINCT P.PersonId
@@ -29,8 +42,8 @@ def fn2BA(conn, return_dict):
         where OPR.RoleId = 6
           and PS.RefPersonStatusTypeId IN (25, 24, 31);
         """).fetchall()
-        if (len(_query)>0):
-          _queryExcedentes = conn.execute("""
+        if (len(_query) > 0):
+            _queryExcedentes = conn.execute("""
           SELECT fileScanBase64
           from PersonStatus
           where PersonId in (
@@ -43,8 +56,8 @@ def fn2BA(conn, return_dict):
             and fileScanBase64 is not null
             and RefPersonStatusTypeId IN (25, 24, 31);
           """).fetchall()
-          if (len(_queryExcedentes) == len(_query)):
-            _file = conn.execute("""
+            if (len(_queryExcedentes) == len(_query)):
+                _file = conn.execute("""
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -63,21 +76,24 @@ def fn2BA(conn, return_dict):
                                   and RefPersonStatusTypeId IN (25, 24, 31)
             )
             """).fetchall()
-            if(len(_file) == len(_query)):
-              logger.info(f'Todos los alumnos excedentes cuentan con su documento correspondiente')
-              logger.info(f'Aprobado')
-              return_dict[getframeinfo(currentframe()).function] = True
-              return True
+                if(len(_file) == len(_query)):
+                    logger.info(
+                        f'Todos los alumnos excedentes cuentan con su documento correspondiente')
+                    logger.info(f'Aprobado')
+                    return_dict[getframeinfo(currentframe()).function] = True
+                    return True
+                else:
+                    logger.error(
+                        f'Los alumnos excedentes no cuentan con su documento correspondiente')
+                    logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
             else:
-              logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
-              logger.error(f'Rechazado')
-              return_dict[getframeinfo(currentframe()).function] = False
-              return False
-          else:
-            logger.error(f'Los alumnos excedentes no cuentan con su documento correspondiente')
-            logger.error(f'Rechazado')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+                logger.error(
+                    f'Los alumnos excedentes no cuentan con su documento correspondiente')
+                logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
         else:
             logger.info(f'S/Datos')
             logger.info(f'No existen alumnos excedentes en el establecimiento')
@@ -88,4 +104,3 @@ def fn2BA(conn, return_dict):
         logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn2BA WC ##

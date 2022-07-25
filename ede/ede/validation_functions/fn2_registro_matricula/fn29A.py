@@ -4,8 +4,11 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn29A(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.7 De los estudiantes en práctica
+    Validar que los estudiantes en práctica hayan terminado al menos el primer semestre del tercer año.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -19,11 +22,11 @@ def fn29A(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
-    _r = False    
+    """
+    _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
         SELECT est.personid
         FROM person est
         JOIN PersonStatus ps
@@ -31,18 +34,18 @@ def fn29A(conn, return_dict):
           AND ps.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description = 'En práctica')
     """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+
     if(len(rows) == 0):
-      logger.info(f"S/Datos")      
-      _r = True
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r  
-      
-    results = []    
+        logger.info(f"S/Datos")
+        _r = True
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
+    results = []
     try:
-      results = conn.execute("""
+        results = conn.execute("""
 SELECT est.personid
 FROM person est
 JOIN PersonStatus ps
@@ -75,34 +78,37 @@ OUTER LEFT JOIN (
 ON orgPractica.personid = est.personId
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {results} -> {str(e)}")
+        logger.info(f"Resultado: {results} -> {str(e)}")
 
     if(len(results) == 0):
-      logger.info(f"Rechazado")
-      logger.info(f"Alumnos mal asignados en su practica profesional: {rows}")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r     
-    
-    try:
-      listaDeEstudiantesEnPractica = list(set([m[0] for m in results if m[0] is not None]))
-      faltantes = []
-      for row in rows:
-        personIdEstudiante = row[0]
-        if(personIdEstudiante not in listaDeEstudiantesEnPractica):
-          faltantes.append(personIdEstudiante)
-      if(len(faltantes) == 0):
-        logger.info(f"todos los alumnos de practica cumplen con los requisitos")
-        logger.info(f"Aprobado")
-        _r = True
-      else:
         logger.info(f"Rechazado")
-        logger.info(f"Alumnos mal asignados en su practica profesional: {faltantes}")
+        logger.info(
+            f"Alumnos mal asignados en su practica profesional: {rows}")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
+    try:
+        listaDeEstudiantesEnPractica = list(
+            set([m[0] for m in results if m[0] is not None]))
+        faltantes = []
+        for row in rows:
+            personIdEstudiante = row[0]
+            if(personIdEstudiante not in listaDeEstudiantesEnPractica):
+                faltantes.append(personIdEstudiante)
+        if(len(faltantes) == 0):
+            logger.info(
+                f"todos los alumnos de practica cumplen con los requisitos")
+            logger.info(f"Aprobado")
+            _r = True
+        else:
+            logger.info(f"Rechazado")
+            logger.info(
+                f"Alumnos mal asignados en su practica profesional: {faltantes}")
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r  
-  ## Fin fn29A WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

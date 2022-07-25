@@ -4,6 +4,7 @@ import sys
 
 from ede.ede._logger import logger
 
+
 def fn6F0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
@@ -23,12 +24,12 @@ def fn6F0(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     rows = []
     try:
-      # select para listar todos los colegios de tabla organizacion
-      rows = conn.execute("""
+        # select para listar todos los colegios de tabla organizacion
+        rows = conn.execute("""
 -- 6.2 Contenido mínimo, letra c
 -- erificar que exista el registro de asistencia en aquellos casos en los cuales se realizó la clase al estudiante.
 -- * día de clases
@@ -230,63 +231,73 @@ WHERE
 GROUP BY Organizationid, date
       """).fetchall()
     except Exception as e:
-      logger.error(f"Resultado: {rows} -> {str(e)}")
-   
-    #define listas de errores
+        logger.error(f"Resultado: {rows} -> {str(e)}")
+
+    # define listas de errores
     workDayWithoutInfo = []
     courseNameErrors = []
     totalStudentsErrors = []
     tokenRegisteredErrors = []
     try:
-      #logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
-      if(not rows):
-        logger.error(f"S/Datos")
-        logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
-        logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
-        raise ValueError(f"No hay informacion")
-      
-      for row in rows:
-        #define variables a comparar
-        organizationId = row[0]
-        workDay = row[1]
-        CourseId = row[2]
-        courseName = row[3]
-        totalStudents = row[9]
-        presentStudents = row[10] if (row[10]) else 0
-        ausentStudents = row[12]  if (row[12]) else 0
-        tokenRegistered = row[14]
-        
-        #Comienza a validar los datos
-        if(not CourseId): 
-          #se encontraron días hábiles del calendatio sin información registrada
-          workDayWithoutInfo.append(workDay)
+        #logger.debug(f"rows: {rows}, _organizationId: {rows[0][0]}")
+        if(not rows):
+            logger.error(f"S/Datos")
+            logger.info(
+                f'No hay información disponible para validar. Su registro es obligatorio.')
+            logger.info(
+                f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+            raise ValueError(f"No hay informacion")
 
-        else: #Valida solo si existe información en la fecha
-          if(not courseName):
-            #Se encontraron asignaturas sin ningún nombre registrado
-            courseNameErrors.append(organizationId)
+        for row in rows:
+            # define variables a comparar
+            organizationId = row[0]
+            workDay = row[1]
+            CourseId = row[2]
+            courseName = row[3]
+            totalStudents = row[9]
+            presentStudents = row[10] if (row[10]) else 0
+            ausentStudents = row[12] if (row[12]) else 0
+            tokenRegistered = row[14]
 
-          if(totalStudents != (presentStudents+ausentStudents)):
-            #La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
-            totalStudentsErrors.append(organizationId)
-            
-          if(tokenRegistered != totalStudents):
-            #La cantidad de firmas registradas no coinciden con el número total de estudiantes
-            tokenRegisteredErrors.append(organizationId)
-                        
-      if(workDayWithoutInfo or courseNameErrors or totalStudentsErrors or tokenRegisteredErrors): 
-        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendario sin información registrada: {workDayWithoutInfo}')
-        if(courseNameErrors): logger.error(f'Se encontraron cursos sin ningún nombre registrado: {courseNameErrors}')
-        if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes en los siguientes cursos: {totalStudentsErrors}')
-        if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en los siguientes cursos: {tokenRegisteredErrors}')
-      else:
-        _r = True
+            # Comienza a validar los datos
+            if(not CourseId):
+                # se encontraron días hábiles del calendatio sin información registrada
+                workDayWithoutInfo.append(workDay)
+
+            else:  # Valida solo si existe información en la fecha
+                if(not courseName):
+                    # Se encontraron asignaturas sin ningún nombre registrado
+                    courseNameErrors.append(organizationId)
+
+                if(totalStudents != (presentStudents+ausentStudents)):
+                    # La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
+                    totalStudentsErrors.append(organizationId)
+
+                if(tokenRegistered != totalStudents):
+                    # La cantidad de firmas registradas no coinciden con el número total de estudiantes
+                    tokenRegisteredErrors.append(organizationId)
+
+        if(workDayWithoutInfo or courseNameErrors or totalStudentsErrors or tokenRegisteredErrors):
+            if(workDayWithoutInfo):
+                logger.error(
+                    f'Se encontraron días hábiles del calendario sin información registrada: {workDayWithoutInfo}')
+            if(courseNameErrors):
+                logger.error(
+                    f'Se encontraron cursos sin ningún nombre registrado: {courseNameErrors}')
+            if(totalStudentsErrors):
+                logger.error(
+                    f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes en los siguientes cursos: {totalStudentsErrors}')
+            if(tokenRegisteredErrors):
+                logger.error(
+                    f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en los siguientes cursos: {tokenRegisteredErrors}')
+        else:
+            _r = True
     except Exception as e:
-      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")      
-      logger.error(f"{str(e)}")
+        logger.error(
+            f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
+        logger.error(f"{str(e)}")
     finally:
-      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-### fin fn6F0 ###
+        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

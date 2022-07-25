@@ -4,12 +4,14 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+# Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+#  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
 
 
-  # Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
-  #  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
 def fn3D1(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que Las asignaturas tengan una capacidad máxima y que 
+    todas las organizaciones en la tabla de asignaturas sean de tipo ASIGNATURA
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,17 +19,16 @@ def fn3D1(conn, return_dict):
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Las asignaturas tienen una capacidad máxima acorde al formato y las
+            organizaciones en la tabla de asignaturas se corresponden a asignaturas.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     MaximumCapacityErrors = []
     try:
-      MaximumCapacityErrors = conn.execute("""
+        MaximumCapacityErrors = conn.execute("""
         -- Selecciona los Organizaciones de tipo ASIGNATURA que no cumplen con el criterio de la expresión regular
         SELECT OrganizationId, MaximumCapacity
         FROM CourseSection
@@ -37,11 +38,11 @@ def fn3D1(conn, return_dict):
           MaximumCapacity NOT REGEXP "^[1-9]{1}\d{1,3}$"
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {MaximumCapacityErrors} -> {str(e)}")
-    
+        logger.info(f"Resultado: {MaximumCapacityErrors} -> {str(e)}")
+
     organizationMalAsignadas = []
-    try:  
-      organizationMalAsignadas = conn.execute("""
+    try:
+        organizationMalAsignadas = conn.execute("""
           -- Selecciona las Organizaciones que no son de tipo ASIGNATURA 
           SELECT OrganizationId
           FROM CourseSection
@@ -56,31 +57,35 @@ def fn3D1(conn, return_dict):
                   )
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {organizationMalAsignadas} -> {str(e)}")
-    
-    try:      
-      logger.info(f"MaximunCapacity mal asignados: {len(MaximumCapacityErrors)}, Tabla CourseSection con organizacion mal asignadas: {len(organizationMalAsignadas)}")
-      if(len(MaximumCapacityErrors)>0 or len(organizationMalAsignadas)>0):
-        data1 = list(set([m[0] for m in MaximumCapacityErrors if m[0] is not None]))
-        data2 = list(set([m[0] for m in organizationMalAsignadas if m[0] is not None]))
-        _c1 = len(set(data1))
-        _c2 = len(set(data2))
-        _err1 = f"Las siguientes asignaturas no tiene el campo MaximumCapacity declarado correctamente: {data1}"
-        _err2 = f"Las siguientes organizaciones no son de tipo asignaturas: {data2}"
-        if (_c1 > 0):
-          logger.error(_err1)
-        if (_c2 > 0):
-          logger.error(_err2)
-        if (_c1 > 0 or _c2 > 0):
-          logger.error(f"Rechazado")
-          return_dict[getframeinfo(currentframe()).function] = False
-      else:
-        logger.info(f"Aprobado")
-        _r = True
+        logger.info(f"Resultado: {organizationMalAsignadas} -> {str(e)}")
+
+    try:
+        logger.info(
+            f"MaximunCapacity mal asignados: {len(MaximumCapacityErrors)}, Tabla CourseSection con organizacion mal asignadas: {len(organizationMalAsignadas)}")
+        if(len(MaximumCapacityErrors) > 0 or len(organizationMalAsignadas) > 0):
+            data1 = list(
+                set([m[0] for m in MaximumCapacityErrors if m[0] is not None]))
+            data2 = list(
+                set([m[0] for m in organizationMalAsignadas if m[0] is not None]))
+            _c1 = len(set(data1))
+            _c2 = len(set(data2))
+            _err1 = f"Las siguientes asignaturas no tiene el campo MaximumCapacity declarado correctamente: {data1}"
+            _err2 = f"Las siguientes organizaciones no son de tipo asignaturas: {data2}"
+            if (_c1 > 0):
+                logger.error(_err1)
+            if (_c2 > 0):
+                logger.error(_err2)
+            if (_c1 > 0 or _c2 > 0):
+                logger.error(f"Rechazado")
+                return_dict[getframeinfo(currentframe()).function] = False
+        else:
+            logger.info(f"Aprobado")
+            _r = True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

@@ -1,17 +1,17 @@
 
-#print("Y-Y"*105)
-#registro de salidas o retiros
+# print("Y-Y"*105)
+# registro de salidas o retiros
 from ede.ede.validation_functions.fn0_registro_salidas_retiros.fn0FA import fn0FA
 from ede.ede.validation_functions.fn0_registro_salidas_retiros.fn0FB import fn0FB
 
 
-#registro de la entrega de información
+# registro de la entrega de información
 from ede.ede.validation_functions.fn1_registro_entrega_informacion.fn1FA import fn1FA
 from ede.ede.validation_functions.fn1_registro_entrega_informacion.fn1FB import fn1FB
 from ede.ede.validation_functions.fn1_registro_entrega_informacion.fn1FC import fn1FC
 
 
-#registro de matrícula
+# registro de matrícula
 
 from ede.ede.validation_functions.fn2_registro_matricula.fn28A import fn28A
 from ede.ede.validation_functions.fn2_registro_matricula.fn28B import fn28B
@@ -28,10 +28,7 @@ from ede.ede.validation_functions.fn2_registro_matricula.fn2EA import fn2EA
 from ede.ede.validation_functions.fn2_registro_matricula.fn2FA import fn2FA
 
 
-
-
-
-#integridad de datos
+# integridad de datos
 from ede.ede.validation_functions.fn3_integridad_datos.fn3F0 import fn3F0
 from ede.ede.validation_functions.fn3_integridad_datos.fn3F1 import fn3F1
 from ede.ede.validation_functions.fn3_integridad_datos.fn3F2 import fn3F2
@@ -42,7 +39,7 @@ from ede.ede.validation_functions.fn3_integridad_datos.fn3F6 import fn3F6
 from ede.ede.validation_functions.fn3_integridad_datos.fn3F7 import fn3F7
 from ede.ede.validation_functions.fn3_integridad_datos.fn3F8 import fn3F8
 from ede.ede.validation_functions.fn3_integridad_datos.fn3F9 import fn3F9
-from ede.ede.validation_functions.fn3_integridad_datos.fn3FA import fn3FA 
+from ede.ede.validation_functions.fn3_integridad_datos.fn3FA import fn3FA
 from ede.ede.validation_functions.fn3_integridad_datos.fn3FB import fn3FB
 from ede.ede.validation_functions.fn3_integridad_datos.fn3FC import fn3FC
 from ede.ede.validation_functions.fn3_integridad_datos.fn3FD import fn3FD
@@ -81,7 +78,7 @@ from ede.ede.validation_functions.fn3_integridad_datos.fn3D9 import fn3D9
 from ede.ede.validation_functions.fn6_registro_control_mensual.fn6C2 import fn6C2
 
 
-#libro de classes digital 1
+# libro de classes digital 1
 from ede.ede.validation_functions.fn4_registro_antecedentes_generales_alumnos_curso.fn4FA import fn4FA
 from ede.ede.validation_functions.fn5_registro_control_asignaturas.fn5D0 import fn5D0
 from ede.ede.validation_functions.fn5_registro_control_asignaturas.fn5E0 import fn5E0
@@ -92,7 +89,7 @@ from ede.ede.validation_functions.fn5_registro_control_asignaturas.fn5E4 import 
 from ede.ede.validation_functions.fn5_registro_control_asignaturas.fn5E5 import fn5E5
 from ede.ede.validation_functions.fn5_registro_control_asignaturas.fn5F0 import fn5F0
 
-#libro de classes digital 2
+# libro de classes digital 2
 from ede.ede.validation_functions.fn6_registro_control_mensual.fn6B0 import fn6B0
 from ede.ede.validation_functions.fn6_registro_control_mensual.fn680 import fn680
 from ede.ede.validation_functions.fn6_registro_control_mensual.fn681 import fn681
@@ -108,7 +105,7 @@ from ede.ede.validation_functions.fn6_registro_control_mensual.fn6E4 import fn6E
 from ede.ede.validation_functions.fn6_registro_control_mensual.fn6F0 import fn6F0
 from ede.ede.validation_functions.fn6_registro_control_mensual.fn6F1 import fn6F1
 
-#libro de classes digital 3
+# libro de classes digital 3
 from ede.ede.validation_functions.fn7_registro_evaluaciones_sectores_educativos.fn7F5 import fn7F5
 from ede.ede.validation_functions.fn7_registro_evaluaciones_sectores_educativos.fn7F4 import fn7F4
 from ede.ede.validation_functions.fn7_registro_evaluaciones_sectores_educativos.fn7F3 import fn7F3
@@ -116,13 +113,13 @@ from ede.ede.validation_functions.fn7_registro_evaluaciones_sectores_educativos.
 from ede.ede.validation_functions.fn7_registro_evaluaciones_sectores_educativos.fn7F1 import fn7F1
 from ede.ede.validation_functions.fn7_registro_evaluaciones_sectores_educativos.fn7F0 import fn7F0
 
-#libro de classes digital 4
+# libro de classes digital 4
 from ede.ede.validation_functions.fn8_registro_anotaciones_convivencia_escolar_por_estudiante.fn8F3 import fn8F3
 from ede.ede.validation_functions.fn8_registro_anotaciones_convivencia_escolar_por_estudiante.fn8F2 import fn8F2
 from ede.ede.validation_functions.fn8_registro_anotaciones_convivencia_escolar_por_estudiante.fn8F1 import fn8F1
 from ede.ede.validation_functions.fn8_registro_anotaciones_convivencia_escolar_por_estudiante.fn8F0 import fn8F0
 
-#libro de classes digital 5
+# libro de classes digital 5
 from ede.ede.validation_functions.fn9_registro_atencion_profesionales_y_recursos_relacionados_con_la_formacion_del_estudiante.fn9F3 import fn9F3
 from ede.ede.validation_functions.fn9_registro_atencion_profesionales_y_recursos_relacionados_con_la_formacion_del_estudiante.fn9F2 import fn9F2
 from ede.ede.validation_functions.fn9_registro_atencion_profesionales_y_recursos_relacionados_con_la_formacion_del_estudiante.fn9F1 import fn9F1

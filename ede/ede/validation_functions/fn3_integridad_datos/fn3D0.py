@@ -3,12 +3,15 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+# Verifica que cada asignatura se encuentre asociada a un curso.
+# Entrega los organizationID de las asignaturas
+# que no están asociadas a ningún curso
 
-  # Verifica que cada asignatura se encuentre asociada a un curso.
-  # Entrega los organizationID de las asignaturas 
-  # que no están asociadas a ningún curso
+
 def fn3D0(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verificar que cada asignatura se encuentre asociada a un curso.
+    Entrega los organizationId de las asignaturas que no están asociadas a ningún curso.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,16 +20,16 @@ def fn3D0(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen asignaturas
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todas las asignaturas tienen un id de un curso válido
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     _ExistData = []
     try:
-      _ExistData = conn.execute("""
+        _ExistData = conn.execute("""
         SELECT count(OrganizationId)
         FROM OrganizationRelationship
         INNER JOIN Organization USING(OrganizationId)
@@ -39,18 +42,18 @@ def fn3D0(conn, return_dict):
           )
                                 """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_ExistData} -> {str(e)}")
+        logger.info(f"Resultado: {_ExistData} -> {str(e)}")
 
     if(_ExistData[0][0] == 0):
-      logger.info(f"S/Datos")
-      _r = True
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
+        logger.info(f"S/Datos")
+        _r = True
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
 
     asignaturas = []
     try:
-      asignaturas = conn.execute("""
+        asignaturas = conn.execute("""
         /* 
         * Selecciona de la tabla Organization los ID's de todas las asignaturas
         * que no tengan un curso asociado 
@@ -85,27 +88,30 @@ def fn3D0(conn, return_dict):
                 );
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {asignaturas} -> {str(e)}")
+        logger.info(f"Resultado: {asignaturas} -> {str(e)}")
 
-    if( len(asignaturas) == 0):
-      logger.info(f"Aprobado")
-      _r = True
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-    
-    try:        
-      logger.info(f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
-      if(len(asignaturas) > 0):
-        asignaturasList = list(set([m[0] for m in asignaturas if m[0] is not None]))
-        _c = len(set(asignaturasList))
-        _err = f"Las siguientes asignaturas no tienen ningún curso asociado: {asignaturasList}"
-        logger.error(_err)
-        logger.error(f"Rechazado")
+    if(len(asignaturas) == 0):
+        logger.info(f"Aprobado")
+        _r = True
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
+
+    try:
+        logger.info(
+            f"Organizaciones no asociadas a ningún curso: {len(asignaturas)}")
+        if(len(asignaturas) > 0):
+            asignaturasList = list(
+                set([m[0] for m in asignaturas if m[0] is not None]))
+            _c = len(set(asignaturasList))
+            _err = f"Las siguientes asignaturas no tienen ningún curso asociado: {asignaturasList}"
+            logger.error(_err)
+            logger.error(f"Rechazado")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la verificación asignaturas sin curso asociado: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
