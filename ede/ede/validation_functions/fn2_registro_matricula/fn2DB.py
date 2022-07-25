@@ -4,8 +4,19 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn2DB(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.3 De las altas en el registro de matrícula.
+    Validar el reporte de altas realizadas en la etapa de regulación del proceso de admisión escolar 
+    conforme al decreto 152 artículo 60 de año 2016 del Ministerio de Educación.
+    Artículo 60: Los establecimientos que matriculen a estudiantes mediante este procedimiento, 
+    deberán informar dicha matrícula al Departamento Provincial de Educación respectivo.
+    -------------------------------------------------------------------------------
+    Este tipo de casos se registrará a través de la tabla 
+    PersonStatus.refPersonStatusTypeId == 33 (Estudiante Matriculado a través de Decreto 152, artículo 60)
+    y los campos personStatus.docNumber, personStatus.Description y personStatus.fileScanBase64 
+    se utilizanrán para almacenar la información de respaldo de este proceso extraordinario.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -19,7 +30,7 @@ def fn2DB(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _query = conn.execute("""
         SELECT DISTINCT P.PersonId
@@ -29,8 +40,8 @@ def fn2DB(conn, return_dict):
         where OPR.RoleId = 6
           and PS.RefPersonStatusTypeId = 33;
         """).fetchall()
-        if(len(_query)>0):
-          _queryType = conn.execute("""
+        if(len(_query) > 0):
+            _queryType = conn.execute("""
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT P.PersonId
@@ -42,8 +53,8 @@ def fn2DB(conn, return_dict):
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 33
           """).fetchall()
-          if(len(_queryType) == len(_query)):
-            _file = conn.execute("""
+            if(len(_queryType) == len(_query)):
+                _file = conn.execute("""
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -59,24 +70,28 @@ def fn2DB(conn, return_dict):
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 33);
             """).fetchall()
-            if(len(_file) == len(_query)):
-              logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
-              logger.info(f'Aprobado')
-              return_dict[getframeinfo(currentframe()).function] = True
-              return True
+                if(len(_file) == len(_query)):
+                    logger.info(
+                        f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
+                    logger.info(f'Aprobado')
+                    return_dict[getframeinfo(currentframe()).function] = True
+                    return True
+                else:
+                    logger.error(
+                        f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
+                    logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
             else:
-              logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
-              logger.error(f'Rechazado')
-              return_dict[getframeinfo(currentframe()).function] = False
-              return False
-          else:
-            logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
-            logger.error(f'Rechazado')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+                logger.error(
+                    f'No existe documento para los alumnos matriculados bajo el decreto 152')
+                logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
         else:
             logger.info(f"S/Datos")
-            logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
+            logger.info(
+                f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
@@ -84,4 +99,3 @@ def fn2DB(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn2DB WC ##

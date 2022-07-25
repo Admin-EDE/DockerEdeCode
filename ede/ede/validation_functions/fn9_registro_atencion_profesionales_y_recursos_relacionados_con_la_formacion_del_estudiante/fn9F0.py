@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn9F0(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,9 +20,9 @@ def fn9F0(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
-        i=0
+        i = 0
         docentes = conn.execute("""
         SELECT
               P.PersonId,
@@ -33,23 +34,25 @@ def fn9F0(conn, return_dict):
         where OPR.RoleId = 5
         group by P.PersonId
         """).fetchall()
-        a=len(docentes)
+        a = len(docentes)
         if(len(docentes)):
             for fila in docentes:
                 for column in fila:
                     if column is None:
                         logger.info(f'informacion incompleta del profesor')
                         logger.info(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
+                        return_dict[getframeinfo(
+                            currentframe()).function] = False
                         return False
                     else:
                         if i == a:
                             logger.info(f'Informacion de profesores completa')
                             logger.info(f'Aprobado')
-                            return_dict[getframeinfo(currentframe()).function] = True
+                            return_dict[getframeinfo(
+                                currentframe()).function] = True
                             return True
                         else:
-                            i+=1
+                            i += 1
         else:
             logger.error(f'S/Datos')
             logger.error(f'Sin datos de docentes')
@@ -60,4 +63,3 @@ def fn9F0(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn9F0 WC ##

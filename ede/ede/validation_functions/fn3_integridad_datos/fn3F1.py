@@ -3,7 +3,8 @@ from multiprocessing import current_process
 import pandas as pd
 
 from ede.ede._logger import logger
-### INICIO fn3F1 ###
+
+
 def fn3F1(conn, return_dict, selfargs):
     """Verifica la integridad referencial de los datos
     Args:
@@ -23,21 +24,21 @@ def fn3F1(conn, return_dict, selfargs):
     _r = False
     rows = []
     try:
-      rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
+        rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
+        logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
-      if( len(rows) > 0 ):
-        pd.DataFrame(rows,columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
-            selfargs._FKErrorsFile,sep=selfargs._sep,encoding=selfargs._encode,index=False)
-        logger.error(f"BD con errores de integridad referencial, más detallen en {selfargs._FKErrorsFile}")
-      else:
-        _r = True
-      logger.info("Aprobado") if _r else logger.error("Rechazado")
+        if(len(rows) > 0):
+            pd.DataFrame(rows, columns=['Table', 'rowId', 'Parent', 'FkId']).to_csv(
+                selfargs._FKErrorsFile, sep=selfargs._sep, encoding=selfargs._encode, index=False)
+            logger.error(
+                f"BD con errores de integridad referencial, más detallen en {selfargs._FKErrorsFile}")
+        else:
+            _r = True
+        logger.info("Aprobado") if _r else logger.error("Rechazado")
     except Exception as e:
-      logger.error(f"Error al ejecutar la función: {str(e)}")
+        logger.error(f"Error al ejecutar la función: {str(e)}")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-# FIN fn3F1 ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

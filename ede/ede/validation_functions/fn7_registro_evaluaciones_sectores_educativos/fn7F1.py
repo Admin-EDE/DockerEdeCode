@@ -5,8 +5,7 @@ from multiprocessing import current_process
 from ede.ede._logger import logger
 
 
-  ## Inicio fn7F1 WC ##
-def fn7F1(self,conn, return_dict):
+def fn7F1(self, conn, return_dict):
     """ Breve descripción de la función
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -21,7 +20,7 @@ def fn7F1(self,conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     _query = []
     try:
@@ -60,36 +59,41 @@ def fn7F1(self,conn, return_dict):
         GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
         """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_query} -> {str(e)}")
-    
+        logger.info(f"Resultado: {_query} -> {str(e)}")
+
     try:
-        if(len(_query)>0):
-          _contador = 0
-          _assessment = int(len(_query))
-          _assessmentScoreValue = (list([m[0] for m in _query if m[0] is not None]))
-          _assessmentScoreFullValue = (list([m[1] for m in _query if m[1] is not None]))
-          for y in _assessmentScoreFullValue:
-            if (len(y)>3):
-              logger.error(f'Se han ingresado calificaciones sumativas con mas de un decimal')
-              logger.error(f'Rechazado')
-          for x in _assessmentScoreValue:
-            if (x >= 1.0 and x <= 7.0):
-              _contador += 1
-          if _contador == _assessment:
-            logger.info(f'Todas las evaluaciones sumativas estan ingresadas correctamente')
-            logger.info(f'Aprobado')
-            _r = True
-          else:
-            logger.error(f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
-            logger.error(f'Rechazado')
+        if(len(_query) > 0):
+            _contador = 0
+            _assessment = int(len(_query))
+            _assessmentScoreValue = (
+                list([m[0] for m in _query if m[0] is not None]))
+            _assessmentScoreFullValue = (
+                list([m[1] for m in _query if m[1] is not None]))
+            for y in _assessmentScoreFullValue:
+                if (len(y) > 3):
+                    logger.error(
+                        f'Se han ingresado calificaciones sumativas con mas de un decimal')
+                    logger.error(f'Rechazado')
+            for x in _assessmentScoreValue:
+                if (x >= 1.0 and x <= 7.0):
+                    _contador += 1
+            if _contador == _assessment:
+                logger.info(
+                    f'Todas las evaluaciones sumativas estan ingresadas correctamente')
+                logger.info(f'Aprobado')
+                _r = True
+            else:
+                logger.error(
+                    f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
+                logger.error(f'Rechazado')
         else:
-          logger.error(f'S/Datos')
-          logger.error(f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
+            logger.error(f'S/Datos')
+            logger.error(
+                f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-  ## Fin fn7F1 WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

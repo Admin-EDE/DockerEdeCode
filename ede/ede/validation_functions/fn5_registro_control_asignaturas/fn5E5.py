@@ -4,6 +4,7 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
+
 def fn5E5(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
@@ -25,12 +26,12 @@ def fn5E5(conn, return_dict):
             en la segunda hora y en caso de haber discrepancias informar a través del LOG.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     _r = False
     return_dict[getframeinfo(currentframe()).function] = _r
     _query = []
     try:
-      _query = conn.execute("""
+        _query = conn.execute("""
 SELECT
   O.OrganizationId as 'Curso',
   strftime('%Y-%m-%d', rae_.Date) as 'fechaAsistencia',
@@ -230,63 +231,71 @@ ORDER BY
   a.OrganizationId
     """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {_query} -> {str(e)}")
-      logger.error(f"Rechazado")
-      logger.info(f"No hay información para evaluar, pero debería por eso no aplica S/Datos")
+        logger.info(f"Resultado: {_query} -> {str(e)}")
+        logger.error(f"Rechazado")
+        logger.info(
+            f"No hay información para evaluar, pero debería por eso no aplica S/Datos")
     try:
-      _result = []      
-      if( len(_query) > 0 ):
-        #print(_query)
-        _totalCurso = check_utils.convertirArray2DToList(list([m[2] for m in _query if m[2] is not None]))
-        #print(_totalCurso)
-        _totalAsign = check_utils.convertirArray2DToList(list([m[11] for m in _query if m[11] is not None]))
-        #print(_totalAsign)
-        
-        _estPresentesCurso = check_utils.convertirArray2DToList(list([m[3] for m in _query if m[3] is not None]))
-        #print(_estPresentesCurso)
-        _estPresentesAsign = check_utils.convertirArray2DToList(list([m[12] for m in _query if m[12] is not None]))
-        #print(_estPresentesAsign)
-        _estAtradadosAsign = check_utils.convertirArray2DToList(list([m[14] for m in _query if m[14] is not None]))                
-        #print(_estAtradadosAsign)
+        _result = []
+        if(len(_query) > 0):
+            # print(_query)
+            _totalCurso = check_utils.convertirArray2DToList(
+                list([m[2] for m in _query if m[2] is not None]))
+            # print(_totalCurso)
+            _totalAsign = check_utils.convertirArray2DToList(
+                list([m[11] for m in _query if m[11] is not None]))
+            # print(_totalAsign)
 
-        _estAusentesCurso = check_utils.convertirArray2DToList(list([m[4] for m in _query if m[4] is not None]))
-        #print(_estAusentesCurso)
-        _estAusentesAsign = check_utils.convertirArray2DToList(list([m[13] for m in _query if m[13] is not None]))
-        #print(_estAusentesAsign)
+            _estPresentesCurso = check_utils.convertirArray2DToList(
+                list([m[3] for m in _query if m[3] is not None]))
+            # print(_estPresentesCurso)
+            _estPresentesAsign = check_utils.convertirArray2DToList(
+                list([m[12] for m in _query if m[12] is not None]))
+            # print(_estPresentesAsign)
+            _estAtradadosAsign = check_utils.convertirArray2DToList(
+                list([m[14] for m in _query if m[14] is not None]))
+            # print(_estAtradadosAsign)
 
-        for idx_,el_ in enumerate(_totalCurso):
-          #logger.info(idx_)
-          #logger.info(el_)
-          if el_ != _totalAsign[idx_]:
-              logger.error(f'Rechazado')
-              logger.error(f'Totales de estudiantes no coinciden')
-              _result.append(False)
-          else:
-              _result.append(True)
-          
-          if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
-              logger.error(f'Rechazado')
-              logger.error(f'Total de estudiantes presentes no coinciden')
-              _result.append(False)
-          else:
-              _result.append(True)              
+            _estAusentesCurso = check_utils.convertirArray2DToList(
+                list([m[4] for m in _query if m[4] is not None]))
+            # print(_estAusentesCurso)
+            _estAusentesAsign = check_utils.convertirArray2DToList(
+                list([m[13] for m in _query if m[13] is not None]))
+            # print(_estAusentesAsign)
 
-          if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
-              logger.error(f'Rechazado')
-              logger.error(f'Total de estudiantes ausentes no coinciden')
-              _result.append(False)
-          else:
-              _result.append(True)              
-      _r = all(_result)
-      if(_r and len(_result) > 0):
-        logger.info('Aprobado')
-      else:
-        logger.error('Rechazado')
-        _r = False
+            for idx_, el_ in enumerate(_totalCurso):
+                # logger.info(idx_)
+                # logger.info(el_)
+                if el_ != _totalAsign[idx_]:
+                    logger.error(f'Rechazado')
+                    logger.error(f'Totales de estudiantes no coinciden')
+                    _result.append(False)
+                else:
+                    _result.append(True)
+
+                if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
+                    logger.error(f'Rechazado')
+                    logger.error(
+                        f'Total de estudiantes presentes no coinciden')
+                    _result.append(False)
+                else:
+                    _result.append(True)
+
+                if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
+                    logger.error(f'Rechazado')
+                    logger.error(f'Total de estudiantes ausentes no coinciden')
+                    _result.append(False)
+                else:
+                    _result.append(True)
+        _r = all(_result)
+        if(_r and len(_result) > 0):
+            logger.info('Aprobado')
+        else:
+            logger.error('Rechazado')
+            _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         return _r
-   ## FIN fn5E5 WC ##

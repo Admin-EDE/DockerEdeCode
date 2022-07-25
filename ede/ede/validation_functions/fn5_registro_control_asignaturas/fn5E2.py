@@ -4,12 +4,13 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn5E2(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra b.2
     Validar que los reemplazos no idóneos sean registrados por el director o quien él designe y que exista la observación indicando la falta del docente, 
     junto al nombre y verificador de identidad de quien reemplaza.
-    
+
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -23,9 +24,9 @@ def fn5E2(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
-        rows= conn.execute("""
+        rows = conn.execute("""
         select Pi.Identifier,
               (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
               pdc.DegreeOrCertificateTitleOrSubject,
@@ -42,8 +43,9 @@ def fn5E2(conn, return_dict):
         where RoleId != 6
           and rae.observaciones like '%Falta docente%';
                 """).fetchall()
-        if(len(rows)>0):
-            identificador = (list(set([m[0] for m in rows if m[0] is not None])))
+        if(len(rows) > 0):
+            identificador = (
+                list(set([m[0] for m in rows if m[0] is not None])))
             if not identificador:
                 logger.error(f"Sin identificador")
                 logger.error(f'Rechazado')
@@ -85,7 +87,8 @@ def fn5E2(conn, return_dict):
             return True
         else:
             logger.info(f"S/Datos")
-            logger.info(f"No existen clases en las que haya faltado algún docente")
+            logger.info(
+                f"No existen clases en las que haya faltado algún docente")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
@@ -93,4 +96,3 @@ def fn5E2(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn5E2 WC ##

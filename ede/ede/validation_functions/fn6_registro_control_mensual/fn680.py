@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn680(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra c.8
@@ -27,18 +28,18 @@ El medio de verificación de la asistencia debería ser un documento reportado p
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
-    #arr=[]
-    #arr2=[]
-    #arr3=[]
-    #arr4=[]
-    #dias_laborales=[]
-    #dias_laborales2=[]
-    #dias_laborales3=[]
-    #dias_laborales4=[]
-    #numero=0
+    """
+    # arr=[]
+    # arr2=[]
+    # arr3=[]
+    # arr4=[]
+    # dias_laborales=[]
+    # dias_laborales2=[]
+    # dias_laborales3=[]
+    # dias_laborales4=[]
+    # numero=0
     try:
-      _queryText = """
+        _queryText = """
           /*
             6.2 Contenido mínimo, letra c.8 (Alumnos de formación Dual)
             verificar que los registros reportados semanalmente por la empresa se encuentren cargados en el sistema
@@ -144,65 +145,66 @@ El medio de verificación de la asistencia debería ser un documento reportado p
             documentId NOT NULL
       """
 
-      #_S1="""select a.personId,strftime('%Y-%m-%d', b.entrydate) as entrydate,strftime('%Y-%m-%d',b.ExitDate) as ExitDate 
-      #from person a join organizationpersonrole b on a.personId=b.personId where b.roleid=6 """
+        # _S1="""select a.personId,strftime('%Y-%m-%d', b.entrydate) as entrydate,strftime('%Y-%m-%d',b.ExitDate) as ExitDate
+        # from person a join organizationpersonrole b on a.personId=b.personId where b.roleid=6 """
 
-      #_S6=""" select strftime('%Y-%m-%d',BeginDate) as BeginDate ,strftime('%Y-%m-%d',EndDate) as EndDate 
-      #        from OrganizationCalendarSession Where organizationcalendarsessionid=1"""
+        # _S6=""" select strftime('%Y-%m-%d',BeginDate) as BeginDate ,strftime('%Y-%m-%d',EndDate) as EndDate
+        #        from OrganizationCalendarSession Where organizationcalendarsessionid=1"""
 
-      #_S7=""" select c.identifier,a.fileScanBase64 from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
-    #join PersonIdentifier c on b.personid=c.personId where strftime('%Y-%m-%d',a.Date)=? and  a.RefAttendanceEventTypeId=1 and b.personId=?;"""
+        # _S7=""" select c.identifier,a.fileScanBase64 from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId
+    # join PersonIdentifier c on b.personid=c.personId where strftime('%Y-%m-%d',a.Date)=? and  a.RefAttendanceEventTypeId=1 and b.personId=?;"""
 
-      #now=datetime.now()
-      #_q1 = conn.execute(_S1).fetchall()
-      _q1 = conn.execute(_queryText)#.fetchall()
-      if(_q1.returns_rows == 0):
-        logger.info(f"El establecimientos no tiene alumnos de formación DUAL para revisar")
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True
-      
-      _q1 = _q1.fetchall()
-      XX=0
-      if(len(_q1)!=0):
-        # for q1 in _q1:
-        #   personid=str(q1[0])
-        #   fecha_entrada= str(q1[1]) 
-        #   fecha_fin=str(q1[2])
-        #   _q6 = conn.execute(_S6).fetchall()
-        #   if(len(_q6)!=0):
-        #     for q6 in _q6:
-        #       fecha_inicio=str(q6[0])
-        #       fecha_termino=str(q6[1])
+        # now=datetime.now()
+        #_q1 = conn.execute(_S1).fetchall()
+        _q1 = conn.execute(_queryText)  # .fetchall()
+        if(_q1.returns_rows == 0):
+            logger.info(
+                f"El establecimientos no tiene alumnos de formación DUAL para revisar")
+            logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
+            return True
 
-        #       if fecha_fin<fecha_termino:
-        #         fecha_ter_x=fecha_fin
-        #       else:
-        #         fecha_ter_x=fecha_termino
+        _q1 = _q1.fetchall()
+        XX = 0
+        if(len(_q1) != 0):
+            # for q1 in _q1:
+            #   personid=str(q1[0])
+            #   fecha_entrada= str(q1[1])
+            #   fecha_fin=str(q1[2])
+            #   _q6 = conn.execute(_S6).fetchall()
+            #   if(len(_q6)!=0):
+            #     for q6 in _q6:
+            #       fecha_inicio=str(q6[0])
+            #       fecha_termino=str(q6[1])
 
-        #       if (fecha_entrada>fecha_inicio): 
-        #         arr4=self.ListaFechasRango(fecha_inicio,fecha_ter_x,conn)
-        #       else:
-        #         arr4=self.ListaFechasRango(fecha_entrada,fecha_ter_x,conn)
-                
-        #       for xx2 in arr4:
-        #         fecha=str(xx2)
-        #         fechaxx1=fecha.replace(',','')
-        #         fechaxx2=fechaxx1.replace('(','')
-        #         fechaxx3=datetime.strptime(fechaxx2[2:12],'%Y-%m-%d')
-        #         _q8 = conn.execute(_S7,fechaxx3,personid).fetchall()
-        #         if(len(_q8)!=0):
-        #           for dd in _q8:
-        #             rut=str(dd[0])
-        #             obser=str(dd[1])
-        #             if obser=="None":
-        #               arr.append(rut)
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True     
+            #       if fecha_fin<fecha_termino:
+            #         fecha_ter_x=fecha_fin
+            #       else:
+            #         fecha_ter_x=fecha_termino
+
+            #       if (fecha_entrada>fecha_inicio):
+            #         arr4=self.ListaFechasRango(fecha_inicio,fecha_ter_x,conn)
+            #       else:
+            #         arr4=self.ListaFechasRango(fecha_entrada,fecha_ter_x,conn)
+
+            #       for xx2 in arr4:
+            #         fecha=str(xx2)
+            #         fechaxx1=fecha.replace(',','')
+            #         fechaxx2=fechaxx1.replace('(','')
+            #         fechaxx3=datetime.strptime(fechaxx2[2:12],'%Y-%m-%d')
+            #         _q8 = conn.execute(_S7,fechaxx3,personid).fetchall()
+            #         if(len(_q8)!=0):
+            #           for dd in _q8:
+            #             rut=str(dd[0])
+            #             obser=str(dd[1])
+            #             if obser=="None":
+            #               arr.append(rut)
+            logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
+            return True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
-### fin  fn680 ###
+        logger.error(
+            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+        logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
+        return False

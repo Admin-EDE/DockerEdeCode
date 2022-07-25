@@ -4,8 +4,13 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn2AA(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.6 De los estudiantes de intercambio
+    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
+    -----------------------------------------------------------------------
+    NOTA: File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -19,7 +24,7 @@ def fn2AA(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         results = conn.execute("""
         SELECT p.personId
@@ -38,23 +43,27 @@ def fn2AA(conn, return_dict):
           and ps.RefPersonStatusTypeId = 25;
         """).fetchall()
 
-        if(len(results)>0 and len(resultsTwo)>0):
+        if(len(results) > 0 and len(resultsTwo) > 0):
             lista = list(set([m[0] for m in results if m[0] is not None]))
-            listaDos = list(set([m[0] for m in resultsTwo if m[0] is not None]))
+            listaDos = list(
+                set([m[0] for m in resultsTwo if m[0] is not None]))
 
             if lista == listaDos:
-                logger.info(f"todos los alumnos de intercambios fueron aprobados")
+                logger.info(
+                    f"todos los alumnos de intercambios fueron aprobados")
                 logger.info(f"Aprobado")
                 return_dict[getframeinfo(currentframe()).function] = True
                 return True
-            else :
-                logger.error(f'No todos los alumnos de intercambio han sido aprobados')
+            else:
+                logger.error(
+                    f'No todos los alumnos de intercambio han sido aprobados')
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.info(f"S/Datos")
-            logger.info(f"No hay alumnos de intercambio registrados en el establecimiento")
+            logger.info(
+                f"No hay alumnos de intercambio registrados en el establecimiento")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
 
@@ -63,4 +72,3 @@ def fn2AA(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn2AA WC ##

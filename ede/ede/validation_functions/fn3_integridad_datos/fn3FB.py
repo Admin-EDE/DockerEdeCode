@@ -2,7 +2,8 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
 from ede.ede._logger import logger
-### INICIO fn3FB ###
+
+
 def fn3FB(conn, return_dict):
     """
     Integridad: Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
@@ -17,11 +18,11 @@ def fn3FB(conn, return_dict):
             - verifica que la cantidad de números de matrícula, números de lista y fechas de incorporación sean iguales.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]          
-    """       
+    """
     _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
 SELECT 
 (
 	SELECT count(p.personId)
@@ -98,29 +99,28 @@ SELECT
 ) as 'personIdsNumMatriculaWithProblems'
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+
     try:
-      if(len(rows) > 0 and rows[0][0] != 0):
-        cantidadNumeroLista = rows[0][0]
-        cantidadNumeroMatricula = rows[0][1]
-        cantidadMatriDefinitiva = rows[0][2]
-        cantidadNumerosListaAsignados = rows[0][3]
-        listNumerosListaAsignados = rows[0][4]
-        listNumerosMatAsignados = rows[0][5]
-        _r   = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
-        _t1 = f"Verifica: {_r}. PERSON_IDENTIFIER -> NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}. personIds: {listNumerosListaAsignados}"
-        _t2 = f"Verifica: {_r}. PERSON_STATUS     ->  NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}. personids: {listNumerosMatAsignados}"
-        logger.info(_t1) if _r else logger.error(_t1)
-        logger.info(_t2) if _r else logger.error(_t2)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
+        if(len(rows) > 0 and rows[0][0] != 0):
+            cantidadNumeroLista = rows[0][0]
+            cantidadNumeroMatricula = rows[0][1]
+            cantidadMatriDefinitiva = rows[0][2]
+            cantidadNumerosListaAsignados = rows[0][3]
+            listNumerosListaAsignados = rows[0][4]
+            listNumerosMatAsignados = rows[0][5]
+            _r = cantidadNumeroLista == cantidadNumeroMatricula == cantidadMatriDefinitiva == cantidadNumerosListaAsignados
+            _t1 = f"Verifica: {_r}. PERSON_IDENTIFIER -> NumLista:{cantidadNumeroLista}, NumMat:{cantidadNumeroMatricula}. personIds: {listNumerosListaAsignados}"
+            _t2 = f"Verifica: {_r}. PERSON_STATUS     ->  NumLista:{cantidadNumerosListaAsignados}, NumMat:{cantidadMatriDefinitiva}. personids: {listNumerosMatAsignados}"
+            logger.info(_t1) if _r else logger.error(_t1)
+            logger.info(_t2) if _r else logger.error(_t2)
+            logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        else:
+            logger.info("S/Datos")
     except Exception as e:
-      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3FB ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

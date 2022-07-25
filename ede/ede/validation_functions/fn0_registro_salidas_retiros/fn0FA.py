@@ -4,9 +4,7 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-### MIAULA INICIO ###
 
-### INICIO FN0FA ###
 def fn0FA(conn, return_dict):
     """
     SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
@@ -30,9 +28,9 @@ def fn0FA(conn, return_dict):
           ]
     """
     _r = False
-    rows = []    
+    rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
 SELECT DISTINCT 
 	  pid.Identifier -- Muestra el RUN o IPE del estudiante con problemas
 	, count(prsh.RetirarEstudianteIndicador) as 'cantidadPersonasAutorizadas'
@@ -73,37 +71,44 @@ FROM Person p
 GROUP BY pid.Identifier
             """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
+        logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
-      c_ = 0
-      rutConProblemas = []      
-      if( len(rows) > 0 ):
-        rutList = check_utils.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) 
-        cantidadList = check_utils.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None]))        
+        c_ = 0
+        rutConProblemas = []
+        if(len(rows) > 0):
+            rutList = check_utils.convertirArray2DToList(
+                list([m[0] for m in rows if m[0] is not None]))
+            cantidadList = check_utils.convertirArray2DToList(
+                list([m[1] for m in rows if m[1] is not None]))
 
-        for i,cantidad in enumerate(cantidadList):
-          if( int(cantidad) > 0 ): 
-            c_ += 1
-          else: 
-            rutConProblemas.append(rutList[i])
+            for i, cantidad in enumerate(cantidadList):
+                if(int(cantidad) > 0):
+                    c_ += 1
+                else:
+                    rutConProblemas.append(rutList[i])
 
-        logger.info(f"Total Alumnos                                     : {len(rows)}")
-        logger.info(f"Total Personas asociadas y autorizadas para retiro: {c_}")
+            logger.info(
+                f"Total Alumnos                                     : {len(rows)}")
+            logger.info(
+                f"Total Personas asociadas y autorizadas para retiro: {c_}")
 
-        if( c_ >= len(rows) ):
-          logger.info(f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
-          logger.info(f"Aprobado")
-          _r = True
+            if(c_ >= len(rows)):
+                logger.info(
+                    f"TODOS los alumnos tienen informacion de personas asociadas y/o autorizadas para retiro.")
+                logger.info(f"Aprobado")
+                _r = True
+            else:
+                logger.error(
+                    f"Los siguientes estudiantes no tienen personas autorizadas para retirarlos. {rutConProblemas}")
+                logger.error(f"Rechazado")
         else:
-          logger.error(f"Los siguientes estudiantes no tienen personas autorizadas para retirarlos. {rutConProblemas}")
-          logger.error(f"Rechazado")
-      else:
-        logger.info(f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
-        logger.error(f"Rechazado")
+            logger.info(
+                f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
+            logger.error(f"Rechazado")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(
+            f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      return _r
-### FIN FN0FA ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r

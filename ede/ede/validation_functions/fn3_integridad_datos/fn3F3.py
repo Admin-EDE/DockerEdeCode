@@ -3,7 +3,7 @@ from multiprocessing import current_process
 
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
-### INICIO fn3F3 ###
+
 def fn3F3(conn, return_dict):
     """ 
     Integridad: Verifica que los RUT's ingresados sean válidos
@@ -23,7 +23,7 @@ def fn3F3(conn, return_dict):
     _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
         SELECT identifier 
         FROM PersonIdentifier pi
         JOIN RefPersonIdentificationSystem rfi 
@@ -31,23 +31,23 @@ def fn3F3(conn, return_dict):
           AND rfi.code IN ('RUN')
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-    
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+
     try:
-      datos = check_utils.convertirArray2DToList(list([m[0] for m in rows if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      if(len(rows) > 0 and len(datos) > 0):
-        _err = set([e for e in datos if not check_utils.validarRUN(e)])
-        _r   = False if len(_err)>0 else True
-        _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}"
-        logger.info(_t) if _r else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
+        datos = check_utils.convertirArray2DToList(list(
+            [m[0] for m in rows if m[0] is not None]))  # Valida lista de rut ingresados a la BD
+        if(len(rows) > 0 and len(datos) > 0):
+            _err = set([e for e in datos if not check_utils.validarRUN(e)])
+            _r = False if len(_err) > 0 else True
+            _t = f"VERIFICACION DEL RUN DE LAS PERSONAS: {_r}. {_err}"
+            logger.info(_t) if _r else logger.error(_t)
+            logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        else:
+            logger.info("S/Datos")
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F3 ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

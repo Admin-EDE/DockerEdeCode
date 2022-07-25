@@ -4,6 +4,7 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
+
 def fn8F0(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
@@ -37,7 +38,7 @@ def fn8F0(conn, return_dict):
     _r = False
     allIncidents = []
     try:
-      allIncidents = conn.execute("""
+        allIncidents = conn.execute("""
                   SELECT 
                      I.*
                     ,K12SD.*
@@ -65,71 +66,67 @@ def fn8F0(conn, return_dict):
                   GROUP BY I.IncidentId    
       """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {allIncidents} -> {str(e)}")
-      
+        logger.info(f"Resultado: {allIncidents} -> {str(e)}")
+
     if(len(allIncidents) == 0):
         logger.info(f"S/Datos")
         _r = True
-    
+
     FineRows = []
     try:
-      if(len(allIncidents) > 0):
-        for incident in allIncidents:
-          incidentId = incident[0]
-          incidentIdentifier = incident[1]
-          incidentDate = incident[2]
-          incidentTime = incident[3]
-          incidentDesc = incident[5]
-          RefIncidentBehaviorId = incident[6]
-          isJsonValidRegulationViolatedDesc = check_utils.validateJSON(incident[16])
-          refIncidentBehaviorDesc = incident[66]
-          PersonId = incident[72]
-          refIncidentPersonId = incident[75]
-          incidentPersonDate = incident[76]
-          refDisciplinaryActionTaken = incident[81]
-          #print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
-          
-          if(     incidentId is None
-             or  incidentIdentifier is None
-             or  incidentTime is None
-             or  incidentDate is None
-             or  incidentDesc is None
-             or  RefIncidentBehaviorId is None
-             or  isJsonValidRegulationViolatedDesc is None
-             or  PersonId is None
-             or  refIncidentPersonId is None
-             or  incidentPersonDate is None
-             or   isJsonValidRegulationViolatedDesc == False):
-            logger.error("Rechazado")
-            logger.error("Los campos obligatorios no pueden ser nulos")
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
-                   
-          if(refIncidentBehaviorDesc not in (
-               'Entrevista'
-              ,'Reunión con apoderados'
-              ,'Entrega de documentos retiro de un estudiante'
-              ,'Anotación positiva'
-              ,'Entrega de documentos de interés general'
-              ,'Entrega de información para continuidad de estudios')
-             and refDisciplinaryActionTaken is None):
-            logger.error("Rechazado")
-            logger.error("Las anotaciones negativas deben tener acciones asociadas")
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
-          
-        #resultList  = [item[0] for item in allIncidents if item not in FineRows]
+        if(len(allIncidents) > 0):
+            for incident in allIncidents:
+                incidentId = incident[0]
+                incidentIdentifier = incident[1]
+                incidentDate = incident[2]
+                incidentTime = incident[3]
+                incidentDesc = incident[5]
+                RefIncidentBehaviorId = incident[6]
+                isJsonValidRegulationViolatedDesc = check_utils.validateJSON(
+                    incident[16])
+                refIncidentBehaviorDesc = incident[66]
+                PersonId = incident[72]
+                refIncidentPersonId = incident[75]
+                incidentPersonDate = incident[76]
+                refDisciplinaryActionTaken = incident[81]
+                # print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
 
-        #if( len(resultList) > 0):
-        #  logger.info(f"Rechazado")
-          #logger.info(f"Los incidentId con problemas son: {resultList}")
-        #else:
-      logger.info(f"Aprobado")
-      _r = True
+                if(incidentId is None
+                   or incidentIdentifier is None
+                   or incidentTime is None
+                   or incidentDate is None
+                   or incidentDesc is None
+                   or RefIncidentBehaviorId is None
+                   or isJsonValidRegulationViolatedDesc is None
+                   or PersonId is None
+                   or refIncidentPersonId is None
+                   or incidentPersonDate is None
+                   or isJsonValidRegulationViolatedDesc == False):
+                    logger.error("Rechazado")
+                    logger.error("Los campos obligatorios no pueden ser nulos")
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
+
+                if(refIncidentBehaviorDesc not in (
+                    'Entrevista', 'Reunión con apoderados', 'Entrega de documentos retiro de un estudiante', 'Anotación positiva', 'Entrega de documentos de interés general', 'Entrega de información para continuidad de estudios')
+                   and refDisciplinaryActionTaken is None):
+                    logger.error("Rechazado")
+                    logger.error(
+                        "Las anotaciones negativas deben tener acciones asociadas")
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
+
+            #resultList  = [item[0] for item in allIncidents if item not in FineRows]
+
+            # if( len(resultList) > 0):
+            #  logger.info(f"Rechazado")
+                #logger.info(f"Los incidentId con problemas son: {resultList}")
+            # else:
+        logger.info(f"Aprobado")
+        _r = True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      return _r
-  ## Fin fn8F0 WC ##
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r

@@ -4,6 +4,7 @@ from datetime import datetime
 
 from ede.ede._logger import logger
 
+
 def fn6C2(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,16 +20,16 @@ def fn6C2(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
-    arr=[]
-    arr2=[]
-    arr3=[]
-    dias_laborales=[]
-    dias_laborales2=[]
-    numero=0
+    """
+    arr = []
+    arr2 = []
+    arr3 = []
+    dias_laborales = []
+    dias_laborales2 = []
+    numero = 0
     try:
-  
-      _S3="""
+
+        _S3 = """
           SELECT 
             pid.identifier
             ,pst.docnumber
@@ -51,38 +52,39 @@ def fn6C2(conn, return_dict):
               )
             """
 
-      now=datetime.now()
-      _q1 = conn.execute(_S3)
-      if(_q1.returns_rows == 0):
-        logger.error(f"No hay informacion de estudiantes excedentes")
-        logger.info(f"S/Datos")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return True  
-      
-      _q1 = _q1.fetchall()
-      XX=0
-      if(len(_q1)!=0):
-        for q1 in _q1:
-          rut=str(q1[0])
-          filescanbase64=q1[2]
-          docnumber=q1[1]
-          dateF=q1[3]
+        now = datetime.now()
+        _q1 = conn.execute(_S3)
+        if(_q1.returns_rows == 0):
+            logger.error(f"No hay informacion de estudiantes excedentes")
+            logger.info(f"S/Datos")
+            return_dict[getframeinfo(currentframe()).function] = False
+            return True
 
-          if ((filescanbase64 is None) or (docnumber is None) or (dateF is None)):
-            arr.append(rut)
+        _q1 = _q1.fetchall()
+        XX = 0
+        if(len(_q1) != 0):
+            for q1 in _q1:
+                rut = str(q1[0])
+                filescanbase64 = q1[2]
+                docnumber = q1[1]
+                dateF = q1[3]
 
-        if(len(arr)!=0):
-          logger.error(f"Los siguientes alumnos no tienen Rex de aprobacion : {str(arr)} ")
-          logger.error(f"Rechazado")
-          return_dict[getframeinfo(currentframe()).function] = False
-          return False
+                if ((filescanbase64 is None) or (docnumber is None) or (dateF is None)):
+                    arr.append(rut)
 
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True      
+            if(len(arr) != 0):
+                logger.error(
+                    f"Los siguientes alumnos no tienen Rex de aprobacion : {str(arr)} ")
+                logger.error(f"Rechazado")
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
+
+            logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
+            return True
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
-### fin  fn6C2 ###
+        logger.error(
+            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+        logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = False
+        return False

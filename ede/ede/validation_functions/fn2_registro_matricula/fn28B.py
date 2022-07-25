@@ -4,8 +4,18 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn28B(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+    5.8 De los estudiantes migrantes
+    Validar que el certificado de convalidación de estudios y
+    los cursos convalidados se encuentre cargado en el sistema.
+    ---------------------------------------------------------------------
+    Este tipo de casos se registrará a través de la tabla 
+    PersonStatus.refPersonStatusTypeId == 34 (Convalidación de estudios) y 
+    los campos personStatus.docNumber, personStatus.Description y 
+    personStatus.fileScanBase64 se utilizanrán para almacenar la información 
+    de respaldo de este proceso extraordinario.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -19,7 +29,7 @@ def fn28B(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _query = conn.execute("""
         SELECT DISTINCT PI.PersonId
@@ -30,8 +40,8 @@ def fn28B(conn, return_dict):
           AND OPR.RoleId = 6
           AND PI.Identifier is not null;
         """).fetchall()
-        if(len(_query)>0):
-          _queryDocuments = conn.execute("""
+        if(len(_query) > 0):
+            _queryDocuments = conn.execute("""
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT PI.PersonId
@@ -48,8 +58,8 @@ def fn28B(conn, return_dict):
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 34
           """).fetchall()
-          if (len(_queryDocuments) == len(_query)):
-            _file = conn.execute("""
+            if (len(_queryDocuments) == len(_query)):
+                _file = conn.execute("""
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -70,23 +80,27 @@ def fn28B(conn, return_dict):
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 34);
             """).fetchall()
-            if(len(_file) == len(_query)):
-              logger.info(f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')
-              logger.info(f'Aprobado')
-              return_dict[getframeinfo(currentframe()).function] = True
-              return True
+                if(len(_file) == len(_query)):
+                    logger.info(
+                        f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')
+                    logger.info(f'Aprobado')
+                    return_dict[getframeinfo(currentframe()).function] = True
+                    return True
+                else:
+                    logger.error(
+                        f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
+                    logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
             else:
-              logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
-              logger.error(f'Rechazado')
-              return_dict[getframeinfo(currentframe()).function] = False
-              return False
-          else:
-            logger.error(f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
-            logger.error(f'Rechazado')
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+                logger.error(
+                    f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
+                logger.error(f'Rechazado')
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
         else:
-            logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
+            logger.info(
+                f"No existen estudiantes migrantes registrados en el establecimiento")
             logger.info(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
@@ -95,4 +109,3 @@ def fn28B(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn28B WC ##

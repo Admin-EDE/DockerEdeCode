@@ -5,7 +5,6 @@ import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
 
-### INICIO fn3FF ###
 def fn3FF(conn, return_dict):
     """
     Integridad: Verifica que todos los estudiantes tengan país, región y ciudad de nacimiento
@@ -22,11 +21,11 @@ def fn3FF(conn, return_dict):
             - y que los extranjeros tengan la información de su ciudad de origen y país.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """       
+    """
     _r = False
     rows = []
     try:
-      rows = conn.execute("""
+        rows = conn.execute("""
 SELECT
 	  p.personId
 	, pbp.ciudadNacimiento
@@ -61,33 +60,39 @@ JOIN RefPersonStatusType rpst
 GROUP BY p.personId
     """).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {rows} -> {str(e)}")
-      
+        logger.info(f"Resultado: {rows} -> {str(e)}")
+
     try:
-      logger.info(f"len(estudiantes): {len(rows)}")        
-      personIdCL  = check_utils.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
-      personIdEX  = check_utils.convertirArray2DToList(list([m[0] for m in rows if (m[0] is not None and m[3] is not None and m[3] != 'CL'and m[1] is not None)]))
-      cuidadNacCl   = check_utils.convertirArray2DToList(list([m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
-      regionNacCL   = check_utils.convertirArray2DToList(list([m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
-      paisNacCL     = check_utils.convertirArray2DToList(list([m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
-      statusCL      = check_utils.convertirArray2DToList(list([m[3] for m in rows if (m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
-      _lCL = [len(personIdCL) == len(cuidadNacCl) == len(regionNacCL) == len(paisNacCL) == len(statusCL)]
+        logger.info(f"len(estudiantes): {len(rows)}")
+        personIdCL = check_utils.convertirArray2DToList(
+            list([m[0] for m in rows if (m[0] is not None and m[3] == 'CL')]))
+        personIdEX = check_utils.convertirArray2DToList(list([m[0] for m in rows if (
+            m[0] is not None and m[3] is not None and m[3] != 'CL' and m[1] is not None)]))
+        cuidadNacCl = check_utils.convertirArray2DToList(list(
+            [m[1] for m in rows if m[1] is not None and m[0] is not None and m[3] == 'CL']))
+        regionNacCL = check_utils.convertirArray2DToList(list(
+            [m[2] for m in rows if m[2] is not None and m[0] is not None and m[3] == 'CL']))
+        paisNacCL = check_utils.convertirArray2DToList(list(
+            [m[3] for m in rows if m[3] is not None and m[0] is not None and m[3] == 'CL']))
+        statusCL = check_utils.convertirArray2DToList(list([m[3] for m in rows if (
+            m[4] is not None and m[4] >= 2 and m[0] is not None and m[3] == 'CL')]))
+        _lCL = [len(personIdCL) == len(cuidadNacCl) == len(
+            regionNacCL) == len(paisNacCL) == len(statusCL)]
     except Exception as e:
-      logger.info(f"Resultado: {_lCL} y {personIdEX} -> {str(e)}")
+        logger.info(f"Resultado: {_lCL} y {personIdEX} -> {str(e)}")
     try:
-      if( len(_lCL) > 0 or len(personIdEX) > 0 ):
-        _r = True
-        studentNumber = len( personIdEX ) + len( personIdCL )
-        _t = f"Se encontraron {studentNumber} estudiantes con información de Pais, Región y cuidad de nacimiento: {_r}."
-        logger.info(_t) if _lCL else logger.error(_t)
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      else:
-        logger.info("S/Datos")
+        if(len(_lCL) > 0 or len(personIdEX) > 0):
+            _r = True
+            studentNumber = len(personIdEX) + len(personIdCL)
+            _t = f"Se encontraron {studentNumber} estudiantes con información de Pais, Región y cuidad de nacimiento: {_r}."
+            logger.info(_t) if _lCL else logger.error(_t)
+            logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        else:
+            logger.info("S/Datos")
     except Exception as e:
-      logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3FF ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

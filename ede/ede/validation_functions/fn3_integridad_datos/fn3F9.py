@@ -3,7 +3,7 @@ from multiprocessing import current_process
 
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
-### INICIO fn3F9 ###
+
 def fn3F9(conn, return_dict):
     """
     Integridad: Verifica que las fechas ingresadas cumplan con el formato
@@ -19,11 +19,11 @@ def fn3F9(conn, return_dict):
 ^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)?([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))?$
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """       
+    """
     _r = False
     shortDateAllRecords = []
     try:
-      shortDateQuery = """
+        shortDateQuery = """
           SELECT DISTINCT shortDate
           FROM (
             SELECT StartDate as shortDate
@@ -83,19 +83,21 @@ def fn3F9(conn, return_dict):
           WHERE 
             shortDate IS NOT NULL
       """
-      shortDateAllRecords = conn.execute(shortDateQuery).fetchall()
+        shortDateAllRecords = conn.execute(shortDateQuery).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {shortDateAllRecords} -> {str(e)}")
-    
+        logger.info(f"Resultado: {shortDateAllRecords} -> {str(e)}")
+
     try:
-      shortDateQueryWithRegexp = shortDateQuery + """ AND shortDate NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))$" """
-      shortDateDataWithErrors = conn.execute(shortDateQueryWithRegexp).fetchall()
+        shortDateQueryWithRegexp = shortDateQuery + \
+            """ AND shortDate NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))$" """
+        shortDateDataWithErrors = conn.execute(
+            shortDateQueryWithRegexp).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {shortDateDataWithErrors} -> {str(e)}")
+        logger.info(f"Resultado: {shortDateDataWithErrors} -> {str(e)}")
 
     fullDateTimeAllRecords = []
     try:
-      fullDateTimeQuery ="""
+        fullDateTimeQuery = """
           SELECT DISTINCT fullDateTime
           FROM (
             SELECT Date as fullDateTime
@@ -113,39 +115,44 @@ def fn3F9(conn, return_dict):
           WHERE 
             fullDateTime IS NOT NULL
       """
-      fullDateTimeAllRecords = conn.execute(fullDateTimeQuery).fetchall()
+        fullDateTimeAllRecords = conn.execute(fullDateTimeQuery).fetchall()
     except Exception as e:
-      logger.info(f"Resultado: {fullDateTimeAllRecords} -> {str(e)}")
-      
-    try:
-      fullDateTimeQueryWithRegexp = fullDateTimeQuery + """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$" """      
-      fullDateTimeDataWithErrors = conn.execute(fullDateTimeQueryWithRegexp).fetchall()
-    except Exception as e:
-      logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
-    
-    try:
-      shortDateAllData = check_utils.convertirArray2DToList(list([m[0] for m in shortDateAllRecords if m[0] is not None])) # Valida lista de rut ingresados a la BD 
-      fullDateTimeAllData = check_utils.convertirArray2DToList(list([m[0] for m in fullDateTimeAllRecords if m[0] is not None])) # Valida lista de rut ingresados a la BD       
-      
-      if(len(shortDateAllData) == 0 and len(fullDateTimeAllData) == 0):
-        logger.info("S/Datos")
-      else:     
-        shortDateData = check_utils.convertirArray2DToList(list([m[0] for m in shortDateDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD 
-        fullDateTimeData = check_utils.convertirArray2DToList(list([m[0] for m in fullDateTimeDataWithErrors if m[0] is not None])) # Valida lista de rut ingresados a la BD       
+        logger.info(f"Resultado: {fullDateTimeAllRecords} -> {str(e)}")
 
-        if(len(shortDateData) == 0 and len(fullDateTimeData) == 0):
-          logger.info("Aprobado")
-          _r = True
-        elif( len(shortDateData) >= 0 or len(fullDateTimeData) >= 0):
-          logger.error(f"Rechazado")
-          logger.error(f"shortDateData: {set(shortDateData)}")
-          logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
-        
+    try:
+        fullDateTimeQueryWithRegexp = fullDateTimeQuery + \
+            """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$" """
+        fullDateTimeDataWithErrors = conn.execute(
+            fullDateTimeQueryWithRegexp).fetchall()
     except Exception as e:
-      logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+        logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
+
+    try:
+        shortDateAllData = check_utils.convertirArray2DToList(list(
+            [m[0] for m in shortDateAllRecords if m[0] is not None]))  # Valida lista de rut ingresados a la BD
+        fullDateTimeAllData = check_utils.convertirArray2DToList(list(
+            [m[0] for m in fullDateTimeAllRecords if m[0] is not None]))  # Valida lista de rut ingresados a la BD
+
+        if(len(shortDateAllData) == 0 and len(fullDateTimeAllData) == 0):
+            logger.info("S/Datos")
+        else:
+            shortDateData = check_utils.convertirArray2DToList(list(
+                [m[0] for m in shortDateDataWithErrors if m[0] is not None]))  # Valida lista de rut ingresados a la BD
+            fullDateTimeData = check_utils.convertirArray2DToList(list(
+                [m[0] for m in fullDateTimeDataWithErrors if m[0] is not None]))  # Valida lista de rut ingresados a la BD
+
+            if(len(shortDateData) == 0 and len(fullDateTimeData) == 0):
+                logger.info("Aprobado")
+                _r = True
+            elif(len(shortDateData) >= 0 or len(fullDateTimeData) >= 0):
+                logger.error(f"Rechazado")
+                logger.error(f"shortDateData: {set(shortDateData)}")
+                logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
+
+    except Exception as e:
+        logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
+        logger.error(f"Rechazado")
     finally:
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")
-      return _r
-  ### FIN fn3F9 ###
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

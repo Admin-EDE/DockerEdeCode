@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn6E4(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -18,10 +19,10 @@ def fn6E4(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
-      _data = []
-      _data = conn.execute("""
+        _data = []
+        _data = conn.execute("""
                 SELECT 
                   org
                   ,group_concat(DISTINCT diasSinClases) as 'diasSinClases'
@@ -59,20 +60,20 @@ def fn6E4(conn, return_dict):
                 ) DSC
                 GROUP BY org      
       """).fetchall()
-      
-      if(not _data):
+
+        if(not _data):
+            logger.error(f"S/Datos")
+            return_dict[getframeinfo(currentframe()).function] = True
+            return True
+
+    except:
         logger.error(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
-        return True        
-        
-    except:
-      logger.error(f"S/Datos")
-      return_dict[getframeinfo(currentframe()).function] = True
-      return True        
+        return True
 
     try:
-      _result = []
-      _result = conn.execute("""
+        _result = []
+        _result = conn.execute("""
 --  6.2 Contenido mínimo, letra c.2
 -- verificar que se encuentren bien registrados los cambios de actividades al calendario escolar.
 -- las tablas OrganizationCalendarEvent y OrganizationCalendarCrisis guardan los casos de suspensión
@@ -162,45 +163,49 @@ JOIN (
 GROUP BY org      
       """).fetchall()
     except:
-      pass
+        pass
     try:
-      if(not _result):
-        logger.info(f"Aprobado")
-        return_dict[getframeinfo(currentframe()).function] = True
-        return True  
-      
-      organizacionesErrors = []
-      fechasSesionesErrors = []
-      fechasAsistenciasErrors = []
-      
-      for row in _result:
-        organizacion = row[0]
-        fechasSesion = row[2]
-        fechasAsistencia = row[4]
-        
-        if(fechasSesion):
-          organizacionesErrors.append(organizacion)
-          fechasSesionesErrors.append(fechasSesion)
-          
-        if(fechasAsistencia):
-          organizacionesErrors.append(organizacion)
-          fechasAsistenciasErrors.append(fechasAsistencia)
-      
-      if(fechasAsistenciasErrors):
-        logger.error(f"Fechas de asistencia de la tabla roleAttendanceEvent en fechas catalogadas como sin clases: {str(set(fechasAsistenciasErrors))}")
-        
-      if(fechasSesionesErrors):
-        logger.error(f"Fechas de sesiones de la tabla OrganizationCalendarSession en fechas catalogadas como sin clases: {str(set(fechasSesionesErrors))}")
+        if(not _result):
+            logger.info(f"Aprobado")
+            return_dict[getframeinfo(currentframe()).function] = True
+            return True
 
-      if(organizacionesErrors):
-        logger.error(f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
+        organizacionesErrors = []
+        fechasSesionesErrors = []
+        fechasAsistenciasErrors = []
+
+        for row in _result:
+            organizacion = row[0]
+            fechasSesion = row[2]
+            fechasAsistencia = row[4]
+
+            if(fechasSesion):
+                organizacionesErrors.append(organizacion)
+                fechasSesionesErrors.append(fechasSesion)
+
+            if(fechasAsistencia):
+                organizacionesErrors.append(organizacion)
+                fechasAsistenciasErrors.append(fechasAsistencia)
+
+        if(fechasAsistenciasErrors):
+            logger.error(
+                f"Fechas de asistencia de la tabla roleAttendanceEvent en fechas catalogadas como sin clases: {str(set(fechasAsistenciasErrors))}")
+
+        if(fechasSesionesErrors):
+            logger.error(
+                f"Fechas de sesiones de la tabla OrganizationCalendarSession en fechas catalogadas como sin clases: {str(set(fechasSesionesErrors))}")
+
+        if(organizacionesErrors):
+            logger.error(
+                f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
+            logger.error(f"Rechazado")
+            return_dict[getframeinfo(currentframe()).function] = False
+            return False
+
+    except Exception as e:
+        logger.error(
+            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-    
-    except Exception as e:
-      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-      logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = False
-      return False
 ### fin  fn6E4 ###

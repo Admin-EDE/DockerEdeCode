@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn5E1(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn5E1(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         _query = conn.execute("""
         SELECT OPR.OrganizationPersonRoleId,
@@ -36,22 +37,23 @@ def fn5E1(conn, return_dict):
         AND O.RefOrganizationTypeId = 21
         GROUP by OPR.OrganizationPersonRoleId;
         """).fetchall()
-        if(len(_query)>0):
+        if(len(_query) > 0):
             _alumnos = (list([m[0] for m in _query if m[0] is not None]))
-            if not _alumnos :
+            if not _alumnos:
                 logger.error(f"Sin alumnos registrados")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
-            _matriculasTotales = (list([m[1] for m in _query if m[1] is not None]))
-            if not _matriculasTotales :
+            _matriculasTotales = (
+                list([m[1] for m in _query if m[1] is not None]))
+            if not _matriculasTotales:
                 logger.error(f"Sin matriculas registradas")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
             _totalAlumnos = int(len(_alumnos))
             if int(_matriculasTotales[0]) == _totalAlumnos:
-                    _queryRegistroAsistencia = conn.execute("""
+                _queryRegistroAsistencia = conn.execute("""
                     SELECT DISTINCT RoleAttendanceEventId,
                                     Date,
                                     RefAttendanceEventTypeId
@@ -59,24 +61,28 @@ def fn5E1(conn, return_dict):
                     WHERE RefAttendanceEventTypeId = 1 and Date is not null
                     GROUP by date;
                     """).fetchall()
-                    if(len(_queryRegistroAsistencia)>0):
-                        logger.info(f'Matriculas registradas y asistencia diaria realizada')
-                        logger.info(f'Aprobado')
-                        return_dict[getframeinfo(currentframe()).function] = True
-                        return True
-                    else:
-                        logger.error(f'Asistencia diaria no realizada por el establecimiento')
-                        logger.error(f'Rechazado')
-                        return_dict[getframeinfo(currentframe()).function] = False
-                        return False
+                if(len(_queryRegistroAsistencia) > 0):
+                    logger.info(
+                        f'Matriculas registradas y asistencia diaria realizada')
+                    logger.info(f'Aprobado')
+                    return_dict[getframeinfo(currentframe()).function] = True
+                    return True
+                else:
+                    logger.error(
+                        f'Asistencia diaria no realizada por el establecimiento')
+                    logger.error(f'Rechazado')
+                    return_dict[getframeinfo(currentframe()).function] = False
+                    return False
             else:
-                logger.error(f"Sin matriculas no coinciden con total de alumnos registrados")
+                logger.error(
+                    f"Sin matriculas no coinciden con total de alumnos registrados")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
                 return False
         else:
             logger.error(f'S/Datos')
-            logger.error(f'No existen alumnos matriculados en el establecimiento')
+            logger.error(
+                f'No existen alumnos matriculados en el establecimiento')
             return_dict[getframeinfo(currentframe()).function] = False
             return False
     except Exception as e:
@@ -84,4 +90,3 @@ def fn5E1(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn531 WC ##

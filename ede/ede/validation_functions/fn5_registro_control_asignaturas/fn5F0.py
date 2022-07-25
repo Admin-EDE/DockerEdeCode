@@ -4,11 +4,12 @@ import sys
 
 from ede.ede._logger import logger
 
+
 def fn5F0(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra b.1
     Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
-    
+
     '- día de clases
 - mes respectivo
 - hora pedagógica
@@ -33,7 +34,7 @@ def fn5F0(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-      _ExistData = conn.execute("""
+        _ExistData = conn.execute("""
 WITH RECURSIVE dates(Organizationid, date) AS (
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------
   SELECT 
@@ -75,17 +76,19 @@ WITH RECURSIVE dates(Organizationid, date) AS (
 ) -- END RECURSIVE
 SELECT * FROM dates                                   
         """).fetchall()
-      if(not _ExistData):
-        raise Exception("No hay registros de información")
+        if(not _ExistData):
+            raise Exception("No hay registros de información")
     except Exception as e:
         logger.error(f"S/Datos")
-        logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
-        logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+        logger.info(
+            f'No hay información disponible para validar. Su registro es obligatorio.')
+        logger.info(
+            f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
         return_dict[getframeinfo(currentframe()).function] = _r
         return _r
     try:
-      asignaturas = []
-      asignaturas = conn.execute("""
+        asignaturas = []
+        asignaturas = conn.execute("""
 --6.2 Contenido mínimo, letra b.1
 --Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
 -- * día de clases
@@ -325,71 +328,82 @@ WHERE
 GROUP BY Organizationid, date
 """).fetchall()
     except Exception as e:
-      logger.error(f"Resultado: {str(e)}")
+        logger.error(f"Resultado: {str(e)}")
 
-    #define listas de errores
+    # define listas de errores
     workDayWithoutInfo = []
     courseSectionNameErrors = []
     totalStudentsErrors = []
     tokenRegisteredErrors = []
     descriptionClassErrors = []
     try:
-      if(not asignaturas):
-        logger.error(f"S/Datos")
-        logger.info(f'No hay información disponible para validar. Su registro es obligatorio.')
-        logger.info(f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
-        raise ValueError(f"No hay informacion")
-      
-      for asignaturaRow in asignaturas:
-        #define variables a comparar
-        organizationId = asignaturaRow[0]
-        workDay = asignaturaRow[1]
-        CourseSectionId = asignaturaRow[2]
-        courseSectionName = asignaturaRow[3]
-        totalStudents = asignaturaRow[9]
-        presentStudents = asignaturaRow[10] if (asignaturaRow[10]) else 0
-        ausentStudents = asignaturaRow[12]  if (asignaturaRow[12]) else 0
-        Latestudent = asignaturaRow[14]  if (asignaturaRow[14]) else 0
-        tokenRegistered = asignaturaRow[16]
-        descriptionClass = asignaturaRow[17]
-        
-        #Comienza a validar los datos
-        if(not CourseSectionId): 
-          #se encontraron días hábiles del calendatio sin información registrada
-          workDayWithoutInfo.append(workDay)
+        if(not asignaturas):
+            logger.error(f"S/Datos")
+            logger.info(
+                f'No hay información disponible para validar. Su registro es obligatorio.')
+            logger.info(
+                f'Si hay información en la BD, revise si esta cumpliendo con los criterios de la consulta.')
+            raise ValueError(f"No hay informacion")
 
-        else: #Valida solo si existe información en la fecha
-          if(not courseSectionName):
-            #Se encontraron asignaturas sin ningún nombre registrado
-            courseSectionNameErrors.append(organizationId)
+        for asignaturaRow in asignaturas:
+            # define variables a comparar
+            organizationId = asignaturaRow[0]
+            workDay = asignaturaRow[1]
+            CourseSectionId = asignaturaRow[2]
+            courseSectionName = asignaturaRow[3]
+            totalStudents = asignaturaRow[9]
+            presentStudents = asignaturaRow[10] if (asignaturaRow[10]) else 0
+            ausentStudents = asignaturaRow[12] if (asignaturaRow[12]) else 0
+            Latestudent = asignaturaRow[14] if (asignaturaRow[14]) else 0
+            tokenRegistered = asignaturaRow[16]
+            descriptionClass = asignaturaRow[17]
 
-          if(totalStudents != (presentStudents+ausentStudents+Latestudent)):
-            #La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
-            totalStudentsErrors.append(organizationId)
-            
-          if(tokenRegistered != totalStudents):
-            #La cantidad de firmas registradas no coinciden con el número total de estudiantes
-            tokenRegisteredErrors.append(organizationId)
-            
-          if(not descriptionClass):
-            #La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
-            descriptionClassErrors.append(organizationId)
-            
-      if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors): 
-        if(workDayWithoutInfo): logger.error(f'Se encontraron días hábiles del calendario sin información registrada: {workDayWithoutInfo}')
-        if(courseSectionNameErrors): logger.error(f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
-        if(totalStudentsErrors): logger.error(f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
-        if(tokenRegisteredErrors): logger.error(f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
-        if(descriptionClassErrors): logger.error(f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
-      else:
-        _r = True
+            # Comienza a validar los datos
+            if(not CourseSectionId):
+                # se encontraron días hábiles del calendatio sin información registrada
+                workDayWithoutInfo.append(workDay)
+
+            else:  # Valida solo si existe información en la fecha
+                if(not courseSectionName):
+                    # Se encontraron asignaturas sin ningún nombre registrado
+                    courseSectionNameErrors.append(organizationId)
+
+                if(totalStudents != (presentStudents+ausentStudents+Latestudent)):
+                    # La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados.
+                    totalStudentsErrors.append(organizationId)
+
+                if(tokenRegistered != totalStudents):
+                    # La cantidad de firmas registradas no coinciden con el número total de estudiantes
+                    tokenRegisteredErrors.append(organizationId)
+
+                if(not descriptionClass):
+                    # La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario)
+                    descriptionClassErrors.append(organizationId)
+
+        if(workDayWithoutInfo or courseSectionNameErrors or totalStudentsErrors or tokenRegisteredErrors or descriptionClassErrors):
+            if(workDayWithoutInfo):
+                logger.error(
+                    f'Se encontraron días hábiles del calendario sin información registrada: {workDayWithoutInfo}')
+            if(courseSectionNameErrors):
+                logger.error(
+                    f'Se encontraron asignaturas sin ningún nombre registrado: {courseSectionNameErrors}')
+            if(totalStudentsErrors):
+                logger.error(
+                    f'La cantidad total de estudiantes no coincide con la suma de estudiantes presentes+ausentes+atradados en las siguientes asignaturas: {totalStudentsErrors}')
+            if(tokenRegisteredErrors):
+                logger.error(
+                    f'La cantidad de firmas registradas no coinciden con el número total de estudiantes en las siguientes asignaturas: {tokenRegisteredErrors}')
+            if(descriptionClassErrors):
+                logger.error(
+                    f'La clase registrada en el día X, no contiene descripción de los temas trabajados (Leccionario). {descriptionClassErrors}')
+        else:
+            _r = True
     except Exception as e:
-      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
-      logger.error(f"{str(e)}")
+        logger.error(
+            f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
+        logger.error(f"{str(e)}")
     finally:
-      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
-    
-  ## Fin fn5F0 WC ##
+        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r

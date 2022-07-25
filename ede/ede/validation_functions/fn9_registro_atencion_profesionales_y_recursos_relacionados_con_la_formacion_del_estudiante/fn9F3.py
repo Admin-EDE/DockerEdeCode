@@ -4,6 +4,7 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
+
 def fn9F3(conn, return_dict):
     """ Breve descripción de la función
     Args:
@@ -19,7 +20,7 @@ def fn9F3(conn, return_dict):
             - A
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """      
+    """
     try:
         incident = conn.execute("""
           SELECT IncidentId
@@ -31,7 +32,7 @@ def fn9F3(conn, return_dict):
               WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
             );
         """).fetchall()
-        if (len(incident)>0):
+        if (len(incident) > 0):
             listIncident = (list([m[0] for m in incident if m[0] is not None]))
             for x in listIncident:
                 try:
@@ -102,19 +103,23 @@ def fn9F3(conn, return_dict):
                     """).fetchall()
                     parent = 0
                     professor = 0
-                    if (len(incidentParent)>0):
-                        parent +=1
+                    if (len(incidentParent) > 0):
+                        parent += 1
                     else:
                         logger.info(f"S/Datos")
-                        logger.info(f"Sin registros de actividades familiares o comunitarias")
-                        return_dict[getframeinfo(currentframe()).function] = False
+                        logger.info(
+                            f"Sin registros de actividades familiares o comunitarias")
+                        return_dict[getframeinfo(
+                            currentframe()).function] = False
                         return False
-                    if (len(incidentProfessor)>0):
+                    if (len(incidentProfessor) > 0):
                         professor += 1
                     else:
                         logger.info(f"S/Datos")
-                        logger.info(f"Sin registros de actividades familiares o comunitarias")
-                        return_dict[getframeinfo(currentframe()).function] = False
+                        logger.info(
+                            f"Sin registros de actividades familiares o comunitarias")
+                        return_dict[getframeinfo(
+                            currentframe()).function] = False
                         return False
                 except Exception as e:
                     logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
@@ -127,7 +132,8 @@ def fn9F3(conn, return_dict):
             return True
         else:
             logger.info(f"S/Datos")
-            logger.info(f"Sin registros de actividades familiares o comunitarias")
+            logger.info(
+                f"Sin registros de actividades familiares o comunitarias")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
@@ -135,4 +141,3 @@ def fn9F3(conn, return_dict):
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
         return False
-  ## Fin fn9F3 WC ##
