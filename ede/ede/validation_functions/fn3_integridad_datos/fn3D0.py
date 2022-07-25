@@ -9,7 +9,9 @@ from ede.ede._logger import logger
 
 
 def fn3D0(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verificar que cada asignatura se encuentre asociada a un curso.
+    Entrega los organizationId de las asignaturas que no están asociadas a ningún curso.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,9 +20,9 @@ def fn3D0(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen asignaturas
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todas las asignaturas tienen un id de un curso válido
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

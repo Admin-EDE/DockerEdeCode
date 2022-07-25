@@ -7,7 +7,7 @@ from ede.ede._logger import logger
 
 def fn2DA(conn, return_dict):
     """ 
-    "5.3 De las altas en el registro de matrícula.
+    5.3 De las altas en el registro de matrícula.
     Validar que los alumnos nuevos tengan el certificado de promoción del estudiante
     y el certificado de traslado o baja de matrícula del establecimiento de origen.
     -----------------------------------------------------------

@@ -9,7 +9,11 @@ from ede.ede._logger import logger
 
 
 def fn3D3(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verificar que los campos ClassMeetingDays y ClassPeriod se encuentren dentro de la lista. 
+    Esto ayudará a identificar el segundo bloque de cada curso, lo cual es necesario para 
+    comparar el registro de control de asignatura contra el registro de control de subvenciones.
+    Tabla OrganizationCalendarSession, campos ClassMeetingDays y ClassPeriod
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,9 +22,9 @@ def fn3D3(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen ClassMeetingDays ni ClassPeriod en CourseSectionSchedule
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los ClassMeetingDays corresponden a los días de la semana, y los ClassPeriod a los bloques
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

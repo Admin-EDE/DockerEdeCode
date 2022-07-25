@@ -8,7 +8,9 @@ from ede.ede._logger import logger
 
 
 def fn3C5(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verificador de identidad (OTP)
+    Verifica que el campo cumpla con la siguiente expresión regular: ^[0-9]{6}+([-]{1}[0-9kK]{1})?$
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,9 +19,9 @@ def fn3C5(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen OTP en la base de datos
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los OTP (verificadores de identidad) cumplen el formato
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

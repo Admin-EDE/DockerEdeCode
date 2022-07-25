@@ -83,7 +83,7 @@ class parse:
 
         return jsonData, file
 
-    def leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(self, jsonData: Any, elem: Any) -> list | None:
+    def leerTodosLosRegistrosDeLaTablaDesdeArchivoJson(self, jsonData: Any, elem: Any):
         try:
             # Mapeo de tipos de datos SQL -> Pyhton
             records = []
@@ -133,7 +133,7 @@ class parse:
                 seen.add(t)
         return newlist
 
-    def crearCSV(self, jsonFileName: str, fileName: str, TableName: str, columnList: list, unique_records: list) -> bool | None:
+    def crearCSV(self, jsonFileName: str, fileName: str, TableName: str, columnList: list, unique_records: list):
         # https://pymotw.com/2/csv/
         try:
             csv.register_dialect('escaped', delimiter=self.args._sep, lineterminator='\n',

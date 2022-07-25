@@ -9,7 +9,8 @@ from ede.ede._logger import logger
 
 
 def fn3D2(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verificar que el campo de Asistencia no se encuentre vacío
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,9 +19,10 @@ def fn3D2(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - Obtener el número de eventos de asistencia y éste es 0 (no hay)
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Obtener un número de eventos de asistencia mayor a 0 
+            y todos tienen el campo si es clase virtual o no como no nulo.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

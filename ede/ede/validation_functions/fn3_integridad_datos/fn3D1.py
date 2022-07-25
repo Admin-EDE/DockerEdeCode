@@ -9,7 +9,9 @@ from ede.ede._logger import logger
 
 
 def fn3D1(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que Las asignaturas tengan una capacidad máxima y que 
+    todas las organizaciones en la tabla de asignaturas sean de tipo ASIGNATURA
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,10 +19,9 @@ def fn3D1(conn, return_dict):
           ]
     Returns:
         [Boolean]: [
-          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Las asignaturas tienen una capacidad máxima acorde al formato y las
+            organizaciones en la tabla de asignaturas se corresponden a asignaturas.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

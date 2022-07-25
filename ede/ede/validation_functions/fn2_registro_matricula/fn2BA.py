@@ -7,8 +7,8 @@ from ede.ede._logger import logger
 
 def fn2BA(conn, return_dict):
     """ 
-    "5.5 De los estudiantes excedentes
-    Validar que exista cargada en el sistema la resolución que autoriza al estudiante."
+    5.5 De los estudiantes excedentes
+    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
     ---------------------------------------------------------------------
     NOTA: 
     - File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.

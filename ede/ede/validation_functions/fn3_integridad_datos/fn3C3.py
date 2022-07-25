@@ -9,7 +9,8 @@ from ede.ede._logger import logger
 
 
 def fn3C3(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que las Organizaciones tengan bien definida su localización
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,16 +19,17 @@ def fn3C3(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay Organizaciones tipo curso o asignatura
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todas las organizaciones tipo curso o asignatura tienen bien definida su localización
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
+        --Verifica que existan cursos y asignaturas
         SELECT count(OrganizationId)
         FROM Organization
         OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
@@ -46,6 +48,9 @@ def fn3C3(conn, return_dict):
     org_loc_id = []
     try:
         org_loc_id = conn.execute("""--sql
+        --Verifica que la relación entre organization y location sea idéntica
+        -- en las tablas organizationlocation y coursesectionlocation
+        -- retorna las tablas que no cumplen esto
       SELECT O.OrganizationId, OL.OrganizationId, OL.Locationid 
       FROM Organization O
  JOIN OrganizationLocation OL ON O.OrganizationId=OL.OrganizationId

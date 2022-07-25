@@ -10,7 +10,13 @@ from ede.ede._logger import logger
 
 
 def fn3CA(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    RefAttendanceStatusId 
+    OrganizationId
+    ---------------------------------------------
+    Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso.
+    Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura.
+    Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
