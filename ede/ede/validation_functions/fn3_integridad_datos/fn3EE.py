@@ -8,7 +8,8 @@ from ede.ede._logger import logger
 
 
 def fn3EE(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que la letra del curso está dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,9 +18,9 @@ def fn3EE(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay letras de cursos registradas
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - las letras de los cursos están dentro de la lista permitida
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

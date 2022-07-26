@@ -28,7 +28,7 @@ def fn3D1(conn, return_dict):
     _r = False
     MaximumCapacityErrors = []
     try:
-        MaximumCapacityErrors = conn.execute("""
+        MaximumCapacityErrors = conn.execute("""--sql
         -- Selecciona los Organizaciones de tipo ASIGNATURA que no cumplen con el criterio de la expresión regular
         SELECT OrganizationId, MaximumCapacity
         FROM CourseSection
@@ -42,7 +42,7 @@ def fn3D1(conn, return_dict):
 
     organizationMalAsignadas = []
     try:
-        organizationMalAsignadas = conn.execute("""
+        organizationMalAsignadas = conn.execute("""--sql
           -- Selecciona las Organizaciones que no son de tipo ASIGNATURA 
           SELECT OrganizationId
           FROM CourseSection

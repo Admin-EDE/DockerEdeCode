@@ -8,7 +8,8 @@ from ede.ede._logger import logger
 
 
 def fn3E9(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que el sector está dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,9 +18,9 @@ def fn3E9(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay sectores registrados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los sectores registrados cumplen con la lista permitida
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

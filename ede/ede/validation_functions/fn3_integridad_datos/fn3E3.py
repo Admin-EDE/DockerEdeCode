@@ -7,7 +7,8 @@ from ede.ede._logger import logger
 
 # VERIFICA QUE EL FORMATO DEL RBD CORRESPONDA
 def fn3E3(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que el código identificador del establecimiento RBD sea correcto de acuerdo al formato
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -16,16 +17,16 @@ def fn3E3(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay establecimientos registrados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los establecimientos cumplen el formato del RBD
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         SELECT Identifier 
         FROM k12schoolList 
           INNER JOIN organizationList 

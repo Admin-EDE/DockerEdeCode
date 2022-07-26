@@ -29,7 +29,7 @@ def fn3D0(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
         SELECT count(OrganizationId)
         FROM OrganizationRelationship
         INNER JOIN Organization USING(OrganizationId)
@@ -53,7 +53,7 @@ def fn3D0(conn, return_dict):
 
     asignaturas = []
     try:
-        asignaturas = conn.execute("""
+        asignaturas = conn.execute("""--sql
         /* 
         * Selecciona de la tabla Organization los ID's de todas las asignaturas
         * que no tengan un curso asociado 

@@ -23,7 +23,7 @@ def fn3F7(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         SELECT identifier 
         FROM PersonIdentifier pi
         JOIN RefPersonIdentificationSystem rfi 

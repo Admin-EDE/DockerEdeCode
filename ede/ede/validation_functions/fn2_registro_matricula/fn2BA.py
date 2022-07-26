@@ -11,14 +11,10 @@ def fn2BA(conn, return_dict):
     Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
     ---------------------------------------------------------------------
     NOTA: 
-    - File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
     - Una resolución es un documento público que emite el Ministerio de Educación en 
     ciertos casos. Cada resolución tiene un número y una fecha de total tramitación. 
     Para este caso se debe validar que exista el documento cargado en el sistema y 
-    sus datos cargados en la tabla. 
-    Casos en que aplica: 
-    PersonStatus.RefPersonStatusTypeId == (24 OR 31 OR 25) + 
-    PersonStatus.fileScanBase64 + PersonStatus.docNumber + PersonStatus.StatusStartDate
+    sus datos cargados en la tabla.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -27,23 +23,25 @@ def fn2BA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen alumnos excedentes en el establecimiento
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los alumnos excedentes cuentan con su documento correspondiente
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
+        --Comprobar si hay estudiantes con status 25, 24, 31
         SELECT DISTINCT P.PersonId
         from OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
-        where OPR.RoleId = 6
-          and PS.RefPersonStatusTypeId IN (25, 24, 31);
+        where OPR.RoleId = 6 --Estudiante
+          and PS.RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
         """).fetchall()
         if (len(_query) > 0):
-            _queryExcedentes = conn.execute("""
+            _queryExcedentes = conn.execute("""--sql
+            --Que aquellos estudiantes tengan su archivo subido
           SELECT fileScanBase64
           from PersonStatus
           where PersonId in (
@@ -51,13 +49,14 @@ def fn2BA(conn, return_dict):
               FROM OrganizationPersonRole OPR
                       join Person P on OPR.PersonId = P.PersonId
                       join PersonStatus PS on P.PersonId = PS.PersonId
-              where OPR.RoleId = 6
-                and PS.RefPersonStatusTypeId IN (25, 24, 31))
+              where OPR.RoleId = 6 --Estudiante
+                and PS.RefPersonStatusTypeId IN (25, 24, 31)) --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
             and fileScanBase64 is not null
-            and RefPersonStatusTypeId IN (25, 24, 31);
+            and RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
           """).fetchall()
             if (len(_queryExcedentes) == len(_query)):
-                _file = conn.execute("""
+                _file = conn.execute("""--sql
+                --Que aquellos estudiantes tengan su archivo subido, no nulo, y con documentid
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -69,11 +68,11 @@ def fn2BA(conn, return_dict):
                                     from OrganizationPersonRole OPR
                                               join Person P on OPR.PersonId = P.PersonId
                                               join PersonStatus PS on P.PersonId = PS.PersonId
-                                    where OPR.RoleId = 6
-                                      and PS.RefPersonStatusTypeId IN (25, 24, 31)
+                                    where OPR.RoleId = 6 --Estudiante
+                                      and PS.RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
                                 )
                                   and fileScanBase64 is not null
-                                  and RefPersonStatusTypeId IN (25, 24, 31)
+                                  and RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
             )
             """).fetchall()
                 if(len(_file) == len(_query)):

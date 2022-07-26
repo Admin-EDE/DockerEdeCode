@@ -9,6 +9,8 @@ from ede.ede._logger import logger
 def fn3C4(conn, return_dict):
     """
     Integridad
+    Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
+    y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,7 +27,7 @@ def fn3C4(conn, return_dict):
     _r = False
     RoleAttendanceEvent = []
     try:
-        RoleAttendanceEvent = conn.execute("""
+        RoleAttendanceEvent = conn.execute("""--sql
         -- Lista todos los IDs que no cumplan con la expresión regular.
         SELECT RoleAttendanceEventId, Date
         FROM RoleAttendanceEvent
@@ -39,7 +41,7 @@ def fn3C4(conn, return_dict):
         logger.info(f"Resultado: {RoleAttendanceEvent} -> {str(e)}")
     OrganizationPersonRole = []
     try:
-        OrganizationPersonRole = conn.execute("""
+        OrganizationPersonRole = conn.execute("""--sql
         -- Lista todos los IDs que no cumplan con la empresión regular.
         SELECT OrganizationPersonRoleId, EntryDate, ExitDate
         FROM OrganizationPersonRole

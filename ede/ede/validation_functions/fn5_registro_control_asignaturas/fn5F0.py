@@ -9,14 +9,6 @@ def fn5F0(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra b.1
     Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
-
-    '- día de clases
-- mes respectivo
-- hora pedagógica
-- nombre de la asignatura o sector
-- total de estudiantes presentes, atrasados y ausentes
-- observaciones de la clase
-- Verificador de identidad del docente a cargo
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,16 +17,27 @@ def fn5F0(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay fechas de clases
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            -- * día de clases
+            -- * mes respectivo
+            -- * hora pedagógica
+            -- * nombre de la asignatura o sector
+            -- * total de estudiantes presentes, atrasados y ausentes
+            -- * observaciones de la clase
+            -- * Verificador de identidad del docente a cargo
+
+            -- Lee desde las organizaciones de tipo asignatura los campos 
+            -- FirstInstructionDate y LastInstructionDate y con esa información
+            -- crea una lista de días hábiles en los cuales deberían haber tenido clases
+            -- los estudiantes del establecimiento.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
 WITH RECURSIVE dates(Organizationid, date) AS (
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------
   SELECT 
@@ -88,7 +91,7 @@ SELECT * FROM dates
         return _r
     try:
         asignaturas = []
-        asignaturas = conn.execute("""
+        asignaturas = conn.execute("""--sql
 --6.2 Contenido mínimo, letra b.1
 --Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
 -- * día de clases

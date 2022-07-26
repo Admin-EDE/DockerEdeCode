@@ -11,30 +11,6 @@ def fn2FA(conn, return_dict):
     Validar que el total de alumnos matriculados menos las bajas, 
     sea igual a la suma de los estudiantes inscritos en los libros de clases 
     de los diferentes cursos, por nivel y modalidad.
-    ---------------------------------------------------------------------
-    Contar estudiantes por curso
-    OrganizationPersonRole.OrganizationId == IdCurso & 
-    OrganizationPersonRole.RoleId == estudiantes & OrganizationPersonRole.PersonId == IdEstudiante
-
-    Validar ExitDate por si hay algún retiro anticipado. 
-    No contar dos veces al estudiante que este reciebiendo formación dual
-
-    Calcular alumnosMatriculados Activos
-    AlumnosMatriculados = #numeroMatricula(c/fechaincorporación) - #numeroMatricula(c/fechaRetiroEstudiante)
-
-    Calcular NumerosLista Activos
-    #numLista == #fechaIncorporacionEstudiante
-
-    #numeroMatricula(c/fechaRetiroEstudiante) == #fechaRetiroEstudiante == 
-    # #numLista(c/fechaRetiroEstudiante) == #motivoRetiro
-
-    k12StudentEnrollment.active identifica si un estudiante está activo o no en el curso. 
-    Los campos RecordStartDateTime y RecordEndDateTime identifican los cambios en la tabla, 
-    similar a un log, por lo tanto el campo que tenga el registro RecordEndDateTime en blanco 
-    debería ser el activo. Además, en la tabla PersonStatus.refPersonStatusTypeId=32 identifica 
-    la asignación de un estudiante a un curso para identificar los cambios de cursos y la 
-    tabla personIdentifier le agregué un refPersonIdentificationSystemId = 54 para 
-    identificar los números de lista de los estudiantes.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -43,18 +19,18 @@ def fn2FA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos matriculados o inscritos
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - La cantidad de alumnos matriculados menos las bajas es igual a los alumnos inscritos
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     results = []
     try:
-        results = conn.execute("""
+        results = conn.execute("""--sql
         select count(distinct PersonId)-(select count(distinct PersonId) from OrganizationPersonRole
-        where RoleId=6
+        where RoleId=6 --Estudiante
         and ExitDate is not null)
         from OrganizationPersonRole
         where  EntryDate is not null and RoleId=6  ;
@@ -64,7 +40,7 @@ def fn2FA(conn, return_dict):
 
     resultsTwo = []
     try:
-        resultsTwo = conn.execute("""
+        resultsTwo = conn.execute("""--sql
         SELECT count(distinct K12StudentEnrollment.OrganizationPersonRoleId)
         from K12StudentEnrollment
         where RefEnrollmentStatusId is not null

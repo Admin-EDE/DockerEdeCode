@@ -23,26 +23,26 @@ def fn29B(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos con formación dual
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Hay alumnos con formación dual y tienen su matrícula no repetida y registrada correctamente
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        query = conn.execute("""
+        query = conn.execute("""--sql
         SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
         from Person P
                 join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
-        where RoleId = 6
-          and ps.RefPersonStatusTypeId = 35
+        where RoleId = 6 --Estudiante
+          and ps.RefPersonStatusTypeId = 35 --Estudiante con formacion dual
           and OrganizationPersonRoleId in (select OrganizationId
                                           from Organization
-                                          where RefOrganizationTypeId = 47)
+                                          where RefOrganizationTypeId = 47) --Asignatura de Práctica
         group by OPR.OrganizationId, P.PersonId;
         """).fetchall()
-        k12StudentEnrollment = conn.execute("""
+        k12StudentEnrollment = conn.execute("""--sql
         select OrganizationPersonRoleId
         from K12StudentEnrollment;
         """).fetchall()

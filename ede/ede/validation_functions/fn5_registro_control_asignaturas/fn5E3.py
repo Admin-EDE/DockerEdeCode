@@ -10,8 +10,7 @@ def fn5E3(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra b.2
     Validar que la clase con reemplazante no idóneo no sea contabilizada 
-    en el cumplimiento del plan de estudio y sea considerada al momento de presentar
-    un calendario de recuperación.
+    en el cumplimiento del plan de estudio.
 
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -21,9 +20,9 @@ def fn5E3(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen clases con reemplazante no idóneo
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Las clases con reemplazante no idóneo tienen todas su clase de recuperación
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
@@ -31,7 +30,7 @@ def fn5E3(conn, return_dict):
     suplencias_noidoneas = []
     try:
         i = 0
-        suplencias_noidoneas = conn.execute("""
+        suplencias_noidoneas = conn.execute("""--sql
             SELECT
               FirstName,
               MiddleName,
@@ -49,8 +48,8 @@ def fn5E3(conn, return_dict):
             JOIN CourseSectionLocation CSL on CS.OrganizationId = CSL.OrganizationId
             JOIN Classroom Cr on CSL.LocationId = Cr.LocationId
             JOIN LocationAddress L on  L.LocationId = Cr.LocationId
-            where OPR.RoleId !=6
-            and PDOC.idoneidadDocente != 1
+            where OPR.RoleId !=6 --Distinto a estudiante
+            and PDOC.idoneidadDocente != 1 --no es idoneo
             and LOWER(RAE.observaciones) like '%falta docente%';
         """).fetchall()
     except Exception as e:
@@ -60,6 +59,7 @@ def fn5E3(conn, return_dict):
         _r = True
         logger.info(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r
 
     try:

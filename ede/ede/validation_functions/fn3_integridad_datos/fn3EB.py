@@ -8,7 +8,8 @@ from ede.ede._logger import logger
 
 
 def fn3EB(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que los tipos de curso están dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,9 +18,9 @@ def fn3EB(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay tipos de curso registrados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - los tipos de curso están dentro de la lista permitida
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

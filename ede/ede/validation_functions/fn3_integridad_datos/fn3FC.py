@@ -24,7 +24,7 @@ def fn3FC(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         SELECT count(emailAddress), count(RefEmailTypeId)
         from PersonEmailAddress
         UNION ALL

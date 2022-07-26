@@ -11,12 +11,7 @@ from ede.ede._logger import logger
 
 def fn3CA(conn, return_dict):
     """
-    RefAttendanceStatusId 
-    OrganizationId
-    ---------------------------------------------
-    Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso.
-    Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura.
-    Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento.
+    Verifica que existan campos relacionados a la asistencia
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,16 +20,16 @@ def fn3CA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay eventos de asistencia
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Hay asistencias y están bien asignadas a las organizaciones
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
       SELECT DISTINCT ast.Description as 'RefAttendanceStatus',aet.Description as 'AttendanceEventType', orgt.Description as 'OrganizationType'
       FROM RoleAttendanceEvent rae
       INNER JOIN OrganizationPersonRole opr on opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
