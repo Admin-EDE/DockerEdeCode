@@ -6,7 +6,9 @@ from ede.ede._logger import logger
 
 
 def fn5E4(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Validar que la asistencia se encuentre tomada, es decir, 
+    cada estudiante debe tener alguno de los siguientes estados: Presente, ausente o atrasado.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -15,19 +17,19 @@ def fn5E4(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay asistencias de estudiantes
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Hay asistencias de estudiantes, con fecha y estado (ausente, presente, atrasado)
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT RAE.DATE,
               RAE.RefAttendanceStatusId
         FROM OrganizationPersonRole OPR
                 join RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-        where OPR.RoleId = 6
+        where OPR.RoleId = 6 --Estudiante
         and RAE.Date is not null;
         """).fetchall()
         if(len(_query) > 0):

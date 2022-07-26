@@ -17,16 +17,16 @@ def fn29A(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos en práctica
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los alumnos en práctica terminaron el primer semestre de tercer año
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         SELECT est.personid
         FROM person est
         JOIN PersonStatus ps
@@ -45,7 +45,7 @@ def fn29A(conn, return_dict):
 
     results = []
     try:
-        results = conn.execute("""
+        results = conn.execute("""--sql
 SELECT est.personid
 FROM person est
 JOIN PersonStatus ps

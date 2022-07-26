@@ -6,7 +6,8 @@ from ede.ede._logger import logger
 
 
 def fn5E1(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    validar que al final de la jornada exista el registro de alumnos matriculados en el curso y el total de la asistencia diaria. 
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -15,26 +16,26 @@ def fn5E1(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos matriculados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Existe registro de matriculados y hay asistencia diaria
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT OPR.OrganizationPersonRoleId,
             (SELECT count(OPR.PersonId)
                 from OrganizationPersonRole OPR
                         join Organization O on OPR.OrganizationId = O.OrganizationId
                         join Course C on O.OrganizationId = C.OrganizationId
-                where OPR.RoleId = 6
-                and O.RefOrganizationTypeId = 21) as MatriculasTotales
+                where OPR.RoleId = 6 --Estudiante
+                and O.RefOrganizationTypeId = 21) as MatriculasTotales --Course
         FROM OrganizationPersonRole OPR
                 join Organization O on OPR.OrganizationId = O.OrganizationId
                 join Course C on O.OrganizationId = C.OrganizationId
-        WHERE OPR.RoleId = 6
-        AND O.RefOrganizationTypeId = 21
+        WHERE OPR.RoleId = 6 --Estudiante
+        AND O.RefOrganizationTypeId = 21 --Course
         GROUP by OPR.OrganizationPersonRoleId;
         """).fetchall()
         if(len(_query) > 0):
@@ -53,7 +54,7 @@ def fn5E1(conn, return_dict):
                 return False
             _totalAlumnos = int(len(_alumnos))
             if int(_matriculasTotales[0]) == _totalAlumnos:
-                _queryRegistroAsistencia = conn.execute("""
+                _queryRegistroAsistencia = conn.execute("""--sql
                     SELECT DISTINCT RoleAttendanceEventId,
                                     Date,
                                     RefAttendanceEventTypeId

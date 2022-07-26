@@ -17,16 +17,16 @@ def fn3E1(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay docentes registrados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los docentes tienen su título y datos de la institución donde estudiaron
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 SELECT DISTINCT
 	 pdc.personId 
 	 ,pdc.DegreeOrCertificateTitleOrSubject

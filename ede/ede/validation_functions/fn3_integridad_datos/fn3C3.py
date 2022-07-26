@@ -51,13 +51,12 @@ def fn3C3(conn, return_dict):
         --Verifica que la relación entre organization y location sea idéntica
         -- en las tablas organizationlocation y coursesectionlocation
         -- retorna las tablas que no cumplen esto
-      SELECT O.OrganizationId, OL.OrganizationId, OL.Locationid 
+SELECT O.OrganizationId, OL.OrganizationId, OL.Locationid, CSL.LocationId
       FROM Organization O
- JOIN OrganizationLocation OL ON O.OrganizationId=OL.OrganizationId
-WHERE OL.LocationId != (
-SELECT CSL.Locationid FROM Organization O
- JOIN CourseSectionLocation CSL ON O.OrganizationId=CSL.OrganizationId)
-ORDER BY O.OrganizationId
+JOIN OrganizationLocation OL ON O.OrganizationId=OL.OrganizationId
+JOIN CourseSectionLocation CSL ON O.OrganizationId=CSL.OrganizationId
+WHERE OL.LocationId != CSL.LocationId
+AND O.RefOrganizationTypeId = 22 --Course Section
       """).fetchall()
     except Exception as e:
         logger.info(f"Resultado: {org_loc_id} -> {str(e)}")

@@ -6,7 +6,8 @@ from ede.ede._logger import logger
 
 
 def fn5D0(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que no existan asistencias de Class/section duplicadas
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -15,19 +16,19 @@ def fn5D0(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existe asistencia por clase
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Existe asistencia por clase y no hay duplicados
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _oPR = conn.execute("""
+        _oPR = conn.execute("""--sql
             SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
             FROM OrganizationPersonRole OPR
                     JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-            WHERE OPR.RoleId in(4,5)
-            AND RAE.RefAttendanceEventTypeId = 2
+            WHERE OPR.RoleId in(4,5) --Profesor(a) Jefe, Docente
+            AND RAE.RefAttendanceEventTypeId = 2 --Class/section attendance
             group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
             """
                             ).fetchall()

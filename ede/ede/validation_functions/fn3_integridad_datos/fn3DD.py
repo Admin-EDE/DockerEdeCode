@@ -35,7 +35,7 @@ def fn3DD(conn, return_dict):
     _r = False
     school = []
     try:
-        school = conn.execute("""
+        school = conn.execute("""--sql
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
         SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
         FROM Organization
@@ -55,7 +55,7 @@ def fn3DD(conn, return_dict):
 
     webSite = []
     try:
-        webSite = conn.execute("""
+        webSite = conn.execute("""--sql
         -- Revisa que la organización tipo Establecimiento tenga registrada su página web
         SELECT OrganizationId, RefOrganizationType.Description as 'organizationType',Website
         FROM Organization
@@ -71,7 +71,7 @@ def fn3DD(conn, return_dict):
 
     ElectronicMailAddress = []
     try:
-        ElectronicMailAddress = conn.execute("""
+        ElectronicMailAddress = conn.execute("""--sql
         -- Revisa que la organización tipo Establecimiento tenga registrado su email de contacto
         SELECT OrganizationId, ElectronicMailAddress
         FROM Organization
@@ -90,7 +90,7 @@ def fn3DD(conn, return_dict):
 
     phoneNumbers = []
     try:
-        phoneNumbers = conn.execute("""
+        phoneNumbers = conn.execute("""--sql
         -- Revisa que la organización tipo Establecimiento tenga registrados sus teléfonos de contacto
         SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', TelephoneNumber, RefInstitutionTelephoneType.Description as 'phoneType'--, LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
         FROM Organization
@@ -109,7 +109,7 @@ def fn3DD(conn, return_dict):
 
     locations = []
     try:
-        locations = conn.execute("""
+        locations = conn.execute("""--sql
         -- Revisa que las ubicaciones del establecimiento se encuentren bien definidas.
         SELECT DISTINCT OrganizationId, RefOrganizationType.Description as 'organizationType', LocationAddress.StreetNumberAndName, LocationAddress.ApartmentRoomOrSuiteNumber, LocationAddress.BuildingSiteNumber, LocationAddress.City, RefState.Description as 'Región', RefCountry.Description as 'País', LocationAddress.PostalCode, LocationAddress.Latitude, LocationAddress.Longitude, RefOrganizationLocationType.Description as 'TipoLocalidad'
         FROM Organization

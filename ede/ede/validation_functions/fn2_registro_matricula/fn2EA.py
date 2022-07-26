@@ -35,9 +35,9 @@ def fn2EA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos en ningún curso
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los alumnos tienen todos sus datos obligatorios
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

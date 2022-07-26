@@ -7,7 +7,8 @@ from ede.ede._logger import logger
 
 
 def fn3EF(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que los id del curso sean equivalentes en las tablas course y organization
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -16,9 +17,9 @@ def fn3EF(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay datos de cursos en las tablas course u organization
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los id de los cursos son equivalentes en las tablas course y organization
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

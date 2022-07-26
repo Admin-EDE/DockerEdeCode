@@ -10,11 +10,6 @@ def fn2CB(conn, return_dict):
     """ 
     5.4 De las bajas en el registro de matrícula
     Validar que exista el registro de entrega de documentos al apoderado.
-    -------------------------------------------------------------
-    Revisar que la entrega de documentos se encuentre cargada en las 
-    incidencias como un tipo de reunión con el apoderado.
-    En tabla Indicent.RefIncidentBehaviorId == 33 (Entrega de documentos) y
-    IncidentPerson.digitalRandomKey OR fileScanBase64 según sea el caso
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -23,16 +18,17 @@ def fn2CB(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay estudiantes retirados definitivamente
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los estudiantes retirados definitivamente tienen documento e
+            indicente relacionado a la entrega de estos
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _query = []
     _r = False
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
 SELECT DISTINCT
 	 pst.personId as 'estudianteId'
 	, pid.Identifier as 'RUN'

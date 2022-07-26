@@ -10,14 +10,6 @@ def fn29C(conn, return_dict):
     5.7 De los estudiantes en práctica
     Validar que los estudiantes egresados de cuarto medio y que estén realizando 
     su práctica tengan asignado un profesor tutor.
-    -------------------------------------------------------------------------
-    En la tabla roleAttendanceEvent debería registrarse la asistencia de los estudiantes 
-    a las asignaturas de practica profesional y, este tipo de asignaturas debería tener asignado 
-    un o varios profesores tutores dependiendo de la especialidad.
-    Un estudiante de formación DUAL tiene una asignatura especial asignada y el curso tiene el 
-    identificador RefWorkbasedLearningOpportunityTypeId asignado. 
-    Se agrega en refOrgantizationType el tipo practicaProfesional para identificar este tipo de asignaturas.
-    La tabla Role asigna el código 17 al Tutor(a) práctica profesional.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,31 +18,31 @@ def fn29C(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos en práctica
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los alumnos en práctica tienen un tutor asignado
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _queryStud = conn.execute("""
+        _queryStud = conn.execute("""--sql
         SELECT OPR.OrganizationId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join Organization O on OPR.OrganizationId = O.OrganizationId
-        WHERE OPR.RoleId = 6
-          AND O.RefOrganizationTypeId = 47
+        WHERE OPR.RoleId = 6 --Estudiante
+          AND O.RefOrganizationTypeId = 47 --Asignatura de practica profesional
         GROUP by P.PersonId,
                 OPR.OrganizationId;
         """).fetchall()
 
-        _queryProf = conn.execute("""
+        _queryProf = conn.execute("""--sql
         SELECT OPR.OrganizationId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join Organization O on OPR.OrganizationId = O.OrganizationId
-        WHERE OPR.RoleId = 17
-          AND O.RefOrganizationTypeId = 47
+        WHERE OPR.RoleId = 17 --Tutor(a) de practica profesional
+          AND O.RefOrganizationTypeId = 47 --Asignatura de practica profesional
         GROUP by P.PersonId,
                 OPR.OrganizationId;
         """).fetchall()

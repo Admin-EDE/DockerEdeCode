@@ -22,7 +22,7 @@ def fn3FB(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 SELECT 
 (
 	SELECT count(p.personId)

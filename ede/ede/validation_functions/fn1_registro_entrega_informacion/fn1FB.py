@@ -33,7 +33,7 @@ def fn1FB(conn, return_dict):
     """
     Allrows = []
     try:
-        Allrows = conn.execute("""
+        Allrows = conn.execute("""--sql
         SELECT inc.IncidentId
         FROM Incident inc
         JOIN RefIncidentBehavior rib
@@ -51,7 +51,7 @@ def fn1FB(conn, return_dict):
     _r = False
     FineRows = []
     try:
-        FineRows = conn.execute("""
+        FineRows = conn.execute("""--sql
           SELECT inc.IncidentId
           FROM Incident inc
           JOIN RefIncidentBehavior rib

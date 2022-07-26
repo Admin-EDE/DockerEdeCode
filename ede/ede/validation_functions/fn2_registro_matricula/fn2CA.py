@@ -8,7 +8,8 @@ from ede.ede._logger import logger
 def fn2CA(conn, return_dict):
     """ 
     5.4 De las bajas en el registro de matrícula
-    Validar que exista la fecha, motivo y la declaración jurada del requirente o su verificador de identidad cargado en el sistema.
+    Validar que exista la fecha, motivo y la declaración jurada del 
+    requirente o su verificador de identidad cargado en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -17,14 +18,15 @@ def fn2CA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos retirados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
+        --Busca estudiantes que se hayan retirado definitivamente
           SELECT DISTINCT p.PersonId
           FROM OrganizationPersonRole OPR
           OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -34,7 +36,7 @@ def fn2CA(conn, return_dict):
           WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
         """).fetchall()
         if(len(_query) > 0):
-            _queryOK = conn.execute("""
+            _queryOK = conn.execute("""--sql
                 SELECT DISTINCT p.PersonId
                 FROM OrganizationPersonRole OPR
                 OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -51,7 +53,7 @@ def fn2CA(conn, return_dict):
                     JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
                     JOIN Document USING(fileScanBase64)
                     WHERE
-                      OPR.RoleId = 6
+                      OPR.RoleId = 6 --Estudiante
                       and p.RecordEndDateTime IS NULL and PS.RecordEndDateTime IS NULL and OPR.RecordEndDateTime IS NULL
                       and PS.StatusStartDate IS NOT NULL and PS.StatusEndDate IS NOT NULL and PS.Description IS NOT NULL
                       and RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')	

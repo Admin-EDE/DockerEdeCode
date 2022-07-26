@@ -21,38 +21,38 @@ def fn28A(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay estudiantes migrantes
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Hay estudiantes migrantes y tienen sus documentos subidos
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 JOIN Person P on OPR.PersonId = P.PersonId
                 JOIN PersonIdentifier PI on P.PersonId = PI.PersonId
-        where PI.RefPersonIdentificationSystemId = 52
-          and OPR.RoleId = 6
+        where PI.RefPersonIdentificationSystemId = 52 --IPE (Identificador provisorio escolar)
+          and OPR.RoleId = 6 --Estudiante
           and PI.Identifier is not null;
         """).fetchall()
         if(len(_query) > 0):
-            _personStatus = conn.execute("""
+            _personStatus = conn.execute("""--sql
           SELECT fileScanBase64
           FROM PersonStatus
           WHERE PersonId in (SELECT DISTINCT P.PersonId
                             FROM OrganizationPersonRole OPR
                                       join Person P on OPR.PersonId = P.PersonId
                                       join PersonIdentifier PI on P.PersonId = PI.PersonId
-                            WHERE PI.RefPersonIdentificationSystemId = 52
-                              and OPR.RoleId = 6
+                            WHERE PI.RefPersonIdentificationSystemId = 52 --IPE
+                              and OPR.RoleId = 6 --Estudiante
                               and PI.Identifier is not null)
-            and RefPersonStatusTypeId = 34
+            and RefPersonStatusTypeId = 34 --Convalidacion de estudios
             and fileScanBase64 is not null;
           """).fetchall()
             if(len(_personStatus) == len(_query)):
-                _file = conn.execute("""
+                _file = conn.execute("""--sql
             SELECT
                   documentId
             FROM Document
@@ -65,10 +65,10 @@ def fn28A(conn, return_dict):
                                   from OrganizationPersonRole OPR
                                             join Person P on OPR.PersonId = P.PersonId
                                             join PersonIdentifier PI on P.PersonId = PI.PersonId
-                                  where PI.RefPersonIdentificationSystemId = 52
-                                    and OPR.RoleId = 6
+                                  where PI.RefPersonIdentificationSystemId = 52 --IPE
+                                    and OPR.RoleId = 6 --Estudiante
                                     and PI.Identifier is not null)
-                  and RefPersonStatusTypeId = 34
+                  and RefPersonStatusTypeId = 34 --Convalidacion de estudios
                   and fileScanBase64 is not null);
             """).fetchall()
                 if(len(_query) == len(_file)):

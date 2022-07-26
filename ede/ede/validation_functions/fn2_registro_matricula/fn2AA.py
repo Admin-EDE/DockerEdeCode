@@ -19,28 +19,28 @@ def fn2AA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos de intercambio registrados en el establecimiento
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - todos los alumnos de intercambios fueron aprobados
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        results = conn.execute("""
+        results = conn.execute("""--sql
         SELECT p.personId
         FROM Person p
                 JOIN PersonStatus ps on p.PersonId = ps.PersonId
-        WHERE p.RefVisaTypeId = 6
-          AND ps.StatusValue = 1
-          AND ps.RefPersonStatusTypeId = 25;
+        WHERE p.RefVisaTypeId = 6 --Exchange Scholar Visa
+          AND ps.StatusValue = 1 --aprobado o no
+          AND ps.RefPersonStatusTypeId = 25; --Intercambio
         """).fetchall()
 
-        resultsTwo = conn.execute("""
+        resultsTwo = conn.execute("""--sql
         SELECT p.personId
         FROM Person p
                 JOIN PersonStatus ps on p.PersonId = ps.PersonId
-        WHERE p.RefVisaTypeId = 6
-          and ps.RefPersonStatusTypeId = 25;
+        WHERE p.RefVisaTypeId = 6 --Exchange Scholar Visa
+          and ps.RefPersonStatusTypeId = 25; --Intercambio
         """).fetchall()
 
         if(len(results) > 0 and len(resultsTwo) > 0):
