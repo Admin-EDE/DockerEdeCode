@@ -21,14 +21,15 @@ def fn2DA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existen alumnos nuevos con matricula definitiva
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los alumnos nuevos con matricula definitiva poseen documento
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
+        --Busca alumnos nuevos con matrícula definitiva
         SELECT DISTINCT PS.PersonId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
@@ -37,7 +38,8 @@ def fn2DA(conn, return_dict):
           and PS.RefPersonStatusTypeId = 27
         """).fetchall()
         if(len(_query) > 0):
-            _personStatusFile = conn.execute("""
+            _personStatusFile = conn.execute("""--sql
+            --Busca el documento de cada alumno nuevo con matricula definitiva
           SELECT fileScanBase64
           FROM PersonStatus
           WHERE PersonId in (
@@ -45,14 +47,15 @@ def fn2DA(conn, return_dict):
               FROM OrganizationPersonRole OPR
                       join Person P on OPR.PersonId = P.PersonId
                       join PersonStatus PS on P.PersonId = PS.PersonId
-              WHERE OPR.RoleId = 6
-                and PS.RefPersonStatusTypeId = 27
+              WHERE OPR.RoleId = 6 --Estudiante
+                and PS.RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
           )
           AND fileScanBase64 is not null
-          and RefPersonStatusTypeId = 27
+          and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
           """).fetchall()
             if (len(_query) == len(_personStatusFile)):
-                _file = conn.execute("""
+                _file = conn.execute("""--sql
+                --Busca que el documento sea no nulo y  tenga su documentid
               SELECT documentId
               FROM Document
               WHERE fileScanBase64 IS NOT NULL
@@ -65,11 +68,11 @@ def fn2DA(conn, return_dict):
                           from OrganizationPersonRole OPR
                                   join Person P on OPR.PersonId = P.PersonId
                                   join PersonStatus PS on P.PersonId = PS.PersonId
-                          where OPR.RoleId = 6
-                            and PS.RefPersonStatusTypeId = 27
+                          where OPR.RoleId = 6 --Estudiante
+                            and PS.RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
                       )
                       and fileScanBase64 is not null
-                      and RefPersonStatusTypeId = 27
+                      and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
                   );
               """).fetchall()
                 if(len(_file) == len(_query)):

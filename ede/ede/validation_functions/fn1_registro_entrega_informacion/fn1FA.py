@@ -23,9 +23,10 @@ def fn1FA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos retirados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Alumnos retirados tienen incidente, fecha, registro de entrega de información, 
+            firma digital del profesor, documento o firma digital del apoderado
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

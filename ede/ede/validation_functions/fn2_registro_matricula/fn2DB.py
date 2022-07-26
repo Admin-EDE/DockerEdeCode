@@ -25,36 +25,40 @@ def fn2DB(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos matriculados bajo el decreto 152 artículo 60
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Todos los estudiantes matriculados bajo el decreto 152 artículo 60 tienen su documento escaneado
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
+        --Busca si hay estudiante matriculados bajo el decreto 152 art. 60
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
-        where OPR.RoleId = 6
-          and PS.RefPersonStatusTypeId = 33;
+        where OPR.RoleId = 6 --Estudiante
+          and PS.RefPersonStatusTypeId = 33; --Matriculado bajo decreto 152 art 60
         """).fetchall()
         if(len(_query) > 0):
-            _queryType = conn.execute("""
+            _queryType = conn.execute("""--sql
+            Busca el documento escaneado de cada estudiante matriculado bajo el decreto 152 art 60
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT P.PersonId
                                 from OrganizationPersonRole OPR
                                         join Person P on OPR.PersonId = P.PersonId
                                         join PersonStatus PS on P.PersonId = PS.PersonId
-                                where OPR.RoleId = 6
+                                where OPR.RoleId = 6 --Estudiante
                                   and PS.RefPersonStatusTypeId = 33)
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 33
           """).fetchall()
             if(len(_queryType) == len(_query)):
                 _file = conn.execute("""
+                --Busca el id del documento y valida que el documento escaneado no sea nulo o 
+                --vacío por cada estudiante de la consulta de arriba
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -65,7 +69,7 @@ def fn2DB(conn, return_dict):
                                                       from OrganizationPersonRole OPR
                                                                 join Person P on OPR.PersonId = P.PersonId
                                                                 join PersonStatus PS on P.PersonId = PS.PersonId
-                                                      where OPR.RoleId = 6
+                                                      where OPR.RoleId = 6 --Estudiante
                                                         and PS.RefPersonStatusTypeId = 33)
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 33);

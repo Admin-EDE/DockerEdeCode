@@ -31,7 +31,7 @@ def fn5E5(conn, return_dict):
     return_dict[getframeinfo(currentframe()).function] = _r
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
 SELECT
   O.OrganizationId as 'Curso',
   strftime('%Y-%m-%d', rae_.Date) as 'fechaAsistencia',

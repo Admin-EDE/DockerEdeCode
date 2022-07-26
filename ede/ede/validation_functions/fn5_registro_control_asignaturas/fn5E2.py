@@ -8,8 +8,7 @@ from ede.ede._logger import logger
 def fn5E2(conn, return_dict):
     """ 
     6.2 Contenido mínimo, letra b.2
-    Validar que los reemplazos no idóneos sean registrados por el director o quien él designe y que exista la observación indicando la falta del docente, 
-    junto al nombre y verificador de identidad de quien reemplaza.
+    Valida que cuando falta docente, exista la observación con los datos de éste.
 
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -19,14 +18,14 @@ def fn5E2(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay clases en que haya faltado el docente
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Si faltó el docente a alguna clase, existe registro con nombre completo, título, fecha de título, nombre de la institución donde estudió
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         select Pi.Identifier,
               (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
               pdc.DegreeOrCertificateTitleOrSubject,
@@ -40,7 +39,7 @@ def fn5E2(conn, return_dict):
                 join PersonDegreeOrCertificate pdc on p.PersonId = pdc.PersonId
                 join RoleAttendanceEvent rae on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
                 join PersonIdentifier pi on pi.PersonId = p.PersonId
-        where RoleId != 6
+        where RoleId != 6 -- Distinto a estudiante
           and rae.observaciones like '%Falta docente%';
                 """).fetchall()
         if(len(rows) > 0):

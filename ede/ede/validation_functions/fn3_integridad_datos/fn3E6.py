@@ -8,7 +8,8 @@ from ede.ede._logger import logger
 
 
 def fn3E6(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que la jornada está dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

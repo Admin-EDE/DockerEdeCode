@@ -24,7 +24,7 @@ def fn3FD(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         SELECT count(TelephoneNumber), count(RefPersonTelephoneNumberTypeId)
         from PersonTelephone
         UNION ALL

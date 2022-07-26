@@ -9,7 +9,8 @@ from ede.ede._logger import logger
 
 
 def fn3DA(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que exista asistencia diaria y luego que las tasas de asistencia estén bien calculadas
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,16 +19,17 @@ def fn3DA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay registro de asistencia diaria
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - La asistencia diaria y tasa de asistencia coincide por cada estudiante
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     listInfoSuccesfull = []
     try:
-        listInfoSuccesfull = conn.execute("""
+        listInfoSuccesfull = conn.execute("""--sql
+        --Busca si hay asistencia diaria
         SELECT RoleAttendanceId
         FROM RoleAttendance
         OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationPersonRoleId)
@@ -55,7 +57,7 @@ def fn3DA(conn, return_dict):
         return _r
     RoleAttendance = []
     try:
-        RoleAttendance = conn.execute("""
+        RoleAttendance = conn.execute("""--sql
         /*
         * Lista los registros de la Tabla RoleAttendance que no coinciden 
         * con la lista de eventos de asistencia regitrados en la tabla RoleAttendanceEvent

@@ -44,7 +44,7 @@ def fn3D2(conn, return_dict):
 
     virtualIndicator = []
     try:
-        virtualIndicator = conn.execute("""
+        virtualIndicator = conn.execute("""--sql
         /*
         * Selecciona los eventos que no tienen el campo VirtualIndicator
         * correctamente asignado

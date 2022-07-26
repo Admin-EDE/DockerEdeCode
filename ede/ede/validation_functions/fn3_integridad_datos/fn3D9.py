@@ -9,7 +9,8 @@ from ede.ede._logger import logger
 
 
 def fn3D9(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que las asignaturas tengan sus sesiones de calendario (cuándo será la clase) y sus asistencias.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,18 +19,18 @@ def fn3D9(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No existe registro de calendar session o role attendance event
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Existen registros de calendar session y attendance por asignatura
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     listInfoSuccesfull = []
     try:
-        listInfoSuccesfull = conn.execute("""
+        listInfoSuccesfull = conn.execute("""--sql
         /*
-        * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
+        * verifica que existan registro de calendar Session y RoleAttendanceEvent.
         */
         SELECT OrganizationId, RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
         FROM Organization
@@ -55,7 +56,7 @@ def fn3D9(conn, return_dict):
 
     RoleAttendance = []
     try:
-        RoleAttendance = conn.execute("""
+        RoleAttendance = conn.execute("""--sql
         /*
         * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
         */

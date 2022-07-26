@@ -25,7 +25,7 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
           SELECT rta.Description
           from person p
           JOIN RefTribalAffiliation rta

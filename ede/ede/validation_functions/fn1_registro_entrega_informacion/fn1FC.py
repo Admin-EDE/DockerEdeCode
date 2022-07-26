@@ -25,16 +25,16 @@ def fn1FC(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay alumnos retirados
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Los alumnos retirados tienen entregado a su apoderado los documentos para continuidad de estudios
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 SELECT DISTINCT
 	 pst.personId as 'estudianteId'
 	, pid.Identifier as 'RUN'

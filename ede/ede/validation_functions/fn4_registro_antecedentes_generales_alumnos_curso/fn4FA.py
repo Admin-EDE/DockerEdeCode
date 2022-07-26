@@ -24,7 +24,7 @@ def fn4FA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 SELECT 
 	  est.personId
 	, orgCurso.OrganizationId as cursoId

@@ -7,7 +7,8 @@ from ede.ede._logger import logger
 
 # VERIFICA SI LA VISTA jerarquiasList contiene información
 def fn3E4(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Verifica que los cursos tengan una organización, rbd, nivel, jornada, etc
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -16,9 +17,9 @@ def fn3E4(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay datos para la vista jerarquiasList
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Hay cursos
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

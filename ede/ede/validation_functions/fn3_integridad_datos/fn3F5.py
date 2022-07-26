@@ -25,7 +25,7 @@ def fn3F5(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
         SELECT emailAddress
         from PersonEmailAddress
         UNION ALL

@@ -34,6 +34,7 @@ def fn3F0(conn, return_dict):
         logger.info("Aprobado") if _r else logger.error("Rechazado")
     except Exception as e:
         logger.error(f"Error al ejecutar la función: {str(e)}")
+        logger.error("Rechazado")
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

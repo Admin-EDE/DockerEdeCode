@@ -7,7 +7,8 @@ from ede.ede._logger import logger
 
 
 def fn5E0(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    validar el registro de asistencia bloque a bloque.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -16,16 +17,25 @@ def fn5E0(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - Sin asistencia por bloque
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Que contenga sea de tipo Asignatura ('Course Section')
+            - Que el rol del estudiante este asignado al registro ('Estudiante')
+            - Que esten registrados los números de lista (pid.refPersonIdentificationSystemId) 
+            de los estudiantes ausentes, atrasados y presentes.
+            - Que este presente el verificador de identidad (rae.digitalRandomKey NOT NULL)
+            de la persona que se encuentre trabajando con el estudiante.
+            - Que se encuentre cargado el indicado de virtualidad (rae.VirtualIndicator).
+            - Que se encuentre cargado la descripción de lo realizado en clases (ocs.Description NOT NULL)
+            - Que la hora de la toma de asistencia se encuentre en el horario de clases
+            (strftime('%H:%M', rae.Date) between ClassBeginningTime and ClassEndingTime) [Aquí no arroja error pero si una advertencia]
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
             SELECT DISTINCT 
               rae.Date, -- fecha completa de la clase
               strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
@@ -97,7 +107,7 @@ def fn5E0(conn, return_dict):
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     try:
-        asistencia = conn.execute("""
+        asistencia = conn.execute("""--sql
             /*
             6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
             Verifica:

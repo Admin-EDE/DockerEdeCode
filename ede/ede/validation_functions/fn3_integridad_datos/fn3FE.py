@@ -23,7 +23,7 @@ def fn3FE(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 SELECT
 	  p.personId
 	, pbp.ciudadNacimiento

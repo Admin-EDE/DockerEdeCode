@@ -48,7 +48,7 @@ def fn3D3(conn, return_dict):
         return _r
     ClassMeetingDays = []
     try:
-        ClassMeetingDays = conn.execute("""
+        ClassMeetingDays = conn.execute("""--sql
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
         WITH split(word, str) AS (
@@ -64,7 +64,7 @@ def fn3D3(conn, return_dict):
 
     ClassPeriod = []
     try:
-        ClassPeriod = conn.execute("""
+        ClassPeriod = conn.execute("""--sql
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
         WITH split(word, str) AS (
