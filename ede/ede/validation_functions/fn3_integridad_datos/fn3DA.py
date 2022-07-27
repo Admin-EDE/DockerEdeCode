@@ -103,7 +103,7 @@ def fn3DA(conn, return_dict):
             RefAttendanceEventType.Description IN ('Daily attendance') -- Filtra la asistencia diaria
             AND
             RefOrganizationType.Description IN ('Course') -- Filtra que la asistencia diaria se reporte a nivel de curso
-            GROUP BY personId
+            GROUP BY RoleAttendance.RoleAttendanceId
           )) as result
         ON 
           ra.RoleAttendanceId = result.RoleAttendanceId

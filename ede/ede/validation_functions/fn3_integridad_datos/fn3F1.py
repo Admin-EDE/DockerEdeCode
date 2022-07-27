@@ -6,7 +6,8 @@ from ede.ede._logger import logger
 
 
 def fn3F1(conn, return_dict, selfargs):
-    """Verifica la integridad referencial de los datos
+    """
+    Verifica la integridad referencial de los datos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
