@@ -122,7 +122,7 @@ def fn6B0(conn, return_dict):
 
     _errorsList = []
     try:
-        _errorsList = conn.execute("""
+        _errorsList = conn.execute("""--sql
 SELECT *
 FROM RoleAttendanceEvent rae
 JOIN (
