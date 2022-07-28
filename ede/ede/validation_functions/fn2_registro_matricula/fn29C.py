@@ -34,7 +34,15 @@ def fn29C(conn, return_dict):
           AND O.RefOrganizationTypeId = 47 --Asignatura de practica profesional
         GROUP by P.PersonId,
                 OPR.OrganizationId;
-        """).fetchall()
+        """)
+        if not _queryStud.returns_rows:
+          logger.info(
+                f"No existen estudiantes en practica registrados en el establecimiento")
+          logger.info(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = True
+          logger.info(f"{current_process().name} finalizando...")
+          return True
+        _queryStud = _queryStud.fetchall()
 
         _queryProf = conn.execute("""--sql
         SELECT OPR.OrganizationId
@@ -53,6 +61,7 @@ def fn29C(conn, return_dict):
                 logger.error(f"Sin Alumnos")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             _organizationProf = (
                 list([m[5] for m in _queryProf if m[0] is not None]))
@@ -60,6 +69,7 @@ def fn29C(conn, return_dict):
                 logger.error(f"Sin profesores")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             _contador = 0
             z = len(_organizationStu)
@@ -71,19 +81,23 @@ def fn29C(conn, return_dict):
                 logger.info(f'Todos los alumnos en practica con profesor')
                 logger.info(f'Aprobado')
                 return_dict[getframeinfo(currentframe()).function] = True
+                logger.info(f"{current_process().name} finalizando...")
                 return True
             else:
                 logger.error(f'Alumnos en practica sin profesor')
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos en practica registrados")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False
