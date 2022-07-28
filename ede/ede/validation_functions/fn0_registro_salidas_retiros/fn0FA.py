@@ -30,7 +30,7 @@ def fn0FA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 SELECT DISTINCT 
 	  pid.Identifier -- Muestra el RUN o IPE del estudiante con problemas
 	, count(prsh.RetirarEstudianteIndicador) as 'cantidadPersonasAutorizadas'
@@ -111,4 +111,5 @@ GROUP BY pid.Identifier
         logger.error(f"Rechazado")
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r

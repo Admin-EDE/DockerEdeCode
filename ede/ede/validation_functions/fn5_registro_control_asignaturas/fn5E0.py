@@ -31,11 +31,11 @@ def fn5E0(conn, return_dict):
             (strftime('%H:%M', rae.Date) between ClassBeginningTime and ClassEndingTime) [Aquí no arroja error pero si una advertencia]
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
-    """
+    """      
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""--sql
+        _ExistData = conn.execute("""
             SELECT DISTINCT 
               rae.Date, -- fecha completa de la clase
               strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
@@ -100,14 +100,14 @@ def fn5E0(conn, return_dict):
             GROUP BY rae.Date         
         """).fetchall()
         if(not _ExistData):
-            raise Exception("No hay registros de información")
+          raise Exception("No hay registros de información")
     except Exception as e:
         logger.info(f"S/Datos")
         logger.info(f'Sin asistencia por bloque: {e}')
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     try:
-        asistencia = conn.execute("""--sql
+        asistencia = conn.execute("""
             /*
             6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
             Verifica:
@@ -222,42 +222,34 @@ def fn5E0(conn, return_dict):
         return_dict[getframeinfo(currentframe()).function] = False
         return False
     try:
-        if(len(asistencia) > 0):
-            totalEstudiantes = list([m[4]
-                                    for m in asistencia if m[4] is not None])
-            estudiantesPresentes = list(
-                [m[5] for m in asistencia if m[5] is not None])
-            estudiantesAusentes = list(
-                [m[7] for m in asistencia if m[7] is not None])
-            estudiantesRetrasados = list(
-                [m[9] for m in asistencia if m[9] is not None])
-            firmadoEnClases = list([m[11]
-                                   for m in asistencia if m[11] is not None])
-
-            for idx_, el_ in enumerate(totalEstudiantes):
-                if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
-                    logger.info(f'Rechazado')
-                    logger.info(
-                        f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-
-                if(el_ != firmadoEnClases[idx_]):
-                    logger.info(f'Rechazado')
-                    logger.info(
-                        f'Total de estudiantes NO coincide con cantidad de firmas')
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
-
-        logger.info("Aprobado")
+        if(len(asistencia)>0):
+            totalEstudiantes = list([m[4] for m in asistencia if m[4] is not None])
+            estudiantesPresentes = list([m[5] for m in asistencia if m[5] is not None])
+            estudiantesAusentes = list([m[7] for m in asistencia if m[7] is not None])
+            estudiantesRetrasados = list([m[9] for m in asistencia if m[9] is not None])
+            firmadoEnClases = list([m[11] for m in asistencia if m[11] is not None])
+            
+            for idx_,el_ in enumerate(totalEstudiantes):
+              if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
+                logger.info(f'Rechazado')
+                logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False    
+                
+              if(el_ != firmadoEnClases[idx_]):
+                logger.info(f'Rechazado')
+                logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
+                return_dict[getframeinfo(currentframe()).function] = False
+                return False
+            
+        logger.info("Aprobado")    
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     except Exception as e:
-        logger.error(
-            f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
-        logger.error(f"{str(e)}")
+      logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
+      logger.error(f"{str(e)}")
     finally:
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = _r
-        logger.info(f"{current_process().name} finalizando...")
-        return _r
+      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = _r
+      logger.info(f"{current_process().name} finalizando...")      
+      return _r

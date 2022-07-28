@@ -40,7 +40,15 @@ def fn28B(conn, return_dict):
         WHERE PI.RefPersonIdentificationSystemId = 52 --Identificador provisorio escolar (IPE)
           AND OPR.RoleId = 6 --Estudiante
           AND PI.Identifier is not null;
-        """).fetchall()
+        """)
+        if not _query.returns_rows:
+          logger.info(
+                f"No existen estudiantes migrantes registrados en el establecimiento")
+          logger.info(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = True
+          logger.info(f"{current_process().name} finalizando...")
+          return True
+        _query = _query.fetchall()
         if(len(_query) > 0):
             _queryDocuments = conn.execute("""--sql
           SELECT PS.fileScanBase64
@@ -93,21 +101,25 @@ def fn28B(conn, return_dict):
                         f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
                     logger.error(f'Rechazado')
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
             else:
                 logger.error(
                     f'Existen alumnos migrantes con documentos de convalidacion de ramos incompletos')
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.info(
                 f"No existen estudiantes migrantes registrados en el establecimiento")
             logger.info(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

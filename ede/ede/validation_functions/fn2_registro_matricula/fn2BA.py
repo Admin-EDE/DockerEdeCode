@@ -38,7 +38,15 @@ def fn2BA(conn, return_dict):
                 join PersonStatus PS on P.PersonId = PS.PersonId
         where OPR.RoleId = 6 --Estudiante
           and PS.RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
-        """).fetchall()
+        """)
+        if not _query.returns_rows:
+          logger.info(
+                f"No existen estudiantes excedentes en el establecimiento")
+          logger.info(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = True
+          logger.info(f"{current_process().name} finalizando...")
+          return True
+        _query = _query.fetchall()
         if (len(_query) > 0):
             _queryExcedentes = conn.execute("""--sql
             --Que aquellos estudiantes tengan su archivo subido
@@ -80,26 +88,31 @@ def fn2BA(conn, return_dict):
                         f'Todos los alumnos excedentes cuentan con su documento correspondiente')
                     logger.info(f'Aprobado')
                     return_dict[getframeinfo(currentframe()).function] = True
+                    logger.info(f"{current_process().name} finalizando...")
                     return True
                 else:
                     logger.error(
                         f'Los alumnos excedentes no cuentan con su documento correspondiente')
                     logger.error(f'Rechazado')
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
             else:
                 logger.error(
                     f'Los alumnos excedentes no cuentan con su documento correspondiente')
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.info(f'S/Datos')
             logger.info(f'No existen alumnos excedentes en el establecimiento')
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f'NO se pudo ejecutar la verificación en la lista')
         logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

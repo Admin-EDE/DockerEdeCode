@@ -25,8 +25,7 @@ def fn2CA(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
-        --Busca estudiantes que se hayan retirado definitivamente
+        _query = conn.execute("""
           SELECT DISTINCT p.PersonId
           FROM OrganizationPersonRole OPR
           OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -35,8 +34,8 @@ def fn2CA(conn, return_dict):
           OUTER LEFT JOIN Document USING(fileScanBase64)
           WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
         """).fetchall()
-        if(len(_query) > 0):
-            _queryOK = conn.execute("""--sql
+        if(len(_query)>0):
+            _queryOK = conn.execute("""
                 SELECT DISTINCT p.PersonId
                 FROM OrganizationPersonRole OPR
                 OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -53,30 +52,27 @@ def fn2CA(conn, return_dict):
                     JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
                     JOIN Document USING(fileScanBase64)
                     WHERE
-                      OPR.RoleId = 6 --Estudiante
+                      OPR.RoleId = 6
                       and p.RecordEndDateTime IS NULL and PS.RecordEndDateTime IS NULL and OPR.RecordEndDateTime IS NULL
                       and PS.StatusStartDate IS NOT NULL and PS.StatusEndDate IS NOT NULL and PS.Description IS NOT NULL
                       and RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')	
                       and documentId IS NOT NULL and length(Document.fileScanBase64) > 0
                   )                
-            """).fetchall()
-            _data = list(set([m[0] for m in _queryOK if m[0] is not None]))
-            if(len(_query) == len(_data)):
-                logger.info(
-                    f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
-                logger.info(f'Aprobado')
-                return_dict[getframeinfo(currentframe()).function] = True
-                return True
+            """).fetchall()              
+            _data =  list(set([m[0] for m in _queryOK if m[0] is not None]))
+            if(len(_query)==len(_data)):
+              logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
+              logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
+              return True
             else:
-                logger.error(
-                    f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
+              logger.error(f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
+              logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
+              return False
         else:
             logger.error(f'S/Datos')
-            logger.error(
-                f'No existen registros de alumnos retirados del establecimiento')
+            logger.error(f'No existen registros de alumnos retirados del establecimiento')
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:

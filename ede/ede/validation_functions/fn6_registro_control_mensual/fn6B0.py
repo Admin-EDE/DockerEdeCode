@@ -20,10 +20,10 @@ def fn6B0(conn, return_dict):
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
-    _r = False
+    _r = False    
     _rightList = []
     try:
-        _rightList = conn.execute("""--sql
+      _rightList = conn.execute("""
 	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
 		SELECT 
 			 rae.RoleAttendanceEventId
@@ -46,7 +46,7 @@ def fn6B0(conn, return_dict):
 			ON opr.RoleId = rol_e.RoleId
 			AND rol_e.Name IN ('Estudiante')
 		WHERE 
-			rae.RecordEndDateTime IS NOT NULL --registros con cambios
+			rae.RecordEndDateTime IS NOT NULL
 			AND
 			rae.RecordStartDateTime IS NOT NULL
 			AND
@@ -71,7 +71,7 @@ def fn6B0(conn, return_dict):
 			,rae.Date, rae.RecordEndDateTime
 		FROM RoleAttendanceEvent rae
 		JOIN cte_Attendance cte 
-			ON cte.RecordEndDateTime = rae.Date --cuando termina el registro, empieza automaticamente el nuevo
+			ON cte.RecordEndDateTime = rae.Date
 			AND cte.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
 			AND rae.RecordStartDateTime IS NOT NULL
 		JOIN OrganizationPersonRole opr 
@@ -118,11 +118,11 @@ def fn6B0(conn, return_dict):
 	FROM cte_Attendance 
       """).fetchall()
     except:
-        logger.info(f"Resultado: {_rightList} -> {str(e)}")
+      logger.info(f"Resultado: {_rightList} -> {str(e)}")
 
     _errorsList = []
     try:
-        _errorsList = conn.execute("""
+      _errorsList = conn.execute("""
 SELECT *
 FROM RoleAttendanceEvent rae
 JOIN (
@@ -239,30 +239,27 @@ WHERE
 	rae.RecordStartDateTime != Date	
       """).fetchall()
     except:
-        logger.info(f"Resultado: {_errorsList} -> {str(e)}")
-
+      logger.info(f"Resultado: {_errorsList} -> {str(e)}")
+    
     try:
-        _ids = (list([m[0] for m in _rightList if m[0] is not None]))
-        if(not _errorsList and not _ids):
-            logger.info(f"S/Datos")
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
+      _ids = (list([m[0] for m in _rightList if m[0] is not None]))      
+      if(not _errorsList and not _ids):
+        logger.info(f"S/Datos")
+        return_dict[getframeinfo(currentframe()).function] = True
+        return True
 
-        if(not _errorsList and _ids):
-            logger.info(f"APROBADO")
-            return_dict[getframeinfo(currentframe()).function] = True
-            return True
+      if(not _errorsList and _ids):
+        logger.info(f"APROBADO")
+        return_dict[getframeinfo(currentframe()).function] = True
+        return True
 
-        roleAttendanceEventIds = (
-            list([m[0] for m in _errorsList if m[0] is not None]))
-        logger.error(
-            f"Los siguientes roleAttendanceEvent Ids estan con problemas: {str(roleAttendanceEventIds)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+      roleAttendanceEventIds = (list([m[0] for m in _errorsList if m[0] is not None]))
+      logger.error(f"Los siguientes roleAttendanceEvent Ids estan con problemas: {str(roleAttendanceEventIds)}")
+      logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
+      return False
     except Exception as e:
-        logger.error(
-            f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-        logger.error(f"Rechazado")
-        return_dict[getframeinfo(currentframe()).function] = False
-        return False
+      logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
+      logger.error(f"Rechazado")
+      return_dict[getframeinfo(currentframe()).function] = False
+      return False

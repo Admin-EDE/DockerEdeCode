@@ -23,16 +23,16 @@ def fn5D0(conn, return_dict):
           ]
     """
     try:
-        _oPR = conn.execute("""--sql
+        _oPR = conn.execute("""
             SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
             FROM OrganizationPersonRole OPR
                     JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
-            WHERE OPR.RoleId in(4,5) --Profesor(a) Jefe, Docente
-            AND RAE.RefAttendanceEventTypeId = 2 --Class/section attendance
+            WHERE OPR.RoleId in(4,5)
+            AND RAE.RefAttendanceEventTypeId = 2
             group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
             """
-                            ).fetchall()
-        if(len(_oPR) > 0):
+            ).fetchall()
+        if(len(_oPR)>0):
             _count = (list([m[0] for m in _oPR if m[0] is not None]))
             _contador = 0
             for x in _count:

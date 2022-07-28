@@ -32,33 +32,29 @@ def fn2DB(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
-        --Busca si hay estudiante matriculados bajo el decreto 152 art. 60
+        _query = conn.execute("""
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
-        where OPR.RoleId = 6 --Estudiante
-          and PS.RefPersonStatusTypeId = 33; --Matriculado bajo decreto 152 art 60
+        where OPR.RoleId = 6
+          and PS.RefPersonStatusTypeId = 33;
         """).fetchall()
-        if(len(_query) > 0):
-            _queryType = conn.execute("""--sql
-            Busca el documento escaneado de cada estudiante matriculado bajo el decreto 152 art 60
+        if(len(_query)>0):
+          _queryType = conn.execute("""
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT P.PersonId
                                 from OrganizationPersonRole OPR
                                         join Person P on OPR.PersonId = P.PersonId
                                         join PersonStatus PS on P.PersonId = PS.PersonId
-                                where OPR.RoleId = 6 --Estudiante
+                                where OPR.RoleId = 6
                                   and PS.RefPersonStatusTypeId = 33)
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 33
           """).fetchall()
-            if(len(_queryType) == len(_query)):
-                _file = conn.execute("""
-                --Busca el id del documento y valida que el documento escaneado no sea nulo o 
-                --vacío por cada estudiante de la consulta de arriba
+          if(len(_queryType) == len(_query)):
+            _file = conn.execute("""
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -69,33 +65,29 @@ def fn2DB(conn, return_dict):
                                                       from OrganizationPersonRole OPR
                                                                 join Person P on OPR.PersonId = P.PersonId
                                                                 join PersonStatus PS on P.PersonId = PS.PersonId
-                                                      where OPR.RoleId = 6 --Estudiante
+                                                      where OPR.RoleId = 6
                                                         and PS.RefPersonStatusTypeId = 33)
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 33);
             """).fetchall()
-                if(len(_file) == len(_query)):
-                    logger.info(
-                        f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
-                    logger.info(f'Aprobado')
-                    return_dict[getframeinfo(currentframe()).function] = True
-                    return True
-                else:
-                    logger.error(
-                        f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
-                    logger.error(f'Rechazado')
-                    return_dict[getframeinfo(currentframe()).function] = False
-                    return False
+            if(len(_file) == len(_query)):
+              logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
+              logger.info(f'Aprobado')
+              return_dict[getframeinfo(currentframe()).function] = True
+              return True
             else:
-                logger.error(
-                    f'No existe documento para los alumnos matriculados bajo el decreto 152')
-                logger.error(f'Rechazado')
-                return_dict[getframeinfo(currentframe()).function] = False
-                return False
+              logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
+              logger.error(f'Rechazado')
+              return_dict[getframeinfo(currentframe()).function] = False
+              return False
+          else:
+            logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
+            logger.error(f'Rechazado')
+            return_dict[getframeinfo(currentframe()).function] = False
+            return False
         else:
             logger.info(f"S/Datos")
-            logger.info(
-                f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
+            logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:

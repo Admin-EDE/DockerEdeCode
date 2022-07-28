@@ -41,7 +41,15 @@ def fn29B(conn, return_dict):
                                           from Organization
                                           where RefOrganizationTypeId = 47) --Asignatura de Práctica
         group by OPR.OrganizationId, P.PersonId;
-        """).fetchall()
+        """)
+        if not query.returns_rows:
+          logger.info(
+                f"No existen estudiantes en practica registrados en el establecimiento")
+          logger.info(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = True
+          logger.info(f"{current_process().name} finalizando...")
+          return True
+        query = query.fetchall()
         k12StudentEnrollment = conn.execute("""--sql
         select OrganizationPersonRoleId
         from K12StudentEnrollment;
@@ -56,6 +64,7 @@ def fn29B(conn, return_dict):
                     logger.error(f"Matriculas repetidas")
                     logger.error(f"Rechazado")
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
                 else:
                     for y in organizacionesK12:
@@ -67,18 +76,22 @@ def fn29B(conn, return_dict):
                                 logger.error(f"Rechazado")
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
+                                logger.info(f"{current_process().name} finalizando...")
                                 return False
             logger.info(f'Matriculas ingresadas correctamente')
             logger.info(f'Aprobado')
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos en practica registrados")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False
