@@ -25,7 +25,7 @@ def fn5E2(conn, return_dict):
           ]
     """
     try:
-        rows = conn.execute("""--sql
+        rows= conn.execute("""
         select Pi.Identifier,
               (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
               pdc.DegreeOrCertificateTitleOrSubject,
@@ -39,12 +39,11 @@ def fn5E2(conn, return_dict):
                 join PersonDegreeOrCertificate pdc on p.PersonId = pdc.PersonId
                 join RoleAttendanceEvent rae on rae.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
                 join PersonIdentifier pi on pi.PersonId = p.PersonId
-        where RoleId != 6 -- Distinto a estudiante
+        where RoleId != 6
           and rae.observaciones like '%Falta docente%';
                 """).fetchall()
-        if(len(rows) > 0):
-            identificador = (
-                list(set([m[0] for m in rows if m[0] is not None])))
+        if(len(rows)>0):
+            identificador = (list(set([m[0] for m in rows if m[0] is not None])))
             if not identificador:
                 logger.error(f"Sin identificador")
                 logger.error(f'Rechazado')
@@ -86,8 +85,7 @@ def fn5E2(conn, return_dict):
             return True
         else:
             logger.info(f"S/Datos")
-            logger.info(
-                f"No existen clases en las que haya faltado algún docente")
+            logger.info(f"No existen clases en las que haya faltado algún docente")
             return_dict[getframeinfo(currentframe()).function] = True
             return True
     except Exception as e:
