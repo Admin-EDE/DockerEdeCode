@@ -95,6 +95,7 @@ def fn28B(conn, return_dict):
                         f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')
                     logger.info(f'Aprobado')
                     return_dict[getframeinfo(currentframe()).function] = True
+                    logger.info(f"{current_process().name} finalizando...")
                     return True
                 else:
                     logger.error(

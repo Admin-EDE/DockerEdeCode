@@ -58,6 +58,7 @@ def fn6C2(conn, return_dict):
             logger.error(f"No hay informacion de estudiantes excedentes")
             logger.info(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
         _q1 = _q1.fetchall()
@@ -77,14 +78,17 @@ def fn6C2(conn, return_dict):
                     f"Los siguientes alumnos no tienen Rex de aprobacion : {str(arr)} ")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
 
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

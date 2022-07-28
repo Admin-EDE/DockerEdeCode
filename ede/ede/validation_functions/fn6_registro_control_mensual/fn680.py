@@ -162,6 +162,7 @@ El medio de verificación de la asistencia debería ser un documento reportado p
                 f"El establecimientos no tiene alumnos de formación DUAL para revisar")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
         _q1 = _q1.fetchall()
@@ -201,10 +202,12 @@ El medio de verificación de la asistencia debería ser un documento reportado p
             #               arr.append(rut)
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

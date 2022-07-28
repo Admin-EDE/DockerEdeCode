@@ -75,24 +75,29 @@ def fn28A(conn, return_dict):
               logger.info(f'Todos los alumnos extranjeros poseen documento de convalidacion de estudios')
               logger.info(f'Aprobado')
               return_dict[getframeinfo(currentframe()).function] = True
+              logger.info(f"{current_process().name} finalizando...")
               return True
             else:
               logger.error(f'Existen documentos de convalidacion de ramos incompletos')
               logger.error(f'Rechazado')
               return_dict[getframeinfo(currentframe()).function] = False
+              logger.info(f"{current_process().name} finalizando...")
               return False
           else:
             logger.error(f'No todos los alumnos extranjeros no poseen documento de convalidacion de estudios')
             logger.error(f'Rechazado')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen estudiantes migrantes registrados en el establecimiento")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

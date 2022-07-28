@@ -62,6 +62,7 @@ def fn6D1(conn, return_dict):
                         logger.error(f"Rechazado")
                         return_dict[getframeinfo(
                             currentframe()).function] = False
+                        logger.info(f"{current_process().name} finalizando...")
                         return False
                 if(_d2 is None):
                     _l.append(_r)
@@ -74,6 +75,7 @@ def fn6D1(conn, return_dict):
                         logger.info(f"Aprobado")
                         return_dict[getframeinfo(
                             currentframe()).function] = True
+                        logger.info(f"{current_process().name} finalizando...")
                         return True
 
             if(len(_l) != 0):
@@ -81,6 +83,7 @@ def fn6D1(conn, return_dict):
                     f"Hay alumnos retirados sin registro de fecha de retiro: {str(_l)}")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
 
             if(len(_l2) != 0):
@@ -88,6 +91,7 @@ def fn6D1(conn, return_dict):
                     f"Hay alumnos que registran asistencia anterior a la fecha de ingreso o posterior a la fecha de retiro del establecimiento: {str(_l2)}")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
 
         else:
@@ -95,10 +99,12 @@ def fn6D1(conn, return_dict):
                 f"No hay registros de alta/baja de alumnos en el establecimiento.")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except Exception as e:
         logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

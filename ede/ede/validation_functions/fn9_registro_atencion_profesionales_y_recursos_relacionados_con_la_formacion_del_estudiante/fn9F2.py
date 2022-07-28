@@ -68,36 +68,42 @@ def fn9F2(conn, return_dict):
                                 logger.error(f'Rechazado')
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
+                                logger.info(f"{current_process().name} finalizando...")
                                 return False
                             if not calendarCode:
                                 logger.error(f"Sin CalendarCode")
                                 logger.error(f'Rechazado')
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
+                                logger.info(f"{current_process().name} finalizando...")
                                 return False
                             if not calendarDescripction:
                                 logger.error(f"Sin CaldendarDescription")
                                 logger.error(f'Rechazado')
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
+                                logger.info(f"{current_process().name} finalizando...")
                                 return False
                             if not calendarYear:
                                 logger.error(f"Sin CalendarYear")
                                 logger.error(f'Rechazado')
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
+                                logger.info(f"{current_process().name} finalizando...")
                                 return False
                             logger.info(
                                 f'Calendarios ingresados correctamente')
                             logger.info(f'Aprobado')
                             return_dict[getframeinfo(
                                 currentframe()).function] = True
+                            logger.info(f"{current_process().name} finalizando...")
                             return True
                         else:
                             # logger.info(f"S/Datos")
                             logger.error(f"Rechazado")
                             return_dict[getframeinfo(
                                 currentframe()).function] = False
+                            logger.info(f"{current_process().name} finalizando...")
                             return False
                     except Exception as e:
                         logger.error(
@@ -105,25 +111,30 @@ def fn9F2(conn, return_dict):
                         logger.error(f"Rechazado")
                         return_dict[getframeinfo(
                             currentframe()).function] = False
+                        logger.info(f"{current_process().name} finalizando...")
                         return False
                 else:
                     # logger.info(f"S/Datos")
                     logger.error(f"Rechazado")
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
             except Exception as e:
                 logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.info(f"S/Datos")
             logger.info(
                 f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

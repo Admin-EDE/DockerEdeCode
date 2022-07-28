@@ -81,11 +81,13 @@ def fn681(conn, return_dict):
                                         logger.error(f"Rechazado")
                                         return_dict[getframeinfo(
                                             currentframe()).function] = False
+                                        logger.info(f"{current_process().name} finalizando...")
                                         return False
                                     else:
                                         logger.info(f"Aprobado")
                                         return_dict[getframeinfo(
                                             currentframe()).function] = True
+                                        logger.info(f"{current_process().name} finalizando...")
                                         return True
 
                                 else:
@@ -94,6 +96,7 @@ def fn681(conn, return_dict):
                                     logger.error(f"Rechazado")
                                     return_dict[getframeinfo(
                                         currentframe()).function] = False
+                                    logger.info(f"{current_process().name} finalizando...")
                                     return False
 
                         else:
@@ -102,6 +105,7 @@ def fn681(conn, return_dict):
                             logger.error(f"Rechazado")
                             return_dict[getframeinfo(
                                 currentframe()).function] = False
+                            logger.info(f"{current_process().name} finalizando...")
                             return False
 
         else:
@@ -109,6 +113,7 @@ def fn681(conn, return_dict):
                 f"En el colegio no hay asignaturas de pratica profesional.")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except Exception as e:
@@ -116,4 +121,5 @@ def fn681(conn, return_dict):
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

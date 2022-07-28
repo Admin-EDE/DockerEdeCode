@@ -80,6 +80,7 @@ def fn1FA(conn, return_dict):
                     f"Existen registros de retiros de estudiantes del establecimiento sin fecha de evento.")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             else:
                 for p in _p:
@@ -114,6 +115,7 @@ def fn1FA(conn, return_dict):
                                                             f"Rechazado")
                                                         return_dict[getframeinfo(
                                                             currentframe()).function] = False
+                                                        logger.info(f"{current_process().name} finalizando...")
                                                         return False
                                     else:
                                         logger.error(
@@ -121,6 +123,7 @@ def fn1FA(conn, return_dict):
                                         logger.error(f"Rechazado")
                                         return_dict[getframeinfo(
                                             currentframe()).function] = False
+                                        logger.info(f"{current_process().name} finalizando...")
                                         return False
 
                             else:
@@ -129,15 +132,18 @@ def fn1FA(conn, return_dict):
                                 logger.error(f"Rechazado")
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
+                                logger.info(f"{current_process().name} finalizando...")
                                 return False
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
         else:
             logger.info(
                 f"NO existen registros de retiro de alumnos del establecimiento.")
             logger.info(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except Exception as e:
@@ -145,4 +151,5 @@ def fn1FA(conn, return_dict):
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

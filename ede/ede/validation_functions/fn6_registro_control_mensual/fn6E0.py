@@ -94,16 +94,19 @@ def fn6E0(conn, return_dict):
                     f"Los siguientes alumnos llegaron tarde o : {str(arr)} ")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             else:
                 logger.info("Aprobado")
                 return_dict[getframeinfo(currentframe()).function] = True
+                logger.info(f"{current_process().name} finalizando...")
                 return True
 
         else:
             logger.error(f"No hay registro Numero de lista asociados .")
             logger.error(f"Rechazado")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
 
     except Exception as e:
@@ -111,4 +114,5 @@ def fn6E0(conn, return_dict):
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False
