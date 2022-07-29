@@ -125,6 +125,7 @@ def fn8F2(conn, return_dict):
         logger.info(f"Sin incidentes registrados")
         _r = True
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r
 
     _e = []
@@ -229,6 +230,7 @@ def fn8F2(conn, return_dict):
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = _r

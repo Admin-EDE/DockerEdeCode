@@ -64,11 +64,13 @@ def fn6E4(conn, return_dict):
         if(not _data):
             logger.error(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except:
         logger.error(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
 
     try:
@@ -168,6 +170,7 @@ GROUP BY org
         if(not _result):
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
         organizacionesErrors = []
@@ -200,6 +203,7 @@ GROUP BY org
                 f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
             logger.error(f"Rechazado")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
 
     except Exception as e:
@@ -207,5 +211,6 @@ GROUP BY org
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False
 ### fin  fn6E4 ###

@@ -38,24 +38,29 @@ def fn5E4(conn, return_dict):
             logger.error(f"Sin fecha de asistencia ingresada")
             logger.error(f'Rechazado')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
           _status = (list(set([m[1] for m in _query if m[1] is not None])))
           if not _status:
             logger.error(f"Sin estado de asistencia asignado")
             logger.error(f'Rechazado')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
           logger.info(f'Aprobado')
           logger.info(f'Todos los registros de asistencia cuentan con un estado asignado')
           return_dict[getframeinfo(currentframe()).function] = True
+          logger.info(f"{current_process().name} finalizando...")
           return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin datos de asistencia")
-            return_dict[getframeinfo(currentframe()).function] = False
-            return False
+            return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
+            return True
     except Exception as e:
           logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
           logger.error(f"Rechazado")
           return_dict[getframeinfo(currentframe()).function] = False
+          logger.info(f"{current_process().name} finalizando...")
           return False

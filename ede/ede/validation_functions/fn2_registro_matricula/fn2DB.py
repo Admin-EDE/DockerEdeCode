@@ -74,24 +74,29 @@ def fn2DB(conn, return_dict):
               logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
               logger.info(f'Aprobado')
               return_dict[getframeinfo(currentframe()).function] = True
+              logger.info(f"{current_process().name} finalizando...")
               return True
             else:
               logger.error(f'Los alumnos matriculados bajo el decreto 152 no poseen su documento correspondiente')
               logger.error(f'Rechazado')
               return_dict[getframeinfo(currentframe()).function] = False
+              logger.info(f"{current_process().name} finalizando...")
               return False
           else:
             logger.error(f'No existe documento para los alumnos matriculados bajo el decreto 152')
             logger.error(f'Rechazado')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen alumnos matriculados bajo el decreto 152, artículo 60")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

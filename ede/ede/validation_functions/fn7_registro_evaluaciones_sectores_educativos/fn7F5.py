@@ -63,7 +63,8 @@ def fn7F5(conn, return_dict):
     if(len(_organizationCalendarSession) == 0):
         logger.error(
             f'Las evaluaciones registradas no poseen registro en los calendarios')
-        logger.error(f'Rechazdo')
+        logger.error(f'Rechazado')
+        _r = False
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r
@@ -102,9 +103,11 @@ def fn7F5(conn, return_dict):
             logger.error(
                 f'No se han ingresado en los calendarios la descripcion del contenido impartido')
             logger.error(f'Rechazado')
+            _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

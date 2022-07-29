@@ -44,10 +44,12 @@ def fn6E2(conn, return_dict):
                     f"Existen registros de asistencia para dias con suspension de clases: {str(_l1)}")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except Exception as e:
@@ -55,4 +57,5 @@ def fn6E2(conn, return_dict):
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

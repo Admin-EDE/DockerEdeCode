@@ -90,6 +90,7 @@ WHERE
         _r = True
         logger.info(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r
 
     _resp = []

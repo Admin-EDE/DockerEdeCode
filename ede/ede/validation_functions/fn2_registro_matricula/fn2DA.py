@@ -80,26 +80,31 @@ def fn2DA(conn, return_dict):
                         f'Todos los alumnos nuevos con matricula definitiva poseen documento')
                     logger.info(f'Aprobado')
                     return_dict[getframeinfo(currentframe()).function] = True
+                    logger.info(f"{current_process().name} finalizando...")
                     return True
                 else:
                     logger.error(
                         f'los alumnos nuevos con matricula definitiva no poseen documento')
                     logger.error(f'Rechazado')
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
             else:
                 logger.error(
                     f'Los alumnos nuevos con matricula definitiva no poseen documento')
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.error(f'No existen alumnos nuevos con matricula definitiva')
             logger.error(f'S/Datos')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

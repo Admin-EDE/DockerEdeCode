@@ -46,6 +46,7 @@ def fn1FB(conn, return_dict):
     if(len(Allrows) == 0):
         logger.info("S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
 
     _r = False
@@ -98,4 +99,5 @@ def fn1FB(conn, return_dict):
         logger.error(f"Rechazado")
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r

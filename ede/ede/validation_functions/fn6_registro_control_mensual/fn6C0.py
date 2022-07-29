@@ -55,10 +55,12 @@ def fn6C0(conn, return_dict):
                     f"Los siguientes alumnos excedentes sin derecho a subvencion tienen registro de asistencia a nivel de curso: {str(_l1)}")
                 logger.error(f"Rechazado")
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             else:
                 logger.info(f"Aprobado")
                 return_dict[getframeinfo(currentframe()).function] = True
+                logger.info(f"{current_process().name} finalizando...")
                 return True
 
         else:
@@ -66,6 +68,7 @@ def fn6C0(conn, return_dict):
                 f"No hay registros de alumnos excedentes sin derecho a subvencion en el establecimiento.")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except Exception as e:
@@ -73,4 +76,5 @@ def fn6C0(conn, return_dict):
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

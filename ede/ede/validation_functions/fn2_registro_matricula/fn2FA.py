@@ -63,12 +63,15 @@ def fn2FA(conn, return_dict):
                 logger.error(
                     f'La cantidad de alumnos matriculados no cocincide con los inscritos')
                 logger.error(f'Rechazado')
+                _r = False
         else:
             logger.info(f"S/Datos")
+            _r = True
             logger.info(f'No hay registros de matriculas')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

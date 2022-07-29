@@ -132,6 +132,7 @@ RefPersonStatusType = 28 (Estudiante promovido)
                     logger.error(
                         f'Existen alumnos promovidos con calificacion final inferior a 4,0')
                     logger.error(f'Rechazado')
+                    _r = False
             logger.info(
                 f'Todos los alumnos aprobados cuentan con promedio final sobre 4,0')
             logger.info(f'Aprobado')
@@ -140,9 +141,11 @@ RefPersonStatusType = 28 (Estudiante promovido)
             logger.error(
                 f'Los alumnos ingresados como promovidos no cuentan con un registro de calificaciones en el establecimiento')
             logger.error(f'Rechazado')
+            _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

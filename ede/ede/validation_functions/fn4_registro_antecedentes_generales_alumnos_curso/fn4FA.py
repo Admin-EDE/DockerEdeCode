@@ -6,7 +6,26 @@ from ede.ede._logger import logger
 
 
 def fn4FA(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    Comprueba que el estudiante tiene sus datos mínimos
+    ---------------------------------------
+    - Número de lista
+    - Número del registro de matrícula
+    - Nombre completo del estudiante
+    - RUN o IPE
+    - Fecha de nacimiento
+    - Sexo
+    - Domicilio
+    - Nombre apoderado
+    - Domicilio apoderado
+    - Teléfono apoderado
+    - Correo electrónico apoderado
+    - Lista de profesionales y asistentes de la educación que interactúan con el estudiante (OrganizationPersonRole) 
+    - Identificación de estudiante preferente, prioritario, excedentes y PIE (personProgramParticipation)
+    - Identificación de becas, beneficios internos o subvenciones adicionales recibidas por el estudiante. (personProgramParticipation)
+    - Calendario de evaluaciones
+    - Fechas relevantes 
+    - Calendario y horario de las asignaturas o talleres del estudiante.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -15,9 +34,9 @@ def fn4FA(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay estudiantes en el establecimiento
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - El estudiante tiene todos sus datos mínimos
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
@@ -127,6 +146,7 @@ GROUP BY est.personId
 
     if(len(rows) == 0):
         logger.info(f"S/Datos")
+        _r = True
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

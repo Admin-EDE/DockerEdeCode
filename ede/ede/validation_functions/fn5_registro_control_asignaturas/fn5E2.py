@@ -48,48 +48,57 @@ def fn5E2(conn, return_dict):
                 logger.error(f"Sin identificador")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             nombre = (list(set([m[1] for m in rows if m[1] is not None])))
             if not nombre:
                 logger.error(f"Sin nombre")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             titulo = (list(set([m[2] for m in rows if m[2] is not None])))
             if not titulo:
                 logger.error(f"Sin titulo")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             fechatitulo = (list(set([m[3] for m in rows if m[3] is not None])))
             if not fechatitulo:
                 logger.error(f"Sin fecha de titulo")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             institucion = (list(set([m[4] for m in rows if m[4] is not None])))
             if not institucion:
                 logger.error(f"Sin institucion")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             observacion = (list(set([m[5] for m in rows if m[5] is not None])))
             if not observacion:
                 logger.error(f"Sin observacion")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             logger.info(f"Docentes validados")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
         else:
             logger.info(f"S/Datos")
             logger.info(f"No existen clases en las que haya faltado algún docente")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

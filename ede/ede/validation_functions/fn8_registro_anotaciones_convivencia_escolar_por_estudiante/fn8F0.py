@@ -105,6 +105,7 @@ def fn8F0(conn, return_dict):
                     logger.error("Rechazado")
                     logger.error("Los campos obligatorios no pueden ser nulos")
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
 
                 if(refIncidentBehaviorDesc not in (
@@ -114,6 +115,7 @@ def fn8F0(conn, return_dict):
                     logger.error(
                         "Las anotaciones negativas deben tener acciones asociadas")
                     return_dict[getframeinfo(currentframe()).function] = False
+                    logger.info(f"{current_process().name} finalizando...")
                     return False
 
             #resultList  = [item[0] for item in allIncidents if item not in FineRows]
@@ -129,4 +131,5 @@ def fn8F0(conn, return_dict):
         logger.error(f"Rechazado")
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r

@@ -50,6 +50,7 @@ JOIN RefIncidentBehavior rInBh
                         logger.info(f'Aprobado')
                         return_dict[getframeinfo(
                             currentframe()).function] = True
+                        logger.info(f"{current_process().name} finalizando...")
                         return True
                     else:
                         logger.error(f'S/Datos')
@@ -57,19 +58,23 @@ JOIN RefIncidentBehavior rInBh
                             f'No se encuentran registradas medidas diciplinarias para los incidentes registrados')
                         return_dict[getframeinfo(
                             currentframe()).function] = False
+                        logger.info(f"{current_process().name} finalizando...")
                         return False
                 except Exception as e:
                     logger.error(f'No se pudo ejecutar la consulta: {str(e)}')
                     logger.error(f'Rechazado')
+                    _r = False
                     return_dict[getframeinfo(currentframe()).function] = False
                     return False
         else:
             logger.info(f'S/Datos')
             logger.info(f'Sin incidentes registrados')
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

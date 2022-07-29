@@ -71,6 +71,7 @@ def fn6D0(conn, return_dict):
             f"No hay registros de alta/baja de alumnos en el establecimiento.")
         logger.info(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r
 
     try:
@@ -99,6 +100,7 @@ def fn6D0(conn, return_dict):
                 f"Hay alumnos sin rergistro de fecha de alta/baja: {str(_l)}")
             logger.error(f"Rechazado")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
 
         if(len(_l2) != 0):
@@ -106,14 +108,17 @@ def fn6D0(conn, return_dict):
                 f"Hay alumnos con inconsistencia en registros de alta/baja: {str(_l2)}")
             logger.error(f"Rechazado")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
 
         logger.info(f"Aprobado")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

@@ -83,6 +83,7 @@ SELECT * FROM dates
             raise Exception("No hay registros de información")
     except Exception as e:
         logger.error(f"S/Datos")
+        _r = True
         logger.info(
             f'No hay información disponible para validar. Su registro es obligatorio.')
         logger.info(

@@ -59,6 +59,7 @@ def fn7F4(conn, return_dict):
         logger.error(
             f'Se han ingresado datos incompletos para las modificaciones de ponderaciones')
         logger.error(f'Rechazado')
+        _r = False
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r
@@ -91,9 +92,11 @@ def fn7F4(conn, return_dict):
             logger.error(
                 f'Las firmas ingresadas no corresponden a las del Docente/UTP')
             logger.error(f'Rechazado')
+            _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
