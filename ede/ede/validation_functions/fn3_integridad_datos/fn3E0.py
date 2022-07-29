@@ -48,6 +48,7 @@ def fn3E0(conn, return_dict):
     except Exception as e:
         logger.error(f"No se pudo ejecutar la verificación: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

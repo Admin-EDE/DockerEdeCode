@@ -63,6 +63,7 @@ JOIN RefIncidentBehavior rInBh
                 except Exception as e:
                     logger.error(f'No se pudo ejecutar la consulta: {str(e)}')
                     logger.error(f'Rechazado')
+                    _r = False
                     return_dict[getframeinfo(currentframe()).function] = False
                     return False
         else:

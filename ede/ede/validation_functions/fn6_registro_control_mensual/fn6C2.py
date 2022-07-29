@@ -57,13 +57,20 @@ def fn6C2(conn, return_dict):
         if(_q1.returns_rows == 0):
             logger.error(f"No hay informacion de estudiantes excedentes")
             logger.info(f"S/Datos")
-            return_dict[getframeinfo(currentframe()).function] = False
+            return_dict[getframeinfo(currentframe()).function] = True
             logger.info(f"{current_process().name} finalizando...")
             return True
 
         _q1 = _q1.fetchall()
         XX = 0
-        if(len(_q1) != 0):
+        
+        if(len(_q1) == 0):
+            logger.error(f"No hay informacion de estudiantes excedentes")
+            logger.info(f"S/Datos")
+            return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
+            return True
+        else:
             for q1 in _q1:
                 rut = str(q1[0])
                 filescanbase64 = q1[2]

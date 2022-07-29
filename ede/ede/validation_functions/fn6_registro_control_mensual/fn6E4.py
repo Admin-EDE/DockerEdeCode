@@ -64,11 +64,13 @@ def fn6E4(conn, return_dict):
         if(not _data):
             logger.error(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except:
         logger.error(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
 
     try:

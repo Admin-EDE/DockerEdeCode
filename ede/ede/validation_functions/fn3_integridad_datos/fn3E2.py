@@ -42,11 +42,13 @@ def fn3E2(conn, return_dict):
             _r = True
         else:
             logger.info(f"S/Datos")
+            _r = True
 
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la tabla k12schoolList para identificar el RBD del establecimiento: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

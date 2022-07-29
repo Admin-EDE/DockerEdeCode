@@ -55,9 +55,9 @@ def fn5E4(conn, return_dict):
         else:
             logger.info(f"S/Datos")
             logger.info(f"Sin datos de asistencia")
-            return_dict[getframeinfo(currentframe()).function] = False
+            return_dict[getframeinfo(currentframe()).function] = True
             logger.info(f"{current_process().name} finalizando...")
-            return False
+            return True
     except Exception as e:
           logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
           logger.error(f"Rechazado")

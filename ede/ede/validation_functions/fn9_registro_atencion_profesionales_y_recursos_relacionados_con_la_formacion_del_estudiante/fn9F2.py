@@ -129,9 +129,9 @@ def fn9F2(conn, return_dict):
             logger.info(f"S/Datos")
             logger.info(
                 f"Sin datos del registro de implementacion y evaluacion del proceso formativo")
-            return_dict[getframeinfo(currentframe()).function] = False
+            return_dict[getframeinfo(currentframe()).function] = True
             logger.info(f"{current_process().name} finalizando...")
-            return False
+            return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")

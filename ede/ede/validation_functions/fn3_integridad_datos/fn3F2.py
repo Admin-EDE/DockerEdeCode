@@ -36,10 +36,12 @@ def fn3F2(conn, return_dict):
             _r = True
         else:
             logger.info(f"S/Datos")
+            _r = True
     except Exception as e:
         logger.error(
             f"No se pudo ejecutar la consulta a la vista personList: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

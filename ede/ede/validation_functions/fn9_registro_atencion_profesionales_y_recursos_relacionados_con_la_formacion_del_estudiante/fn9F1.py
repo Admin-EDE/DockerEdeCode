@@ -43,9 +43,9 @@ def fn9F1(conn, return_dict):
 
     if (len(courseSections) <= 0):
         logger.info(f"S/Datos")
-        return_dict[getframeinfo(currentframe()).function] = False
+        return_dict[getframeinfo(currentframe()).function] = True
         logger.info(f"{current_process().name} finalizando...")
-        return False
+        return True
 
     logger.info(
         f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")

@@ -6,24 +6,28 @@ from ede.ede._logger import logger
 
 
 def fn6B0(conn, return_dict):
-    """ Breve descripción de la función
+    """ 
+	Verificar que todas las correcciones realizadas al registro de asistencia 
+	y asignatura se registren indicando su fecha, hora, verificador de 
+	identidad del funcionario que la realiza dicha acción y motivo del cambio.
+	y estén visadas por el director del establecimiento o el funcionario que él haya designado.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
           Creado previamente a través de la función execute(self)
           ]
     Returns:
-        [Boolean]: [          Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+        [Boolean]: [ Retorna True/False y "S/Datos" a través de logger, solo si puede:
+            - No hay correcciones al registro de asistencia
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - Las correcciones al registro de asistencia tienen todos los datos mínimos y están visadas.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
     _r = False    
     _rightList = []
     try:
-      _rightList = conn.execute("""
+      _rightList = conn.execute("""--sql
 	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
 		SELECT 
 			 rae.RoleAttendanceEventId

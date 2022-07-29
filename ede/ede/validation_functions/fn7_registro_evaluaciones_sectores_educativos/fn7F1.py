@@ -71,6 +71,7 @@ def fn7F1(conn, return_dict):
             if (len(y)>3):
               logger.error(f'Se han ingresado calificaciones sumativas con mas de un decimal')
               logger.error(f'Rechazado')
+              _r = False
           for x in _assessmentScoreValue:
             if (x >= 1.0 and x <= 7.0):
               _contador += 1
@@ -81,12 +82,15 @@ def fn7F1(conn, return_dict):
           else:
             logger.error(f'No todas las evaluaciones estan entre el rango permitido de 1.0 - 7.0')
             logger.error(f'Rechazado')
+            _r = False
         else:
           logger.error(f'S/Datos')
+          _r = True
           logger.error(f'No se encuentran evaluaciones sumativas registradas en el establecimiento')
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")      

@@ -110,9 +110,9 @@ def fn9F3(conn, return_dict):
                         logger.info(
                             f"Sin registros de actividades familiares o comunitarias")
                         return_dict[getframeinfo(
-                            currentframe()).function] = False
+                            currentframe()).function] = True
                         logger.info(f"{current_process().name} finalizando...")
-                        return False
+                        return True
                     if (len(incidentProfessor) > 0):
                         professor += 1
                     else:
@@ -120,9 +120,9 @@ def fn9F3(conn, return_dict):
                         logger.info(
                             f"Sin registros de actividades familiares o comunitarias")
                         return_dict[getframeinfo(
-                            currentframe()).function] = False
+                            currentframe()).function] = True
                         logger.info(f"{current_process().name} finalizando...")
-                        return False
+                        return True
                 except Exception as e:
                     logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
                     logger.error(f"Rechazado")

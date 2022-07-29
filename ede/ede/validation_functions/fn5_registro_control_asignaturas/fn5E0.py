@@ -232,15 +232,15 @@ def fn5E0(conn, return_dict):
             
             for idx_,el_ in enumerate(totalEstudiantes):
               if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
-                logger.info(f'Rechazado')
-                logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                logger.error(f'Rechazado')
+                logger.error(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False    
                 
               if(el_ != firmadoEnClases[idx_]):
-                logger.info(f'Rechazado')
-                logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
+                logger.error(f'Rechazado')
+                logger.error(f'Total de estudiantes NO coincide con cantidad de firmas')
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
