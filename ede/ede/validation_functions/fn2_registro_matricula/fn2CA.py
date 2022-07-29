@@ -33,7 +33,15 @@ def fn2CA(conn, return_dict):
           OUTER LEFT JOIN RefPersonStatusType on RefPersonStatusType.refPersonStatusTypeId = PS.refPersonStatusTypeId
           OUTER LEFT JOIN Document USING(fileScanBase64)
           WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
-        """).fetchall()
+        """)
+        if not _query.returns_rows:
+          logger.info(
+                f"No existen estudiantes alumnos retirados en el establecimiento")
+          logger.info(f"S/Datos")
+          return_dict[getframeinfo(currentframe()).function] = True
+          logger.info(f"{current_process().name} finalizando...")
+          return True
+        _query = _query.fetchall()
         if(len(_query)>0):
             _queryOK = conn.execute("""
                 SELECT DISTINCT p.PersonId
@@ -64,19 +72,23 @@ def fn2CA(conn, return_dict):
               logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')
               logger.info(f'Aprobado')
               return_dict[getframeinfo(currentframe()).function] = True
+              logger.info(f"{current_process().name} finalizando...")
               return True
             else:
               logger.error(f'Los siguientes alumnos retirados del establecimiento no cuentan su fecha, motivo o declaración jurada: {_data}')
               logger.error(f'Rechazado')
               return_dict[getframeinfo(currentframe()).function] = False
+              logger.info(f"{current_process().name} finalizando...")
               return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No existen registros de alumnos retirados del establecimiento')
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

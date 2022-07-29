@@ -53,6 +53,7 @@ def fn0FB(conn, return_dict):
             f"NO existen registros de retiro anticipado de alumnos en el establecimiento.")
         logger.info(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True  # si no hay registros de salida anticipada, no continúa la revisión
     try:
         if(len(Allrows) > 0):
@@ -242,4 +243,5 @@ def fn0FB(conn, return_dict):
         logger.error(f"Rechazado")
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         return _r

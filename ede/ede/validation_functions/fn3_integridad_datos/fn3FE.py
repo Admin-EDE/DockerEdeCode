@@ -66,10 +66,12 @@ GROUP BY p.personId
             _r = True
         else:
             logger.info(f"S/Datos")
+            _r = True
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la vista personList filtrada por estudiantes: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

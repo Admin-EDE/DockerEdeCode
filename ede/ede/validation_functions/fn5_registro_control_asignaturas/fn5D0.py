@@ -42,19 +42,23 @@ def fn5D0(conn, return_dict):
                 logger.error('Duplicados')
                 logger.error('Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             else:
                 logger.info('No hay duplicados')
                 logger.info('Aprobado')
                 return_dict[getframeinfo(currentframe()).function] = True
+                logger.info(f"{current_process().name} finalizando...")
                 return True
         else:
             logger.error(f'No existen Firmas')
             logger.error(f'S/Datos')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

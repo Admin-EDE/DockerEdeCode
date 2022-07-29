@@ -44,12 +44,14 @@ def fn5E1(conn, return_dict):
                 logger.error(f"Sin alumnos registrados")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             _matriculasTotales = (list([m[1] for m in _query if m[1] is not None]))
             if not _matriculasTotales :
                 logger.error(f"Sin matriculas registradas")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             _totalAlumnos = int(len(_alumnos))
             if int(_matriculasTotales[0]) == _totalAlumnos:
@@ -65,24 +67,29 @@ def fn5E1(conn, return_dict):
                         logger.info(f'Matriculas registradas y asistencia diaria realizada')
                         logger.info(f'Aprobado')
                         return_dict[getframeinfo(currentframe()).function] = True
+                        logger.info(f"{current_process().name} finalizando...")
                         return True
                     else:
                         logger.error(f'Asistencia diaria no realizada por el establecimiento')
                         logger.error(f'Rechazado')
                         return_dict[getframeinfo(currentframe()).function] = False
+                        logger.info(f"{current_process().name} finalizando...")
                         return False
             else:
                 logger.error(f"Sin matriculas no coinciden con total de alumnos registrados")
                 logger.error(f'Rechazado')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
             logger.error(f'S/Datos')
             logger.error(f'No existen alumnos matriculados en el establecimiento')
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False

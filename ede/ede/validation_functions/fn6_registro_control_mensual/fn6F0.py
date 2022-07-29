@@ -19,9 +19,10 @@ def fn6F0(conn, return_dict):
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
-            - A
+            - No hay registro en la base de datos
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - La asistencia de los estudiantes en días hábiles no festivos, 
+            con nombre registrado, coinciden las firmas y los ausentes y presentes.
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """
@@ -29,7 +30,7 @@ def fn6F0(conn, return_dict):
     rows = []
     try:
         # select para listar todos los colegios de tabla organizacion
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
 -- 6.2 Contenido mínimo, letra c
 -- erificar que exista el registro de asistencia en aquellos casos en los cuales se realizó la clase al estudiante.
 -- * día de clases

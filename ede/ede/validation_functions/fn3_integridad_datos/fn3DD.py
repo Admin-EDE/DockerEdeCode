@@ -49,6 +49,7 @@ def fn3DD(conn, return_dict):
 
     if(len(school) == 0):
         logger.error(f"S/Datos")
+        _r = True
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r
@@ -172,10 +173,14 @@ def fn3DD(conn, return_dict):
         if (not _err):
             logger.info(f"Aprobado")
             _r = True
+        else:
+            logger.error(f"Rechazado")
+            _r = False
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

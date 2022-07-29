@@ -52,10 +52,12 @@ def fn3EF(conn, return_dict):
                 logger.error(_err)
         else:
             logger.info(f"S/Datos")
+            _r = True
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la vista jerarquiasList para obtener la lista de organizaciones: {str(e)}")
         logger.error(f"Rechazado")
+        _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

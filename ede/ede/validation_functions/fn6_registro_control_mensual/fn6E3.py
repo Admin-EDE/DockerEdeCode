@@ -54,6 +54,7 @@ def fn6E3(conn, return_dict):
                 f"No hay información en el establecimiento de eventos que impliquen suspensión de clases.")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
         _q2 = conn.execute(_s2).fetchall()
@@ -77,26 +78,31 @@ def fn6E3(conn, return_dict):
                 f"No hay información en el establecimiento de clases recuperadas.")
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
         if(_flag1 == 1):
             logger.error(_msg1)
             logger.error(f"Rechazado")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
         elif(_flag2 == 1):
             logger.error(_msg2)
             logger.error(f"Rechazado")
             return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f"{current_process().name} finalizando...")
             return False
         else:
             logger.info(f"Aprobado")
             return_dict[getframeinfo(currentframe()).function] = True
+            logger.info(f"{current_process().name} finalizando...")
             return True
 
     except Exception as e:
         logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False
 ### fin fn6E3 ###

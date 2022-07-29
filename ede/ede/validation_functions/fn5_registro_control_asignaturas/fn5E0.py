@@ -220,6 +220,7 @@ def fn5E0(conn, return_dict):
         logger.error(f'Rechazado')
         logger.info(f'No cumple con los criterios de la consulta: {e}')
         return_dict[getframeinfo(currentframe()).function] = False
+        logger.info(f"{current_process().name} finalizando...")
         return False
     try:
         if(len(asistencia)>0):
@@ -231,19 +232,22 @@ def fn5E0(conn, return_dict):
             
             for idx_,el_ in enumerate(totalEstudiantes):
               if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
-                logger.info(f'Rechazado')
-                logger.info(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                logger.error(f'Rechazado')
+                logger.error(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False    
                 
               if(el_ != firmadoEnClases[idx_]):
-                logger.info(f'Rechazado')
-                logger.info(f'Total de estudiantes NO coincide con cantidad de firmas')
+                logger.error(f'Rechazado')
+                logger.error(f'Total de estudiantes NO coincide con cantidad de firmas')
                 return_dict[getframeinfo(currentframe()).function] = False
+                logger.info(f"{current_process().name} finalizando...")
                 return False
             
         logger.info("Aprobado")    
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
     except Exception as e:
       logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")

@@ -61,6 +61,7 @@ def fn7F0(conn, return_dict):
                 logger.error(
                     f'No todas las evaluaciones estan ingresadas como sumativas o formativas')
                 logger.error(f'Rechazado')
+                _r = False
         else:
             logger.error(f'S/Datos')
             logger.error(
