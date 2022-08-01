@@ -140,6 +140,7 @@ WHERE
             _r = True
         else:
             logger.error(f"Rechazado")
+            _r = False
             logger.info(f"{_resp}")
     except Exception as e:
         logger.error(
