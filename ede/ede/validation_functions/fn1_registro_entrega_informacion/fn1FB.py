@@ -45,6 +45,7 @@ def fn1FB(conn, return_dict):
 
     if(len(Allrows) == 0):
         logger.info("S/Datos")
+        _r = True
         return_dict[getframeinfo(currentframe()).function] = True
         logger.info(f"{current_process().name} finalizando...")
         return True
@@ -88,6 +89,7 @@ def fn1FB(conn, return_dict):
 
         if(len(resultList) > 0):
             logger.error(f"Rechazado")
+            _r = False
             logger.info(f"Los incidentId con problemas son: {resultList}")
         else:
             logger.info(f"Aprobado")
