@@ -1,12 +1,13 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn6B0(conn, return_dict):
-    """ 
+    """
+	REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+	6.2 Contenido mínimo, letra c.8
 	Verificar que todas las correcciones realizadas al registro de asistencia 
 	y asignatura se registren indicando su fecha, hora, verificador de 
 	identidad del funcionario que la realiza dicha acción y motivo del cambio.

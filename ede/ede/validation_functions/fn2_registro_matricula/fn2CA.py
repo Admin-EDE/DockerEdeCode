@@ -1,12 +1,12 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn2CA(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.4 De las bajas en el registro de matrícula
     Validar que exista la fecha, motivo y la declaración jurada del 
     requirente o su verificador de identidad cargado en el sistema.

@@ -1,4 +1,3 @@
-
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
@@ -7,8 +6,10 @@ from ede.ede._logger import logger
 
 
 def fn3E1(conn, return_dict):
-    """ 
-    Integridad: VERIFICA QUE TODOS LOS DOCENTES TENGAN su título y la institución de educación ingresados en el sistema
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica que todos los docentes tengan su título y la institución de educación ingresados en el sistema
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

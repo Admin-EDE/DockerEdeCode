@@ -3,7 +3,6 @@ from multiprocessing import current_process
 from datetime import datetime
 import numpy as np
 
-
 from ede.ede._logger import logger
 
 
@@ -94,11 +93,11 @@ def ListaFechasRango(fecha_ini, fecha_ter, conn):
 def fn682(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
-      6.2 Contenido mínimo, letra c.8
-      Verificar que los estudiantes de formación dual se encuentren identificados
-      en el registro de control de asistencia y asignatura.
-      Verificar que la asistencia de práctica profesional se encuentre cargada en 
-      roleAttendanceEvent y que en ella, todos los estudiantes tengan cargada su asistencia.
+    6.2 Contenido mínimo, letra c.8
+    Verificar que los estudiantes de formación dual se encuentren identificados
+    en el registro de control de asistencia y asignatura.
+    Verificar que la asistencia de práctica profesional se encuentre cargada en 
+    roleAttendanceEvent y que en ella, todos los estudiantes tengan cargada su asistencia.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

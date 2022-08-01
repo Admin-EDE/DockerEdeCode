@@ -1,13 +1,14 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn3E0(conn, return_dict):
     """
-    Integridad: VERIFICA SI LA VISTA PersonList filtrada por docentes contiene información
+    INTEGRIDAD DE DATOS
+    
+    Verifica si la vista PersonList filtrada por docentes contiene información
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

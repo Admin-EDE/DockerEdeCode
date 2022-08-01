@@ -1,16 +1,15 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
-
-# Revisar que los cursos del establecimiento tengan bien
-# calculada la información de la tabla RoleAttendance.
 
 
 def fn3D9(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que las asignaturas tengan sus sesiones de calendario (cuándo será la clase) y sus asistencias.
+    (Tabla RoleAttendance)
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

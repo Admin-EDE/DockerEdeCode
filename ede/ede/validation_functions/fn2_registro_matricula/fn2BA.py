@@ -1,15 +1,15 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn2BA(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.5 De los estudiantes excedentes
     Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
-    ---------------------------------------------------------------------
+    --------------------------------------------------
     NOTA: 
     - Una resolución es un documento público que emite el Ministerio de Educación en 
     ciertos casos. Cada resolución tiene un número y una fecha de total tramitación. 

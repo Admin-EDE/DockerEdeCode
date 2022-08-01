@@ -1,18 +1,18 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn2DB(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.3 De las altas en el registro de matrícula.
     Validar el reporte de altas realizadas en la etapa de regulación del proceso de admisión escolar 
     conforme al decreto 152 artículo 60 de año 2016 del Ministerio de Educación.
     Artículo 60: Los establecimientos que matriculen a estudiantes mediante este procedimiento, 
     deberán informar dicha matrícula al Departamento Provincial de Educación respectivo.
-    -------------------------------------------------------------------------------
+    --------------------------------------------------
     Este tipo de casos se registrará a través de la tabla 
     PersonStatus.refPersonStatusTypeId == 33 (Estudiante Matriculado a través de Decreto 152, artículo 60)
     y los campos personStatus.docNumber, personStatus.Description y personStatus.fileScanBase64 

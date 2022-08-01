@@ -1,12 +1,12 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn2FA(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.1 Estructura del registro de matrícula.
     Validar que el total de alumnos matriculados menos las bajas, 
     sea igual a la suma de los estudiantes inscritos en los libros de clases 

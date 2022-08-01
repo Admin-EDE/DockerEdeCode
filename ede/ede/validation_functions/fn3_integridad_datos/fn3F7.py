@@ -6,8 +6,10 @@ from ede.ede._logger import logger
 
 
 def fn3F7(conn, return_dict):
-    """ 
-    Integridad: Verifica que el número de lista cumpla con el formato
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica que el número de lista cumpla con el formato
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

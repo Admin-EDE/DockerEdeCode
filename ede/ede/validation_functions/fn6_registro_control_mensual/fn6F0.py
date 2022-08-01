@@ -8,9 +8,9 @@ from ede.ede._logger import logger
 def fn6F0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
-      6.2 Contenido mínimo, letra c
-      Verificar que exista el registro de asistencia en aquellos casos en los cuales 
-      se realizó la clase al estudiante.
+    6.2 Contenido mínimo, letra c
+    Verificar que exista el registro de asistencia en aquellos casos en los cuales 
+    se realizó la clase al estudiante.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

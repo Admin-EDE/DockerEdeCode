@@ -1,13 +1,14 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn5E1(conn, return_dict):
     """
-    validar que al final de la jornada exista el registro de alumnos matriculados en el curso y el total de la asistencia diaria. 
+    REGISTRO DE CONTROL DE ASIGNATURA
+    6.2 Contenido mínimo, letra b.2
+    Validar que al final de la jornada exista el registro de alumnos matriculados en el curso y el total de la asistencia diaria. 
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

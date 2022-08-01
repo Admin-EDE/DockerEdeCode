@@ -7,7 +7,9 @@ from ede.ede._logger import logger
 
 def fn3FF(conn, return_dict):
     """
-    Integridad: Verifica que todos los estudiantes tengan país, región y ciudad de nacimiento
+    INTEGRIDAD DE DATOS
+    
+    Verifica que todos los estudiantes tengan país, región y ciudad de nacimiento
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

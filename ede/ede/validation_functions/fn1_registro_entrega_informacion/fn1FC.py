@@ -1,16 +1,17 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn1FC(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE ENTREGA DE INFORMACIÓN
+    8.0 De la entrega de información
     Validar que exista cargado en la base de datos el documento digital que 
     acredite la entrega al apoderado de los documentos necesarios para la 
     continuidad del estudiante dentro del sistema educativo.
-    -------------------------------------------------------------------------
+    --------------------------------------------------
     Revisar que la entrega de documentos se encuentre cargada en las 
     incidencias como un tipo de reunión con el apoderado.
 

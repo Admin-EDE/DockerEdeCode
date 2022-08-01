@@ -1,12 +1,13 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn5E4(conn, return_dict):
     """
+    REGISTRO DE CONTROL DE ASIGNATURA
+    6.2 Contenido mínimo, letra b.2
     Validar que la asistencia se encuentre tomada, es decir, 
     cada estudiante debe tener alguno de los siguientes estados: Presente, ausente o atrasado.
     Args:

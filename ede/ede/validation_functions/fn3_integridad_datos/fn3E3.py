@@ -5,9 +5,10 @@ import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
 
-# VERIFICA QUE EL FORMATO DEL RBD CORRESPONDA
 def fn3E3(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que el código identificador del establecimiento RBD sea correcto de acuerdo al formato
     Args:
         conn ([sqlalchemy.engine.Connection]): [

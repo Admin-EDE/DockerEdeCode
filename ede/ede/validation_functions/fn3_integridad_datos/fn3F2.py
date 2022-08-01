@@ -6,7 +6,9 @@ from ede.ede._logger import logger
 
 def fn3F2(conn, return_dict):
     """
-    Integridad: Verifica que lista personList contenga información
+    INTEGRIDAD DE DATOS
+    
+    Verifica que lista personList contenga información
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

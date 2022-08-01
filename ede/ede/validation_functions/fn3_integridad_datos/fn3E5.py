@@ -4,11 +4,11 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA QUE LA MODALIDAD ESTE DENTRO DE LA LISTA PERMITIDA
-
 
 def fn3E5(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que la modalidad de cada curso esté dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [

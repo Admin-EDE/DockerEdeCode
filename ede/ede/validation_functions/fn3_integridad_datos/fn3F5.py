@@ -7,8 +7,10 @@ from ede.ede._logger import logger
 
 
 def fn3F5(conn, return_dict):
-    """ 
-    Integridad: Verifica si los e-mails ingresados cumplen con el formato
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica si los e-mails ingresados cumplen con el formato
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

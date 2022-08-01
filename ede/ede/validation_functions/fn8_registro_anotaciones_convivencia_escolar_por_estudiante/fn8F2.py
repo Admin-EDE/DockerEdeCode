@@ -6,16 +6,17 @@ from ede.ede._logger import logger
 
 
 def fn8F2(conn, return_dict):
-    """ 
-      6.2 Contenido mínimo, letra e
-      Verificar el contenido de cada registro de convivencia
+    """
+    REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
+    6.2 Contenido mínimo, letra e
+    Verificar el contenido de cada registro de convivencia
 
-      Grupo _Incidentes debería contener todo lo necesario.
+    Grupo _Incidentes debería contener todo lo necesario.
 
-      Identificación del estudiante
-      Identificación del apoderado
-      Fecha, asignatura y observación
-      Fecha, profesor y datos de la entrevista con el apoderado      
+    Identificación del estudiante
+    Identificación del apoderado
+    Fecha, asignatura y observación
+    Fecha, profesor y datos de la entrevista con el apoderado      
 
     Args:
         conn ([sqlalchemy.engine.Connection]): [

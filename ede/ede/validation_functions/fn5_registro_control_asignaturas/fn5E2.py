@@ -1,12 +1,12 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn5E2(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
     Valida que cuando falta docente, exista la observación con los datos de éste.
 

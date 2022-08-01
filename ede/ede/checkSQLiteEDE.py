@@ -349,8 +349,7 @@ class check:
             for p in jobs:
                 logger.info(f"{p.name} iniciando...")
                 p.start()
-                
-            logger.info("This doesnt execute it")
+
             while True:
                 time += 1
                 l = [not p.is_alive() for p in jobs]

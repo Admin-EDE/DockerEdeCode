@@ -3,11 +3,11 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
-# VERIFICA QUE COINCIDAN LOS ID'S DE LOS CURSOS EN LAS DIFERENTES TABLAS
-
 
 def fn3EF(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que los id del curso sean equivalentes en las tablas course y organization
     Args:
         conn ([sqlalchemy.engine.Connection]): [

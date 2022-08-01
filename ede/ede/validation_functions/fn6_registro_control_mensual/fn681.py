@@ -6,7 +6,10 @@ from ede.ede._logger import logger
 
 
 def fn681(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+    6.2 Contenido mínimo, letra c.8
+    verificar que los estudiantes de formación dual se encuentren identificados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

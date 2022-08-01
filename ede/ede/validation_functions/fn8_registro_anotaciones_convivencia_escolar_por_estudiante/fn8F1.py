@@ -1,12 +1,14 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn8F1(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
+    6.2 Contenido mínimo, letra e
+    Verificar la aplicación y seguimiento de medidas disciplinarias relacionadas con el reglamento interno.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

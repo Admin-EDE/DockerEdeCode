@@ -4,14 +4,16 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
-# Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
-# Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento
-
 
 def fn3CA(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que existan campos relacionados a la asistencia
+    --------------------------------------------------
+    Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
+    Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
+    Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

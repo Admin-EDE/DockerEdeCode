@@ -6,8 +6,10 @@ from ede.ede._logger import logger
 
 
 def fn3F4(conn, return_dict):
-    """ 
-    Integridad: Verifica si los IPE ingresados son válidos
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica si los IPE ingresados son válidos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

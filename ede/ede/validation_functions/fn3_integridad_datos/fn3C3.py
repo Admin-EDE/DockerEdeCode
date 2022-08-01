@@ -1,16 +1,15 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
-
-# Revisar que la organización del establecimiento, asignaturas y cursos
-# tengan asignada una localidad dentro del establecimiento.
 
 
 def fn3C3(conn, return_dict):
     """
-    Verifica que las Organizaciones tengan bien definida su localización
+    INTEGRIDAD DE DATOS
+
+    Verifica que las Organizaciones del establecimiento, asignaturas y cursos,
+    tengan bien definida su localización
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
