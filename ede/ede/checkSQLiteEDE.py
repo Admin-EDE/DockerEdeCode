@@ -335,29 +335,40 @@ class check:
             jobs = []
             for key, value in self.functions.items():
                 if(value != "No/Verificado"):
-                    logger.info(f"{key} iniciando...")
+                    
 
                     fnTarget = self.functionsMultiProcess[key]
                     if key == "fn3F1":
-                        p = Process(target=fnTarget, name=fnTarget.__name__, args=(
+                        p : Process = Process(target=fnTarget, name=fnTarget.__name__, args=(
                             conn, return_dict, self.args,))
                     else:
-                        p = Process(target=fnTarget, name=fnTarget.__name__, args=(
+                        p : Process = Process(target=fnTarget, name=fnTarget.__name__, args=(
                             conn, return_dict,))
                     jobs.append(p)
-                    p.start()
-
             time = 0
+            for p in jobs:    
+                p.start()
+                
+            logger.info("This doesnt execute it")
             while True:
                 time += 1
                 l = [not p.is_alive() for p in jobs]
-                if(all(l) or time >= self.args.time):
+                if any(p.is_alive() for p in jobs):
+                    sleep(1)
+                    if(self.args.time > 0 and time >= self.args.time):
+                        for p in jobs:
+                            if p.is_alive():  # If thread is active
+                                p.terminate()
+                                logger.error(f"TIMEOUT: {p}")
+                        break
+                else:
                     for p in jobs:
-                        if p.is_alive():  # If thread is active
-                            p.terminate()
-                            logger.error(f"TIMEOUT: {p}")
+                        logger.info(f"{p.name} iniciando...")
+                        p.join() #one process at time (waits until its done) to not collapse CNT
                     break
-                sleep(1)
+            
+
+            
 
             logger.info(return_dict)
             _result = all(list(return_dict.values()))

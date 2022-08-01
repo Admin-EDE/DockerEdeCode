@@ -103,6 +103,7 @@ def fn5E0(conn, return_dict):
           raise Exception("No hay registros de información")
     except Exception as e:
         logger.info(f"S/Datos")
+        _r = True
         logger.info(f'Sin asistencia por bloque: {e}')
         return_dict[getframeinfo(currentframe()).function] = True
         return True
@@ -218,6 +219,7 @@ def fn5E0(conn, return_dict):
         """).fetchall()
     except Exception as e:
         logger.error(f'Rechazado')
+        _r = False
         logger.info(f'No cumple con los criterios de la consulta: {e}')
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
@@ -233,6 +235,7 @@ def fn5E0(conn, return_dict):
             for idx_,el_ in enumerate(totalEstudiantes):
               if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
                 logger.error(f'Rechazado')
+                _r = False
                 logger.error(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
@@ -240,20 +243,17 @@ def fn5E0(conn, return_dict):
                 
               if(el_ != firmadoEnClases[idx_]):
                 logger.error(f'Rechazado')
+                _r = False
                 logger.error(f'Total de estudiantes NO coincide con cantidad de firmas')
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             
-        logger.info("Aprobado")    
+        logger.info("Aprobado")
+        _r = True
         return_dict[getframeinfo(currentframe()).function] = True
         logger.info(f"{current_process().name} finalizando...")
         return True
     except Exception as e:
       logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
       logger.error(f"{str(e)}")
-    finally:
-      logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
-      return_dict[getframeinfo(currentframe()).function] = _r
-      logger.info(f"{current_process().name} finalizando...")      
-      return _r
