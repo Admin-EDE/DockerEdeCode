@@ -346,7 +346,8 @@ class check:
                             conn, return_dict,))
                     jobs.append(p)
             time = 0
-            for p in jobs:    
+            for p in jobs:
+                logger.info(f"{p.name} iniciando...")
                 p.start()
                 
             logger.info("This doesnt execute it")
@@ -363,8 +364,8 @@ class check:
                         break
                 else:
                     for p in jobs:
-                        logger.info(f"{p.name} iniciando...")
-                        p.join() #one process at time (waits until its done) to not collapse CNT
+                        if not self.args.parallel:
+                            p.join()
                     break
             
 

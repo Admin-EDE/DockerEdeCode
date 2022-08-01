@@ -62,6 +62,8 @@ class consoleMenu:
             '-f', '--function', type=str, help='Especifica la función que se desea revisar')
         parser_check.add_argument(
             '-t', '--time', type=int, help='Especifica el tiempo máximo de la verificación', default=300)
+        parser_check.add_argument(
+            '-p', '--parallel', help='Ejecuta en paralelo los chequeos', action="store_true", default=False)
         parser_check.set_defaults(func=self.check)
 
     def module_from_file(self, module_name: str, file_path: str) -> ModuleType:
