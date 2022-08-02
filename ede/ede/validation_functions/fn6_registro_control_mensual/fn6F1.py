@@ -7,6 +7,7 @@ from ede.ede._logger import logger
 
 def fn6F1(conn, return_dict):
     """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.1
     Verificar que el registro contenga la información mínima
     Args:
