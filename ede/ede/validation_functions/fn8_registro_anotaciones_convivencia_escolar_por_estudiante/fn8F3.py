@@ -1,16 +1,15 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn8F3(conn, return_dict):
     """ 
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
-      6.2 Contenido mínimo, letra e
-      Verificar que las entrevistas con el apoderado y su contenido se 
-      encuentre cargado en el sistema.
+    6.2 Contenido mínimo, letra e
+    Verificar que las entrevistas con el apoderado y su contenido se 
+    encuentre cargado en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

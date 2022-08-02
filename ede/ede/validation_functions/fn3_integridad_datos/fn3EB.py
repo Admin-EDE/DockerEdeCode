@@ -4,11 +4,11 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA QUE EL TIPO DE CURSO ESTE DENTRO DE LA LISTA PERMITIDA
-
 
 def fn3EB(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que los tipos de curso están dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [

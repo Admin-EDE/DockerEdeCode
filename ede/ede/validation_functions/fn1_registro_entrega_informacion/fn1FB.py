@@ -1,21 +1,20 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn1FB(conn, return_dict):
     """
     REGISTRO DE LA ENTREGA DE INFORMACIÓN
-      8.0 De la entrega de información
-      verifica que exista cargado en la base de datos el documento digital o verificador de identidad que acredite la entrega al 
-      apoderado información de interés general, tal como:
-      - Reglamento interno
-      - Reglamento de evaluación y promoción
-      - Proyecto Educativo
-      - Programa de seguridad escolar
-      - entre otros, salvo aquellos de carácter confidencial o de uso personal.
+    8.0 De la entrega de información
+    verifica que exista cargado en la base de datos el documento digital o verificador de identidad que acredite la entrega al 
+    apoderado información de interés general, tal como:
+    - Reglamento interno
+    - Reglamento de evaluación y promoción
+    - Proyecto Educativo
+    - Programa de seguridad escolar
+    - entre otros, salvo aquellos de carácter confidencial o de uso personal.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

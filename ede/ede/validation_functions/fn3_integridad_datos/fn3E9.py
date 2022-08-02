@@ -4,11 +4,11 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA QUE EL SECTOR ESTA DENTRO DE LA LISTA PERMITIDA
-
 
 def fn3E9(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que el sector está dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [

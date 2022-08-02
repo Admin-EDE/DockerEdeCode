@@ -1,12 +1,16 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn7F5(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
+    6.2 Contenido mínimo, letra d
+    Verificar que exista un registro de los objetivos y contenidos 
+    de materias o actividades que son entregados por el docente en 
+    cada sector educativo, asignatura o módulo.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

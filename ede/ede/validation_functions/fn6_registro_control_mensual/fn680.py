@@ -6,14 +6,17 @@ from ede.ede._logger import logger
 
 
 def fn680(conn, return_dict):
-    """ 
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
     verificar que los registros reportados semanalmente por la empresa 
     se encuentren cargados en el sistema
+    --------------------------------------------------
+    El medio de verificación de la asistencia debería ser un documento 
+    reportado por la empresa, el cual debe estar cargado en el sistema 
+    en los campos fileScanBase64 y observaciones.
 
-El medio de verificación de la asistencia debería ser un documento reportado por la empresa, el cual debe estar cargado en el sistema en los campos fileScanBase64 y observaciones.
-
-[revisar si es necesario cargar el documento o solo dejar la observación]
+    [revisar si es necesario cargar el documento o solo dejar la observación]
 
     Args:
         conn ([sqlalchemy.engine.Connection]): [

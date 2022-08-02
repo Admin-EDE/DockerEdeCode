@@ -4,9 +4,12 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
+
 def fn3F3(conn, return_dict):
-    """ 
-    Integridad: Verifica que los RUT's ingresados sean válidos
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica que los RUT's ingresados sean válidos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -6,7 +6,12 @@ from ede.ede._logger import logger
 
 
 def fn6C2(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+    6.2 Contenido mínimo, letra c.4
+    verificar que los alumnos excedentes (con derecho a pago) que sustituyan
+    a otros estudiantes retirados del establecimiento cuenten con 
+    la autorización de la secretaría ministerial
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

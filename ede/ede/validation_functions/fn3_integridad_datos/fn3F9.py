@@ -4,9 +4,12 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
+
 def fn3F9(conn, return_dict):
     """
-    Integridad: Verifica que las fechas ingresadas cumplan con el formato
+    INTEGRIDAD DE DATOS
+    
+    Verifica que las fechas ingresadas cumplan con el formato
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

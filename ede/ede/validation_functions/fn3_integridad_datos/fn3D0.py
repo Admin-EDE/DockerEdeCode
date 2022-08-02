@@ -3,13 +3,11 @@ from multiprocessing import current_process
 
 from ede.ede._logger import logger
 
-# Verifica que cada asignatura se encuentre asociada a un curso.
-# Entrega los organizationID de las asignaturas
-# que no están asociadas a ningún curso
-
 
 def fn3D0(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verificar que cada asignatura se encuentre asociada a un curso.
     Entrega los organizationId de las asignaturas que no están asociadas a ningún curso.
     Args:

@@ -4,11 +4,11 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA QUE LA RAMA ESTA DENTRO DE LA LISTA PERMITIDA
-
 
 def fn3E8(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que la rama está dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [

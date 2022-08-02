@@ -1,16 +1,16 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn28B(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.8 De los estudiantes migrantes
     Validar que el certificado de convalidación de estudios y
     los cursos convalidados se encuentre cargado en el sistema.
-    ---------------------------------------------------------------------
+    --------------------------------------------------
     Este tipo de casos se registrará a través de la tabla 
     PersonStatus.refPersonStatusTypeId == 34 (Convalidación de estudios) y 
     los campos personStatus.docNumber, personStatus.Description y 

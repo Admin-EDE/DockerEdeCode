@@ -7,7 +7,9 @@ from ede.ede._logger import logger
 
 def fn3FA(conn, return_dict):
     """
-    Integridad: Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
+    INTEGRIDAD DE DATOS
+    
+    Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

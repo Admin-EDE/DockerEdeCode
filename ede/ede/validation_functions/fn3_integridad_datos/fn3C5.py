@@ -4,11 +4,11 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA DATOS DE LAS ORGANIZACIONES
-
 
 def fn3C5(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verificador de identidad (OTP)
     Verifica que el campo cumpla con la siguiente expresión regular: ^[0-9]{6}+([-]{1}[0-9kK]{1})?$
     Args:

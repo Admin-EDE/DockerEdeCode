@@ -1,16 +1,15 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn9F1(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
-      6.2 Contenido mínimo, letra f
-      Verificar que la planificación del proceso formativo del estudiante se encuentre registrada
-      en el sistema.
+    6.2 Contenido mínimo, letra f
+    Verificar que la planificación del proceso formativo del estudiante se encuentre registrada
+    en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

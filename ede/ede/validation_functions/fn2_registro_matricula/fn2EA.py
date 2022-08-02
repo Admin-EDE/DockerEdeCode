@@ -1,16 +1,16 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn2EA(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.2 Contenido mínimo del registro de matrícula.
     Validar que exista el contenido mínimo. 
     La vista personList unifica la información de las diferentes tablas de la base de datos.
-    ----------------------------------------------------------------------------
+    --------------------------------------------------
     - Domicilio del estudiante: pais, region, cuidad, comuna, nombreSector, direccion, 
     apartamento, codigoPostal
     - Identificación de padres, madres, apoderados o tutores: primerNombre, otrosNombres, 

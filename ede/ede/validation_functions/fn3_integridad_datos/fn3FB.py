@@ -6,7 +6,9 @@ from ede.ede._logger import logger
 
 def fn3FB(conn, return_dict):
     """
-    Integridad: Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
+    INTEGRIDAD DE DATOS
+    
+	Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

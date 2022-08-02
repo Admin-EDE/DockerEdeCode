@@ -1,16 +1,16 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn29B(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
     Validar que si la práctica se realiza durante la 
     jornada escolar o en vacaciones exista solo un registro de matricula para el estudiante.
-    ---------------------------------------------------------------------------------
+    --------------------------------------------------
     Un estudiante de formación DUAL tiene una asignatura especial asignada y 
     el curso tiene el identificador RefWorkbasedLearningOpportunityTypeId asignado. 
     Se agrega en refOrgantizationType el tipo practicaProfesional para identificar este tipo de asignaturas.

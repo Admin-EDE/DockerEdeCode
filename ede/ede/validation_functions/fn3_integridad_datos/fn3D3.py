@@ -1,15 +1,14 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
-# Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
-#  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
 
 
 def fn3D3(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verificar que los campos ClassMeetingDays y ClassPeriod se encuentren dentro de la lista. 
     Esto ayudará a identificar el segundo bloque de cada curso, lo cual es necesario para 
     comparar el registro de control de asignatura contra el registro de control de subvenciones.

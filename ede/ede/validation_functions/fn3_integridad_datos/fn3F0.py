@@ -5,7 +5,10 @@ from ede.ede._logger import logger
 
 
 def fn3F0(conn, return_dict):
-    """Verifica la conexión con la base de datos SQLCypher
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica la conexión con la base de datos SQLCypher
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -1,15 +1,13 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
-
-# Revisar que los cursos del establecimiento tengan bien
-# calculada la información de la tabla RoleAttendance.
 
 
 def fn3DA(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que exista asistencia diaria y luego que las tasas de asistencia estén bien calculadas
     Args:
         conn ([sqlalchemy.engine.Connection]): [

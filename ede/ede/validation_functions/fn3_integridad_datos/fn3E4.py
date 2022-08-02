@@ -5,10 +5,11 @@ import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
 
-# VERIFICA SI LA VISTA jerarquiasList contiene información
 def fn3E4(conn, return_dict):
     """
-    Verifica que los cursos tengan una organización, rbd, nivel, jornada, etc
+    INTEGRIDAD DE DATOS
+    
+    Verifica que los cursos tengan una organización, rbd, nivel, jornada, etc (vista jerarquiasList)
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
