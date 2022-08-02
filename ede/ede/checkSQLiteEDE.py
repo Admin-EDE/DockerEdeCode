@@ -352,9 +352,7 @@ class check:
 
             while True:
                 time += 1
-                l = [not p.is_alive() for p in jobs]
                 if any(p.is_alive() for p in jobs):
-                    sleep(1)
                     if(self.args.time > 0 and time >= self.args.time):
                         for p in jobs:
                             if p.is_alive():  # If thread is active
@@ -362,10 +360,11 @@ class check:
                                 logger.error(f"TIMEOUT: {p}")
                         break
                 else:
-                    for p in jobs:
-                        if not self.args.parallel:
+                    if not self.args.parallel:
+                        for p in jobs:
                             p.join()
                     break
+                sleep(1)
             
 
             
