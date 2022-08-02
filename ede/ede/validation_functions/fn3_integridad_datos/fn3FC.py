@@ -6,7 +6,9 @@ from ede.ede._logger import logger
 
 def fn3FC(conn, return_dict):
     """
-    Integridad: Verifica que la cantidad de emails corresponda con los tipos de emails ingresados
+    INTEGRIDAD DE DATOS
+    
+    Verifica que la cantidad de emails corresponda con los tipos de emails ingresados
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

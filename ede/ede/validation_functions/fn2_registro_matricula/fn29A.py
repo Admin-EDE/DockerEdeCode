@@ -1,12 +1,12 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn29A(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
     Validar que los estudiantes en práctica hayan terminado al menos el primer semestre del tercer año.
     Args:

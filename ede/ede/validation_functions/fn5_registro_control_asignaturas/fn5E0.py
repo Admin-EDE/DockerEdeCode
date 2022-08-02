@@ -2,13 +2,14 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
-
 from ede.ede._logger import logger
 
 
 def fn5E0(conn, return_dict):
     """
-    validar el registro de asistencia bloque a bloque.
+    REGISTRO DE CONTROL DE ASIGNATURA
+    6.2 Contenido mínimo, letra b.1
+    Validar el registro de asistencia bloque a bloque.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

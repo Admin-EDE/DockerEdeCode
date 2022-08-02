@@ -6,8 +6,10 @@ from ede.ede._logger import logger
 
 
 def fn3F6(conn, return_dict):
-    """ 
-    Integridad: Verifica la lista de teléfonos
+    """
+    INTEGRIDAD DE DATOS
+    
+    Verifica la lista de teléfonos
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

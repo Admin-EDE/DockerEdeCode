@@ -1,12 +1,14 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn6D1(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+    6.2 Contenido mínimo, letra c.3
+    verificar que no se declare la asistencia de un estudiante dado de baja
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

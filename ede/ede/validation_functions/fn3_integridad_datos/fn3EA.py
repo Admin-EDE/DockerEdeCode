@@ -4,11 +4,11 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA QUE LA ESPECIALIDAD ESTA DENTRO DE LA LISTA PERMITIDA
-
 
 def fn3EA(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que la especialidad está dentro de la lista permitida
     Args:
         conn ([sqlalchemy.engine.Connection]): [

@@ -1,12 +1,13 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn4FA(conn, return_dict):
     """
+    REGISTRO DE ANTECEDENTES GENERALES DE LOS ESTUDIANTES POR CURSO
+    6.2 Contenido mínimo, letra a
     Comprueba que el estudiante tiene sus datos mínimos
     ---------------------------------------
     - Número de lista

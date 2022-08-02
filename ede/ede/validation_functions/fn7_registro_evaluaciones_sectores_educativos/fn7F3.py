@@ -1,12 +1,16 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn7F3(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
+    6.2 Contenido mínimo, letra d
+    verificar que se encuentre cargado en el sistema la cantidad de 
+    calificaciones y ponderaciones que se utilizan para calcular la 
+    calificación final de los estudiantes en cada asignatura o módulo de cada curso.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

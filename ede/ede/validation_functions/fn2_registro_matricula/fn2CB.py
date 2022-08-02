@@ -2,12 +2,12 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
-
 from ede.ede._logger import logger
 
 
 def fn2CB(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.4 De las bajas en el registro de matrícula
     Validar que exista el registro de entrega de documentos al apoderado.
     Args:

@@ -8,12 +8,12 @@ from ede.ede._logger import logger
 def fn8F0(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
-      6.2 Contenido mínimo, letra e
-      Verificar que exista registro de la siguiente información
-        - Anotaciones negativas de su comportamiento
-        - Citaciones a los apoderados sobre temas relativos a sus pupilos.
-        - Medidas disciplinarias que sean aplicadas al estudiante.
-        - Reconocimientos por destacado cumplimiento del reglamento interno (positivas).      
+    6.2 Contenido mínimo, letra e
+    Verificar que exista registro de la siguiente información
+      - Anotaciones negativas de su comportamiento
+      - Citaciones a los apoderados sobre temas relativos a sus pupilos.
+      - Medidas disciplinarias que sean aplicadas al estudiante.
+      - Reconocimientos por destacado cumplimiento del reglamento interno (positivas).      
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -6,9 +6,11 @@ from ede.ede._logger import logger
 
 
 def fn1FA(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE ENTREGA DE INFORMACIÓN
+    8.0 De la entrega de información
     Validar para cada entrega si ésta se hizo a través de un medio digital o en papel.
-    --------------------------------------------------------------------
+    --------------------------------------------------
     Revisar que la entrega de documentos se encuentre cargada en las incidencias
     como un tipo de reunión con el apoderado.
 

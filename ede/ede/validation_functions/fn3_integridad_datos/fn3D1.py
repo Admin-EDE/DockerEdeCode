@@ -1,15 +1,13 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
-
-# Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
-#  y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
 
 
 def fn3D1(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que Las asignaturas tengan una capacidad máxima y que 
     todas las organizaciones en la tabla de asignaturas sean de tipo ASIGNATURA
     Args:

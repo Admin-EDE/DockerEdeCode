@@ -2,12 +2,15 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
-
 from ede.ede._logger import logger
 
 
 def fn6E0(conn, return_dict):
-    """ Breve descripción de la función
+    """
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+    6.2 Contenido mínimo, letra c.2
+    Validar que la hora del registro de control de asistencia 
+    corresponda con la segunda hora del registro de control de asignatura.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -18,7 +21,7 @@ def fn6E0(conn, return_dict):
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
             - A
           Retorna True y “Aprobado” a través de logger, solo si se puede: 
-            - A
+            - debería coícidir planificación y ejecución de las clases
           En todo otro caso, retorna False y "Rechazado" a través de logger.
           ]
     """

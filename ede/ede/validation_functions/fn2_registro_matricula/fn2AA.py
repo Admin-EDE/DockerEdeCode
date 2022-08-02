@@ -1,15 +1,15 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
 from ede.ede._logger import logger
 
 
 def fn2AA(conn, return_dict):
-    """ 
+    """
+    REGISTRO DE MATRÍCULA
     5.6 De los estudiantes de intercambio
     Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
-    -----------------------------------------------------------------------
+    --------------------------------------------------
     NOTA: File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
     Args:
         conn ([sqlalchemy.engine.Connection]): [

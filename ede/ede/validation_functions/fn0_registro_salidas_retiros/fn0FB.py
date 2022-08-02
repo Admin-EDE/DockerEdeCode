@@ -7,12 +7,13 @@ from ede.ede._logger import logger
 
 def fn0FB(conn, return_dict):
     """
-    SalidasNoHabituales: 7.0 Registro de salidas o retiros (NO Habituales)
-        Verificar, en caso que existan retiros anticipados, que se encuentre registrado 
-      el “verificador de identidad” o escaneado el poder simple o la comunicación 
-      que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
-        Se puede filtrar por RoleAttendanceEvent.RefAttendanceStatusID == 5 (Early Departure) 
-      y agrupar por Date para obtener el bloque de registros      
+    REGISTRO DE SALIDAS
+    7.0 Registro de salidas o retiros (NO Habituales)
+    Verificar, en caso que existan retiros anticipados, que se encuentre registrado
+    el “verificador de identidad” o escaneado el poder simple o la comunicación 
+    que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
+    Se puede filtrar por RoleAttendanceEvent.RefAttendanceStatusID == 5 (Early Departure) 
+    y agrupar por Date para obtener el bloque de registros      
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

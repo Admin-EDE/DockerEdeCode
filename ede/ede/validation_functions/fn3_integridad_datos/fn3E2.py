@@ -4,12 +4,14 @@ from multiprocessing import current_process
 import ede.ede.check_utils as check_utils
 from ede.ede._logger import logger
 
-# VERIFICA SI LA TABLA k12schoolList unida a organizationList contiene información
-
 
 def fn3E2(conn, return_dict):
     """
+    INTEGRIDAD DE DATOS
+    
     Verifica que los establecimientos tengan su RBD (identificador)
+    --------------------------------------------------
+    VERIFICA SI LA TABLA k12schoolList unida a organizationList contiene información
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

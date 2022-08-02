@@ -1,4 +1,3 @@
-
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
@@ -7,7 +6,9 @@ from ede.ede._logger import logger
 
 def fn3FE(conn, return_dict):
     """
-    Integridad: Verifica que los estudiantes tengan sus datos de nacimiento
+    INTEGRIDAD DE DATOS
+    
+    Verifica que los estudiantes tengan sus datos de nacimiento
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
