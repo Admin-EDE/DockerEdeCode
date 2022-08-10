@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 import ede.ede.validation_functions_facade as facade
 from time import sleep
-
+import sys
+import os
+import ctypes
 from ede.ede._logger import logger
 
-from multiprocessing import Process, Manager
+from multiprocessing import Process, Manager, current_process
+from threading import Thread
 import re
 from sqlalchemy import create_engine
 
@@ -329,7 +333,49 @@ class check:
         try:
             logger.info(
                 f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
+            
+            if self.args.sequential:
+                return_dict = dict()
+                #return_dict = self.execute_sequentially(conn)
+                self.execute_sequentially(conn, return_dict)
+            else:
+               
+                return_dict = self.execute_parallel(conn)
 
+
+            logger.info(return_dict)
+            _result = all(list(return_dict.values()))
+            if(not _result):
+                logger.error(
+                    "--------- EL ARCHIVO NO CUMPLE CON EL ESTÁNDAR DE DATOS PARA LA EDUCACIÓN ----------")
+
+        except Exception as e:
+            pass
+        finally:
+            conn.close()  # closind database connection
+            return _result
+    def execute_sequentially(self, conn, return_dict):
+        try:
+            start_time = datetime.now()
+            for key, value in self.functions.items():
+                if(value != "No/Verificado"):
+                    timediff = (datetime.now()-start_time).total_seconds()
+                    logger.info(f"time elapsed: {timediff}")
+                    if self.args.time > 0 and timediff > self.args.time:
+                        logger.error("TIMEOUT EJECUCION SECUENCIAL.............")
+                        break
+                    fnTarget = self.functionsMultiProcess[key]
+                    logger.info(f"{fnTarget.__name__} iniciando...")
+                    if key == "fn3F1":
+                        fnTarget.__call__(conn, return_dict, self.args)
+                    else:
+                        fnTarget.__call__(conn, return_dict)
+            return return_dict
+        except Exception as e:
+            logger.error(f"Error general en ejecución secuencial: {e}")
+            return False
+    def execute_parallel(self, conn):
+        try:
             manager = Manager()
             return_dict = manager.dict()
             jobs = []
@@ -352,32 +398,22 @@ class check:
 
             while True:
                 time += 1
-                l = [not p.is_alive() for p in jobs]
                 if any(p.is_alive() for p in jobs):
-                    sleep(1)
                     if(self.args.time > 0 and time >= self.args.time):
                         for p in jobs:
                             if p.is_alive():  # If thread is active
                                 p.terminate()
                                 logger.error(f"TIMEOUT: {p}")
                         break
-                else:
-                    for p in jobs:
-                        if not self.args.parallel:
-                            p.join()
-                    break
-            
-
-            
-
-            logger.info(return_dict)
-            _result = all(list(return_dict.values()))
-            if(not _result):
-                logger.error(
-                    "--------- EL ARCHIVO NO CUMPLE CON EL ESTÁNDAR DE DATOS PARA LA EDUCACIÓN ----------")
-
+                #else:
+                #    if not self.args.parallel:
+                #        for p in jobs:
+                #            p.join()
+                #    break
+                sleep(1)
+            return return_dict
         except Exception as e:
-            pass
-        finally:
-            conn.close()  # closind database connection
-            return _result
+            logger.error(f"Error general en ejecución en paralelo {e}")
+            
+
+            
