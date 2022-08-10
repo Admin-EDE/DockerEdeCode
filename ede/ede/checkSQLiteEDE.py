@@ -405,6 +405,7 @@ class check:
                                 p.terminate()
                                 logger.error(f"TIMEOUT: {p}")
                         break
+
                 #else:
                 #    if not self.args.parallel:
                 #        for p in jobs:
