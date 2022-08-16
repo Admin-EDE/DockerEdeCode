@@ -406,11 +406,11 @@ class check:
                                 logger.error(f"TIMEOUT: {p}")
                         break
 
-                #else:
+                else:
                 #    if not self.args.parallel:
                 #        for p in jobs:
                 #            p.join()
-                #    break
+                    break
                 sleep(1)
             return return_dict
         except Exception as e:
