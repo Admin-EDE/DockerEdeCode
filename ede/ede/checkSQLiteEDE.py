@@ -322,7 +322,7 @@ class check:
         _result = True
         sec = self.args.secPhase
         path = self.args.path_to_DB_file
-        engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000"
+        engine = create_engine(f"sqlite+pysqlcipher3://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000"
                                # ,connect_args={'timeout': 10000}
                                )
         try:
