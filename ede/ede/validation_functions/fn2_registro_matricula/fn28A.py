@@ -28,7 +28,7 @@ def fn28A(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 JOIN Person P on OPR.PersonId = P.PersonId
@@ -38,7 +38,7 @@ def fn28A(conn, return_dict):
           and PI.Identifier is not null;
         """).fetchall()
         if(len(_query)>0):
-          _personStatus = conn.execute("""
+          _personStatus = conn.execute("""--sql
           SELECT fileScanBase64
           FROM PersonStatus
           WHERE PersonId in (SELECT DISTINCT P.PersonId
@@ -52,7 +52,7 @@ def fn28A(conn, return_dict):
             and fileScanBase64 is not null;
           """).fetchall()
           if(len(_personStatus) == len(_query)):
-            _file = conn.execute("""
+            _file = conn.execute("""--sql
             SELECT
                   documentId
             FROM Document
