@@ -334,7 +334,7 @@ class check:
             logger.info(
                 f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
             
-            if self.args.sequential:
+            if "sequential" in dir(self.args) and self.args.sequential:
                 return_dict = dict()
                 #return_dict = self.execute_sequentially(conn)
                 self.execute_sequentially(conn, return_dict)
