@@ -38,16 +38,20 @@ def fn8F0(conn, return_dict):
     _r = False
     allIncidents = []
     try:
-        allIncidents = conn.execute("""
+        allIncidents = conn.execute("""--sql
                   SELECT 
-                     I.*
-                    ,K12SD.*
-                    ,OPR.*
-                    ,rol.*
-                    ,K12SA.*
-                    ,rInBh.*
-	                  ,IncPer.*
-          					,rdat.*
+                    I.IncidentId,
+                    I.IncidentIdentifier,
+                    I.IncidentDate,
+                    I.IncidentTime,
+                    I.IncidentDescription,
+                    I.RefIncidentBehaviorId,
+                    I.RegulationViolatedDescription,
+                    rInBh.Description,
+                    IncPer.personId,
+                    IncPer.RefIncidentPersonTypeId,
+                    IncPer.Date,
+                    rdat.RefDisciplinaryActionTakenId
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
                       ON K12SD.IncidentId = I.IncidentId
@@ -80,15 +84,15 @@ def fn8F0(conn, return_dict):
                 incidentIdentifier = incident[1]
                 incidentDate = incident[2]
                 incidentTime = incident[3]
-                incidentDesc = incident[5]
-                RefIncidentBehaviorId = incident[6]
+                incidentDesc = incident[4]
+                RefIncidentBehaviorId = incident[5]
                 isJsonValidRegulationViolatedDesc = check_utils.validateJSON(
-                    incident[16])
-                refIncidentBehaviorDesc = incident[66]
-                PersonId = incident[72]
-                refIncidentPersonId = incident[75]
-                incidentPersonDate = incident[76]
-                refDisciplinaryActionTaken = incident[81]
+                    incident[6])
+                refIncidentBehaviorDesc = incident[7]
+                PersonId = incident[8]
+                refIncidentPersonId = incident[9]
+                incidentPersonDate = incident[10]
+                refDisciplinaryActionTaken = incident[11]
                 # print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
 
                 if(incidentId is None
