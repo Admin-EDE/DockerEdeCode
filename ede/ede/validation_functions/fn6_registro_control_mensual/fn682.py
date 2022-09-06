@@ -23,9 +23,9 @@ def ListaFechasRango(fecha_ini, fecha_ter, conn):
                         )
                         SELECT strftime('%Y-%m-%d',date) as date  FROM dates;"""
 
-    _S3x = """ select strftime('%Y-%m-%d',StartDate) as StartDate , strftime('%Y-%m-%d',EndDate) as EndDate from OrganizationCalendarCrisis;"""
+    _S3x = """SELECT strftime('%Y-%m-%d',StartDate) as StartDate , strftime('%Y-%m-%d',EndDate) as EndDate from OrganizationCalendarCrisis;"""
 
-    _S3x2 = """select strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarevent where strftime('%Y-%m-%d',EventDate)>= ?;"""
+    _S3x2 = """SELECT strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarevent where strftime('%Y-%m-%d',EventDate)>= ?;"""
 
     fecha_in = datetime.strptime(fecha_ini, '%Y-%m-%d')
     fecha_te = datetime.strptime(fecha_ter, '%Y-%m-%d')
@@ -115,28 +115,28 @@ def fn682(conn, return_dict):
     arr = []
     arr4 = []
     try:
-        _S1 = """ SELECT OrganizationId
+        _S1 = """SELECT OrganizationId
                 FROM Organization
                 WHERE RefOrganizationTypeId = 47;"""
 
-        _S2 = """ SELECT Parent_OrganizationId
+        _S2 = """SELECT Parent_OrganizationId
                 FROM OrganizationRelationship
                 WHERE OrganizationId = ?;"""
 
-        _S3 = """ SELECT OrganizationId
+        _S3 = """SELECT OrganizationId
                 FROM K12Course
                 WHERE OrganizationId = ? and RefWorkbasedLearningOpportunityTypeId=1 ;"""
 
-        _S4 = """ select personid from OrganizationPersonRole
+        _S4 = """SELECT personid from OrganizationPersonRole
         where OrganizationId=? and RoleId = 6 ;"""
 
-        _S5 = """ select b.personid,strftime('%Y-%m-%d',c.EntryDate) as EntryDate,strftime('%Y-%m-%d',c.ExitDate) as ExitDate
+        _S5 = """SELECT b.personid,strftime('%Y-%m-%d',c.EntryDate) as EntryDate,strftime('%Y-%m-%d',c.ExitDate) as ExitDate
       from PersonStatus a join personidentifier b on  a.personid = b.personId  join organizationpersonrole c on b.personid=c.personId  where a.RefPersonStatusTypeId=35 and a.personid=? ;"""
 
-        _S6 = """ select strftime('%Y-%m-%d',BeginDate) as BeginDate ,strftime('%Y-%m-%d',EndDate) as EndDate 
+        _S6 = """SELECT strftime('%Y-%m-%d',BeginDate) as BeginDate ,strftime('%Y-%m-%d',EndDate) as EndDate 
               from OrganizationCalendarSession Where organizationcalendarsessionid=1;"""
 
-        _S7 = """ select * from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
+        _S7 = """SELECT * from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
             where strftime('%Y-%m-%d',a.Date)=? and  a.RefAttendanceEventTypeId=1 and b.personId=? ;"""
 
         _q1 = conn.execute(_S1).fetchall()

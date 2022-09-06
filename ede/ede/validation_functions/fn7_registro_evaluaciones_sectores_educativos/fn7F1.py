@@ -27,7 +27,7 @@ def fn7F1(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT round(R.ScoreValue, 1) AS value,
               R.ScoreValue           AS fullValue
         FROM AssessmentResult R

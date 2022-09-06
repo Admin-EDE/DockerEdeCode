@@ -28,7 +28,7 @@ def fn7F4(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT LearnerActivityId
         FROM LearnerActivity
         WHERE digitalRandomKey IS NOT NULL
@@ -45,7 +45,7 @@ def fn7F4(conn, return_dict):
 
     _digitalRandom = []
     try:
-        _digitalRandom = conn.execute("""
+        _digitalRandom = conn.execute("""--sql
         SELECT digitalRandomKey,
               DateDigitalRandomKey,
               personIDDigitalRandomKey
@@ -70,7 +70,7 @@ def fn7F4(conn, return_dict):
 
     _digitalRandomKeyPerson = []
     try:
-        _digitalRandomKeyPerson = conn.execute("""
+        _digitalRandomKeyPerson = conn.execute("""--sql
       SELECT personIDDigitalRandomKey
       FROM LearnerActivity
       WHERE LearnerActivityId IN (SELECT LearnerActivityId

@@ -32,23 +32,23 @@ def fn681(conn, return_dict):
     numero = 0
     try:
 
-        _S1 = """ SELECT OrganizationId
+        _S1 = """SELECT OrganizationId
                 FROM Organization
                 WHERE RefOrganizationTypeId = 47;"""
 
-        _S2 = """ SELECT Parent_OrganizationId
+        _S2 = """SELECT Parent_OrganizationId
                 FROM OrganizationRelationship
                 WHERE OrganizationId = ?;"""
 
-        _S3 = """ SELECT OrganizationId
+        _S3 = """SELECT OrganizationId
                 FROM K12Course
                 WHERE OrganizationId = ? and RefWorkbasedLearningOpportunityTypeId=1 ;"""
 
-        _S4 = """ select personid 
+        _S4 = """SELECT personid 
               from OrganizationPersonRole
               where OrganizationId=? and RoleId = 6 ;"""
 
-        _S5 = """ select b.Identifier
+        _S5 = """SELECT b.Identifier
               from PersonStatus a 
               join personidentifier b 
               on  a.personid = b.personId  

@@ -25,7 +25,7 @@ def fn9F2(conn, return_dict):
           ]
     """
     try:
-        queryEstudiantes = conn.execute("""
+        queryEstudiantes = conn.execute("""--sql
             SELECT DISTINCT o.OrganizationId, o.Name
             FROM Person p
                     join OrganizationPersonRole opr

@@ -42,7 +42,7 @@ def fn680(conn, return_dict):
     # dias_laborales4=[]
     # numero=0
     try:
-        _queryText = """
+        _queryText = """--sql
           /*
             6.2 Contenido mínimo, letra c.8 (Alumnos de formación Dual)
             verificar que los registros reportados semanalmente por la empresa se encuentren cargados en el sistema

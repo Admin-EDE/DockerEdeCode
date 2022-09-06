@@ -32,7 +32,7 @@ def fn2DB(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
@@ -41,7 +41,7 @@ def fn2DB(conn, return_dict):
           and PS.RefPersonStatusTypeId = 33;
         """).fetchall()
         if(len(_query)>0):
-          _queryType = conn.execute("""
+          _queryType = conn.execute("""--sql
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT P.PersonId
@@ -54,7 +54,7 @@ def fn2DB(conn, return_dict):
             and PS.RefPersonStatusTypeId = 33
           """).fetchall()
           if(len(_queryType) == len(_query)):
-            _file = conn.execute("""
+            _file = conn.execute("""--sql
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL

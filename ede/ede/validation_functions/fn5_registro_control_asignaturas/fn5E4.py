@@ -25,7 +25,7 @@ def fn5E4(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT RAE.DATE,
               RAE.RefAttendanceStatusId
         FROM OrganizationPersonRole OPR

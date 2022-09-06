@@ -27,7 +27,7 @@ def fn3D2(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
           SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent
       """).fetchall()
     except Exception as e:

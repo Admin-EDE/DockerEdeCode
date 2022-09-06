@@ -26,7 +26,7 @@ def fn3F9(conn, return_dict):
     _r = False
     shortDateAllRecords = []
     try:
-      shortDateQuery = """
+      shortDateQuery = """--sql
           SELECT DISTINCT shortDate
           FROM (
             SELECT StartDate as shortDate
@@ -98,7 +98,7 @@ def fn3F9(conn, return_dict):
 
     fullDateTimeAllRecords = []
     try:
-      fullDateTimeQuery ="""
+      fullDateTimeQuery ="""--sql
           SELECT DISTINCT fullDateTime
           FROM (
             SELECT Date as fullDateTime

@@ -24,7 +24,7 @@ def fn5D0(conn, return_dict):
           ]
     """
     try:
-        _oPR = conn.execute("""
+        _oPR = conn.execute("""--sql
             SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
             FROM OrganizationPersonRole OPR
                     JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId

@@ -28,7 +28,7 @@ def fn7F3(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
       SELECT LA.LearnerActivityId,
           LA.PersonId,
           LA.Weight,

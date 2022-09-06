@@ -24,7 +24,7 @@ def fn5E1(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT OPR.OrganizationPersonRoleId,
             (SELECT count(OPR.PersonId)
                 from OrganizationPersonRole OPR
@@ -56,7 +56,7 @@ def fn5E1(conn, return_dict):
                 return False
             _totalAlumnos = int(len(_alumnos))
             if int(_matriculasTotales[0]) == _totalAlumnos:
-                    _queryRegistroAsistencia = conn.execute("""
+                    _queryRegistroAsistencia = conn.execute("""--sql
                     SELECT DISTINCT RoleAttendanceEventId,
                                     Date,
                                     RefAttendanceEventTypeId

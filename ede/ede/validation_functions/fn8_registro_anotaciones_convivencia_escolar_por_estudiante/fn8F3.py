@@ -32,7 +32,7 @@ def fn8F3(conn, return_dict):
     _r = False
     allRows = []
     try:
-        allRows = conn.execute("""
+        allRows = conn.execute("""--sql
           SELECT inc.IncidentId
           FROM Incident inc
           JOIN RefIncidentBehavior rib
@@ -51,7 +51,7 @@ def fn8F3(conn, return_dict):
         return True
     FineRows = []
     try:
-        FineRows = conn.execute("""
+        FineRows = conn.execute("""--sql
           SELECT inc.IncidentId
           FROM Incident inc
           JOIN RefIncidentBehavior rib

@@ -34,7 +34,7 @@ def fn6C2(conn, return_dict):
     numero = 0
     try:
 
-        _S3 = """
+        _S3 = """--sql
           SELECT 
             pid.identifier
             ,pst.docnumber

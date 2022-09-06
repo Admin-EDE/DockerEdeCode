@@ -25,7 +25,7 @@ def fn9F3(conn, return_dict):
           ]
     """
     try:
-        incident = conn.execute("""
+        incident = conn.execute("""--sql
           SELECT IncidentId
           from Incident
           WHERE
@@ -40,11 +40,11 @@ def fn9F3(conn, return_dict):
             for x in listIncident:
                 try:
                     x = str(x)
-                    incidentParent = conn.execute("""
+                    incidentParent = conn.execute("""--sql
                       SELECT IncidentId 
                       FROM IncidentPerson 
                       where 
-                      IncidentId = """+x+"""
+                      IncidentId = """+x+"""--sql
                       and 
                       (
                         IncidentPerson.RefIncidentPersonRoleTypeId IN (
@@ -72,11 +72,11 @@ def fn9F3(conn, return_dict):
                         )	
                       )                                                      
                     """).fetchall()
-                    incidentProfessor = conn.execute("""
+                    incidentProfessor = conn.execute("""--sql
                         SELECT IncidentId 
                         FROM IncidentPerson 
                         where 
-                        IncidentId = """+x+"""
+                        IncidentId = """+x+"""--sql
                         and 
                         (
                           IncidentPerson.RefIncidentPersonRoleTypeId IN (

@@ -30,16 +30,16 @@ def fn6E1(conn, return_dict):
     numero = 0
     try:
 
-        _S3 = """ select organizationid from Organization where reforganizationtypeid=22  ;"""
+        _S3 = """SELECT organizationid from Organization where reforganizationtypeid=22  ;"""
 
-        _S4 = """ select * from coursesectionschedule where organizationid=?   ;"""
+        _S4 = """SELECT * from coursesectionschedule where organizationid=?   ;"""
 
-        _S5 = """ select a.OrganizationPersonRoleId,a.OrganizationId,a.PersonId,a.roleid,strftime('%Y-%m-%d %H:%M',a.EntryDate) as EntryDate, strftime('%Y-%m-%d %H:%M',a.ExitDate) as ExitDate,a.RecordStartDateTime,a.RecordEndDateTime,b.Identifier
+        _S5 = """SELECT a.OrganizationPersonRoleId,a.OrganizationId,a.PersonId,a.roleid,strftime('%Y-%m-%d %H:%M',a.EntryDate) as EntryDate, strftime('%Y-%m-%d %H:%M',a.ExitDate) as ExitDate,a.RecordStartDateTime,a.RecordEndDateTime,b.Identifier
                     from  OrganizationPersonRole a 
                     join PersonIdentifier b on a.personId=b.personId  
                     where roleid=6;"""
 
-        _S6 = """ select a.OrganizationPersonRoleId,strftime('%Y-%m-%d',b.Date) as Date,b.fileScanbase64,b.observaciones 
+        _S6 = """SELECT a.OrganizationPersonRoleId,strftime('%Y-%m-%d',b.Date) as Date,b.fileScanbase64,b.observaciones 
                     from OrganizationPersonRole a join RoleAttendanceEvent b on a.OrganizationPersonRoleId= b.OrganizationPersonRoleId
                     where a.OrganizationPersonRoleId= ? and b.Date= ?;"""
 

@@ -27,7 +27,7 @@ def fn9F0(conn, return_dict):
     """
     try:
         i = 0
-        docentes = conn.execute("""
+        docentes = conn.execute("""--sql
         SELECT
               P.PersonId,
               PDOC.DegreeOrCertificateTitleOrSubject

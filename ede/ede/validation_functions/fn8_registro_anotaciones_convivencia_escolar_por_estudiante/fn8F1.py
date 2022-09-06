@@ -24,7 +24,7 @@ def fn8F1(conn, return_dict):
           ]
     """
     try:
-        query = conn.execute("""
+        query = conn.execute("""--sql
 SELECT
 	 Inc.incidentId
 FROM Incident Inc

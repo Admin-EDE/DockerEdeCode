@@ -25,7 +25,7 @@ def fn6E4(conn, return_dict):
     """
     try:
         _data = []
-        _data = conn.execute("""
+        _data = conn.execute("""--sql
                 SELECT 
                   org
                   ,group_concat(DISTINCT diasSinClases) as 'diasSinClases'
@@ -78,7 +78,7 @@ def fn6E4(conn, return_dict):
 
     try:
         _result = []
-        _result = conn.execute("""
+        _result = conn.execute("""--sql
 --  6.2 Contenido mínimo, letra c.2
 -- verificar que se encuentren bien registrados los cambios de actividades al calendario escolar.
 -- las tablas OrganizationCalendarEvent y OrganizationCalendarCrisis guardan los casos de suspensión

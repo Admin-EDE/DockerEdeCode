@@ -25,7 +25,7 @@ def fn2CA(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
           SELECT DISTINCT p.PersonId
           FROM OrganizationPersonRole OPR
           OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -43,7 +43,7 @@ def fn2CA(conn, return_dict):
           return True
         _query = _query.fetchall()
         if(len(_query)>0):
-            _queryOK = conn.execute("""
+            _queryOK = conn.execute("""--sql
                 SELECT DISTINCT p.PersonId
                 FROM OrganizationPersonRole OPR
                 OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId

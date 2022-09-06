@@ -34,7 +34,7 @@ def fn8F2(conn, return_dict):
     _r = False
     _queryIncident = []
     try:
-        _queryIncident = conn.execute("""
+        _queryIncident = conn.execute("""--sql
         SELECT DISTINCT
 			  I.incidentId                                                                         --00
 			, I.incidentDate                                                                       --01

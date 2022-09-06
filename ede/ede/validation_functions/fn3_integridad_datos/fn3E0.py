@@ -24,7 +24,7 @@ def fn3E0(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
       SELECT
         personId
         ,DegreeOrCertificateTitleOrSubject

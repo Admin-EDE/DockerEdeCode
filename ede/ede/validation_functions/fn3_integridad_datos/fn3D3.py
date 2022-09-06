@@ -30,7 +30,7 @@ def fn3D3(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
         -- Lista todos los registros de la tabla CourseSectionSchedule
         -- si no hay información, se informa SIN DATOS
         SELECT count(ClassMeetingDays), count(ClassPeriod)

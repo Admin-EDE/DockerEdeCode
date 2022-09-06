@@ -28,7 +28,7 @@ def fn7F5(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT LA.LearnerActivityId
         FROM Assessment A
                 JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
@@ -48,7 +48,7 @@ def fn7F5(conn, return_dict):
 
     _organizationCalendarSession = []
     try:
-        _organizationCalendarSession = conn.execute("""
+        _organizationCalendarSession = conn.execute("""--sql
       SELECT OrganizationCalendarSessionId
       FROM LearnerActivity
       WHERE LearnerActivityId IN (
@@ -75,7 +75,7 @@ def fn7F5(conn, return_dict):
 
     _calendar = []
     try:
-        _calendar = conn.execute("""
+        _calendar = conn.execute("""--sql
           SELECT 'Descripcion' as Descrip
           FROM OrganizationCalendarSession
           WHERE Description IS NOT NULL

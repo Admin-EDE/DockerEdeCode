@@ -26,7 +26,7 @@ def fn9F1(conn, return_dict):
     _r = False
     courseSections = []
     try:
-        courseSections = conn.execute("""
+        courseSections = conn.execute("""--sql
         SELECT
           O.OrganizationId
         FROM Organization O
@@ -50,7 +50,7 @@ def fn9F1(conn, return_dict):
         f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
           SELECT
               O.OrganizationId
             , group_concat(DISTINCT CSS.ClassMeetingDays) ClassMeetingDays

@@ -26,7 +26,7 @@ def fn6F1(conn, return_dict):
     """
     arr = []
     try:
-        _S1 = """ 
+        _S1 = """--sql
 select 
 	strftime('%d',rae.Date) as Dia,
 	strftime('%m',rae.Date) as Mes,

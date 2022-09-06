@@ -25,7 +25,7 @@ def fn5E2(conn, return_dict):
           ]
     """
     try:
-        rows= conn.execute("""
+        rows= conn.execute("""--sql
         select Pi.Identifier,
               (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
               pdc.DegreeOrCertificateTitleOrSubject,

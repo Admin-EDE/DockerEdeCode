@@ -32,7 +32,7 @@ def fn7F2(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = conn.execute("""--sql
         SELECT 
 			  DISTINCT PS.PersonId
 			,orgCodEns.name as 'cod_enseñanza'			  
@@ -79,7 +79,7 @@ def fn7F2(conn, return_dict):
 
     _scoreQuery = []
     try:
-        _scoreQuery = conn.execute("""
+        _scoreQuery = conn.execute("""--sql
       SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0), R.RefScoreMetricTypeId as 'tipo'
       FROM AssessmentResult R
               JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId

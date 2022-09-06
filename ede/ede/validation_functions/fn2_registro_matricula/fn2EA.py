@@ -44,7 +44,7 @@ def fn2EA(conn, return_dict):
     _r = False
     results = []
     try:
-        results = conn.execute("""
+        results = conn.execute("""--sql
         SELECT 
           (
             SELECT identifier 

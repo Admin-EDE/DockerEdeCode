@@ -36,7 +36,7 @@ def fn5E0(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = conn.execute("""--sql
             SELECT DISTINCT 
               rae.Date, -- fecha completa de la clase
               strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
@@ -109,7 +109,7 @@ def fn5E0(conn, return_dict):
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     try:
-        asistencia = conn.execute("""
+        asistencia = conn.execute("""--sql
             /*
             6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
             Verifica:

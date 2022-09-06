@@ -35,7 +35,7 @@ def fn0FB(conn, return_dict):
     _r = False
     Allrows = []
     try:
-        rows = conn.execute("""
+        rows = conn.execute("""--sql
             SELECT rae.RoleAttendanceEventId
             FROM RoleAttendanceEvent rae
             -- Antes de realizar cualquier acción se revisa que el estudiante tengan
@@ -58,7 +58,7 @@ def fn0FB(conn, return_dict):
         return True  # si no hay registros de salida anticipada, no continúa la revisión
     try:
         if(len(Allrows) > 0):
-            rows = conn.execute("""
+            rows = conn.execute("""--sql
             SELECT 
                 raeAlumnoAsignatura.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoAsignatura'
                 ,raeAlumnoEstablecimieto.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoEstablecimiento'
