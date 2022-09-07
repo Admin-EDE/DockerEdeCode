@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -28,7 +29,7 @@ def fn7F3(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
       SELECT LA.LearnerActivityId,
           LA.PersonId,
           LA.Weight,
@@ -40,7 +41,7 @@ def fn7F3(conn, return_dict):
               JOIN AssessmentResult R ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
       WHERE A.RefAssessmentTypeId IN (28, 29)
       AND R.RefScoreMetricTypeId IN (1, 2, 3);
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
 

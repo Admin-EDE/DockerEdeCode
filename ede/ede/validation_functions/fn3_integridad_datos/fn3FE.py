@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -24,7 +25,7 @@ def fn3FE(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT
 	  p.personId
 	, pbp.ciudadNacimiento
@@ -57,7 +58,7 @@ JOIN RefPersonStatusType rpst
 	rpst.description NOT IN ('Estudiante retirado definitivamente')
 
 GROUP BY p.personId
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

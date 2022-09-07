@@ -1,8 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
-
 
 
 def fn7F0(conn, return_dict):
@@ -28,7 +28,7 @@ def fn7F0(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
       SELECT A.AssessmentId,
             ASSR.PersonId,
             A.RefAssessmentTypeId
@@ -42,7 +42,7 @@ def fn7F0(conn, return_dict):
                 WHERE ASSR.RefAssessmentSessionStaffRoleTypeId = 6
                   AND OPR.RoleId = 6
             GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId;
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
 

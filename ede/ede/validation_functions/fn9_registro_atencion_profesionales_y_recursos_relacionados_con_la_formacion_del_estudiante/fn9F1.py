@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -26,7 +27,7 @@ def fn9F1(conn, return_dict):
     _r = False
     courseSections = []
     try:
-        courseSections = conn.execute("""--sql
+        courseSections = ejecutar_sql(conn, """--sql
         SELECT
           O.OrganizationId
         FROM Organization O
@@ -36,7 +37,7 @@ def fn9F1(conn, return_dict):
             FROM RefOrganizationType
             WHERE Code IN ('CourseSection')
           )                              
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {courseSections} -> {str(e)}")
 
@@ -50,7 +51,7 @@ def fn9F1(conn, return_dict):
         f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     _query = []
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
           SELECT
               O.OrganizationId
             , group_concat(DISTINCT CSS.ClassMeetingDays) ClassMeetingDays
@@ -92,7 +93,7 @@ def fn9F1(conn, return_dict):
             AND CS.RefInstructionLanguageId IS NOT NULL
             
           GROUP BY O.OrganizationId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:

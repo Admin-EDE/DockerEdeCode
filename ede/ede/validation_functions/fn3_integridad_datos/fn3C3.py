@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -27,13 +28,13 @@ def fn3C3(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""--sql
+        _ExistData = ejecutar_sql(conn, """--sql
         --Verifica que existan cursos y asignaturas
         SELECT count(OrganizationId)
         FROM Organization
         OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
         WHERE RefOrganizationType.Description IN ('Course','Course Section')
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_ExistData} -> {str(e)}")
 
@@ -46,7 +47,7 @@ def fn3C3(conn, return_dict):
 
     org_loc_id = []
     try:
-        org_loc_id = conn.execute("""--sql
+        org_loc_id = ejecutar_sql(conn, """--sql
         --Verifica que la relación entre organization y location sea idéntica
         -- en las tablas organizationlocation y coursesectionlocation
         -- retorna las tablas que no cumplen esto
@@ -56,7 +57,7 @@ JOIN OrganizationLocation OL ON O.OrganizationId=OL.OrganizationId
 JOIN CourseSectionLocation CSL ON O.OrganizationId=CSL.OrganizationId
 WHERE OL.LocationId != CSL.LocationId
 AND O.RefOrganizationTypeId = 22 --Course Section
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {org_loc_id} -> {str(e)}")
     if len(org_loc_id) > 0:
@@ -69,7 +70,7 @@ AND O.RefOrganizationTypeId = 22 --Course Section
         return _r
     locations = []
     try:
-        locations = conn.execute("""--sql
+        locations = ejecutar_sql(conn, """--sql
         /*
         * Entrega la lista de organizaciones que no contiene bien definida su ubicación dentro del establecimiento.
         * Los campos obligatorios son: 
@@ -113,7 +114,7 @@ AND O.RefOrganizationTypeId = 22 --Course Section
                 AND
                 City NOT NULL
         ));
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {locations} -> {str(e)}")
 

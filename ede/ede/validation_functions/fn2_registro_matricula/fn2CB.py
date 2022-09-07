@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -28,7 +29,7 @@ def fn2CB(conn, return_dict):
     _query = []
     _r = False
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
 SELECT DISTINCT
 	 pst.personId as 'estudianteId'
 	, pid.Identifier as 'RUN'
@@ -76,7 +77,7 @@ OUTER LEFT JOIN Incident Inc
 	
 WHERE 
 	pst.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description IN ('Estudiante retirado definitivamente')) 
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {str(e)}")
 

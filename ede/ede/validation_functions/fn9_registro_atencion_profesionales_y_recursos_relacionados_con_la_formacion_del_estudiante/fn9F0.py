@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -27,7 +28,7 @@ def fn9F0(conn, return_dict):
     """
     try:
         i = 0
-        docentes = conn.execute("""--sql
+        docentes = ejecutar_sql(conn, """--sql
         SELECT
               P.PersonId,
               PDOC.DegreeOrCertificateTitleOrSubject
@@ -37,7 +38,7 @@ def fn9F0(conn, return_dict):
                 join PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
         where OPR.RoleId = 5
         group by P.PersonId
-        """).fetchall()
+        """)
         a = len(docentes)
         if(len(docentes)):
             for fila in docentes:

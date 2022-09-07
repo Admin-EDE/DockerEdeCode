@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -24,7 +25,7 @@ def fn5D0(conn, return_dict):
           ]
     """
     try:
-        _oPR = conn.execute("""--sql
+        _oPR = ejecutar_sql(conn, """--sql
             SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
             FROM OrganizationPersonRole OPR
                     JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
@@ -32,7 +33,7 @@ def fn5D0(conn, return_dict):
             AND RAE.RefAttendanceEventTypeId = 2
             group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
             """
-            ).fetchall()
+            )
         if(len(_oPR)>0):
             _count = (list([m[0] for m in _oPR if m[0] is not None]))
             _contador = 0

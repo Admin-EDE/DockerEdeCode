@@ -1,17 +1,18 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
 def fn6B0(conn, return_dict):
     """
-	REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
-	6.2 Contenido mínimo, letra c.8
-	Verificar que todas las correcciones realizadas al registro de asistencia 
-	y asignatura se registren indicando su fecha, hora, verificador de 
-	identidad del funcionario que la realiza dicha acción y motivo del cambio.
-	y estén visadas por el director del establecimiento o el funcionario que él haya designado.
+    REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
+    6.2 Contenido mínimo, letra c.8
+    Verificar que todas las correcciones realizadas al registro de asistencia 
+    y asignatura se registren indicando su fecha, hora, verificador de 
+    identidad del funcionario que la realiza dicha acción y motivo del cambio.
+    y estén visadas por el director del establecimiento o el funcionario que él haya designado.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -28,7 +29,7 @@ def fn6B0(conn, return_dict):
     _r = False    
     _rightList = []
     try:
-      _rightList = conn.execute("""--sql
+      _rightList = ejecutar_sql(conn, """--sql
 	WITH RECURSIVE cte_Attendance (RoleAttendanceEventId, OrganizationPersonRoleId, RUN, Fecha, RecordEndDateTime) AS (
 		SELECT 
 			 rae.RoleAttendanceEventId
@@ -121,13 +122,13 @@ def fn6B0(conn, return_dict):
 		,min(Fecha) as 'PRIMERA_FECHA_REGISTRADA'
 		,max(fecha) as 'ULTIMA_FECHA_REGISTRADA'
 	FROM cte_Attendance 
-      """).fetchall()
+      """)
     except:
       logger.info(f"Resultado: {_rightList} -> {str(e)}")
 
     _errorsList = []
     try:
-      _errorsList = conn.execute("""--sql
+      _errorsList = ejecutar_sql(conn, """--sql
 SELECT *
 FROM RoleAttendanceEvent rae
 JOIN (
@@ -242,7 +243,7 @@ WHERE
 	rae.fechaRatificador IS NOT NULL
 	OR 
 	rae.RecordStartDateTime != Date	
-      """).fetchall()
+      """)
     except:
       logger.info(f"Resultado: {_errorsList} -> {str(e)}")
     
@@ -251,20 +252,24 @@ WHERE
       if(not _errorsList and not _ids):
         logger.info(f"S/Datos")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
 
       if(not _errorsList and _ids):
         logger.info(f"APROBADO")
         return_dict[getframeinfo(currentframe()).function] = True
+        logger.info(f"{current_process().name} finalizando...")
         return True
 
       roleAttendanceEventIds = (list([m[0] for m in _errorsList if m[0] is not None]))
       logger.error(f"Los siguientes roleAttendanceEvent Ids estan con problemas: {str(roleAttendanceEventIds)}")
       logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = False
+      logger.info(f"{current_process().name} finalizando...")
       return False
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
       logger.error(f"Rechazado")
       return_dict[getframeinfo(currentframe()).function] = False
+      logger.info(f"{current_process().name} finalizando...")
       return False

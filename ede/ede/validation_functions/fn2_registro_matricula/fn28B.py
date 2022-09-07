@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -31,7 +32,7 @@ def fn28B(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         --Busca estudiantes migrantes
         SELECT DISTINCT PI.PersonId
         FROM OrganizationPersonRole OPR
@@ -41,16 +42,8 @@ def fn28B(conn, return_dict):
           AND OPR.RoleId = 6 --Estudiante
           AND PI.Identifier is not null;
         """)
-        if not _query.returns_rows:
-          logger.info(
-                f"No existen estudiantes migrantes registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        _query = _query.fetchall()
         if(len(_query) > 0):
-            _queryDocuments = conn.execute("""--sql
+            _queryDocuments = ejecutar_sql(conn, """--sql
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT PI.PersonId
@@ -66,9 +59,9 @@ def fn28B(conn, return_dict):
             AND PS.Description <> ''
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 34 --Convalidacion de estudios
-          """).fetchall()
+          """)
             if (len(_queryDocuments) == len(_query)):
-                _file = conn.execute("""--sql
+                _file = ejecutar_sql(conn, """--sql
                 --Busca documentos donde los estudiantes sean migrantes
             SELECT documentId
             FROM Document
@@ -89,7 +82,7 @@ def fn28B(conn, return_dict):
                                   AND PS.Description <> ''
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 34); --Convalidacion de estudios
-            """).fetchall()
+            """)
                 if(len(_file) == len(_query)):
                     logger.info(
                         f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')

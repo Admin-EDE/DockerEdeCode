@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -30,7 +31,7 @@ def fn6F0(conn, return_dict):
     rows = []
     try:
         # select para listar todos los colegios de tabla organizacion
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 -- 6.2 Contenido mínimo, letra c
 -- erificar que exista el registro de asistencia en aquellos casos en los cuales se realizó la clase al estudiante.
 -- * día de clases
@@ -230,7 +231,7 @@ WHERE
   AND ifnull(oce.fechasEventos,'1900-01-01') NOT LIKE "%"  || date || "%"	 
   AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
 GROUP BY Organizationid, date
-      """).fetchall()
+      """)
     except Exception as e:
         logger.error(f"Resultado: {rows} -> {str(e)}")
 

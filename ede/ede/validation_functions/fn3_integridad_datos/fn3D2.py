@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -27,9 +28,9 @@ def fn3D2(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""--sql
+        _ExistData = ejecutar_sql(conn, """--sql
           SELECT count(RoleAttendanceEventId) FROM RoleAttendanceEvent
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_ExistData} -> {str(e)}")
 
@@ -42,7 +43,7 @@ def fn3D2(conn, return_dict):
 
     virtualIndicator = []
     try:
-        virtualIndicator = conn.execute("""--sql
+        virtualIndicator = ejecutar_sql(conn, """--sql
         /*
         * Selecciona los eventos que no tienen el campo VirtualIndicator
         * correctamente asignado
@@ -50,7 +51,7 @@ def fn3D2(conn, return_dict):
         SELECT RoleAttendanceEventId 
         FROM RoleAttendanceEvent
         WHERE VirtualIndicator NOT IN (0,1);
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {virtualIndicator} -> {str(e)}")
 

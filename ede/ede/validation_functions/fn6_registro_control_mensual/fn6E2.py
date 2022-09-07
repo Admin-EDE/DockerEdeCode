@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -37,7 +38,7 @@ def fn6E2(conn, return_dict):
                               (SELECT EndDate 
                                 FROM OrganizationCalendarCrisis)));"""
 
-        _q1 = conn.execute(_s1).fetchall()
+        _q1 = ejecutar_sql(conn, _s1)
         if(len(_q1) != 0):
             for q in _q1:
                 _d = str(q[0])

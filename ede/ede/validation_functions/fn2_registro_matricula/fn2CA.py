@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -25,7 +26,7 @@ def fn2CA(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
           SELECT DISTINCT p.PersonId
           FROM OrganizationPersonRole OPR
           OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -34,16 +35,8 @@ def fn2CA(conn, return_dict):
           OUTER LEFT JOIN Document USING(fileScanBase64)
           WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
         """)
-        if not _query.returns_rows:
-          logger.info(
-                f"No existen estudiantes alumnos retirados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        _query = _query.fetchall()
         if(len(_query)>0):
-            _queryOK = conn.execute("""--sql
+            _queryOK = ejecutar_sql(conn, """--sql
                 SELECT DISTINCT p.PersonId
                 FROM OrganizationPersonRole OPR
                 OUTER LEFT JOIN Person P on OPR.PersonId = P.PersonId
@@ -65,8 +58,8 @@ def fn2CA(conn, return_dict):
                       and PS.StatusStartDate IS NOT NULL and PS.StatusEndDate IS NOT NULL and PS.Description IS NOT NULL
                       and RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')	
                       and documentId IS NOT NULL and length(Document.fileScanBase64) > 0
-                  )                
-            """).fetchall()              
+                  )
+            """)
             _data =  list(set([m[0] for m in _queryOK if m[0] is not None]))
             if(len(_query)==len(_data)):
               logger.info(f'Todos los alumnos retirados del establecimiento cuentan con su fecha, motivo y declaración jurada.')

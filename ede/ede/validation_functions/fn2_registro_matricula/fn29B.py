@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -30,7 +31,7 @@ def fn29B(conn, return_dict):
           ]
     """
     try:
-        query = conn.execute("""--sql
+        query = ejecutar_sql(conn, """--sql
         SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
         from Person P
                 join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
@@ -42,18 +43,10 @@ def fn29B(conn, return_dict):
                                           where RefOrganizationTypeId = 47) --Asignatura de Práctica
         group by OPR.OrganizationId, P.PersonId;
         """)
-        if not query.returns_rows:
-          logger.info(
-                f"No existen estudiantes en practica registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        query = query.fetchall()
-        k12StudentEnrollment = conn.execute("""--sql
+        k12StudentEnrollment = ejecutar_sql(conn, """--sql
         select OrganizationPersonRoleId
         from K12StudentEnrollment;
-        """).fetchall()
+        """)
         if(len(query) > 0 and len(k12StudentEnrollment) > 0):
             estudiantes = (list([m[2] for m in query if m[2] is not None]))
             organizaciones = (list([m[0] for m in query if m[0] is not None]))

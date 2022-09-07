@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -25,7 +26,7 @@ def fn9F3(conn, return_dict):
           ]
     """
     try:
-        incident = conn.execute("""--sql
+        incident = ejecutar_sql(conn, """--sql
           SELECT IncidentId
           from Incident
           WHERE
@@ -34,13 +35,13 @@ def fn9F3(conn, return_dict):
               FROM RefIncidentBehavior
               WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
             );
-        """).fetchall()
+        """)
         if (len(incident) > 0):
             listIncident = (list([m[0] for m in incident if m[0] is not None]))
             for x in listIncident:
                 try:
                     x = str(x)
-                    incidentParent = conn.execute("""--sql
+                    incidentParent = ejecutar_sql(conn, """--sql
                       SELECT IncidentId 
                       FROM IncidentPerson 
                       where 
@@ -71,8 +72,8 @@ def fn9F3(conn, return_dict):
                           WHERE RefIncidentPersonType.description IN ('Apoderado')
                         )	
                       )                                                      
-                    """).fetchall()
-                    incidentProfessor = conn.execute("""--sql
+                    """)
+                    incidentProfessor = ejecutar_sql(conn, """--sql
                         SELECT IncidentId 
                         FROM IncidentPerson 
                         where 
@@ -103,7 +104,7 @@ def fn9F3(conn, return_dict):
                             WHERE RefIncidentPersonType.description IN ('Docente','Profesional de la educación','Personal Administrativo')
                           )	
                         )                                                         
-                    """).fetchall()
+                    """)
                     parent = 0
                     professor = 0
                     if (len(incidentParent) > 0):

@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -86,13 +87,13 @@ def fn3F9(conn, return_dict):
           WHERE 
             shortDate IS NOT NULL
       """
-      shortDateAllRecords = conn.execute(shortDateQuery).fetchall()
+      shortDateAllRecords = ejecutar_sql(conn, shortDateQuery)
     except Exception as e:
       logger.info(f"Resultado: {shortDateAllRecords} -> {str(e)}")
     
     try:
       shortDateQueryWithRegexp = shortDateQuery + """ AND shortDate NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))$" """
-      shortDateDataWithErrors = conn.execute(shortDateQueryWithRegexp).fetchall()
+      shortDateDataWithErrors = ejecutar_sql(conn, shortDateQueryWithRegexp)
     except Exception as e:
       logger.info(f"Resultado: {shortDateDataWithErrors} -> {str(e)}")
 
@@ -116,13 +117,13 @@ def fn3F9(conn, return_dict):
           WHERE 
             fullDateTime IS NOT NULL
       """
-      fullDateTimeAllRecords = conn.execute(fullDateTimeQuery).fetchall()
+      fullDateTimeAllRecords = ejecutar_sql(conn, fullDateTimeQuery)
     except Exception as e:
       logger.info(f"Resultado: {fullDateTimeAllRecords} -> {str(e)}")
       
     try:
       fullDateTimeQueryWithRegexp = fullDateTimeQuery + """ AND fullDateTime NOT REGEXP "^((19|20)(\d{2})-(1[0-2]|0?[0-9])-([12][0-9]|3[01]|0?[1-9]))[ T]?((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.\d{0,})?)([+-](0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$" """      
-      fullDateTimeDataWithErrors = conn.execute(fullDateTimeQueryWithRegexp).fetchall()
+      fullDateTimeDataWithErrors = ejecutar_sql(conn, fullDateTimeQueryWithRegexp)
     except Exception as e:
       logger.info(f"Resultado: {fullDateTimeDataWithErrors} -> {str(e)}")
     

@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -38,7 +39,7 @@ def fn8F0(conn, return_dict):
     _r = False
     allIncidents = []
     try:
-        allIncidents = conn.execute("""--sql
+        allIncidents = ejecutar_sql(conn, """--sql
                   SELECT 
                     I.IncidentId,
                     I.IncidentIdentifier,
@@ -68,7 +69,7 @@ def fn8F0(conn, return_dict):
                     OUTER LEFT JOIN RefDisciplinaryActionTaken rdat					
                       ON K12SD.RefDisciplinaryActionTakenId = rdat.RefDisciplinaryActionTakenId
                   GROUP BY I.IncidentId    
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {allIncidents} -> {str(e)}")
 

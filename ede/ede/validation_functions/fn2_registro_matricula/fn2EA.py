@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -44,7 +45,7 @@ def fn2EA(conn, return_dict):
     _r = False
     results = []
     try:
-        results = conn.execute("""--sql
+        results = ejecutar_sql(conn, """--sql
         SELECT 
           (
             SELECT identifier 
@@ -138,7 +139,7 @@ def fn2EA(conn, return_dict):
             WHERE Description IN ('Course')
           )
         GROUP by p.PersonId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {results} -> {str(e)}")
 

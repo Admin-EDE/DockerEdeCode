@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -28,11 +29,11 @@ def fn7F4(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         SELECT LearnerActivityId
         FROM LearnerActivity
         WHERE digitalRandomKey IS NOT NULL
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
 
@@ -45,7 +46,7 @@ def fn7F4(conn, return_dict):
 
     _digitalRandom = []
     try:
-        _digitalRandom = conn.execute("""--sql
+        _digitalRandom = ejecutar_sql(conn, """--sql
         SELECT digitalRandomKey,
               DateDigitalRandomKey,
               personIDDigitalRandomKey
@@ -55,7 +56,7 @@ def fn7F4(conn, return_dict):
                                     WHERE digitalRandomKey IS NOT NULL)
         AND DateDigitalRandomKey IS NOT NULL
         AND personIDDigitalRandomKey IS NOT NULL
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {_digitalRandom} -> {str(e)}")
 
@@ -70,7 +71,7 @@ def fn7F4(conn, return_dict):
 
     _digitalRandomKeyPerson = []
     try:
-        _digitalRandomKeyPerson = conn.execute("""--sql
+        _digitalRandomKeyPerson = ejecutar_sql(conn, """--sql
       SELECT personIDDigitalRandomKey
       FROM LearnerActivity
       WHERE LearnerActivityId IN (SELECT LearnerActivityId
@@ -82,7 +83,7 @@ def fn7F4(conn, return_dict):
                                         FROM OrganizationPersonRole OPR
                                                   JOIN Person P ON OPR.PersonId = P.PersonId
                                         WHERE OPR.RoleId IN (2, 4, 5));
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_digitalRandomKeyPerson} -> {str(e)}")
 

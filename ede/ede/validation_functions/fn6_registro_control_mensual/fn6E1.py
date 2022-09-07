@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -44,12 +45,12 @@ def fn6E1(conn, return_dict):
                     where a.OrganizationPersonRoleId= ? and b.Date= ?;"""
 
         now = datetime.now()
-        _q1 = conn.execute(_S3).fetchall()
+        _q1 = ejecutar_sql(conn, _S3)
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:
                 organizationid = str(q1[0])
-                _q2 = conn.execute(_S4, organizationid).fetchall()
+                _q2 = ejecutar_sql(conn, _S4, organizationid)
                 if(len(_q2) != 0):
                     for q2 in _q2:
                         diaSemana = str(q2[2]).split(",")
@@ -58,7 +59,7 @@ def fn6E1(conn, return_dict):
                         periodo = str(q2[5])
                         cantidad_letras = int(len(periodo))-1
                         periodo2 = (periodo[-2:])
-                        _q3 = conn.execute(_S5).fetchall()
+                        _q3 = ejecutar_sql(conn, _S5)
                         if(int(periodo2.strip()) == 3):
                             for q3 in _q3:
                                 id_alu = str(q3[8])
@@ -81,8 +82,8 @@ def fn6E1(conn, return_dict):
 
                                     if int(nombresemana2) == int(numero):
                                         if datetime.strptime(hora1[11:len(hora1)], '%H:%M') > datetime.strptime(hora_comi[:5], '%H:%M'):
-                                            _q4 = conn.execute(
-                                                _S6, orgaId, dfs).fetchall()
+                                            _q4 = ejecutar_sql(conn, 
+                                                _S6, orgaId, dfs)
                                             if(len(_q4) != 0):
                                                 for q4 in _q4:
                                                     justi = str(q4[2])

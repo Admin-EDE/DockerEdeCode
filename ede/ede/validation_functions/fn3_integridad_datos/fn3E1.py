@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -27,7 +28,7 @@ def fn3E1(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT DISTINCT
 	 pdc.personId 
 	 ,pdc.DegreeOrCertificateTitleOrSubject
@@ -45,7 +46,7 @@ OUTER LEFT JOIN RefEducationVerificationMethod USING(RefEducationVerificationMet
 JOIN OrganizationPersonRole USING(personId)
 JOIN Role USING(RoleId)
 WHERE RoleName IN ('Director(a)','Jefe(a) UTP','Inspector(a)','Profesor(a) Jefe','Docente','Asistente de la Educación','Técnica(o) de párvulo','Paradocente','Profesor(a) de reemplazo')
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -28,7 +29,7 @@ def fn28A(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 JOIN Person P on OPR.PersonId = P.PersonId
@@ -36,9 +37,9 @@ def fn28A(conn, return_dict):
         where PI.RefPersonIdentificationSystemId = 52
           and OPR.RoleId = 6
           and PI.Identifier is not null;
-        """).fetchall()
+        """)
         if(len(_query)>0):
-          _personStatus = conn.execute("""--sql
+          _personStatus = ejecutar_sql(conn, """--sql
           SELECT fileScanBase64
           FROM PersonStatus
           WHERE PersonId in (SELECT DISTINCT P.PersonId
@@ -50,9 +51,9 @@ def fn28A(conn, return_dict):
                               and PI.Identifier is not null)
             and RefPersonStatusTypeId = 34
             and fileScanBase64 is not null;
-          """).fetchall()
+          """)
           if(len(_personStatus) == len(_query)):
-            _file = conn.execute("""--sql
+            _file = ejecutar_sql(conn, """--sql
             SELECT
                   documentId
             FROM Document
@@ -70,7 +71,7 @@ def fn28A(conn, return_dict):
                                     and PI.Identifier is not null)
                   and RefPersonStatusTypeId = 34
                   and fileScanBase64 is not null);
-            """).fetchall()
+            """)
             if(len(_query) == len(_file)):
               logger.info(f'Todos los alumnos extranjeros poseen documento de convalidacion de estudios')
               logger.info(f'Aprobado')

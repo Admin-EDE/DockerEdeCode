@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-import ede.ede.validation_functions_facade as facade
+import ede.ede.validation_functions.validation_functions_facade as facade
 from time import sleep
 import sys
 import os
@@ -16,7 +16,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from typing import Union
 
-from ede.ede.check_utils import validateJSON
+from ede.ede.validation_functions.check_utils import validateJSON
 
 
 @event.listens_for(Engine, "connect")

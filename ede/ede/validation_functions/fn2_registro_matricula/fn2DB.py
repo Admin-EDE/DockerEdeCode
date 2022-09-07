@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -32,16 +33,16 @@ def fn2DB(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         SELECT DISTINCT P.PersonId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
         where OPR.RoleId = 6
           and PS.RefPersonStatusTypeId = 33;
-        """).fetchall()
+        """)
         if(len(_query)>0):
-          _queryType = conn.execute("""--sql
+          _queryType = ejecutar_sql(conn, """--sql
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT P.PersonId
@@ -52,9 +53,9 @@ def fn2DB(conn, return_dict):
                                   and PS.RefPersonStatusTypeId = 33)
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 33
-          """).fetchall()
+          """)
           if(len(_queryType) == len(_query)):
-            _file = conn.execute("""--sql
+            _file = ejecutar_sql(conn, """--sql
             SELECT documentId
             FROM Document
             WHERE fileScanBase64 IS NOT NULL
@@ -69,7 +70,7 @@ def fn2DB(conn, return_dict):
                                                         and PS.RefPersonStatusTypeId = 33)
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 33);
-            """).fetchall()
+            """)
             if(len(_file) == len(_query)):
               logger.info(f'Todos los alumnos matriculados bajo el decreto 152 poseen su documento correspondiente')
               logger.info(f'Aprobado')

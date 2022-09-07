@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -31,7 +32,7 @@ def fn5E5(conn, return_dict):
     return_dict[getframeinfo(currentframe()).function] = _r
     _query = []
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
 SELECT
   O.OrganizationId as 'Curso',
   strftime('%Y-%m-%d', rae_.Date) as 'fechaAsistencia',
@@ -229,7 +230,7 @@ GROUP BY
   fechaAsistencia
 ORDER BY
   a.OrganizationId
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
         logger.error(f"Rechazado")

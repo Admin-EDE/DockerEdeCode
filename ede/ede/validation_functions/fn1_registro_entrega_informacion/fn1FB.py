@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -32,13 +33,13 @@ def fn1FB(conn, return_dict):
     """
     Allrows = []
     try:
-        Allrows = conn.execute("""--sql
+        Allrows = ejecutar_sql(conn, """--sql
         SELECT inc.IncidentId
         FROM Incident inc
         JOIN RefIncidentBehavior rib
           ON rib.RefIncidentBehaviorId = inc.RefIncidentBehaviorId
           AND rib.Description IN ('Entrega de documentos de interés general')
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {Allrows} -> {str(e)}")
 
@@ -52,7 +53,7 @@ def fn1FB(conn, return_dict):
     _r = False
     FineRows = []
     try:
-        FineRows = conn.execute("""--sql
+        FineRows = ejecutar_sql(conn, """--sql
           SELECT inc.IncidentId
           FROM Incident inc
           JOIN RefIncidentBehavior rib
@@ -77,7 +78,7 @@ def fn1FB(conn, return_dict):
             ON rol.RoleId = opr.RoleId
             AND rol.Name IN ('Padre, madre o apoderado')
           GROUP BY inc.IncidentId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {FineRows} -> {str(e)}")
 

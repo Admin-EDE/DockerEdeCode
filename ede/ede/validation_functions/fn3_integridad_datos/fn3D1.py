@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -26,7 +27,7 @@ def fn3D1(conn, return_dict):
     _r = False
     MaximumCapacityErrors = []
     try:
-        MaximumCapacityErrors = conn.execute("""--sql
+        MaximumCapacityErrors = ejecutar_sql(conn, """--sql
         -- Selecciona los Organizaciones de tipo ASIGNATURA que no cumplen con el criterio de la expresión regular
         SELECT OrganizationId, MaximumCapacity
         FROM CourseSection
@@ -34,13 +35,13 @@ def fn3D1(conn, return_dict):
         WHERE 
           -- Agrega a la lista todos los registros que no cumplan con la expresión regular
           MaximumCapacity NOT REGEXP "^[1-9]{1}\d{1,3}$"
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {MaximumCapacityErrors} -> {str(e)}")
 
     organizationMalAsignadas = []
     try:
-        organizationMalAsignadas = conn.execute("""--sql
+        organizationMalAsignadas = ejecutar_sql(conn, """--sql
           -- Selecciona las Organizaciones que no son de tipo ASIGNATURA 
           SELECT OrganizationId
           FROM CourseSection
@@ -53,7 +54,7 @@ def fn3D1(conn, return_dict):
                           FROM RefOrganizationType 
                           WHERE Description LIKE 'Course Section'
                   )
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {organizationMalAsignadas} -> {str(e)}")
 

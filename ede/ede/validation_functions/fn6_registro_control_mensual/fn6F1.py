@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -55,7 +56,7 @@ where
          """
 
         now = datetime.now()
-        _q1 = conn.execute(_S1).fetchall()
+        _q1 = ejecutar_sql(conn, _S1)
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:

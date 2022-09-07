@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -55,25 +56,25 @@ def fn681(conn, return_dict):
               where a.RefPersonStatusTypeId=35 and a.personid=? """
 
         now = datetime.now()
-        _q1 = conn.execute(_S1).fetchall()
+        _q1 = ejecutar_sql(conn, _S1)
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:
                 parent = str(q1[0])
-                _q2 = conn.execute(_S2, parent).fetchall()
+                _q2 = ejecutar_sql(conn, _S2, parent)
                 if(len(_q2) != 0):
                     for q2 in _q2:
                         parent2 = str(q2[0])
-                        _q3 = conn.execute(_S3, parent2).fetchall()
+                        _q3 = ejecutar_sql(conn, _S3, parent2)
                         if(len(_q3) != 0):
                             for q3 in _q3:
                                 parent3 = str(q3[0])
-                                _q4 = conn.execute(_S4, parent3).fetchall()
+                                _q4 = ejecutar_sql(conn, _S4, parent3)
                                 if(len(_q4) != 0):
                                     for q4 in _q4:
                                         personid = str(q4[0])
-                                        _q5 = conn.execute(
-                                            _S5, personid).fetchall()
+                                        _q5 = ejecutar_sql(conn, 
+                                            _S5, personid)
                                         if(len(_q5) == 0):
                                             rut = str(_q5[0])
                                             arr.append(rut)

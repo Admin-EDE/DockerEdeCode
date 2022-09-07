@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -24,11 +25,11 @@ def fn3F2(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
         SELECT
           RUN
         FROM PersonList;
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

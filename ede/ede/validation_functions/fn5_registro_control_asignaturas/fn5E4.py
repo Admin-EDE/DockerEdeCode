@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -25,14 +26,14 @@ def fn5E4(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         SELECT RAE.DATE,
               RAE.RefAttendanceStatusId
         FROM OrganizationPersonRole OPR
                 join RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
         where OPR.RoleId = 6
         and RAE.Date is not null;
-        """).fetchall()
+        """)
         if(len(_query)>0):
           _date = (list(set([m[0] for m in _query if m[0] is not None])))
           if not _date:

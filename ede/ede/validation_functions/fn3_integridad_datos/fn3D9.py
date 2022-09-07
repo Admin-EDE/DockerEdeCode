@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -27,7 +28,7 @@ def fn3D9(conn, return_dict):
     _r = False
     listInfoSuccesfull = []
     try:
-        listInfoSuccesfull = conn.execute("""--sql
+        listInfoSuccesfull = ejecutar_sql(conn, """--sql
         /*
         * verifica que existan registro de calendar Session y RoleAttendanceEvent.
         */
@@ -42,7 +43,7 @@ def fn3D9(conn, return_dict):
         RefOrganizationType.Description IN ('Course Section')
         AND
         AttendanceTermIndicator = 1
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
 
@@ -55,7 +56,7 @@ def fn3D9(conn, return_dict):
 
     RoleAttendance = []
     try:
-        RoleAttendance = conn.execute("""--sql
+        RoleAttendance = ejecutar_sql(conn, """--sql
         /*
         * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
         */
@@ -87,7 +88,7 @@ def fn3D9(conn, return_dict):
         INNER JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
         INNER JOIN OrganizationPersonRole USING(OrganizationId)
         INNER JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {RoleAttendance} -> {str(e)}")
 

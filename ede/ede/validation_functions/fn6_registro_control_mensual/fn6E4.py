@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -25,7 +26,7 @@ def fn6E4(conn, return_dict):
     """
     try:
         _data = []
-        _data = conn.execute("""--sql
+        _data = ejecutar_sql(conn, """--sql
                 SELECT 
                   org
                   ,group_concat(DISTINCT diasSinClases) as 'diasSinClases'
@@ -62,7 +63,7 @@ def fn6E4(conn, return_dict):
                   GROUP BY oc.Organizationid
                 ) DSC
                 GROUP BY org      
-      """).fetchall()
+      """)
 
         if(not _data):
             logger.error(f"S/Datos")
@@ -78,7 +79,7 @@ def fn6E4(conn, return_dict):
 
     try:
         _result = []
-        _result = conn.execute("""--sql
+        _result = ejecutar_sql(conn, """--sql
 --  6.2 Contenido mínimo, letra c.2
 -- verificar que se encuentren bien registrados los cambios de actividades al calendario escolar.
 -- las tablas OrganizationCalendarEvent y OrganizationCalendarCrisis guardan los casos de suspensión
@@ -166,7 +167,7 @@ JOIN (
 	)
 
 GROUP BY org      
-      """).fetchall()
+      """)
     except:
         pass
     try:

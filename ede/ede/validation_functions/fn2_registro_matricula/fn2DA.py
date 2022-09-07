@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -28,7 +29,7 @@ def fn2DA(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         --Busca alumnos nuevos con matrícula definitiva
         SELECT DISTINCT PS.PersonId
         FROM OrganizationPersonRole OPR
@@ -36,9 +37,9 @@ def fn2DA(conn, return_dict):
                 join PersonStatus PS on P.PersonId = PS.PersonId
         WHERE OPR.RoleId = 6
           and PS.RefPersonStatusTypeId = 27
-        """).fetchall()
+        """)
         if(len(_query) > 0):
-            _personStatusFile = conn.execute("""--sql
+            _personStatusFile = ejecutar_sql(conn, """--sql
             --Busca el documento de cada alumno nuevo con matricula definitiva
           SELECT fileScanBase64
           FROM PersonStatus
@@ -52,9 +53,9 @@ def fn2DA(conn, return_dict):
           )
           AND fileScanBase64 is not null
           and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
-          """).fetchall()
+          """)
             if (len(_query) == len(_personStatusFile)):
-                _file = conn.execute("""--sql
+                _file = ejecutar_sql(conn, """--sql
                 --Busca que el documento sea no nulo y  tenga su documentid
               SELECT documentId
               FROM Document
@@ -74,7 +75,7 @@ def fn2DA(conn, return_dict):
                       and fileScanBase64 is not null
                       and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
                   );
-              """).fetchall()
+              """)
                 if(len(_file) == len(_query)):
                     logger.info(
                         f'Todos los alumnos nuevos con matricula definitiva poseen documento')

@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -66,7 +67,7 @@ def fn1FA(conn, return_dict):
                 WHERE A.IncidentId = ?;"""
 
         # VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
-        _r = conn.execute(_s1).fetchall()
+        _r = ejecutar_sql(conn, _s1)
         if(len(_r) > 0):
             _p = check_utils.convertirArray2DToList(
                 list([m[0] for m in _r if m[0] is not None]))
@@ -87,15 +88,15 @@ def fn1FA(conn, return_dict):
             else:
                 for p in _p:
                     _v = str(p)
-                    _r2 = conn.execute(_s2, _v).fetchall()
+                    _r2 = ejecutar_sql(conn, _s2, _v)
                     if(len(_r2) > 0):
                         for rp in _r2:
                             _v3 = str(rp[0])
-                            _r3 = conn.execute(_s3, _v3).fetchall()
+                            _r3 = ejecutar_sql(conn, _s3, _v3)
                             if(len(_r3) > 0):
                                 for r3 in _r3:
                                     _v4 = r3
-                                    _r4 = conn.execute(_s4, _v4).fetchall()
+                                    _r4 = ejecutar_sql(conn, _s4, _v4)
                                     if(len(_r4) > 0):
                                         for r4 in _r4:
                                             va1 = str(r4[2])

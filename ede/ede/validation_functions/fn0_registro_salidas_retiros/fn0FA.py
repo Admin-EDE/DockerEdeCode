@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -31,7 +32,7 @@ def fn0FA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT DISTINCT 
 	  pid.Identifier -- Muestra el RUN o IPE del estudiante con problemas
 	, count(prsh.RetirarEstudianteIndicador) as 'cantidadPersonasAutorizadas'
@@ -70,7 +71,7 @@ FROM Person p
 		AND prsh.RecordEndDateTime IS NULL
 		AND prsh.RetirarEstudianteIndicador = 1 --Indica que se encuentra habilitado
 GROUP BY pid.Identifier
-            """).fetchall()
+            """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

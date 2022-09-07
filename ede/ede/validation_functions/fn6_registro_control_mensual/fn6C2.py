@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -58,16 +59,7 @@ def fn6C2(conn, return_dict):
             """
 
         now = datetime.now()
-        _q1 = conn.execute(_S3)
-        if(_q1.returns_rows == 0):
-            logger.error(f"No hay informacion de estudiantes excedentes")
-            logger.info(f"S/Datos")
-            return_dict[getframeinfo(currentframe()).function] = True
-            logger.info(f"{current_process().name} finalizando...")
-            return True
-
-        _q1 = _q1.fetchall()
-        XX = 0
+        _q1 = ejecutar_sql(conn, _S3)
         
         if(len(_q1) == 0):
             logger.error(f"No hay informacion de estudiantes excedentes")

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -25,7 +26,7 @@ def fn9F2(conn, return_dict):
           ]
     """
     try:
-        queryEstudiantes = conn.execute("""--sql
+        queryEstudiantes = ejecutar_sql(conn, """--sql
             SELECT DISTINCT o.OrganizationId, o.Name
             FROM Person p
                     join OrganizationPersonRole opr
@@ -33,7 +34,7 @@ def fn9F2(conn, return_dict):
                     join Organization O on opr.OrganizationId = O.OrganizationId
             WHERE opr.RoleId = 6
               AND O.RefOrganizationTypeId = 21;
-              """).fetchall()
+              """)
 
         if (len(queryEstudiantes) > 0):
             organizations = (
@@ -44,7 +45,7 @@ def fn9F2(conn, return_dict):
             querySelect = "select CourseId from CourseSection where CourseId in"
             queryComplete = querySelect+organizations
             try:
-                queryAsignaturas = conn.execute(queryComplete).fetchall()
+                queryAsignaturas = ejecutar_sql(conn, queryComplete)
                 if (len(queryAsignaturas) > 0):
                     cursos = (
                         list([m[0] for m in queryAsignaturas if m[0] is not None]))
@@ -54,8 +55,8 @@ def fn9F2(conn, return_dict):
                     querySelectCalendar = "select * from OrganizationCalendar where OrganizationId in"
                     queryCalendarComplete = querySelectCalendar+cursos
                     try:
-                        queryCalendarios = conn.execute(
-                            queryCalendarComplete).fetchall()
+                        queryCalendarios = ejecutar_sql(conn, 
+                            queryCalendarComplete)
                         if (len(queryCalendarios) > 0):
                             organizationId = (
                                 list([m[1] for m in queryCalendarios if m[0] is not None]))
