@@ -95,8 +95,8 @@ def fn682(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
-    Verificar que los estudiantes de formación dual se encuentren identificados
-    en el registro de control de asistencia y asignatura.
+    Los estudiantes de formación dual se encuentran identificados en el registro de control de asistencia y asignatura.
+    -----
     Verificar que la asistencia de práctica profesional se encuentre cargada en 
     roleAttendanceEvent y que en ella, todos los estudiantes tengan cargada su asistencia.
     Args:

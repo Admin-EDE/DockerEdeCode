@@ -10,7 +10,7 @@ def fn3FF(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que todos los estudiantes tengan país, región y ciudad de nacimiento
+    Todos los estudiantes tienen país, región y ciudad de nacimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

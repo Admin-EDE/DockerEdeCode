@@ -9,8 +9,8 @@ def fn3E2(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los establecimientos tengan su RBD (identificador)
-    --------------------------------------------------
+    Los establecimientos tienen su RBD (identificador)
+    -----
     VERIFICA SI LA TABLA k12schoolList unida a organizationList contiene información
     Args:
         conn ([sqlalchemy.engine.Connection]): [

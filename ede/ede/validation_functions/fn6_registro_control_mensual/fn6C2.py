@@ -10,9 +10,7 @@ def fn6C2(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.4
-    verificar que los alumnos excedentes (con derecho a pago) que sustituyan
-    a otros estudiantes retirados del establecimiento cuenten con 
-    la autorización de la secretaría ministerial
+    Los alumnos excedentes (con derecho a pago) que sustituyan a otros estudiantes retirados del establecimiento cuentan con la autorización de la secretaría ministerial.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

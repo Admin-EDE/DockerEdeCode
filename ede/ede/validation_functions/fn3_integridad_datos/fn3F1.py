@@ -10,7 +10,7 @@ def fn3F1(conn, return_dict, selfargs):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica la integridad referencial de los datos
+    La integridad referencial de los datos es correcta.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

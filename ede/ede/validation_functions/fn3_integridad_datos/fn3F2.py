@@ -9,7 +9,7 @@ def fn3F2(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que lista personList contenga información
+    Hay personas registradas en el sistema (vista personList).
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

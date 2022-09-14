@@ -9,7 +9,8 @@ def fn3D3(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificar que los campos ClassMeetingDays y ClassPeriod se encuentren dentro de la lista. 
+    Los ClassMeetingDays corresponden a los días de la semana, y los ClassPeriod a los bloques.
+    -----
     Esto ayudará a identificar el segundo bloque de cada curso, lo cual es necesario para 
     comparar el registro de control de asignatura contra el registro de control de subvenciones.
     Tabla OrganizationCalendarSession, campos ClassMeetingDays y ClassPeriod

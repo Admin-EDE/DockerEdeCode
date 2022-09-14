@@ -9,7 +9,7 @@ def fn3FC(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la cantidad de emails corresponda con los tipos de emails ingresados
+    La cantidad de emails corresponde con los tipos de emails ingresados.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,9 +10,7 @@ def fn5E3(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que la clase con reemplazante no idóneo no sea contabilizada 
-    en el cumplimiento del plan de estudio.
-
+    La clase con reemplazante no idóneo no es contabilizada en el cumplimiento del plan de estudio.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

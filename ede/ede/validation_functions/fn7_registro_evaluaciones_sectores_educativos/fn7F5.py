@@ -9,9 +9,7 @@ def fn7F5(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    Verificar que exista un registro de los objetivos y contenidos 
-    de materias o actividades que son entregados por el docente en 
-    cada sector educativo, asignatura o módulo.
+    Existe un registro de los objetivos y contenidos de materias o actividades que son entregados por el docente en cada sector educativo, asignatura o módulo.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

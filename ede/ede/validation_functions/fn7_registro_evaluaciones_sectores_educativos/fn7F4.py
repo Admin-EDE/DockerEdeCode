@@ -9,9 +9,7 @@ def fn7F4(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    Verificar que los cambios realizados a las escalas o 
-    ponderaciones tengan el verificador de identidad del docente 
-    y del jefe técnico-pedagógico.
+    Los cambios realizados a las escalas o ponderaciones tienen el verificador de identidad del docente y del jefe técnico-pedagógico.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

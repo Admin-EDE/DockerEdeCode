@@ -10,14 +10,7 @@ def fn1FA(conn, return_dict):
     """
     REGISTRO DE ENTREGA DE INFORMACIÓN
     8.0 De la entrega de información
-    Validar para cada entrega si ésta se hizo a través de un medio digital o en papel.
-    --------------------------------------------------
-    Revisar que la entrega de documentos se encuentre cargada en las incidencias
-    como un tipo de reunión con el apoderado.
-
-    En tabla Indicent.RefIncidentBehaviorId == 33 
-    (Entrega de documentos de un retiro de un estudiante) y 
-    IncidentPerson.digitalRandomKey OR fileScanBase64 según sea el caso
+    Cada estudiante tiene al menos una persona autorizada para retirarlo del establecimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

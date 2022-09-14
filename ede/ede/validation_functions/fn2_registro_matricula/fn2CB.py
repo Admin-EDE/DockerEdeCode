@@ -10,7 +10,7 @@ def fn2CB(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.4 De las bajas en el registro de matrícula
-    Validar que exista el registro de entrega de documentos al apoderado.
+    Todos los estudiantes retirados definitivamente tienen documento e indicente relacionado a la entrega de estos.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

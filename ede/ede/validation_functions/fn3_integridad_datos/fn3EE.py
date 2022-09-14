@@ -10,7 +10,7 @@ def fn3EE(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la letra del curso está dentro de la lista permitida
+    La letra del curso está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

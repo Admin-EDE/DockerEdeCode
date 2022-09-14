@@ -9,8 +9,7 @@ def fn6C0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.4
-    verificar que los estudiantes excedentes estén registrados 
-    en el control de asistencia solo para efectos pedagógicos
+    Los estudiantes excedentes estan registrados en el control de asistencia solo para efectos pedagógicos.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

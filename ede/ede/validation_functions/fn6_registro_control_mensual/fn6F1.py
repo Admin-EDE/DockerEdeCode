@@ -10,7 +10,7 @@ def fn6F1(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.1
-    Verificar que el registro contenga la información mínima
+    El registro contiene la información mínima.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

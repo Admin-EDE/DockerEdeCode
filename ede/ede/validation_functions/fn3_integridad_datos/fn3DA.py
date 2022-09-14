@@ -9,7 +9,7 @@ def fn3DA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que exista asistencia diaria y luego que las tasas de asistencia estén bien calculadas
+    Existe asistencia diaria y las tasas de asistencia estan bien calculadas.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,8 +10,7 @@ def fn6E0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.2
-    Validar que la hora del registro de control de asistencia 
-    corresponda con la segunda hora del registro de control de asignatura.
+    La hora del registro de control de asistencia corresponda con la segunda hora del registro de control de asignatura.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

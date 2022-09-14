@@ -10,7 +10,7 @@ def fn681(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
-    verificar que los estudiantes de formación dual se encuentren identificados en el sistema.
+    Los estudiantes de formación dual se encuentran identificados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

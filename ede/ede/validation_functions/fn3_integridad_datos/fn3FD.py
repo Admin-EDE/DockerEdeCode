@@ -9,7 +9,7 @@ def fn3FD(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la cantidad de teléfonos corresponda con los tipos de teléfonos ingresados
+    La cantidad de teléfonos corresponde con los tipos de teléfonos ingresados.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

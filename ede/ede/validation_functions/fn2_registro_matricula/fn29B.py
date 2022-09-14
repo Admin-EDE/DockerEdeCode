@@ -9,13 +9,7 @@ def fn29B(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
-    Validar que si la práctica se realiza durante la 
-    jornada escolar o en vacaciones exista solo un registro de matricula para el estudiante.
-    --------------------------------------------------
-    Un estudiante de formación DUAL tiene una asignatura especial asignada y 
-    el curso tiene el identificador RefWorkbasedLearningOpportunityTypeId asignado. 
-    Se agrega en refOrgantizationType el tipo practicaProfesional para identificar este tipo de asignaturas.
-    (47 - Asignatura de Practica profesional)
+    Si la práctica se realiza durante la jornada escolar o en vacaciones existe solo un registro de matricula para el estudiante.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

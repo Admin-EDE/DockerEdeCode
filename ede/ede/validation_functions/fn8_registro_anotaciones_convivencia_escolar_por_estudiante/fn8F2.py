@@ -10,15 +10,7 @@ def fn8F2(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
     6.2 Contenido mínimo, letra e
-    Verificar el contenido de cada registro de convivencia
-
-    Grupo _Incidentes debería contener todo lo necesario.
-
-    Identificación del estudiante
-    Identificación del apoderado
-    Fecha, asignatura y observación
-    Fecha, profesor y datos de la entrevista con el apoderado      
-
+    El contenido de cada registro de convivencia es correcto.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

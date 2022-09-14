@@ -9,7 +9,7 @@ def fn8F1(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
     6.2 Contenido mínimo, letra e
-    Verificar la aplicación y seguimiento de medidas disciplinarias relacionadas con el reglamento interno.
+    La aplicación y seguimiento de medidas disciplinarias relacionadas con el reglamento interno es correcto.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

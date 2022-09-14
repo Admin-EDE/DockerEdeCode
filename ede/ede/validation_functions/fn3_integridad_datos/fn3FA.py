@@ -10,7 +10,7 @@ def fn3FA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
+    La lista de afiliaciones tribales se encuentra dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

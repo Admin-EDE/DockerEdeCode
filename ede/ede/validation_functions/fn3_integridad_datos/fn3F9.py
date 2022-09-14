@@ -10,7 +10,7 @@ def fn3F9(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que las fechas ingresadas cumplan con el formato
+    Las fechas ingresadas cumplen con el formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

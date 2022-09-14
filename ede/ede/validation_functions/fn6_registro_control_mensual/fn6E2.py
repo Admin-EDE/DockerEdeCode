@@ -9,8 +9,7 @@ def fn6E2(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.2
-    Verificar la consistencia de información de aquellos casos en los 
-    cuales se haya informado a la comunidad escolar la suspensión de clases.
+    La información es consistente en aquellos casos en los cuales se ha informado a la comunidad escolar la suspensión de clases.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

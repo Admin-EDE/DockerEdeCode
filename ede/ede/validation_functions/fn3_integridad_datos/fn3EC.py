@@ -10,7 +10,7 @@ def fn3EC(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los códigos de enseñanza están dentro de la lista permitida
+    Los códigos de enseñanza están dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,7 +10,7 @@ def fn3F6(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica la lista de teléfonos
+    La lista de teléfonos cumple con el formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

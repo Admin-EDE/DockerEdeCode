@@ -10,7 +10,7 @@ def fn3E9(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el sector está dentro de la lista permitida
+    El sector está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

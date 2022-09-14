@@ -10,7 +10,7 @@ def fn3F7(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el número de lista cumpla con el formato
+    El número de lista cumple con el formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

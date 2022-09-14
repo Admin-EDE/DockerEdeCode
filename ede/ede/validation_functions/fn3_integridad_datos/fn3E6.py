@@ -10,7 +10,7 @@ def fn3E6(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la jornada está dentro de la lista permitida
+    La jornada está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

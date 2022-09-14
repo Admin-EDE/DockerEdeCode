@@ -9,9 +9,7 @@ def fn6D0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.3
-    verificar que las bajas y altas realizadas en el transcurso del
-    periodo escolar sean identificadas y establecida su fecha como insumo 
-    para otras verificaciones.
+    Las bajas y altas realizadas en el transcurso del periodo escolar son identificadas y establecida su fecha como insumo para otras verificaciones.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,7 +10,7 @@ def fn3EA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la especialidad está dentro de la lista permitida
+    La especialidad está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

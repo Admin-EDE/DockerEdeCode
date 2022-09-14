@@ -10,7 +10,7 @@ def fn3E8(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la rama está dentro de la lista permitida
+    La rama está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

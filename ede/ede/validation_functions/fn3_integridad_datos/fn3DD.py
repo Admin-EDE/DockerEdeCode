@@ -9,7 +9,7 @@ def fn3DD(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica la información mínima del establecimiento
+    El establecimiento tiene su información mínima ingresada.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

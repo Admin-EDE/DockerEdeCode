@@ -9,7 +9,8 @@ def fn3D1(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que Las asignaturas tengan una capacidad máxima y que 
+    Las asignaturas tienen una capacidad máxima.
+    -----
     todas las organizaciones en la tabla de asignaturas sean de tipo ASIGNATURA
     Args:
         conn ([sqlalchemy.engine.Connection]): [

@@ -9,8 +9,7 @@ def fn5E4(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que la asistencia se encuentre tomada, es decir, 
-    cada estudiante debe tener alguno de los siguientes estados: Presente, ausente o atrasado.
+    La asistencia se encuentra tomada, es decir, cada estudiante tiene alguno de los siguientes estados: Presente, ausente o atrasado.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

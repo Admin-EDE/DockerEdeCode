@@ -9,7 +9,7 @@ def fn3FE(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los estudiantes tengan sus datos de nacimiento
+    Los estudiantes tienen sus datos de nacimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

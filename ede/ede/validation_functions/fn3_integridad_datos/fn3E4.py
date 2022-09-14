@@ -9,7 +9,9 @@ def fn3E4(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los cursos tengan una organización, rbd, nivel, jornada, etc (vista jerarquiasList)
+    Los cursos tienen una organización, rbd, nivel, jornada, etc.
+    -----
+    (vista jerarquiasList)
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

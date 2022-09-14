@@ -9,9 +9,7 @@ def fn9F0(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
     6.2 Contenido mínimo, letra f
-    Verificar que la información del equipo de docentes 
-    y profesionales relacionados con la formación del estudiante 
-    se encuentren registrados en el sistema.
+    La información del equipo de docentes y profesionales relacionados con la formación del estudiante se encuentran registrados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

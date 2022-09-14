@@ -9,7 +9,7 @@ def fn3E0(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si la vista PersonList filtrada por docentes contiene información
+    Hay docentes registrados (vista personList filtrada por docente)
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

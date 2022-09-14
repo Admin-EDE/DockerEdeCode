@@ -10,7 +10,7 @@ def fn3ED(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el grado está dentro de la lista permitida
+    El grado está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

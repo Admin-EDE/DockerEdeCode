@@ -10,7 +10,7 @@ def fn3F3(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los RUT's ingresados sean válidos
+    Los RUT's ingresados son válidos de acuerdo al formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,7 +10,7 @@ def fn5E0(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.1
-    Validar el registro de asistencia bloque a bloque.
+    El registro de asistencia bloque a bloque es válido.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

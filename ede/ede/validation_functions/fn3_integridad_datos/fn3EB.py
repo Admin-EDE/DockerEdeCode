@@ -10,7 +10,7 @@ def fn3EB(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los tipos de curso están dentro de la lista permitida
+    Los tipos de curso están dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

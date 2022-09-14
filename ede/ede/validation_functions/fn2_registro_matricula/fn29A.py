@@ -9,7 +9,7 @@ def fn29A(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
-    Validar que los estudiantes en práctica hayan terminado al menos el primer semestre del tercer año.
+    Los estudiantes en práctica han terminado al menos el primer semestre del tercer año.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -9,8 +9,7 @@ def fn3C4(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
-    y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+    El campo MaximumCapacity cumple con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$' y todas las organizaciones de la tabla CourseSection son de tipo ASIGNATURA.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

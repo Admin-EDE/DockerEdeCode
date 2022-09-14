@@ -9,10 +9,7 @@ def fn6B0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
-    Verificar que todas las correcciones realizadas al registro de asistencia 
-    y asignatura se registren indicando su fecha, hora, verificador de 
-    identidad del funcionario que la realiza dicha acción y motivo del cambio.
-    y estén visadas por el director del establecimiento o el funcionario que él haya designado.
+    Todas las correcciones realizadas al registro de asistencia y asignatura se registren indicando su fecha, hora, verificador de identidad del funcionario que la realiza dicha acción y motivo del cambio.y estan visadas por el director del establecimiento o el funcionario que él haya designado.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

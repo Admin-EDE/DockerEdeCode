@@ -9,8 +9,7 @@ def fn7F1(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    verificar que las calificaciones de las evaluaciones sumativas 
-    sean representadas en una escala de 1 a 7 hasta con un decimal.
+    Las calificaciones de las evaluaciones sumativas son representadas en una escala de 1 a 7 hasta con un decimal.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -9,7 +9,8 @@ def fn3D0(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificar que cada asignatura se encuentre asociada a un curso.
+    Cada asignatura se encuentra asociada a un curso.
+    -----
     Entrega los organizationId de las asignaturas que no están asociadas a ningún curso.
     Args:
         conn ([sqlalchemy.engine.Connection]): [

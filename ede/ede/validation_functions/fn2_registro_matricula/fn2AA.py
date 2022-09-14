@@ -9,9 +9,7 @@ def fn2AA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.6 De los estudiantes de intercambio
-    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
-    --------------------------------------------------
-    NOTA: File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
+    Existe cargada en el sistema la resolución que autoriza al estudiante de intercambio.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -9,9 +9,7 @@ def fn2FA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.1 Estructura del registro de matrícula.
-    Validar que el total de alumnos matriculados menos las bajas, 
-    sea igual a la suma de los estudiantes inscritos en los libros de clases 
-    de los diferentes cursos, por nivel y modalidad.
+    El total de alumnos matriculados menos las bajas, es igual a la suma de los estudiantes inscritos en los libros de clases.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

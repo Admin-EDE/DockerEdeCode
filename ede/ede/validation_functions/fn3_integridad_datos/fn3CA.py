@@ -10,8 +10,8 @@ def fn3CA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que existan campos relacionados a la asistencia
-    --------------------------------------------------
+    Existen campos relacionados a la asistencia.
+    -----
     Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
     Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
     Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento

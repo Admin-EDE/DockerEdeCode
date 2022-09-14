@@ -9,11 +9,7 @@ def fn28A(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.8 De los estudiantes migrantes
-    Validar que los estudiantes migrantes que posean IPE, 
-    tengan su documento de identidad del país de origen registrado en el sistema.
-    --------------------------------------------------
-    Verificar que los estudiantes extranjeros posean un verificador de identidad 
-    del país de origen. refPersonIdentificationSystem.code = IdCountryBirth
+    Los estudiantes migrantes tienen su IPE y documento de convalidación de estudios.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

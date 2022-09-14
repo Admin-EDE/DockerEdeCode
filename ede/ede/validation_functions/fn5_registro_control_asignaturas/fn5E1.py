@@ -9,7 +9,7 @@ def fn5E1(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que al final de la jornada exista el registro de alumnos matriculados en el curso y el total de la asistencia diaria. 
+    Al final de la jornada existe el registro de alumnos matriculados en el curso y el total de la asistencia diaria.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,7 +10,7 @@ def fn3F4(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si los IPE ingresados son válidos
+    Los IPE ingresados son válidos de acuerdo al formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

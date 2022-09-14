@@ -9,8 +9,7 @@ def fn29C(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
-    Validar que los estudiantes egresados de cuarto medio y que estén realizando 
-    su práctica tengan asignado un profesor tutor.
+    Los estudiantes egresados de cuarto medio y que estén realizando su práctica tienen asignado un profesor tutor.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

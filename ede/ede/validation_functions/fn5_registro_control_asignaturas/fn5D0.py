@@ -9,7 +9,7 @@ def fn5D0(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.3
-    Verifica que no existan asistencias de Class/section duplicadas
+    No existen asistencias de Class/section duplicadas.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

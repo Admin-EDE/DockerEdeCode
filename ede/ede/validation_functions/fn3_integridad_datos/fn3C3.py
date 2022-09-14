@@ -9,8 +9,7 @@ def fn3C3(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
 
-    Verifica que las Organizaciones del establecimiento, asignaturas y cursos,
-    tengan bien definida su localización
+    Las Organizaciones tienen bien definida su localización.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

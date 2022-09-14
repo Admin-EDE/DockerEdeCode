@@ -10,7 +10,7 @@ def fn5F0(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.1
-    Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
+    La información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes es válida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

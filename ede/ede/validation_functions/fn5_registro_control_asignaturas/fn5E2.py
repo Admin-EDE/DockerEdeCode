@@ -9,8 +9,7 @@ def fn5E2(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Valida que cuando falta docente, exista la observación con los datos de éste.
-
+    Cuando falta docente, existe la observación con los datos de éste.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

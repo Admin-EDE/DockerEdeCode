@@ -9,8 +9,7 @@ def fn7F0(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    Verificar que las evaluaciones de los estudiantes estén todas 
-    clasificadas en formativas o sumativas.
+    Las evaluaciones de los estudiantes estan todas clasificadas en formativas o sumativas.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

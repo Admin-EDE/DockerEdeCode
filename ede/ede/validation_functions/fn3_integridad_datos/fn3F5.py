@@ -11,7 +11,7 @@ def fn3F5(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si los e-mails ingresados cumplen con el formato
+    Los e-mails ingresados cumplen con el formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,7 +10,7 @@ def fn3E3(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el código identificador del establecimiento RBD sea correcto de acuerdo al formato
+    El código identificador del establecimiento RBD es correcto de acuerdo al formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

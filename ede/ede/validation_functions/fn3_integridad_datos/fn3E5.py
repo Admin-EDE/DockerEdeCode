@@ -10,7 +10,7 @@ def fn3E5(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que la modalidad de cada curso esté dentro de la lista permitida
+    La modalidad de cada curso está dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -10,12 +10,7 @@ def fn0FA(conn, return_dict):
     """
     REGISTRO DE SALIDAS
     7.0 Registro de salidas o retiros (NO Habituales)
-    Verifica que cada estudiante tenga registrado un listado de personas
-    autorizadas para retirarlo.
-    Se considera excepción de estudiantes registrados en educación de adultos.
-    Se agregó el campo RetirarEstudianteIndicador a la tabla PersonRelationship
-    para identificar a las personas autorizadas para retirar estudiantes 
-    desde el establecimiento.
+    Cada estudiante tiene al menos una persona autorizada para retirarlo del establecimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

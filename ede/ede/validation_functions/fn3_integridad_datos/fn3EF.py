@@ -9,7 +9,7 @@ def fn3EF(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los id del curso sean equivalentes en las tablas course y organization
+    Los id del curso son equivalentes en las tablas course y organization.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

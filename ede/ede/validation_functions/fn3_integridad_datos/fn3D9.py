@@ -9,7 +9,8 @@ def fn3D9(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que las asignaturas tengan sus sesiones de calendario (cuándo será la clase) y sus asistencias.
+    Las asignaturas tienen sus sesiones de calendario (cuándo será la clase) y sus asistencias.
+    -----
     (Tabla RoleAttendance)
     Args:
         conn ([sqlalchemy.engine.Connection]): [

@@ -10,8 +10,7 @@ def fn3C5(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificador de identidad (OTP)
-    Verifica que el campo cumpla con la siguiente expresión regular: ^[0-9]{6}+([-]{1}[0-9kK]{1})?$
+    Verificador de identidad (OTP) cumple la expresión regular.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

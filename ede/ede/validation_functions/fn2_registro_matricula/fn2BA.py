@@ -9,13 +9,7 @@ def fn2BA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.5 De los estudiantes excedentes
-    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
-    --------------------------------------------------
-    NOTA: 
-    - Una resolución es un documento público que emite el Ministerio de Educación en 
-    ciertos casos. Cada resolución tiene un número y una fecha de total tramitación. 
-    Para este caso se debe validar que exista el documento cargado en el sistema y 
-    sus datos cargados en la tabla.
+    Existe cargada en el sistema la resolución que autoriza al estudiante excedente.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

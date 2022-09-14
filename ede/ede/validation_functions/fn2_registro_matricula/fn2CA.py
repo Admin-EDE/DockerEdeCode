@@ -9,8 +9,7 @@ def fn2CA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.4 De las bajas en el registro de matrícula
-    Validar que exista la fecha, motivo y la declaración jurada del 
-    requirente o su verificador de identidad cargado en el sistema.
+    Existe la fecha, motivo y declaración jurada del requirente o su verificador de identidad cargado en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

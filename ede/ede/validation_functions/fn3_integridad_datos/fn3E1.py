@@ -10,7 +10,7 @@ def fn3E1(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que todos los docentes tengan su título y la institución de educación ingresados en el sistema
+    Todos los docentes tienen su título y la institución de educación ingresados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

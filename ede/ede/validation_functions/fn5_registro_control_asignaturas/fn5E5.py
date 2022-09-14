@@ -10,8 +10,7 @@ def fn5E5(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que la hora del registro de control de subvenciones corresponda 
-    con la segunda hora del registro de control de asignatura.
+    La hora del registro de control de subvenciones corresponde con la segunda hora del registro de control de asignatura.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

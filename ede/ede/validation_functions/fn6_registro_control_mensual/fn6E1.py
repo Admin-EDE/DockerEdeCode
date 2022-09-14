@@ -10,8 +10,7 @@ def fn6E1(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.2
-    Verificar que exista el justificativo de aquellos estudiantes que 
-    ingresaron con posterioridad a la 2da hora de clases.
+    Existe el justificativo de aquellos estudiantes que ingresaron con posterioridad a la 2da hora de clases.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

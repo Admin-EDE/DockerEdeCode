@@ -9,7 +9,7 @@ def fn3D2(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificar que el campo de Asistencia no se encuentre vacío
+    El campo de Asistencia no se encuentra vacío.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

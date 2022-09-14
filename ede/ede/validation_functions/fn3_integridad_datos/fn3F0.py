@@ -9,7 +9,7 @@ def fn3F0(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica la conexión con la base de datos SQLCypher
+    La conexión con la base de datos es exitosa.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

@@ -9,7 +9,7 @@ def fn3FB(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-	Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
+	La cantidad de #Matricula == #lista == #FechasIncorporaciones.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.

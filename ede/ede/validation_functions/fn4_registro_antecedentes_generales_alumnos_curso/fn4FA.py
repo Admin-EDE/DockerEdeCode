@@ -9,7 +9,7 @@ def fn4FA(conn, return_dict):
     """
     REGISTRO DE ANTECEDENTES GENERALES DE LOS ESTUDIANTES POR CURSO
     6.2 Contenido mínimo, letra a
-    Comprueba que el estudiante tiene sus datos mínimos
+    Los estudiantes tienen sus datos mínimos.
     ---------------------------------------
     - Número de lista
     - Número del registro de matrícula

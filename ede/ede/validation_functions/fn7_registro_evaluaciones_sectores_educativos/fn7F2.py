@@ -9,13 +9,12 @@ def fn7F2(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    verificar que la calificación final mínima de aprobación del estudiante sea un 4.0.
-    -------------------
+    La calificación final mínima de aprobación del estudiante es un 4.0.
+    -----
     Verificar que si en la tabla PersonStatus el estudiante tiene el estado promovido, 
     su calificación final sea, al menos, de un cuatro (4,00)
     Tablas PersonStatus y Assessment Result
     RefPersonStatusType = 28 (Estudiante promovido)
-
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
