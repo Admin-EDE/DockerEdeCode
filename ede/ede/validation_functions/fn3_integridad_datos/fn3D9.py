@@ -33,17 +33,24 @@ def fn3D9(conn, return_dict):
         /*
         * verifica que existan registro de calendar Session y RoleAttendanceEvent.
         */
-        SELECT OrganizationId, RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
+        SELECT Organization.OrganizationId, RoleAttendanceEvent.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
         FROM Organization
-        INNER JOIN RefOrganizationType USING(RefOrganizationTypeId)
-        INNER JOIN OrganizationCalendar USING(OrganizationId)
-        INNER JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
-        INNER JOIN OrganizationPersonRole USING(OrganizationId)
-        INNER JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
-        WHERE
-        RefOrganizationType.Description IN ('Course Section')
-        AND
-        AttendanceTermIndicator = 1
+        INNER JOIN RefOrganizationType
+         ON Organization.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
+         AND RefOrganizationType.RefOrganizationTypeId == 22
+        INNER JOIN OrganizationCalendar
+         ON Organization.OrganizationId = OrganizationCalendar.OrganizationId
+        INNER JOIN OrganizationCalendarSession
+         ON OrganizationCalendar.OrganizationCalendarId = OrganizationCalendarSession.OrganizationCalendarId
+         AND OrganizationCalendarSession.AttendanceTermIndicator = 1
+        INNER JOIN OrganizationPersonRole
+         ON Organization.OrganizationId = OrganizationPersonRole.OrganizationId
+        INNER JOIN RoleAttendanceEvent
+         ON OrganizationPersonRole.OrganizationPersonRoleId = RoleAttendanceEvent.OrganizationPersonRoleId
+        --WHERE
+        --RefOrganizationType.Description IN ('Course Section')
+        --AND
+        --OrganizationCalendarSession.AttendanceTermIndicator = 1
       """)
     except Exception as e:
         logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
@@ -61,34 +68,46 @@ def fn3D9(conn, return_dict):
         /*
         * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
         */
-        SELECT OrganizationId, r.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
+        SELECT Organization.OrganizationId, r.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
         FROM (
           SELECT 
               OrganizationId
             , RoleAttendanceEventid
-            , AttendanceTermIndicator
+            --, AttendanceTermIndicator
             , OrganizationCalendarSession.OrganizationCalendarSessionId
             , DATETIME(DATE(BeginDate) || 'T' || TIME(SessionStartTime)) as 'InicioClase'
-            , RoleAttendanceEvent.Date
-            , DATETIME(DATE(EndDate) || 'T' || TIME(SessionEndTime)) as 'FinClase'
-            , *
+            --, RoleAttendanceEvent.Date
+            --, DATETIME(DATE(EndDate) || 'T' || TIME(SessionEndTime)) as 'FinClase'
+            --, *
           FROM Organization
-          OUTER LEFT JOIN RefOrganizationType USING(RefOrganizationTypeId)
-          OUTER LEFT JOIN OrganizationCalendar USING(OrganizationId)
-          OUTER LEFT JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
-          OUTER LEFT JOIN OrganizationPersonRole USING(OrganizationId)
-          OUTER LEFT JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+          OUTER LEFT JOIN RefOrganizationType
+           ON Organization.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
+           AND Organization.RefOrganizationTypeId = 22--.Description = 'Course Section'
+          OUTER LEFT JOIN OrganizationCalendar
+           ON Organization.OrganizationId = OrganizationCalendar.OrganizationId
+          OUTER LEFT JOIN OrganizationCalendarSession
+           ON OrganizationCalendar.OrganizationCalendarId = OrganizationCalendarSession.OrganizationCalendarId
+           AND OrganizationCalendarSession.AttendanceTermIndicator = 1
+          OUTER LEFT JOIN OrganizationPersonRole
+           ON Organization.OrganizationId = OrganizationPersonRole.OrganizationId
+          OUTER LEFT JOIN RoleAttendanceEvent 
+           ON OrganizationPersonRole.OrganizationPersonRoleId = RoleAttendanceEvent.OrganizationPersonRoleId
           WHERE
-          RefOrganizationType.Description IN ('Course Section')
-          AND
-          InicioClase = RoleAttendanceEvent.Date
-          AND AttendanceTermIndicator = 1
+          --RefOrganizationType.Description IN ('Course Section')
+          --AND
+          RoleAttendanceEvent.Date = InicioClase
+          --AND AttendanceTermIndicator = 1
         ) as r
-        INNER JOIN RefOrganizationType USING(RefOrganizationTypeId)
-        INNER JOIN OrganizationCalendar USING(OrganizationId)
-        INNER JOIN OrganizationCalendarSession USING(OrganizationCalendarId)
-        INNER JOIN OrganizationPersonRole USING(OrganizationId)
-        INNER JOIN RoleAttendanceEvent USING(OrganizationPersonRoleId)
+        INNER JOIN RefOrganizationType
+         ON Organization.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
+        INNER JOIN OrganizationCalendar
+         ON Organization.OrganizationId = OrganizationCalendar.OrganizationId
+        INNER JOIN OrganizationCalendarSession
+         ON OrganizationCalendar.OrganizationCalendarId = OrganizationCalendarSession.OrganizationCalendarId
+        INNER JOIN OrganizationPersonRole
+         ON Organization.OrganizationId = OrganizationPersonRole.OrganizationId
+        INNER JOIN RoleAttendanceEvent
+         ON OrganizationPersonRole.OrganizationPersonRoleId = RoleAttendanceEvent.OrganizationPersonRoleId
       """)
     except Exception as e:
         logger.info(f"Resultado: {RoleAttendance} -> {str(e)}")
@@ -103,6 +122,10 @@ def fn3D9(conn, return_dict):
             if (_c1 > 0):
                 logger.error(_err1)
                 logger.error(f"Rechazado")
+                _r = False
+            else:
+              logger.info(f"Aprobado")
+              _r = True
         else:
             logger.info(f"Aprobado")
             _r = True
