@@ -64,10 +64,10 @@ def fn2BA(conn, return_dict):
                                               join Person P on OPR.PersonId = P.PersonId
                                               join PersonStatus PS on P.PersonId = PS.PersonId
                                     where OPR.RoleId = 6 --Estudiante
-                                      and PS.RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
+                                      and PS.RefPersonStatusTypeId IN (25, 24, 31) --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
                                 )
                                   and fileScanBase64 is not null
-                                  and RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
+                                  and RefPersonStatusTypeId IN (25, 24, 31) --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
             )
             """)
                 if(len(_file) == len(_query)):
