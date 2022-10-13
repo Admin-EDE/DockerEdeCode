@@ -68,11 +68,12 @@ def fn3D9(conn, return_dict):
         /*
         * verifica que los registro de calendar Session y RoleAttendanceEvent sean consistentes.
         */
-        SELECT Organization.OrganizationId, r.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
+        SELECT r.OrganizationId, r.RoleAttendanceEventid, OrganizationCalendarSession.OrganizationCalendarSessionId
         FROM (
-          SELECT 
-              OrganizationId
-            , RoleAttendanceEventid
+          SELECT
+            Organization.OrganizationId
+            , RoleAttendanceEvent.RoleAttendanceEventid
+            , Organization.RefOrganizationTypeId
             --, AttendanceTermIndicator
             , OrganizationCalendarSession.OrganizationCalendarSessionId
             , DATETIME(DATE(BeginDate) || 'T' || TIME(SessionStartTime)) as 'InicioClase'
@@ -82,7 +83,7 @@ def fn3D9(conn, return_dict):
           FROM Organization
           OUTER LEFT JOIN RefOrganizationType
            ON Organization.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
-           AND Organization.RefOrganizationTypeId = 22--.Description = 'Course Section'
+           AND Organization.RefOrganizationTypeId = 22 --.Description = 'Course Section'
           OUTER LEFT JOIN OrganizationCalendar
            ON Organization.OrganizationId = OrganizationCalendar.OrganizationId
           OUTER LEFT JOIN OrganizationCalendarSession
@@ -99,13 +100,13 @@ def fn3D9(conn, return_dict):
           --AND AttendanceTermIndicator = 1
         ) as r
         INNER JOIN RefOrganizationType
-         ON Organization.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
+         ON r.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
         INNER JOIN OrganizationCalendar
-         ON Organization.OrganizationId = OrganizationCalendar.OrganizationId
+         ON r.OrganizationId = OrganizationCalendar.OrganizationId
         INNER JOIN OrganizationCalendarSession
          ON OrganizationCalendar.OrganizationCalendarId = OrganizationCalendarSession.OrganizationCalendarId
         INNER JOIN OrganizationPersonRole
-         ON Organization.OrganizationId = OrganizationPersonRole.OrganizationId
+         ON r.OrganizationId = OrganizationPersonRole.OrganizationId
         INNER JOIN RoleAttendanceEvent
          ON OrganizationPersonRole.OrganizationPersonRoleId = RoleAttendanceEvent.OrganizationPersonRoleId
       """)
