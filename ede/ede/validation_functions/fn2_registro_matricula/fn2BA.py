@@ -27,7 +27,7 @@ def fn2BA(conn, return_dict):
     try:
         _query = ejecutar_sql(conn, """--sql
         --Comprobar si hay estudiantes con status 25, 24, 31
-        SELECT DISTINCT P.PersonId
+        SELECT DISTINCT P.PersonId, PS.RefPersonStatusTypeId
         from OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
