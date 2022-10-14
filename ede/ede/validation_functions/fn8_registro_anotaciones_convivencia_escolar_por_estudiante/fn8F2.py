@@ -220,6 +220,7 @@ def fn8F2(conn, return_dict):
         if(len(_e) == 0):
             _r = True
         else:
+            _r = False
             logger.error(_e)
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
