@@ -32,7 +32,7 @@ def fn29B(conn, return_dict):
                 join PersonStatus PS on P.PersonId = PS.PersonId
         where RoleId = 6 --Estudiante
           and ps.RefPersonStatusTypeId = 35 --Estudiante con formacion dual
-          and OrganizationPersonRoleId in (select OrganizationId
+          and OPR.OrganizationId in (select OrganizationId
                                           from Organization
                                           where RefOrganizationTypeId = 47) --Asignatura de Práctica
         group by OPR.OrganizationId, P.PersonId;
@@ -56,7 +56,7 @@ def fn29B(conn, return_dict):
                 else:
                     for y in organizacionesK12:
                         for z in organizaciones:
-                            if(y in z):
+                            if(y == z):
                                 contador = contador + 1
                             else:
                                 logger.error(f"Matricula/s no registrada/s")
