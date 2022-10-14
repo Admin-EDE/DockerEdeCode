@@ -37,7 +37,7 @@ def fn3D9(conn, return_dict):
         FROM Organization
         INNER JOIN RefOrganizationType
          ON Organization.RefOrganizationTypeId = RefOrganizationType.RefOrganizationTypeId
-         AND RefOrganizationType.RefOrganizationTypeId == 22
+         AND RefOrganizationType.RefOrganizationTypeId == 22 -- 'Course Section'
         INNER JOIN OrganizationCalendar
          ON Organization.OrganizationId = OrganizationCalendar.OrganizationId
         INNER JOIN OrganizationCalendarSession
@@ -47,10 +47,11 @@ def fn3D9(conn, return_dict):
          ON Organization.OrganizationId = OrganizationPersonRole.OrganizationId
         INNER JOIN RoleAttendanceEvent
          ON OrganizationPersonRole.OrganizationPersonRoleId = RoleAttendanceEvent.OrganizationPersonRoleId
-        --WHERE
-        --RefOrganizationType.Description IN ('Course Section')
-        --AND
-        --OrganizationCalendarSession.AttendanceTermIndicator = 1
+		 WHERE
+		   Organization.RefOrganizationTypeId = 22 --.Description = 'Course Section'
+		   AND OrganizationCalendarSession.AttendanceTermIndicator = 1
+       AND DATE(RoleAttendanceEvent.Date) = OrganizationCalendarSession.BeginDate
+		   AND DATE(RoleAttendanceEvent.Date) = OrganizationCalendarSession.EndDate
       """)
     except Exception as e:
         logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
