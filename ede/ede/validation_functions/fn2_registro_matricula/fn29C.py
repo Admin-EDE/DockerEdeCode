@@ -48,7 +48,7 @@ def fn29C(conn, return_dict):
         """)
         if((len(_queryStud) > 0) and (len(_queryProf) > 0)):
             _organizationStu = (
-                list([m[5] for m in _queryStud if m[0] is not None]))
+                list([m[0] for m in _queryStud if m[0] is not None]))
             if not _organizationStu:
                 logger.error(f"Sin Alumnos")
                 logger.error(f'Rechazado')
@@ -56,7 +56,7 @@ def fn29C(conn, return_dict):
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             _organizationProf = (
-                list([m[5] for m in _queryProf if m[0] is not None]))
+                list([m[0] for m in _queryProf if m[0] is not None]))
             if not _organizationProf:
                 logger.error(f"Sin profesores")
                 logger.error(f'Rechazado')
@@ -67,7 +67,7 @@ def fn29C(conn, return_dict):
             z = len(_organizationStu)
             for x in _organizationStu:
                 for y in _organizationProf:
-                    if x in y:
+                    if x == y:
                         _contador += 1
             if _contador == z:
                 logger.info(f'Todos los alumnos en practica con profesor')
