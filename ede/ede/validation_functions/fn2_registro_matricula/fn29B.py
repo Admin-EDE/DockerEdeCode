@@ -26,7 +26,7 @@ def fn29B(conn, return_dict):
     """
     try:
         query = ejecutar_sql(conn, """--sql
-        SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
+        SELECT OPR.OrganizationPersonRoleId, P.PersonId, count(P.PersonId)
         from Person P
                 join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
@@ -46,6 +46,7 @@ def fn29B(conn, return_dict):
             organizaciones = (list([m[0] for m in query if m[0] is not None]))
             organizacionesK12 = (
                 list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
+            contador = 0
             for x in estudiantes:
                 if(x == 2):
                     logger.error(f"Matriculas repetidas")
