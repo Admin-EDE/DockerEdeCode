@@ -155,6 +155,8 @@ JOIN (
 	LEFT JOIN RoleAttendanceEvent rat
 		ON rat.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
 		AND rat.RecordEndDateTime IS NULL
+    AND DATE(rat.Date) = ocs.BeginDate
+    AND DATE(rat.Date) = ocs.EndDate
 ) clases 
 	ON clases.OrganizationId = org
 	AND (

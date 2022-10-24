@@ -164,10 +164,6 @@ FROM
         WHERE
           Code IN ('InternalOrganization')
       )
-      JOIN OrganizationPersonRole opr ON O.OrganizationId = opr.OrganizationId
-      AND opr.RecordEndDateTime IS NULL
-      JOIN RoleAttendanceEvent rae ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
-      AND rae.RecordEndDateTime IS NULL
       JOIN Role rol ON opr.RoleId = rol.RoleId
       AND opr.RoleId IN (
         SELECT
@@ -194,6 +190,12 @@ FROM
         '-5 minutes'
       )
       and time(ifnull(css.ClassEndingTime, '00:00'), '+5 minutes') --GROUP BY rae.Date
+      JOIN OrganizationPersonRole opr ON O.OrganizationId = opr.OrganizationId
+      AND opr.RecordEndDateTime IS NULL
+      JOIN RoleAttendanceEvent rae ON opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
+      AND rae.RecordEndDateTime IS NULL
+      AND DATE(rae.Date) = ocs.BeginDate
+      AND DATE(rae.Date) = ocs.EndDate
     WHERE
       -- Verifica que se encuentre cargado el leccionario
       rae.RefAttendanceEventTypeId = 2
