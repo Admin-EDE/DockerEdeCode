@@ -51,7 +51,11 @@ def fn3CA(conn, return_dict):
                         for m in rows if m[0] is not None]))
             _err, _r = check_utils.imprimeErrores(data, check_utils.validaEventosDeAsistencia,
                                                   "VERIFICA que los eventos de asistencia se encuentren correctamente asignados")
-            logger.info(f"Aprobado") if _r else logger.error(_err)
+            if _r:
+              logger.info(f"Aprobado")
+            else:
+              logger.error(_err)
+              logger.error("Rechazado")
         else:
             logger.info("La BD no contiene información de asistencia cargada")
             logger.info("S/Datos")

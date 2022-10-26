@@ -356,11 +356,9 @@ class check:
             return _result
     def execute_sequentially(self, conn, return_dict):
         try:
-            start_time = datetime.now()
             for key, value in self.functions.items():
                 if(value != "No/Verificado"):
-                    timediff = (datetime.now()-start_time).total_seconds()
-                    logger.info(f"time elapsed: {timediff}")
+                    start_time = datetime.now()
                     if self.args.time > 0 and timediff > self.args.time:
                         logger.error("TIMEOUT EJECUCION SECUENCIAL.............")
                         break
@@ -370,6 +368,8 @@ class check:
                         fnTarget.__call__(conn, return_dict, self.args)
                     else:
                         fnTarget.__call__(conn, return_dict)
+                    timediff = (datetime.now()-start_time).total_seconds()
+                    logger.info(f"function: {key}, time elapsed: {timediff}")
             return return_dict
         except Exception as e:
             logger.error(f"Error general en ejecución secuencial: {e}")
