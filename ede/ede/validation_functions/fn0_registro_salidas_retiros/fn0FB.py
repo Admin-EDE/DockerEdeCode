@@ -227,10 +227,12 @@ def fn0FB(conn, return_dict):
                         pass
 
             if(len(Allrows) == 0):
+                logger.info(f"Aprobado")
                 _r = True
             else:
                 logger.info(
                     f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
+                logger.error(f"Rechazado")
         else:
             logger.error(f"Rechazado")
             logger.info(
