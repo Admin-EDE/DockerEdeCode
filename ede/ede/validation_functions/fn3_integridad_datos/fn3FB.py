@@ -32,6 +32,7 @@ SELECT
 	FROM person p
 	JOIN PersonIdentifier numLista
 		ON p.personid = numLista.personid
+		AND numLista.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiLista 
 	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
 	  AND rfiLista.code IN ('listNumber')
@@ -59,6 +60,7 @@ SELECT
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.StatusEndDate IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 	  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')
@@ -76,6 +78,7 @@ SELECT
 		FROM person p
 		JOIN PersonStatus ps
 			ON ps.personId = p.personId
+			AND ps.StatusEndDate IS NULL
 		JOIN RefPersonStatusType rpst
 		  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 		  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')	
