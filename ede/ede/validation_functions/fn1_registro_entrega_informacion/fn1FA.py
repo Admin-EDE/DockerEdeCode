@@ -31,18 +31,23 @@ def fn1FA(conn, return_dict):
 
      # VALIDO LA EXISTENCIA DE ALUMNOS RETIRADOS Y QUE TENGAN REGISTRADA FECHA DE RETIRO
         _s1 = """SELECT A.personId,B.Identifier,C.OrganizationPersonRoleId ,C.ExitDate
-                FROM PersonStatus A
-                JOIN PersonIdentifier B
-                ON A.personId = B.personId
-                JOIN OrganizationPersonRole C
-                ON A.personId = C.personId
-                where A.RefPersonStatusTypeId = 30;"""
+	FROM PersonStatus A
+	JOIN PersonIdentifier B
+		ON A.personId = B.personId
+		AND A.RecordEndDateTime IS NULL
+		AND B.RecordEndDateTime IS NULL
+	JOIN OrganizationPersonRole C
+		ON A.personId = C.personId
+		AND C.RecordEndDateTime IS NULL
+	WHERE A.RefPersonStatusTypeId = 30;"""
 
         # OBTENGO INFORMACION DE APODERADO
         _s2 = """SELECT A.RelatedPersonId ,A.personId
                 FROM PersonRelationship A
                 JOIN OrganizationPersonRole B
                   ON A.RelatedPersonId = B.personId
+                  AND A.RecordEndDateTime IS NULL
+		          AND B.RecordEndDateTime IS NULL
                 WHERE A.personId = ?
                 AND B.RoleId = 15;"""
 
@@ -51,13 +56,16 @@ def fn1FA(conn, return_dict):
                 FROM IncidentPerson A
                 JOIN Incident B
                 ON A.IncidentId = B.IncidentId
+                AND A.RecordEndDateTime IS NULL
+		          AND B.RecordEndDateTime IS NULL
                 WHERE A.personId = ?
                 AND B.RefIncidentBehaviorId = 33;"""
 
         # OBTENGO INFORMACION DE PERSONAS ASOCIADAS A INCIDENTE
         _s4 = """SELECT A.personId,A.RefIncidentPersonTypeId ,A.digitalRandomKey, A.fileScanBase64
                 FROM IncidentPerson A
-                WHERE A.IncidentId = ?;"""
+                WHERE A.IncidentId = ?
+                AND A.RecordEndDateTime IS NULL;"""
 
         # VERIFICA SI EXISTE REGISTRO DE RETIROS ANTICIPADOS DEL ESTABLECIMIENTO (OrganizationPersonRole)
         _r = ejecutar_sql(conn, _s1)
