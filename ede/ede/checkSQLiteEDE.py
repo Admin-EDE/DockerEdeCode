@@ -335,9 +335,9 @@ class check:
                 f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
             
             if "sequential" in dir(self.args) and self.args.sequential:
-                return_dict = dict()
-                #return_dict = self.execute_sequentially(conn)
-                self.execute_sequentially(conn, return_dict)
+                #return_dict = dict()
+                #self.execute_sequentially(conn, return_dict)
+                return_dict = self.execute_parallel(conn, sequential=True)
             else:
                
                 return_dict = self.execute_parallel(conn)
@@ -374,7 +374,7 @@ class check:
         except Exception as e:
             logger.error(f"Error general en ejecución secuencial: {e}")
             return False
-    def execute_parallel(self, conn):
+    def execute_parallel(self, conn, sequential=False):
         try:
             manager = Manager()
             return_dict = manager.dict()
@@ -395,6 +395,11 @@ class check:
             for p in jobs:
                 logger.info(f"{p.name} iniciando...")
                 p.start()
+                if sequential:
+                    start_time = datetime.now()
+                    p.join()
+                    timediff = (datetime.now()-start_time).total_seconds()
+                    logger.info(f"function: {p.name}, time elapsed: {timediff}")
 
             while True:
                 time += 1

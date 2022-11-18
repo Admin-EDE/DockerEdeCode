@@ -49,6 +49,7 @@ def fn1FA(conn, return_dict):
                   AND A.RecordEndDateTime IS NULL
 		          AND B.RecordEndDateTime IS NULL
                 WHERE A.personId = ?
+                AND A.RefPersonRelationshipId = 31
                 AND B.RoleId = 15;"""
 
         # OBTENGO ID DE INCIDENTE ASOCIADO

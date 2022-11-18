@@ -28,11 +28,11 @@ def fn2FA(conn, return_dict):
     results = []
     try:
         results = ejecutar_sql(conn, """--sql
-        select count(distinct PersonId)-(select count(distinct PersonId) from OrganizationPersonRole
-        where RoleId=6 --Estudiante
-        and ExitDate is not null)
+        select count(distinct PersonId)
         from OrganizationPersonRole
-        where  EntryDate is not null and RoleId=6  ;
+        where RoleId=6
+        and EntryDate is not null
+        and ExitDate is null   ;
         """)
     except Exception as e:
         logger.info(f"Resultado: {results} -> {str(e)}")
