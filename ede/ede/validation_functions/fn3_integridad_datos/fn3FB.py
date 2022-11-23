@@ -36,15 +36,20 @@ SELECT
 	JOIN RefPersonIdentificationSystem rfiLista 
 	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
 	  AND rfiLista.code IN ('listNumber')
+	WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadNumeroLista'
 ,(
 	SELECT count(p.personId)
 	FROM person p
 	JOIN PersonIdentifier numMatri
 		ON p.personid = numMatri.personid
+		AND numMatri.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiMatri
 	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
 	  AND rfiMatri.code IN ('SchoolNumber')
+	  WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadNumeroMatricula'
 ,(
 	SELECT count(p.personId)
@@ -53,7 +58,9 @@ SELECT
 		ON ps.personId = p.personId
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
+	  AND rpst.Description IN ('Estudiante con matrícula definitiva', 'Estudiante promovido', 'Estudiante con matrícula provisoria', 'Estudiante Matriculado a través de Decreto 152, artículo 60')
+	  WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadMatriDefinitiva'
 ,(
 	SELECT count(p.personId)
@@ -64,16 +71,21 @@ SELECT
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 	  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')
+	  WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadNumerosListaAsignados'
 , (
 	SELECT group_concat(p.personId)
 	FROM person p
 	JOIN PersonIdentifier numLista
 		ON p.personid = numLista.personid
+		AND numLista.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiLista 
 	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
 	  AND rfiLista.code IN ('listNumber')
-	WHERE p.personId NOT IN (
+	WHERE
+	p.RecordEndDateTime IS NULL
+    AND	p.personId NOT IN (
 		SELECT p.personId
 		FROM person p
 		JOIN PersonStatus ps
@@ -93,7 +105,9 @@ SELECT
 	JOIN RefPersonIdentificationSystem rfiMatri
 	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
 	  AND rfiMatri.code IN ('SchoolNumber')
-	WHERE p.personId NOT IN (
+	WHERE
+	p.RecordEndDateTime IS NULL
+	AND	p.personId NOT IN (
 		SELECT p.personId
 	FROM person p
 	JOIN PersonStatus ps
