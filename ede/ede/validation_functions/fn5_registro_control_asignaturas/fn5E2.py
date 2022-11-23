@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn5E2(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Valida que cuando falta docente, exista la observación con los datos de éste.
-
+    Cuando falta docente, existe la observación con los datos de éste.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,7 +25,7 @@ def fn5E2(conn, return_dict):
           ]
     """
     try:
-        rows= conn.execute("""
+        rows= ejecutar_sql(conn, """--sql
         select Pi.Identifier,
               (p.FirstName || ' ' || p.MiddleName || ' ' || p.LastName || ' ' || p.SecondLastName) as "nombre completo",
               pdc.DegreeOrCertificateTitleOrSubject,
@@ -41,7 +41,7 @@ def fn5E2(conn, return_dict):
                 join PersonIdentifier pi on pi.PersonId = p.PersonId
         where RoleId != 6
           and rae.observaciones like '%Falta docente%';
-                """).fetchall()
+                """)
         if(len(rows)>0):
             identificador = (list(set([m[0] for m in rows if m[0] is not None])))
             if not identificador:

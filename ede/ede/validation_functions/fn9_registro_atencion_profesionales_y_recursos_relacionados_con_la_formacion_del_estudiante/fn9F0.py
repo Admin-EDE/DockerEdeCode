@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,9 +9,7 @@ def fn9F0(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
     6.2 Contenido mínimo, letra f
-    Verificar que la información del equipo de docentes 
-    y profesionales relacionados con la formación del estudiante 
-    se encuentren registrados en el sistema.
+    La información del equipo de docentes y profesionales relacionados con la formación del estudiante se encuentran registrados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -27,7 +26,7 @@ def fn9F0(conn, return_dict):
     """
     try:
         i = 0
-        docentes = conn.execute("""
+        docentes = ejecutar_sql(conn, """--sql
         SELECT
               P.PersonId,
               PDOC.DegreeOrCertificateTitleOrSubject
@@ -37,7 +36,7 @@ def fn9F0(conn, return_dict):
                 join PersonDegreeOrCertificate PDOC on P.PersonId = PDOC.PersonId
         where OPR.RoleId = 5
         group by P.PersonId
-        """).fetchall()
+        """)
         a = len(docentes)
         if(len(docentes)):
             for fila in docentes:

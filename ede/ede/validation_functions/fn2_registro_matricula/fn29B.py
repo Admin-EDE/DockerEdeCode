@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,13 +9,7 @@ def fn29B(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
-    Validar que si la práctica se realiza durante la 
-    jornada escolar o en vacaciones exista solo un registro de matricula para el estudiante.
-    --------------------------------------------------
-    Un estudiante de formación DUAL tiene una asignatura especial asignada y 
-    el curso tiene el identificador RefWorkbasedLearningOpportunityTypeId asignado. 
-    Se agrega en refOrgantizationType el tipo practicaProfesional para identificar este tipo de asignaturas.
-    (47 - Asignatura de Practica profesional)
+    Si la práctica se realiza durante la jornada escolar o en vacaciones existe solo un registro de matricula para el estudiante.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -30,35 +25,28 @@ def fn29B(conn, return_dict):
           ]
     """
     try:
-        query = conn.execute("""--sql
-        SELECT OPR.OrganizationId, P.PersonId, count(P.PersonId)
+        query = ejecutar_sql(conn, """--sql
+        SELECT OPR.OrganizationPersonRoleId, P.PersonId, count(P.PersonId)
         from Person P
                 join OrganizationPersonRole OPR on P.PersonId = OPR.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
         where RoleId = 6 --Estudiante
           and ps.RefPersonStatusTypeId = 35 --Estudiante con formacion dual
-          and OrganizationPersonRoleId in (select OrganizationId
+          and OPR.OrganizationId in (select OrganizationId
                                           from Organization
                                           where RefOrganizationTypeId = 47) --Asignatura de Práctica
         group by OPR.OrganizationId, P.PersonId;
         """)
-        if not query.returns_rows:
-          logger.info(
-                f"No existen estudiantes en practica registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        query = query.fetchall()
-        k12StudentEnrollment = conn.execute("""--sql
+        k12StudentEnrollment = ejecutar_sql(conn, """--sql
         select OrganizationPersonRoleId
         from K12StudentEnrollment;
-        """).fetchall()
+        """)
         if(len(query) > 0 and len(k12StudentEnrollment) > 0):
             estudiantes = (list([m[2] for m in query if m[2] is not None]))
             organizaciones = (list([m[0] for m in query if m[0] is not None]))
             organizacionesK12 = (
                 list([m[0] for m in k12StudentEnrollment if m[0] is not None]))
+            contador = 0
             for x in estudiantes:
                 if(x == 2):
                     logger.error(f"Matriculas repetidas")
@@ -69,7 +57,7 @@ def fn29B(conn, return_dict):
                 else:
                     for y in organizacionesK12:
                         for z in organizaciones:
-                            if(y in z):
+                            if(y == z):
                                 contador = contador + 1
                             else:
                                 logger.error(f"Matricula/s no registrada/s")

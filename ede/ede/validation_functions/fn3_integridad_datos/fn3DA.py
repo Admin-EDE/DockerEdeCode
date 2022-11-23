@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn3DA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que exista asistencia diaria y luego que las tasas de asistencia estén bien calculadas
+    Existe asistencia diaria y las tasas de asistencia estan bien calculadas.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,7 +27,7 @@ def fn3DA(conn, return_dict):
     _r = False
     listInfoSuccesfull = []
     try:
-        listInfoSuccesfull = conn.execute("""--sql
+        listInfoSuccesfull = ejecutar_sql(conn, """--sql
         --Busca si hay asistencia diaria
         SELECT RoleAttendanceId
         FROM RoleAttendance
@@ -43,7 +44,7 @@ def fn3DA(conn, return_dict):
         Role.Name IN ('Estudiante') -- filtra la asistencia de los estudiantes
         AND
         RefAttendanceEventType.Description IN ('Daily attendance') -- Filtra la asistencia diaria      
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
 
@@ -55,7 +56,7 @@ def fn3DA(conn, return_dict):
         return _r
     RoleAttendance = []
     try:
-        RoleAttendance = conn.execute("""--sql
+        RoleAttendance = ejecutar_sql(conn, """--sql
         /*
         * Lista los registros de la Tabla RoleAttendance que no coinciden 
         * con la lista de eventos de asistencia regitrados en la tabla RoleAttendanceEvent
@@ -109,7 +110,7 @@ def fn3DA(conn, return_dict):
         RefOrganizationType.Description IN ('Course') AND
         -- Filtra solo aquellos casos en que la información no coincide
         NOT (abs(AttendanceRate_o - AttendanceRate_r) < 0.00001 AND NumberOfDaysInAttendance_o = NumberOfDaysInAttendance_r AND NumberOfDaysAbsent_o = NumberOfDaysAbsent_r)
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {RoleAttendance} -> {str(e)}")
 

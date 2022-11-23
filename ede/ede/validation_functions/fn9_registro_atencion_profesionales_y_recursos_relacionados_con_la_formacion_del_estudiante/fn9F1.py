@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn9F1(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
     6.2 Contenido mínimo, letra f
-    Verificar que la planificación del proceso formativo del estudiante se encuentre registrada
-    en el sistema.
+    La planificación del proceso formativo del estudiante se encuentra registrada en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,7 +26,7 @@ def fn9F1(conn, return_dict):
     _r = False
     courseSections = []
     try:
-        courseSections = conn.execute("""
+        courseSections = ejecutar_sql(conn, """--sql
         SELECT
           O.OrganizationId
         FROM Organization O
@@ -36,7 +36,7 @@ def fn9F1(conn, return_dict):
             FROM RefOrganizationType
             WHERE Code IN ('CourseSection')
           )                              
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {courseSections} -> {str(e)}")
 
@@ -50,7 +50,7 @@ def fn9F1(conn, return_dict):
         f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     _query = []
     try:
-        _query = conn.execute("""
+        _query = ejecutar_sql(conn, """--sql
           SELECT
               O.OrganizationId
             , group_concat(DISTINCT CSS.ClassMeetingDays) ClassMeetingDays
@@ -92,7 +92,7 @@ def fn9F1(conn, return_dict):
             AND CS.RefInstructionLanguageId IS NOT NULL
             
           GROUP BY O.OrganizationId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:

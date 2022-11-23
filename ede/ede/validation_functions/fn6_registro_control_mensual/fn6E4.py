@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn6E4(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.2
-    verificar que se encuentren bien registrados los cambios de 
-    actividades al calendario escolar.
+    Se encuentran bien registrados los cambios de actividades al calendario escolar.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,7 +25,7 @@ def fn6E4(conn, return_dict):
     """
     try:
         _data = []
-        _data = conn.execute("""
+        _data = ejecutar_sql(conn, """--sql
                 SELECT 
                   org
                   ,group_concat(DISTINCT diasSinClases) as 'diasSinClases'
@@ -62,7 +62,7 @@ def fn6E4(conn, return_dict):
                   GROUP BY oc.Organizationid
                 ) DSC
                 GROUP BY org      
-      """).fetchall()
+      """)
 
         if(not _data):
             logger.error(f"S/Datos")
@@ -78,7 +78,7 @@ def fn6E4(conn, return_dict):
 
     try:
         _result = []
-        _result = conn.execute("""
+        _result = ejecutar_sql(conn, """--sql
 --  6.2 Contenido mínimo, letra c.2
 -- verificar que se encuentren bien registrados los cambios de actividades al calendario escolar.
 -- las tablas OrganizationCalendarEvent y OrganizationCalendarCrisis guardan los casos de suspensión
@@ -155,6 +155,8 @@ JOIN (
 	LEFT JOIN RoleAttendanceEvent rat
 		ON rat.OrganizationPersonRoleId = opr.OrganizationPersonRoleId
 		AND rat.RecordEndDateTime IS NULL
+    AND DATE(rat.Date) = ocs.BeginDate
+    AND DATE(rat.Date) = ocs.EndDate
 ) clases 
 	ON clases.OrganizationId = org
 	AND (
@@ -166,7 +168,7 @@ JOIN (
 	)
 
 GROUP BY org      
-      """).fetchall()
+      """)
     except:
         pass
     try:

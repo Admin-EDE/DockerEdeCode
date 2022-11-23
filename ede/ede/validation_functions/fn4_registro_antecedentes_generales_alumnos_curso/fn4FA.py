@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn4FA(conn, return_dict):
     """
     REGISTRO DE ANTECEDENTES GENERALES DE LOS ESTUDIANTES POR CURSO
     6.2 Contenido mínimo, letra a
-    Comprueba que el estudiante tiene sus datos mínimos
+    Los estudiantes tienen sus datos mínimos.
     ---------------------------------------
     - Número de lista
     - Número del registro de matrícula
@@ -44,7 +45,7 @@ def fn4FA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT 
 	  est.personId
 	, orgCurso.OrganizationId as cursoId
@@ -141,7 +142,7 @@ OUTER LEFT JOIN (
 ON asignaturas.organizationId = prof_educ.Organizationid
 
 GROUP BY est.personId
-                          """).fetchall()
+                          """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

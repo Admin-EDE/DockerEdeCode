@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn5E1(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que al final de la jornada exista el registro de alumnos matriculados en el curso y el total de la asistencia diaria. 
+    Al final de la jornada existe el registro de alumnos matriculados en el curso y el total de la asistencia diaria.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -24,7 +25,7 @@ def fn5E1(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = ejecutar_sql(conn, """--sql
         SELECT OPR.OrganizationPersonRoleId,
             (SELECT count(OPR.PersonId)
                 from OrganizationPersonRole OPR
@@ -38,7 +39,7 @@ def fn5E1(conn, return_dict):
         WHERE OPR.RoleId = 6
         AND O.RefOrganizationTypeId = 21
         GROUP by OPR.OrganizationPersonRoleId;
-        """).fetchall()
+        """)
         if(len(_query)>0):
             _alumnos = (list([m[0] for m in _query if m[0] is not None]))
             if not _alumnos :
@@ -56,14 +57,14 @@ def fn5E1(conn, return_dict):
                 return False
             _totalAlumnos = int(len(_alumnos))
             if int(_matriculasTotales[0]) == _totalAlumnos:
-                    _queryRegistroAsistencia = conn.execute("""
+                    _queryRegistroAsistencia = ejecutar_sql(conn, """--sql
                     SELECT DISTINCT RoleAttendanceEventId,
                                     Date,
                                     RefAttendanceEventTypeId
                     FROM RoleAttendanceEvent
                     WHERE RefAttendanceEventTypeId = 1 and Date is not null
                     GROUP by date;
-                    """).fetchall()
+                    """)
                     if(len(_queryRegistroAsistencia)>0):
                         logger.info(f'Matriculas registradas y asistencia diaria realizada')
                         logger.info(f'Aprobado')

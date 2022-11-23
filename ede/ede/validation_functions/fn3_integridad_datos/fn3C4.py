@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn3C4(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el campo MaximumCapacity cumpla con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$'
-    y que todas las organizaciones de la tabla CourseSection sean de tipo ASIGNATURA
+    El campo MaximumCapacity cumple con la siguiente expresión regular: '^[1-9]{1}\d{1,3}$' y todas las organizaciones de la tabla CourseSection son de tipo ASIGNATURA.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,7 +26,7 @@ def fn3C4(conn, return_dict):
     _r = False
     RoleAttendanceEvent = []
     try:
-        RoleAttendanceEvent = conn.execute("""--sql
+        RoleAttendanceEvent = ejecutar_sql(conn, """--sql
         -- Lista todos los IDs que no cumplan con la expresión regular.
         SELECT RoleAttendanceEventId, Date
         FROM RoleAttendanceEvent
@@ -35,12 +35,12 @@ def fn3C4(conn, return_dict):
         Date NOT REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
 		    AND
 		    Date NOT NUll        
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {RoleAttendanceEvent} -> {str(e)}")
     OrganizationPersonRole = []
     try:
-        OrganizationPersonRole = conn.execute("""--sql
+        OrganizationPersonRole = ejecutar_sql(conn, """--sql
         -- Lista todos los IDs que no cumplan con la empresión regular.
         SELECT OrganizationPersonRoleId, EntryDate, ExitDate
         FROM OrganizationPersonRole
@@ -53,7 +53,7 @@ def fn3C4(conn, return_dict):
       )
       AND
       ( EntryDate NOT NULL OR ExitDate NOT NULL )
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {OrganizationPersonRole} -> {str(e)}")
     try:

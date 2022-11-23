@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn29C(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
-    Validar que los estudiantes egresados de cuarto medio y que estén realizando 
-    su práctica tengan asignado un profesor tutor.
+    Los estudiantes egresados de cuarto medio y que estén realizando su práctica tienen asignado un profesor tutor.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,7 +25,7 @@ def fn29C(conn, return_dict):
           ]
     """
     try:
-        _queryStud = conn.execute("""--sql
+        _queryStud = ejecutar_sql(conn, """--sql
         SELECT OPR.OrganizationId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
@@ -35,16 +35,8 @@ def fn29C(conn, return_dict):
         GROUP by P.PersonId,
                 OPR.OrganizationId;
         """)
-        if not _queryStud.returns_rows:
-          logger.info(
-                f"No existen estudiantes en practica registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        _queryStud = _queryStud.fetchall()
 
-        _queryProf = conn.execute("""--sql
+        _queryProf = ejecutar_sql(conn, """--sql
         SELECT OPR.OrganizationId
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
@@ -53,10 +45,10 @@ def fn29C(conn, return_dict):
           AND O.RefOrganizationTypeId = 47 --Asignatura de practica profesional
         GROUP by P.PersonId,
                 OPR.OrganizationId;
-        """).fetchall()
+        """)
         if((len(_queryStud) > 0) and (len(_queryProf) > 0)):
             _organizationStu = (
-                list([m[5] for m in _queryStud if m[0] is not None]))
+                list([m[0] for m in _queryStud if m[0] is not None]))
             if not _organizationStu:
                 logger.error(f"Sin Alumnos")
                 logger.error(f'Rechazado')
@@ -64,7 +56,7 @@ def fn29C(conn, return_dict):
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             _organizationProf = (
-                list([m[5] for m in _queryProf if m[0] is not None]))
+                list([m[0] for m in _queryProf if m[0] is not None]))
             if not _organizationProf:
                 logger.error(f"Sin profesores")
                 logger.error(f'Rechazado')
@@ -75,7 +67,7 @@ def fn29C(conn, return_dict):
             z = len(_organizationStu)
             for x in _organizationStu:
                 for y in _organizationProf:
-                    if x in y:
+                    if x == y:
                         _contador += 1
             if _contador == z:
                 logger.info(f'Todos los alumnos en practica con profesor')

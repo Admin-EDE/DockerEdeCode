@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn3F7(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que el número de lista cumpla con el formato
+    El número de lista cumple con el formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,13 +26,13 @@ def fn3F7(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
         SELECT identifier 
         FROM PersonIdentifier pi
         JOIN RefPersonIdentificationSystem rfi 
           ON  pi.RefPersonIdentificationSystemId=rfi.RefPersonIdentificationSystemId
           AND rfi.code IN ('listNumber')
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,25 +9,7 @@ def fn2EA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.2 Contenido mínimo del registro de matrícula.
-    Validar que exista el contenido mínimo. 
-    La vista personList unifica la información de las diferentes tablas de la base de datos.
-    --------------------------------------------------
-    - Domicilio del estudiante: pais, region, cuidad, comuna, nombreSector, direccion, 
-    apartamento, codigoPostal
-    - Identificación de padres, madres, apoderados o tutores: primerNombre, otrosNombres, 
-    apellidoPaterno, apellidoMaterno
-    - Datos de contacto de los padres, madres, apoderados o tutores del estudiante: 
-      pais, region, cuidad, comuna, nombreSector, direccion, apartamento, codigoPostal, 
-      tipoDocumentoUsadoParaVerificarDireccion, TelephoneNumber, telephoneNumberType, 
-      primaryTelephoneNumberIndicator, emailAddress, emailAddressType
-    - Si hubo retiro del estudiante: fechaRetiroEstudiante, motivo
-    - Observaciones
-
-    NOTAS:
-    - Local Escolar se refiere a la sede de un establecimiento educacional.
-    - La información de retiro de un estudiante se encuentra en 
-    PersonStatus.RefPersonStatusTypeId == 30 (Estudiante retirado definitivamente) 
-    + PersonStatus.Description
+    Los alumnos tienen todos sus datos obligatorios.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -44,7 +27,7 @@ def fn2EA(conn, return_dict):
     _r = False
     results = []
     try:
-        results = conn.execute("""
+        results = ejecutar_sql(conn, """--sql
         SELECT 
           (
             SELECT identifier 
@@ -138,7 +121,7 @@ def fn2EA(conn, return_dict):
             WHERE Description IN ('Course')
           )
         GROUP by p.PersonId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {results} -> {str(e)}")
 

@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,8 +10,7 @@ def fn6E1(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.2
-    Verificar que exista el justificativo de aquellos estudiantes que 
-    ingresaron con posterioridad a la 2da hora de clases.
+    Existe el justificativo de aquellos estudiantes que ingresaron con posterioridad a la 2da hora de clases.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -30,26 +30,26 @@ def fn6E1(conn, return_dict):
     numero = 0
     try:
 
-        _S3 = """ select organizationid from Organization where reforganizationtypeid=22  ;"""
+        _S3 = """SELECT organizationid from Organization where reforganizationtypeid=22  ;"""
 
-        _S4 = """ select * from coursesectionschedule where organizationid=?   ;"""
+        _S4 = """SELECT * from coursesectionschedule where organizationid=?   ;"""
 
-        _S5 = """ select a.OrganizationPersonRoleId,a.OrganizationId,a.PersonId,a.roleid,strftime('%Y-%m-%d %H:%M',a.EntryDate) as EntryDate, strftime('%Y-%m-%d %H:%M',a.ExitDate) as ExitDate,a.RecordStartDateTime,a.RecordEndDateTime,b.Identifier
+        _S5 = """SELECT a.OrganizationPersonRoleId,a.OrganizationId,a.PersonId,a.roleid,strftime('%Y-%m-%d %H:%M',a.EntryDate) as EntryDate, strftime('%Y-%m-%d %H:%M',a.ExitDate) as ExitDate,a.RecordStartDateTime,a.RecordEndDateTime,b.Identifier
                     from  OrganizationPersonRole a 
                     join PersonIdentifier b on a.personId=b.personId  
                     where roleid=6;"""
 
-        _S6 = """ select a.OrganizationPersonRoleId,strftime('%Y-%m-%d',b.Date) as Date,b.fileScanbase64,b.observaciones 
+        _S6 = """SELECT a.OrganizationPersonRoleId,strftime('%Y-%m-%d',b.Date) as Date,b.fileScanbase64,b.observaciones 
                     from OrganizationPersonRole a join RoleAttendanceEvent b on a.OrganizationPersonRoleId= b.OrganizationPersonRoleId
                     where a.OrganizationPersonRoleId= ? and b.Date= ?;"""
 
         now = datetime.now()
-        _q1 = conn.execute(_S3).fetchall()
+        _q1 = ejecutar_sql(conn, _S3)
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:
                 organizationid = str(q1[0])
-                _q2 = conn.execute(_S4, organizationid).fetchall()
+                _q2 = ejecutar_sql(conn, _S4, organizationid)
                 if(len(_q2) != 0):
                     for q2 in _q2:
                         diaSemana = str(q2[2]).split(",")
@@ -58,7 +58,7 @@ def fn6E1(conn, return_dict):
                         periodo = str(q2[5])
                         cantidad_letras = int(len(periodo))-1
                         periodo2 = (periodo[-2:])
-                        _q3 = conn.execute(_S5).fetchall()
+                        _q3 = ejecutar_sql(conn, _S5)
                         if(int(periodo2.strip()) == 3):
                             for q3 in _q3:
                                 id_alu = str(q3[8])
@@ -81,8 +81,8 @@ def fn6E1(conn, return_dict):
 
                                     if int(nombresemana2) == int(numero):
                                         if datetime.strptime(hora1[11:len(hora1)], '%H:%M') > datetime.strptime(hora_comi[:5], '%H:%M'):
-                                            _q4 = conn.execute(
-                                                _S6, orgaId, dfs).fetchall()
+                                            _q4 = ejecutar_sql(conn, 
+                                                _S6, orgaId, dfs)
                                             if(len(_q4) != 0):
                                                 for q4 in _q4:
                                                     justi = str(q4[2])

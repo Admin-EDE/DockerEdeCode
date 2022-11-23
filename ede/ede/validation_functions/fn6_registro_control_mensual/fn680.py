@@ -1,7 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,15 +9,7 @@ def fn680(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
-    verificar que los registros reportados semanalmente por la empresa 
-    se encuentren cargados en el sistema
-    --------------------------------------------------
-    El medio de verificación de la asistencia debería ser un documento 
-    reportado por la empresa, el cual debe estar cargado en el sistema 
-    en los campos fileScanBase64 y observaciones.
-
-    [revisar si es necesario cargar el documento o solo dejar la observación]
-
+    Los registros reportados semanalmente por la empresa se encuentran ingresados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -42,7 +34,7 @@ def fn680(conn, return_dict):
     # dias_laborales4=[]
     # numero=0
     try:
-        _queryText = """
+        _queryText = """--sql
           /*
             6.2 Contenido mínimo, letra c.8 (Alumnos de formación Dual)
             verificar que los registros reportados semanalmente por la empresa se encuentren cargados en el sistema
@@ -158,24 +150,23 @@ def fn680(conn, return_dict):
     # join PersonIdentifier c on b.personid=c.personId where strftime('%Y-%m-%d',a.Date)=? and  a.RefAttendanceEventTypeId=1 and b.personId=?;"""
 
         # now=datetime.now()
-        #_q1 = conn.execute(_S1).fetchall()
-        _q1 = conn.execute(_queryText)  # .fetchall()
-        if(_q1.returns_rows == 0):
+        #_q1 = ejecutar_sql(conn, _S1)
+        _q1 = ejecutar_sql(conn, _queryText)
+        
+        if(len(_q1) == 0):
             logger.info(
                 f"El establecimientos no tiene alumnos de formación DUAL para revisar")
-            logger.info(f"Aprobado")
+            logger.info(f"S/Datos")
             return_dict[getframeinfo(currentframe()).function] = True
             logger.info(f"{current_process().name} finalizando...")
             return True
 
-        _q1 = _q1.fetchall()
-        XX = 0
-        if(len(_q1) != 0):
+        else:
             # for q1 in _q1:
             #   personid=str(q1[0])
             #   fecha_entrada= str(q1[1])
             #   fecha_fin=str(q1[2])
-            #   _q6 = conn.execute(_S6).fetchall()
+            #   _q6 = ejecutar_sql(conn, _S6)
             #   if(len(_q6)!=0):
             #     for q6 in _q6:
             #       fecha_inicio=str(q6[0])
@@ -196,7 +187,7 @@ def fn680(conn, return_dict):
             #         fechaxx1=fecha.replace(',','')
             #         fechaxx2=fechaxx1.replace('(','')
             #         fechaxx3=datetime.strptime(fechaxx2[2:12],'%Y-%m-%d')
-            #         _q8 = conn.execute(_S7,fechaxx3,personid).fetchall()
+            #         _q8 = ejecutar_sql(conn, _S7,fechaxx3,personid)
             #         if(len(_q8)!=0):
             #           for dd in _q8:
             #             rut=str(dd[0])

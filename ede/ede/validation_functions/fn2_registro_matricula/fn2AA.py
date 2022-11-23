@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,9 +9,7 @@ def fn2AA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.6 De los estudiantes de intercambio
-    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
-    --------------------------------------------------
-    NOTA: File 65 sólo indicaba que esta verificación es complementaria a otra existente. Se ajustó comentario.
+    Existe cargada en el sistema la resolución que autoriza al estudiante de intercambio.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,7 +25,7 @@ def fn2AA(conn, return_dict):
           ]
     """
     try:
-        results = conn.execute("""--sql
+        results = ejecutar_sql(conn, """--sql
         SELECT p.personId
         FROM Person p
                 JOIN PersonStatus ps on p.PersonId = ps.PersonId
@@ -34,30 +33,14 @@ def fn2AA(conn, return_dict):
           AND ps.StatusValue = 1 --aprobado o no
           AND ps.RefPersonStatusTypeId = 25; --Intercambio
         """)
-        if not results.returns_rows:
-          logger.info(
-                f"No existen estudiantes intercambio registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        results = results.fetchall()
 
-        resultsTwo = conn.execute("""--sql
+        resultsTwo = ejecutar_sql(conn, """--sql
         SELECT p.personId
         FROM Person p
                 JOIN PersonStatus ps on p.PersonId = ps.PersonId
         WHERE p.RefVisaTypeId = 6 --Exchange Scholar Visa
           and ps.RefPersonStatusTypeId = 25; --Intercambio
         """)
-        if not resultsTwo.returns_rows:
-          logger.info(
-                f"No existen estudiantes intercambio registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        resultsTwo = resultsTwo.fetchall()
 
         if(len(results) > 0 and len(resultsTwo) > 0):
             lista = list(set([m[0] for m in results if m[0] is not None]))

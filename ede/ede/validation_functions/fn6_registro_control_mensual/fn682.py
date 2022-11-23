@@ -3,6 +3,7 @@ from multiprocessing import current_process
 from datetime import datetime
 import numpy as np
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -23,15 +24,15 @@ def ListaFechasRango(fecha_ini, fecha_ter, conn):
                         )
                         SELECT strftime('%Y-%m-%d',date) as date  FROM dates;"""
 
-    _S3x = """ select strftime('%Y-%m-%d',StartDate) as StartDate , strftime('%Y-%m-%d',EndDate) as EndDate from OrganizationCalendarCrisis;"""
+    _S3x = """SELECT strftime('%Y-%m-%d',StartDate) as StartDate , strftime('%Y-%m-%d',EndDate) as EndDate from OrganizationCalendarCrisis;"""
 
-    _S3x2 = """select strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarevent where strftime('%Y-%m-%d',EventDate)>= ?;"""
+    _S3x2 = """SELECT strftime('%Y-%m-%d',EventDate) as EventDate from OrganizationCalendarevent where strftime('%Y-%m-%d',EventDate)>= ?;"""
 
     fecha_in = datetime.strptime(fecha_ini, '%Y-%m-%d')
     fecha_te = datetime.strptime(fecha_ter, '%Y-%m-%d')
     logger.info(fecha_in)
     logger.info(fecha_te)
-    _q1 = conn.execute(_Trae_fechas, fecha_in, fecha_te).fetchall()
+    _q1 = ejecutar_sql(conn, _Trae_fechas, fecha_in, fecha_te)
     if(len(_q1) != 0):
         for q1 in _q1:
             fecha = str(q1)
@@ -45,12 +46,12 @@ def ListaFechasRango(fecha_ini, fecha_ter, conn):
         arr3 = np.array(arr)
         arr2.append(np.unique(arr3))
 
-    _q2 = conn.execute(_S3x).fetchall()
+    _q2 = ejecutar_sql(conn, _S3x)
     if(len(_q2) != 0):
         for q2 in _q2:
             fecha_com = datetime.strptime(q2[0], '%Y-%m-%d')
             fecha_fin = datetime.strptime(q2[1], '%Y-%m-%d')
-            _q1 = conn.execute(_Trae_fechas, fecha_com, fecha_fin).fetchall()
+            _q1 = ejecutar_sql(conn, _Trae_fechas, fecha_com, fecha_fin)
             if(len(_q1) != 0):
                 for q1 in _q1:
                     fecha = str(q1)
@@ -69,7 +70,7 @@ def ListaFechasRango(fecha_ini, fecha_ter, conn):
             if dia != dia2:
                 arr4.append(str(datetime.strftime(dia, '%Y-%m-%d')))
 
-    _q3 = conn.execute(_S3x2, fecha_in).fetchall()
+    _q3 = ejecutar_sql(conn, _S3x2, fecha_in)
     if(len(_q3) != 0):
         for q3 in _q3:
             fecha = str(q3)
@@ -94,8 +95,8 @@ def fn682(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
-    Verificar que los estudiantes de formación dual se encuentren identificados
-    en el registro de control de asistencia y asignatura.
+    Los estudiantes de formación dual se encuentran identificados en el registro de control de asistencia y asignatura.
+    -----
     Verificar que la asistencia de práctica profesional se encuentre cargada en 
     roleAttendanceEvent y que en ella, todos los estudiantes tengan cargada su asistencia.
     Args:
@@ -115,55 +116,55 @@ def fn682(conn, return_dict):
     arr = []
     arr4 = []
     try:
-        _S1 = """ SELECT OrganizationId
+        _S1 = """SELECT OrganizationId
                 FROM Organization
                 WHERE RefOrganizationTypeId = 47;"""
 
-        _S2 = """ SELECT Parent_OrganizationId
+        _S2 = """SELECT Parent_OrganizationId
                 FROM OrganizationRelationship
                 WHERE OrganizationId = ?;"""
 
-        _S3 = """ SELECT OrganizationId
+        _S3 = """SELECT OrganizationId
                 FROM K12Course
                 WHERE OrganizationId = ? and RefWorkbasedLearningOpportunityTypeId=1 ;"""
 
-        _S4 = """ select personid from OrganizationPersonRole
+        _S4 = """SELECT personid from OrganizationPersonRole
         where OrganizationId=? and RoleId = 6 ;"""
 
-        _S5 = """ select b.personid,strftime('%Y-%m-%d',c.EntryDate) as EntryDate,strftime('%Y-%m-%d',c.ExitDate) as ExitDate
+        _S5 = """SELECT b.personid,strftime('%Y-%m-%d',c.EntryDate) as EntryDate,strftime('%Y-%m-%d',c.ExitDate) as ExitDate
       from PersonStatus a join personidentifier b on  a.personid = b.personId  join organizationpersonrole c on b.personid=c.personId  where a.RefPersonStatusTypeId=35 and a.personid=? ;"""
 
-        _S6 = """ select strftime('%Y-%m-%d',BeginDate) as BeginDate ,strftime('%Y-%m-%d',EndDate) as EndDate 
+        _S6 = """SELECT strftime('%Y-%m-%d',BeginDate) as BeginDate ,strftime('%Y-%m-%d',EndDate) as EndDate 
               from OrganizationCalendarSession Where organizationcalendarsessionid=1;"""
 
-        _S7 = """ select * from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
+        _S7 = """SELECT * from RoleAttendanceEvent a join organizationpersonrole b on a.OrganizationPersonRoleId=b.OrganizationPersonRoleId 
             where strftime('%Y-%m-%d',a.Date)=? and  a.RefAttendanceEventTypeId=1 and b.personId=? ;"""
 
-        _q1 = conn.execute(_S1).fetchall()
+        _q1 = ejecutar_sql(conn, _S1)
         if(len(_q1) != 0):
             for q1 in _q1:
                 parent = str(q1)
-                _q2 = conn.execute(_S2, parent).fetchall()
+                _q2 = ejecutar_sql(conn, _S2, parent)
                 if(len(_q2) != 0):
                     for q2 in _q2:
                         parent2 = str(q2)
-                        _q3 = conn.execute(_S3, parent2).fetchall()
+                        _q3 = ejecutar_sql(conn, _S3, parent2)
                         if(len(_q3) != 0):
                             for q3 in _q3:
                                 parent3 = str(q3)
-                                _q4 = conn.execute(_S4, parent3).fetchall()
+                                _q4 = ejecutar_sql(conn, _S4, parent3)
                                 if(len(_q4) != 0):
                                     for q4 in _q4:
                                         peronid = str(q4)
-                                        _q5 = conn.execute(
-                                            _S5, peronid).fetchall()
+                                        _q5 = ejecutar_sql(conn, 
+                                            _S5, peronid)
                                         if(len(_q5) != 0):
                                             for xx in _q5:
                                                 personid2 = str(xx[0])
                                                 fecha_entrada = str(xx[1])
                                                 fecha_fin = str(xx[2])
-                                                _q6 = conn.execute(
-                                                    _S6).fetchall()
+                                                _q6 = ejecutar_sql(conn, 
+                                                    _S6)
                                                 if(len(_q6) != 0):
                                                     for xx in _q6:
                                                         fecha_inicio = str(
@@ -189,8 +190,8 @@ def fn682(conn, return_dict):
                                                         '(', '')
                                                     fechaxx3 = datetime.strptime(
                                                         fechaxx2[1:11], '%Y-%m-%d')
-                                                    _q8 = conn.execute(
-                                                        _S7, fechaxx3, personid2).fetchall()
+                                                    _q8 = ejecutar_sql(conn, 
+                                                        _S7, fechaxx3, personid2)
                                                     if(len(_q8) == 0):
                                                         arr4.append(personid2)
 

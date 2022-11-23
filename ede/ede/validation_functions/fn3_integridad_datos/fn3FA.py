@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn3FA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si la lista de afiliaciones tribales se encuentra dentro de la lista permitida
+    La lista de afiliaciones tribales se encuentra dentro de la lista permitida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -27,12 +28,12 @@ Ver https://docs.google.com/spreadsheets/d/1vZD8ufVm3Z71V9TveQcLI0A02wrmwsz43z3T
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
           SELECT rta.Description
           from person p
           JOIN RefTribalAffiliation rta
             ON p.RefTribalAffiliationId = rta.RefTribalAffiliationId     
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

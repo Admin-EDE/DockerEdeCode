@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,13 +9,12 @@ def fn7F2(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    verificar que la calificación final mínima de aprobación del estudiante sea un 4.0.
-    -------------------
+    La calificación final mínima de aprobación del estudiante es un 4.0.
+    -----
     Verificar que si en la tabla PersonStatus el estudiante tiene el estado promovido, 
     su calificación final sea, al menos, de un cuatro (4,00)
     Tablas PersonStatus y Assessment Result
     RefPersonStatusType = 28 (Estudiante promovido)
-
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -32,7 +32,7 @@ def fn7F2(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = ejecutar_sql(conn, """--sql
         SELECT 
 			  DISTINCT PS.PersonId
 			,orgCodEns.name as 'cod_enseñanza'			  
@@ -65,7 +65,7 @@ def fn7F2(conn, return_dict):
 	
         WHERE OPR.RoleId = 6
           AND PS.RefPersonStatusTypeId = 28;
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
 
@@ -79,7 +79,7 @@ def fn7F2(conn, return_dict):
 
     _scoreQuery = []
     try:
-        _scoreQuery = conn.execute("""
+        _scoreQuery = ejecutar_sql(conn, """--sql
       SELECT round((sum(replace(R.ScoreValue, ',', '')) / count(R.ScoreValue)), 0), R.RefScoreMetricTypeId as 'tipo'
       FROM AssessmentResult R
               JOIN AssessmentRegistration AR ON AR.AssessmentRegistrationId = R.AssessmentRegistrationId
@@ -118,7 +118,7 @@ def fn7F2(conn, return_dict):
       )
       GROUP BY ASN.AssessmentAdministrationId, ASN.AssessmentSessionId, ASSR.AssessmentSessionStaffRoleId, ASSR.PersonId
       ORDER BY ASSR.PersonId ASC;
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_scoreQuery} -> {str(e)}")
 

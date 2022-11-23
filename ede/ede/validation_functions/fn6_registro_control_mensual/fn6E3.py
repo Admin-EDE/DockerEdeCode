@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,9 +9,7 @@ def fn6E3(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.2
-    Verificar que en los casos de suspensión de clases, 
-    exista cargada en el sistema la aprobación del calendario 
-    de recuperación de la secretaría ministerial.
+    En los casos de suspensión de clases, existe ingresado en el sistema la aprobación del calendario de recuperación de la secretaría ministerial.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -37,7 +36,7 @@ def fn6E3(conn, return_dict):
               FROM OrganizationCalendarSession
               WHERE claseRecuperadaId != NULL;"""
 
-        _q1 = conn.execute(_s1).fetchall()
+        _q1 = ejecutar_sql(conn, _s1)
         if(len(_q1) != 0):
             for q1 in _q1:
                 _rexNumber = q1[0]
@@ -61,7 +60,7 @@ def fn6E3(conn, return_dict):
             logger.info(f"{current_process().name} finalizando...")
             return True
 
-        _q2 = conn.execute(_s2).fetchall()
+        _q2 = ejecutar_sql(conn, _s2)
         if(len(_q2) != 0):
             for q2 in _q2:
                 _rxn = q2[0]

@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import pandas as pd
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn3F1(conn, return_dict, selfargs):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica la integridad referencial de los datos
+    La integridad referencial de los datos es correcta.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -27,7 +28,7 @@ def fn3F1(conn, return_dict, selfargs):
     _r = False
     rows = []
     try:
-        rows = conn.execute("PRAGMA foreign_key_check;").fetchall()
+        rows = ejecutar_sql(conn, "PRAGMA foreign_key_check;")
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

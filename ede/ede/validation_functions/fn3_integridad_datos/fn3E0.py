@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn3E0(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si la vista PersonList filtrada por docentes contiene información
+    Hay docentes registrados (vista personList filtrada por docente)
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -24,7 +25,7 @@ def fn3E0(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = ejecutar_sql(conn, """--sql
       SELECT
         personId
         ,DegreeOrCertificateTitleOrSubject
@@ -35,7 +36,7 @@ def fn3E0(conn, return_dict):
         ,educationVerificationMethodDescription
       FROM PersonList
       WHERE Role like '%Docente%';
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

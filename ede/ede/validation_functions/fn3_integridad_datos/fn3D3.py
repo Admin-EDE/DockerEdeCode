@@ -1,15 +1,16 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
-
 
 
 def fn3D3(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificar que los campos ClassMeetingDays y ClassPeriod se encuentren dentro de la lista. 
+    Los ClassMeetingDays corresponden a los días de la semana, y los ClassPeriod a los bloques.
+    -----
     Esto ayudará a identificar el segundo bloque de cada curso, lo cual es necesario para 
     comparar el registro de control de asignatura contra el registro de control de subvenciones.
     Tabla OrganizationCalendarSession, campos ClassMeetingDays y ClassPeriod
@@ -30,12 +31,12 @@ def fn3D3(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = ejecutar_sql(conn, """--sql
         -- Lista todos los registros de la tabla CourseSectionSchedule
         -- si no hay información, se informa SIN DATOS
         SELECT count(ClassMeetingDays), count(ClassPeriod)
         FROM CourseSectionSchedule
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_ExistData} -> {str(e)}")
 
@@ -47,7 +48,7 @@ def fn3D3(conn, return_dict):
         return _r
     ClassMeetingDays = []
     try:
-        ClassMeetingDays = conn.execute("""--sql
+        ClassMeetingDays = ejecutar_sql(conn, """--sql
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
         WITH split(word, str) AS (
@@ -57,13 +58,13 @@ def fn3D3(conn, return_dict):
             substr(str, instr(str, ',')+1)
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes');
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {ClassMeetingDays} -> {str(e)}")
 
     ClassPeriod = []
     try:
-        ClassPeriod = conn.execute("""--sql
+        ClassPeriod = ejecutar_sql(conn, """--sql
         -- Lista todos los registro del campo ClassMeetingDays de la tabla CourseSectionSchedule
         -- que no se encuentren dentro de la lista permitida
         WITH split(word, str) AS (
@@ -73,7 +74,7 @@ def fn3D3(conn, return_dict):
             substr(str, instr(str, ',')+1)
             FROM split WHERE str!=''
         ) SELECT DISTINCT word FROM split WHERE word!='' AND word NOT IN ('Bloque01','Bloque02','Bloque03','Bloque04','Bloque05','Bloque06','Bloque07','Bloque08','Bloque09','Bloque10','Bloque11','Bloque12','Bloque13','Bloque14','Bloque15','Bloque16','Bloque17','Bloque18','Bloque19','Bloque20');
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {ClassPeriod} -> {str(e)}")
 

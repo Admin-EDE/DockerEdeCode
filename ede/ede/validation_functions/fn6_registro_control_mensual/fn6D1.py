@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn6D1(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.3
-    verificar que no se declare la asistencia de un estudiante dado de baja
+    No se declara la asistencia de un estudiante dado de baja.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -47,7 +48,7 @@ def fn6D1(conn, return_dict):
                 ON B.OrganizationId = C.OrganizationId
                 WHERE C.RefOrganizationTypeId = 10;"""
 
-        _q1 = conn.execute(_s1).fetchall()
+        _q1 = ejecutar_sql(conn, _s1)
         if(len(_q1) != 0):
             for q1 in _q1:
                 _o = q1[0]
@@ -55,7 +56,7 @@ def fn6D1(conn, return_dict):
                 _d1 = q1[2]
                 _d2 = q1[3]
                 if(_d1 is None):
-                    _q2 = conn.execute(_s3).fetchall()
+                    _q2 = ejecutar_sql(conn, _s3)
                     if(len(_q2) != 0):
                         _d1 = _q2[0]
                     else:
@@ -69,7 +70,7 @@ def fn6D1(conn, return_dict):
                 if(_d2 is None):
                     _l.append(_r)
                 else:
-                    _q3 = conn.execute(_s2, _o, _d1, _d2).fetchall()
+                    _q3 = ejecutar_sql(conn, _s2, _o, _d1, _d2)
                     if(len(_q3) != 0):
                         for q3 in _q3:
                             _l2.append(_r+"-"+str(q3[0]))

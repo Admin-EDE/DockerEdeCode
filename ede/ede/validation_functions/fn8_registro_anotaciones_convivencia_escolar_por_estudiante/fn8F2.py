@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,15 +10,7 @@ def fn8F2(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
     6.2 Contenido mínimo, letra e
-    Verificar el contenido de cada registro de convivencia
-
-    Grupo _Incidentes debería contener todo lo necesario.
-
-    Identificación del estudiante
-    Identificación del apoderado
-    Fecha, asignatura y observación
-    Fecha, profesor y datos de la entrevista con el apoderado      
-
+    El contenido de cada registro de convivencia es correcto.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -34,7 +27,7 @@ def fn8F2(conn, return_dict):
     _r = False
     _queryIncident = []
     try:
-        _queryIncident = conn.execute("""
+        _queryIncident = ejecutar_sql(conn, """--sql
         SELECT DISTINCT
 			  I.incidentId                                                                         --00
 			, I.incidentDate                                                                       --01
@@ -117,7 +110,7 @@ def fn8F2(conn, return_dict):
 				AND 
 				k12disc.RecordEndDateTime IS NULL
 			ORDER BY I.incidentId
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
 
@@ -227,6 +220,7 @@ def fn8F2(conn, return_dict):
         if(len(_e) == 0):
             _r = True
         else:
+            _r = False
             logger.error(_e)
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")

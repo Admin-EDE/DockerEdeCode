@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn3EF(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que los id del curso sean equivalentes en las tablas course y organization
+    Los id del curso son equivalentes en las tablas course y organization.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,15 +27,15 @@ def fn3EF(conn, return_dict):
     _r = False
     courses1 = []
     try:
-        courses1 = conn.execute(
-            "SELECT DISTINCT OrganizationIdDelCurso FROM jerarquiasList;").fetchall()
+        courses1 = ejecutar_sql(conn, 
+            "SELECT DISTINCT OrganizationIdDelCurso FROM jerarquiasList;")
     except Exception as e:
         logger.info(f"Resultado: {courses1} -> {str(e)}")
 
     courses2 = []
     try:
-        courses2 = conn.execute(
-            "SELECT OrganizationIdCurso FROM cursoList;").fetchall()
+        courses2 = ejecutar_sql(conn, 
+            "SELECT OrganizationIdCurso FROM cursoList;")
     except Exception as e:
         logger.info(f"Resultado: {courses2} -> {str(e)}")
 

@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn681(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.8
-    verificar que los estudiantes de formación dual se encuentren identificados en el sistema.
+    Los estudiantes de formación dual se encuentran identificados en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -32,48 +33,48 @@ def fn681(conn, return_dict):
     numero = 0
     try:
 
-        _S1 = """ SELECT OrganizationId
+        _S1 = """SELECT OrganizationId
                 FROM Organization
                 WHERE RefOrganizationTypeId = 47;"""
 
-        _S2 = """ SELECT Parent_OrganizationId
+        _S2 = """SELECT Parent_OrganizationId
                 FROM OrganizationRelationship
                 WHERE OrganizationId = ?;"""
 
-        _S3 = """ SELECT OrganizationId
+        _S3 = """SELECT OrganizationId
                 FROM K12Course
                 WHERE OrganizationId = ? and RefWorkbasedLearningOpportunityTypeId=1 ;"""
 
-        _S4 = """ select personid 
+        _S4 = """SELECT personid 
               from OrganizationPersonRole
               where OrganizationId=? and RoleId = 6 ;"""
 
-        _S5 = """ select b.Identifier
+        _S5 = """SELECT b.Identifier
               from PersonStatus a 
               join personidentifier b 
               on  a.personid = b.personId  
               where a.RefPersonStatusTypeId=35 and a.personid=? """
 
         now = datetime.now()
-        _q1 = conn.execute(_S1).fetchall()
+        _q1 = ejecutar_sql(conn, _S1)
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:
                 parent = str(q1[0])
-                _q2 = conn.execute(_S2, parent).fetchall()
+                _q2 = ejecutar_sql(conn, _S2, parent)
                 if(len(_q2) != 0):
                     for q2 in _q2:
                         parent2 = str(q2[0])
-                        _q3 = conn.execute(_S3, parent2).fetchall()
+                        _q3 = ejecutar_sql(conn, _S3, parent2)
                         if(len(_q3) != 0):
                             for q3 in _q3:
                                 parent3 = str(q3[0])
-                                _q4 = conn.execute(_S4, parent3).fetchall()
+                                _q4 = ejecutar_sql(conn, _S4, parent3)
                                 if(len(_q4) != 0):
                                     for q4 in _q4:
                                         personid = str(q4[0])
-                                        _q5 = conn.execute(
-                                            _S5, personid).fetchall()
+                                        _q5 = ejecutar_sql(conn, 
+                                            _S5, personid)
                                         if(len(_q5) == 0):
                                             rut = str(_q5[0])
                                             arr.append(rut)

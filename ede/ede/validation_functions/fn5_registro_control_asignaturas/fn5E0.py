@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn5E0(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.1
-    Validar el registro de asistencia bloque a bloque.
+    El registro de asistencia bloque a bloque es válido.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -36,7 +37,7 @@ def fn5E0(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""
+        _ExistData = ejecutar_sql(conn, """--sql
             SELECT DISTINCT 
               rae.Date, -- fecha completa de la clase
               strftime('%Y-%m-%d', rae.Date) as 'fecha', -- rescata solo la fecha desde rae.Date
@@ -99,7 +100,7 @@ def fn5E0(conn, return_dict):
             WHERE 
               Date is not NULL
             GROUP BY rae.Date         
-        """).fetchall()
+        """)
         if(not _ExistData):
           raise Exception("No hay registros de información")
     except Exception as e:
@@ -109,7 +110,7 @@ def fn5E0(conn, return_dict):
         return_dict[getframeinfo(currentframe()).function] = True
         return True
     try:
-        asistencia = conn.execute("""
+        asistencia = ejecutar_sql(conn, """--sql
             /*
             6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
             Verifica:
@@ -217,7 +218,7 @@ def fn5E0(conn, return_dict):
               rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
               
             GROUP BY rae.Date
-        """).fetchall()
+        """)
     except Exception as e:
         logger.error(f'Rechazado')
         _r = False

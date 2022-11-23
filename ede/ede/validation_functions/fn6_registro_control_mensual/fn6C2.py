@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,9 +10,7 @@ def fn6C2(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.4
-    verificar que los alumnos excedentes (con derecho a pago) que sustituyan
-    a otros estudiantes retirados del establecimiento cuenten con 
-    la autorización de la secretaría ministerial
+    Los alumnos excedentes (con derecho a pago) que sustituyan a otros estudiantes retirados del establecimiento cuentan con la autorización de la secretaría ministerial.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -34,7 +33,7 @@ def fn6C2(conn, return_dict):
     numero = 0
     try:
 
-        _S3 = """
+        _S3 = """--sql
           SELECT 
             pid.identifier
             ,pst.docnumber
@@ -58,16 +57,7 @@ def fn6C2(conn, return_dict):
             """
 
         now = datetime.now()
-        _q1 = conn.execute(_S3)
-        if(_q1.returns_rows == 0):
-            logger.error(f"No hay informacion de estudiantes excedentes")
-            logger.info(f"S/Datos")
-            return_dict[getframeinfo(currentframe()).function] = True
-            logger.info(f"{current_process().name} finalizando...")
-            return True
-
-        _q1 = _q1.fetchall()
-        XX = 0
+        _q1 = ejecutar_sql(conn, _S3)
         
         if(len(_q1) == 0):
             logger.error(f"No hay informacion de estudiantes excedentes")

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,13 +9,7 @@ def fn2BA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.5 De los estudiantes excedentes
-    Validar que exista cargada en el sistema la resolución que autoriza al estudiante.
-    --------------------------------------------------
-    NOTA: 
-    - Una resolución es un documento público que emite el Ministerio de Educación en 
-    ciertos casos. Cada resolución tiene un número y una fecha de total tramitación. 
-    Para este caso se debe validar que exista el documento cargado en el sistema y 
-    sus datos cargados en la tabla.
+    Existe cargada en el sistema la resolución que autoriza al estudiante excedente.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -30,25 +25,17 @@ def fn2BA(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         --Comprobar si hay estudiantes con status 25, 24, 31
-        SELECT DISTINCT P.PersonId
+        SELECT DISTINCT P.PersonId, PS.RefPersonStatusTypeId
         from OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
         where OPR.RoleId = 6 --Estudiante
           and PS.RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
         """)
-        if not _query.returns_rows:
-          logger.info(
-                f"No existen estudiantes excedentes en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        _query = _query.fetchall()
         if (len(_query) > 0):
-            _queryExcedentes = conn.execute("""--sql
+            _queryExcedentes = ejecutar_sql(conn, """--sql
             --Que aquellos estudiantes tengan su archivo subido
           SELECT fileScanBase64
           from PersonStatus
@@ -61,9 +48,9 @@ def fn2BA(conn, return_dict):
                 and PS.RefPersonStatusTypeId IN (25, 24, 31)) --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
             and fileScanBase64 is not null
             and RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
-          """).fetchall()
+          """)
             if (len(_queryExcedentes) == len(_query)):
-                _file = conn.execute("""--sql
+                _file = ejecutar_sql(conn, """--sql
                 --Que aquellos estudiantes tengan su archivo subido, no nulo, y con documentid
             SELECT documentId
             FROM Document
@@ -77,12 +64,12 @@ def fn2BA(conn, return_dict):
                                               join Person P on OPR.PersonId = P.PersonId
                                               join PersonStatus PS on P.PersonId = PS.PersonId
                                     where OPR.RoleId = 6 --Estudiante
-                                      and PS.RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
+                                      and PS.RefPersonStatusTypeId IN (25, 24, 31) --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
                                 )
                                   and fileScanBase64 is not null
-                                  and RefPersonStatusTypeId IN (25, 24, 31); --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
+                                  and RefPersonStatusTypeId IN (25, 24, 31) --Intercambio, Excedente sin derecho a subvención, Excedente con derecho a subvención
             )
-            """).fetchall()
+            """)
                 if(len(_file) == len(_query)):
                     logger.info(
                         f'Todos los alumnos excedentes cuentan con su documento correspondiente')
