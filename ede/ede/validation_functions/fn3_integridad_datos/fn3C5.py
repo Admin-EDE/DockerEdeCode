@@ -32,7 +32,10 @@ def fn3C5(conn, return_dict):
             "SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;")
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
-
+        logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
     try:
         logger.info(f"len(digitalRandomKey): {len(rows)}")
         if(len(rows) > 0):
@@ -50,6 +53,7 @@ def fn3C5(conn, return_dict):
             f"No se pudieron validar los verificadores de indentidad: {str(e)}")
         logger.error(f"Rechazado")
     finally:
+        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

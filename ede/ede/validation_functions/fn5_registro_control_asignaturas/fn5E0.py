@@ -101,7 +101,7 @@ def fn5E0(conn, return_dict):
               Date is not NULL
             GROUP BY rae.Date         
         """)
-        if(not _ExistData):
+        if(not _ExistData or len(_ExistData) == 0):
           raise Exception("No hay registros de información")
     except Exception as e:
         logger.info(f"S/Datos")
@@ -239,23 +239,34 @@ def fn5E0(conn, return_dict):
                 logger.error(f'Rechazado')
                 _r = False
                 logger.error(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
-                return_dict[getframeinfo(currentframe()).function] = False
+                return_dict[getframeinfo(currentframe()).function] = _r
                 logger.info(f"{current_process().name} finalizando...")
-                return False    
+                return _r    
                 
               if(el_ != firmadoEnClases[idx_]):
                 logger.error(f'Rechazado')
                 _r = False
                 logger.error(f'Total de estudiantes NO coincide con cantidad de firmas')
-                return_dict[getframeinfo(currentframe()).function] = False
+                return_dict[getframeinfo(currentframe()).function] = _r
                 logger.info(f"{current_process().name} finalizando...")
-                return False
-            
+                return _r
+        else:
+          logger.error(f'S/Datos')
+          _r = False
+          logger.error(f'No hay datos de asignatura')
+          return_dict[getframeinfo(currentframe()).function] = _r
+          logger.info(f"{current_process().name} finalizando...")
+          return _r
+
         logger.info("Aprobado")
         _r = True
-        return_dict[getframeinfo(currentframe()).function] = True
+        return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
-        return True
+        return _r
     except Exception as e:
+      logger.error(f'Rechazado')
+      logger.error(f"No se pudo ejecutar la consulta")
+      return_dict[getframeinfo(currentframe()).function] = _r
       logger.error(f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
       logger.error(f"{str(e)}")
+      return _r
