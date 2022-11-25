@@ -18,7 +18,6 @@ import string
 import random
 import shutil
 from typing import Dict, Literal, Union
-from sqlcipher3 import dbapi2
 
 
 class insert:
@@ -81,7 +80,7 @@ class insert:
     def encriptarBD(self, DB_NAME: str) -> str:
         secPhase = 'BD en blanco solo con parámetros definidos por Enlaces-Mineduc'
         engine = create_engine(
-            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000",module=dbapi2)
+            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000")
         conn = engine.connect()
         conn.execute(f"PRAGMA key = '{secPhase}';")
         psw = ''.join(random.choice(string.ascii_uppercase +
