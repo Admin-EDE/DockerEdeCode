@@ -13,9 +13,9 @@ def fn5E0(conn, return_dict):
     El registro de asistencia bloque a bloque es válido.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
-          Objeto que establece la conexión con la base de datos.
-          Creado previamente a través de la función execute(self)
-          ]
+            Objeto que establece la conexión con la base de datos.
+            Creado previamente a través de la función execute(self)
+        ]
     Returns:
         [Boolean]: [
           Retorna True/False y "S/Datos" a través de logger, solo si puede:
@@ -102,7 +102,7 @@ def fn5E0(conn, return_dict):
             GROUP BY rae.Date         
         """)
         if(not _ExistData or len(_ExistData) == 0):
-          raise Exception("No hay registros de información")
+            raise Exception("No hay registros de información")
     except Exception as e:
         logger.info(f"S/Datos")
         _r = True
@@ -182,6 +182,8 @@ def fn5E0(conn, return_dict):
               JOIN OrganizationCalendarSession ocs
                 ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
                 AND ocs.RecordEndDateTime IS NULL
+				AND DATE(rae.Date) = ocs.BeginDate
+				AND DATE(rae.Date) = ocs.EndDate
               JOIN CourseSectionSchedule css
                 ON O.OrganizationId = css.OrganizationId
                 AND css.RecordEndDateTime IS NULL
@@ -235,34 +237,33 @@ def fn5E0(conn, return_dict):
             firmadoEnClases = list([m[11] for m in asistencia if m[11] is not None])
             
             for idx_,el_ in enumerate(totalEstudiantes):
-              if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
-                logger.error(f'Rechazado')
-                _r = False
-                logger.error(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
-                return_dict[getframeinfo(currentframe()).function] = _r
-                logger.info(f"{current_process().name} finalizando...")
-                return _r    
+                if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
+                    logger.error(f'Rechazado')
+                    _r = False
+                    logger.error(f'Total de estudiantes NO coincide con Presentes+Ausentes+Atrasados')
+                    return_dict[getframeinfo(currentframe()).function] = _r
+                    logger.info(f"{current_process().name} finalizando...")
+                    return _r    
                 
-              if(el_ != firmadoEnClases[idx_]):
-                logger.error(f'Rechazado')
-                _r = False
-                logger.error(f'Total de estudiantes NO coincide con cantidad de firmas')
-                return_dict[getframeinfo(currentframe()).function] = _r
-                logger.info(f"{current_process().name} finalizando...")
-                return _r
+                if(el_ != firmadoEnClases[idx_]):
+                    logger.error(f'Rechazado')
+                    _r = False
+                    logger.error(f'Total de estudiantes NO coincide con cantidad de firmas')
+                    return_dict[getframeinfo(currentframe()).function] = _r
+                    logger.info(f"{current_process().name} finalizando...")
+                    return _r
+            logger.info("Aprobado")
+            _r = True
+            return_dict[getframeinfo(currentframe()).function] = _r
+            logger.info(f"{current_process().name} finalizando...")
+            return _r
         else:
-          logger.error(f'S/Datos')
-          _r = False
-          logger.error(f'No hay datos de asignatura')
-          return_dict[getframeinfo(currentframe()).function] = _r
-          logger.info(f"{current_process().name} finalizando...")
-          return _r
-
-        logger.info("Aprobado")
-        _r = True
-        return_dict[getframeinfo(currentframe()).function] = _r
-        logger.info(f"{current_process().name} finalizando...")
-        return _r
+            logger.error(f'S/Datos')
+            _r = False
+            logger.error(f'No hay datos de asignatura')
+            return_dict[getframeinfo(currentframe()).function] = _r
+            logger.info(f"{current_process().name} finalizando...")
+            return _r
     except Exception as e:
       logger.error(f'Rechazado')
       logger.error(f"No se pudo ejecutar la consulta")
