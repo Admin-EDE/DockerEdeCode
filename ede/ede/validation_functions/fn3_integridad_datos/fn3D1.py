@@ -36,6 +36,8 @@ def fn3D1(conn, return_dict):
         WHERE 
           -- Agrega a la lista todos los registros que no cumplan con la expresión regular
           MaximumCapacity NOT REGEXP "^[1-9]{1}\d{1,3}$"
+          AND Organization.RecordEndDateTime IS NULL
+		  AND CourseSection.RecordEndDateTime IS NULL
       """)
     except Exception as e:
         logger.info(f"Resultado: {MaximumCapacityErrors} -> {str(e)}")
