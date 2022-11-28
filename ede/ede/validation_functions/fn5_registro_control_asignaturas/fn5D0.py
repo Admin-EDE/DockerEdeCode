@@ -31,7 +31,7 @@ def fn5D0(conn, return_dict):
                     JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
             WHERE OPR.RoleId in(4,5)
             AND RAE.RefAttendanceEventTypeId = 2
-            group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
+            group by OPR.PersonId, OPR.OrganizationId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
             """
             )
         if(len(_oPR)>0):
