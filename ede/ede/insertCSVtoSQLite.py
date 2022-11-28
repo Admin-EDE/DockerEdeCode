@@ -158,7 +158,7 @@ class insert:
     def transferCSVToSQL_withPandas(self, path_to_dir_csv_file, DB_NAME: str, secPhase: str) -> bool:
         _r = True
         engine = create_engine(
-            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000",module=dbapi2)
+            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000")
         conn = engine.connect()
         for root, dirs, files in os.walk(path_to_dir_csv_file, topdown=False):
             for name in files:
