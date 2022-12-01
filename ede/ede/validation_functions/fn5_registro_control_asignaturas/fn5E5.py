@@ -184,7 +184,9 @@ FROM
       and time(ifnull(css.ClassEndingTime, '00:00'), '+5 minutes')
       JOIN OrganizationCalendarSession ocs ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
       AND ocs.RecordEndDateTime IS NULL
-      AND ocs.BeginDate = fechaAsistenciaAsignatura --AND hora between ifnull(ocs.SessionStartTime,'00:00') and ifnull(ocs.SessionEndTime,'00:00')
+				AND DATE(rae.Date) = ocs.BeginDate
+				AND DATE(rae.Date) = ocs.EndDate
+      --AND ocs.BeginDate = fechaAsistenciaAsignatura --AND hora between ifnull(ocs.SessionStartTime,'00:00') and ifnull(ocs.SessionEndTime,'00:00')
       AND ocs.SessionStartTime between time(
         ifnull(css.ClassBeginningTime, '00:00'),
         '-5 minutes'

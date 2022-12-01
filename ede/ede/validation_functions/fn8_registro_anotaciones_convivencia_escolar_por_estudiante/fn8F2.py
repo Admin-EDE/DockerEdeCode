@@ -113,6 +113,10 @@ def fn8F2(conn, return_dict):
     """)
     except Exception as e:
         logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
+        logger.error(f"Rechazado")
+        _r = False
+        return _r
 
     if(len(_queryIncident) <= 0):
         logger.info(f"S/Datos ")

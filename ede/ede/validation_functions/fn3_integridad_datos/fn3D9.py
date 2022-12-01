@@ -54,7 +54,11 @@ def fn3D9(conn, return_dict):
 		   AND DATE(RoleAttendanceEvent.Date) = OrganizationCalendarSession.EndDate
       """)
     except Exception as e:
+        logger.error(f'Rechazado')
+        _r = False
         logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        return _r
 
     if(len(listInfoSuccesfull) <= 0):
         logger.info("S/Datos")
@@ -90,6 +94,7 @@ def fn3D9(conn, return_dict):
 		   AND DATE(RoleAttendanceEvent.Date) = OrganizationCalendarSession.EndDate
       """)
     except Exception as e:
+        logger.error(f"Rechazado")
         logger.info(f"Resultado: {RoleAttendance_outer} -> {str(e)}")
 
     logger.info(
@@ -118,6 +123,7 @@ def fn3D9(conn, return_dict):
             f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
         logger.error(f"Rechazado")
     finally:
+        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r
