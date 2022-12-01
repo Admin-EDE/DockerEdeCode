@@ -18,7 +18,7 @@ import string
 import random
 import shutil
 from typing import Dict, Literal, Union
-
+from sqlcipher3 import dbapi2
 
 class insert:
     def __init__(self, args):
@@ -80,7 +80,8 @@ class insert:
     def encriptarBD(self, DB_NAME: str) -> str:
         secPhase = 'BD en blanco solo con parámetros definidos por Enlaces-Mineduc'
         engine = create_engine(
-            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000")
+            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000"
+            ,module=dbapi2)
         conn = engine.connect()
         conn.execute(f"PRAGMA key = '{secPhase}';")
         psw = ''.join(random.choice(string.ascii_uppercase +
@@ -158,7 +159,8 @@ class insert:
     def transferCSVToSQL_withPandas(self, path_to_dir_csv_file, DB_NAME: str, secPhase: str) -> bool:
         _r = True
         engine = create_engine(
-            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000")
+            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000"
+            ,module=dbapi2)
         conn = engine.connect()
         for root, dirs, files in os.walk(path_to_dir_csv_file, topdown=False):
             for name in files:

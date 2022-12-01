@@ -15,6 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from typing import Union
+from sqlcipher3 import dbapi2
 
 from ede.ede.validation_functions.check_utils import validateJSON
 
@@ -323,6 +324,7 @@ class check:
         sec = self.args.secPhase
         path = self.args.path_to_DB_file
         engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000"
+                                ,module=dbapi2
                                # ,connect_args={'timeout': 10000}
                                )
         try:
