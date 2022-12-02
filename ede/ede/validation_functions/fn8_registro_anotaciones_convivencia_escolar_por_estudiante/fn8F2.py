@@ -112,10 +112,11 @@ def fn8F2(conn, return_dict):
 			ORDER BY I.incidentId
     """)
     except Exception as e:
-        logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         _r = False
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
         return _r
 
     if(len(_queryIncident) <= 0):
@@ -223,15 +224,21 @@ def fn8F2(conn, return_dict):
 
         if(len(_e) == 0):
             _r = True
+            logger.info(f'Aprobado')
+            return_dict[getframeinfo(currentframe()).function] = _r
+            logger.info(f"{current_process().name} finalizando...")
+            return _r
         else:
             _r = False
+            logger.error(f'Rechazado')
             logger.error(_e)
+            return_dict[getframeinfo(currentframe()).function] = _r
+            logger.info(f"{current_process().name} finalizando...")
+            return _r
     except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         _r = False
-    finally:
-        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r
