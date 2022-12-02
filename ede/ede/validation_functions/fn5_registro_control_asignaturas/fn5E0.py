@@ -36,7 +36,6 @@ def fn5E0(conn, return_dict):
     """      
     _r = False
     try:
-        logger.info(f"A ejecutar asistencia")
         asistencia = ejecutar_sql(conn, """--sql
             /*
             6.2 Contenido mínimo, letra b.2 -> validar el registro de asistencia bloque a bloque
@@ -147,7 +146,6 @@ def fn5E0(conn, return_dict):
               
             GROUP BY rae.Date
         """)
-        logger.info(f"Cantidad asistencia: {len(asistencia)}")
     except Exception as e:
         logger.error(f'Rechazado')
         _r = False
@@ -157,13 +155,11 @@ def fn5E0(conn, return_dict):
         return False
     try:
         if(len(asistencia)>0):
-            logger.info("Entro al if asistencia>0")
             totalEstudiantes = list([m[4] for m in asistencia if m[4] is not None])
             estudiantesPresentes = list([m[5] for m in asistencia if m[5] is not None])
             estudiantesAusentes = list([m[6] for m in asistencia if m[6] is not None])
             estudiantesRetrasados = list([m[7] for m in asistencia if m[7] is not None])
             firmadoEnClases = list([m[8] for m in asistencia if m[8] is not None])
-            logger.info(f"Total estudiantes: {len(totalEstudiantes)}")
 
             for idx_,el_ in enumerate(totalEstudiantes):
                 if(el_ != (estudiantesPresentes[idx_]+estudiantesAusentes[idx_]+estudiantesRetrasados[idx_])):
