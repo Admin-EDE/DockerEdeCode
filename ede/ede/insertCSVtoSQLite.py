@@ -80,7 +80,7 @@ class insert:
     def encriptarBD(self, DB_NAME: str) -> str:
         secPhase = 'BD en blanco solo con parámetros definidos por Enlaces-Mineduc'
         engine = create_engine(
-            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000"
+            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}"
             ,module=dbapi2)
         conn = engine.connect()
         conn.execute(f"PRAGMA key = '{secPhase}';")
@@ -159,7 +159,7 @@ class insert:
     def transferCSVToSQL_withPandas(self, path_to_dir_csv_file, DB_NAME: str, secPhase: str) -> bool:
         _r = True
         engine = create_engine(
-            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}?cipher=aes-256-cfb&kdf_iter=64000"
+            f"sqlite+pysqlcipher://:{secPhase}@/{DB_NAME}"
             ,module=dbapi2)
         conn = engine.connect()
         for root, dirs, files in os.walk(path_to_dir_csv_file, topdown=False):
