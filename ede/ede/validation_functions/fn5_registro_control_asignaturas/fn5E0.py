@@ -183,9 +183,9 @@ def fn5E0(conn, return_dict):
             logger.info(f"{current_process().name} finalizando...")
             return _r
         else:
-            logger.error(f'S/Datos')
+            logger.info(f'S/Datos')
             _r = True
-            logger.error(f'No hay datos de asignatura')
+            logger.info(f'No hay datos de asignatura')
             return_dict[getframeinfo(currentframe()).function] = _r
             logger.info(f"{current_process().name} finalizando...")
             return _r

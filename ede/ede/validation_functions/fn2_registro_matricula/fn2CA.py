@@ -73,8 +73,8 @@ def fn2CA(conn, return_dict):
               logger.info(f"{current_process().name} finalizando...")
               return False
         else:
-            logger.error(f'S/Datos')
-            logger.error(f'No existen registros de alumnos retirados del establecimiento')
+            logger.info(f'S/Datos')
+            logger.info(f'No existen registros de alumnos retirados del establecimiento')
             return_dict[getframeinfo(currentframe()).function] = True
             logger.info(f"{current_process().name} finalizando...")
             return True

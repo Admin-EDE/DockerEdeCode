@@ -94,11 +94,11 @@ def fn2DA(conn, return_dict):
                 logger.info(f"{current_process().name} finalizando...")
                 return False
         else:
-            logger.error(f'No existen alumnos nuevos con matricula definitiva')
-            logger.error(f'S/Datos')
-            return_dict[getframeinfo(currentframe()).function] = False
+            logger.info(f'No existen alumnos nuevos con matricula definitiva')
+            logger.info(f'S/Datos')
+            return_dict[getframeinfo(currentframe()).function] = True
             logger.info(f"{current_process().name} finalizando...")
-            return False
+            return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
