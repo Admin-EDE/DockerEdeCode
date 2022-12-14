@@ -70,6 +70,7 @@ def fn2DA(conn, return_dict):
                       )
                       and fileScanBase64 is not null
                       and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
+                      and StatusValue = 1
                   );
               """)
                 if(len(_file) == len(_query)):
