@@ -49,6 +49,7 @@ def fn2DA(conn, return_dict):
           )
           AND fileScanBase64 is not null
           and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
+          and StatusValue = 1
           """)
             if (len(_query) == len(_personStatusFile)):
                 _file = ejecutar_sql(conn, """--sql
