@@ -126,7 +126,7 @@ def fn2EA(conn, return_dict):
         logger.info(f"Resultado: {results} -> {str(e)}")
 
     if(len(results) == 0):
-        logger.error(f"S/Datos")
+        logger.info(f"S/Datos")
         _r = True
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
