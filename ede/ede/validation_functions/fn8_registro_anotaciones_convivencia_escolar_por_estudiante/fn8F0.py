@@ -102,11 +102,9 @@ def fn8F0(conn, return_dict):
                    or incidentDate is None
                    or incidentDesc is None
                    or RefIncidentBehaviorId is None
-                   or isJsonValidRegulationViolatedDesc is None
                    or PersonId is None
                    or refIncidentPersonId is None
-                   or incidentPersonDate is None
-                   or isJsonValidRegulationViolatedDesc == False):
+                   or incidentPersonDate is None):
                     logger.error("Rechazado")
                     logger.error("Los campos obligatorios no pueden ser nulos")
                     return_dict[getframeinfo(currentframe()).function] = False
@@ -115,7 +113,8 @@ def fn8F0(conn, return_dict):
 
                 if(refIncidentBehaviorDesc not in (
                     'Entrevista', 'Reunión con apoderados', 'Entrega de documentos retiro de un estudiante', 'Anotación positiva', 'Entrega de documentos de interés general', 'Entrega de información para continuidad de estudios')
-                   and refDisciplinaryActionTaken is None):
+                   and refDisciplinaryActionTaken is None
+                   and (isJsonValidRegulationViolatedDesc is None or isJsonValidRegulationViolatedDesc == False)):
                     logger.error("Rechazado")
                     logger.error(
                         "Las anotaciones negativas deben tener acciones asociadas")
