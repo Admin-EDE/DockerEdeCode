@@ -49,8 +49,8 @@ def fn1FA(conn, return_dict):
                   AND A.RecordEndDateTime IS NULL
 		          AND B.RecordEndDateTime IS NULL
                 WHERE A.personId = ?
-                AND A.RefPersonRelationshipId = 31
-                AND B.RoleId = 15;"""
+                AND A.RefPersonRelationshipId = 31 --Apoderado
+                AND B.RoleId = 15;""" #Padre, madre o apoderado
 
         # OBTENGO ID DE INCIDENTE ASOCIADO
         _s3 = """SELECT A.IncidentId
@@ -60,7 +60,7 @@ def fn1FA(conn, return_dict):
                 AND A.RecordEndDateTime IS NULL
 		          AND B.RecordEndDateTime IS NULL
                 WHERE A.personId = ?
-                AND B.RefIncidentBehaviorId = 33;"""
+                AND B.RefIncidentBehaviorId = 33;""" #Entrega de documentos retiro de un estudiante
 
         # OBTENGO INFORMACION DE PERSONAS ASOCIADAS A INCIDENTE
         _s4 = """SELECT A.personId,A.RefIncidentPersonTypeId ,A.digitalRandomKey, A.fileScanBase64
