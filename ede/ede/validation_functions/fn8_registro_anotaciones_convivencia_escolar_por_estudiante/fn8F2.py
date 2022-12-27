@@ -217,10 +217,6 @@ def fn8F2(conn, return_dict):
                             _err(f"Falto definir el dirige en el incidente"))
                         dirige = 0
 
-            if(_incident[5] == 'Anotación positiva'):
-                if not check_utils.validateJSON(_incident[16]):
-                    _e.append(
-                        _err(f"Campo regulationViolatedDescription is NOT JSON"))
 
         if(len(_e) == 0):
             _r = True
