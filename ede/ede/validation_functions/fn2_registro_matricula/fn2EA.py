@@ -95,7 +95,8 @@ def fn2EA(conn, return_dict):
           OUTER LEFT JOIN RefCountry on pa.RefCountryId = RefCountry.RefCountryId
           OUTER LEFT JOIN RefState rfs on pa.RefStateId= rfs.RefStateId
           OUTER LEFT JOIN RefCounty rfc on pa.RefCountyId = rfc.RefCountyId
-          OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId				
+          OUTER LEFT JOIN PersonRelationship prs on p.PersonId=prs.RelatedPersonId 
+          AND prs.RefPersonRelationshipId = 31 -- Apoderado
   -- Información del Apoderado
           OUTER LEFT JOIN RefPersonRelationship rprs on prs.RefPersonRelationshipId=rprs.RefPersonRelationshipId
           OUTER LEFT JOIN Person p2 on p2.PersonId=prs.personId 
