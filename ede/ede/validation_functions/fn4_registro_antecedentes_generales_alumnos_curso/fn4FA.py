@@ -174,9 +174,14 @@ GROUP BY est.personId
                 errorList.append('estudiante sin sexo asignado')
             if(row[9] is None):
                 errorList.append('estudiante sin dirección')
-            if(row[10] is not None
-               and ('Estudiante asignado a un curso, se crea número de lista' not in row[10]
-               or 'Estudiante con matrícula definitiva' not in row[10])):
+            if row[10] is None:
+                errorList.append('estudiante sin estatus asignados')
+            if 'Estudiante asignado a un curso, se crea número de lista' not in row[10]:
+                errorList.append('estudiante sin estatus de asignación a un curso')
+            if 'Estudiante con matrícula definitiva' not in row[10] \
+                and 'Estudiante promovido' not in row[10] \
+                and 'Estudiante con matrícula provisoria' not in row[10] \
+                and 'Estudiante Matriculado a través de Decreto 152, artículo 60' not in row[10]:
                 errorList.append(
                     'estudiante sin los estatus minimos asignados')
             if(row[11] is None):
