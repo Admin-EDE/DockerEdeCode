@@ -224,11 +224,30 @@ LEFT JOIN (
   GROUP BY oc.Organizationid
 ) oce 
 ON oce.org = Organizationid
+LEFT JOIN (
+  SELECT oc.Organizationid as 'org', jl.OrganizationIdDelCurso, group_concat(oce.EventDate) as 'fechasEventos'
+  FROM OrganizationCalendarEvent oce
+  JOIN OrganizationCalendar oc
+  ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+  JOIN RefCalendarEventType rcet
+  ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+  AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+  JOIN Organization o
+  ON oc.OrganizationId = o.OrganizationId
+  AND o.RefOrganizationTypeId = 10
+  JOIN jerarquiasList jl
+  ON jl.OrganizationId = o.OrganizationId
+  --JOIN OrganizationRelationship orp
+  --ON orp.Parent_OrganizationId = jl.OrganizationIdDelCurso
+  GROUP BY jl.OrganizationIdDelCurso
+  ) oce_colegio
+  ON oce_colegio.OrganizationIdDelCurso = OrganizationId
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WHERE 
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
   AND ifnull(oce.fechasEventos,'1900-01-01') NOT LIKE "%"  || date || "%"	 
   AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
+  AND ifnull(oce_colegio.fechasEventos,'1900-01-01')  NOT LIKE "%"|| date || "%"
 GROUP BY Organizationid, date
       """)
     except Exception as e:
