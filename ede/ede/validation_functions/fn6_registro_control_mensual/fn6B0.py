@@ -86,7 +86,7 @@ def fn6B0(conn, return_dict):
 			ON opr.RoleId = rol_e.RoleId
 			AND rol_e.Name IN ('Estudiante')
 		JOIN RoleAttendanceEvent raeReal
-			ON raeReal.Date = rae.RecordEndDateTime --para conectar la asistencia errada con la real
+			ON raeReal.RecordStartDateTime = rae.RecordEndDateTime --para conectar la asistencia errada con la real
 		JOIN OrganizationPersonRole opr_ratificador 
 			ON rae.oprIdRatificador = opr_ratificador.OrganizationPersonRoleId 
 		JOIN role rol_ratificador
@@ -113,6 +113,7 @@ def fn6B0(conn, return_dict):
             AND
 			-- Agrega a la lista todos los registros que no cumplan con la expresión regular
             rae.firmaRatificador REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'	
+        GROUP BY rae.RoleAttendanceEventId
         """)
     except:
         logger.error(f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
