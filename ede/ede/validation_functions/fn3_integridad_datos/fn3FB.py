@@ -56,6 +56,7 @@ SELECT
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.RecordEndDateTime IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 	  AND rpst.Description IN ('Estudiante con matrícula definitiva', 'Estudiante promovido', 'Estudiante con matrícula provisoria', 'Estudiante Matriculado a través de Decreto 152, artículo 60')
@@ -67,6 +68,7 @@ SELECT
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.RecordEndDateTime IS NULL
 		AND ps.StatusEndDate IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
@@ -90,6 +92,7 @@ SELECT
 		FROM person p
 		JOIN PersonStatus ps
 			ON ps.personId = p.personId
+			AND ps.RecordEndDateTime IS NULL
 			AND ps.StatusEndDate IS NULL
 		JOIN RefPersonStatusType rpst
 		  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
@@ -102,6 +105,7 @@ SELECT
 	FROM person p
 	JOIN PersonIdentifier numMatri
 		ON p.personid = numMatri.personid
+		AND numMatri.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiMatri
 	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
 	  AND rfiMatri.code IN ('SchoolNumber')
@@ -112,6 +116,7 @@ SELECT
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.RecordEndDateTime IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
