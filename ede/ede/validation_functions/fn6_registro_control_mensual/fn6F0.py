@@ -225,7 +225,7 @@ LEFT JOIN (
 ) oce 
 ON oce.org = Organizationid
 LEFT JOIN (
-  SELECT oc.Organizationid as 'org', jl.OrganizationIdDelCurso, group_concat(oce.EventDate) as 'fechasEventos'
+SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
   FROM OrganizationCalendarEvent oce
   JOIN OrganizationCalendar oc
   ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
@@ -235,13 +235,9 @@ LEFT JOIN (
   JOIN Organization o
   ON oc.OrganizationId = o.OrganizationId
   AND o.RefOrganizationTypeId = 10
-  JOIN jerarquiasList jl
-  ON jl.OrganizationId = o.OrganizationId
-  --JOIN OrganizationRelationship orp
-  --ON orp.Parent_OrganizationId = jl.OrganizationIdDelCurso
-  GROUP BY jl.OrganizationIdDelCurso
+  GROUP BY oc.Organizationid
   ) oce_colegio
-  ON oce_colegio.OrganizationIdDelCurso = OrganizationId
+  ON oce_colegio.org = OrgSchool
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WHERE 
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
