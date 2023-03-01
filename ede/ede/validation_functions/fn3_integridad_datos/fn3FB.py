@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn3FB(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-	Verifica que la cantidad de #Matricula == #lista == #FechasIncorporaciones
+	La cantidad de #Matricula == #lista == #FechasIncorporaciones.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -24,57 +25,75 @@ def fn3FB(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT 
 (
 	SELECT count(p.personId)
 	FROM person p
 	JOIN PersonIdentifier numLista
 		ON p.personid = numLista.personid
+		AND numLista.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiLista 
 	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
 	  AND rfiLista.code IN ('listNumber')
+	WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadNumeroLista'
 ,(
 	SELECT count(p.personId)
 	FROM person p
 	JOIN PersonIdentifier numMatri
 		ON p.personid = numMatri.personid
+		AND numMatri.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiMatri
 	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
 	  AND rfiMatri.code IN ('SchoolNumber')
+	  WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadNumeroMatricula'
 ,(
 	SELECT count(p.personId)
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.RecordEndDateTime IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
-	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
+	  AND rpst.Description IN ('Estudiante con matrícula definitiva', 'Estudiante promovido', 'Estudiante con matrícula provisoria', 'Estudiante Matriculado a través de Decreto 152, artículo 60')
+	  WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadMatriDefinitiva'
 ,(
 	SELECT count(p.personId)
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.RecordEndDateTime IS NULL
+		AND ps.StatusEndDate IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 	  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')
+	  WHERE
+	p.RecordEndDateTime IS NULL
 ) as 'cantidadNumerosListaAsignados'
 , (
 	SELECT group_concat(p.personId)
 	FROM person p
 	JOIN PersonIdentifier numLista
 		ON p.personid = numLista.personid
+		AND numLista.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiLista 
 	  ON  numLista.RefPersonIdentificationSystemId=rfiLista.RefPersonIdentificationSystemId
 	  AND rfiLista.code IN ('listNumber')
-	WHERE p.personId NOT IN (
+	WHERE
+	p.RecordEndDateTime IS NULL
+    AND	p.personId NOT IN (
 		SELECT p.personId
 		FROM person p
 		JOIN PersonStatus ps
 			ON ps.personId = p.personId
+			AND ps.RecordEndDateTime IS NULL
+			AND ps.StatusEndDate IS NULL
 		JOIN RefPersonStatusType rpst
 		  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 		  AND rpst.Description IN ('Estudiante asignado a un curso, se crea número de lista')	
@@ -86,20 +105,24 @@ SELECT
 	FROM person p
 	JOIN PersonIdentifier numMatri
 		ON p.personid = numMatri.personid
+		AND numMatri.RecordEndDateTime IS NULL
 	JOIN RefPersonIdentificationSystem rfiMatri
 	  ON  numMatri.RefPersonIdentificationSystemId=rfiMatri.RefPersonIdentificationSystemId
 	  AND rfiMatri.code IN ('SchoolNumber')
-	WHERE p.personId NOT IN (
+	WHERE
+	p.RecordEndDateTime IS NULL
+	AND	p.personId NOT IN (
 		SELECT p.personId
 	FROM person p
 	JOIN PersonStatus ps
 		ON ps.personId = p.personId
+		AND ps.RecordEndDateTime IS NULL
 	JOIN RefPersonStatusType rpst
 	  ON  rpst.RefPersonStatusTypeId=ps.RefPersonStatusTypeId
 	  AND rpst.Description IN ('Estudiante con matrícula definitiva')
 	)	
 ) as 'personIdsNumMatriculaWithProblems'
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

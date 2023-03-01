@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-import ede.ede.validation_functions_facade as facade
+import ede.ede.validation_functions.validation_functions_facade as facade
 from time import sleep
 import sys
 import os
@@ -15,8 +15,9 @@ from sqlalchemy import create_engine
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from typing import Union
+from sqlcipher3 import dbapi2
 
-from ede.ede.check_utils import validateJSON
+from ede.ede.validation_functions.check_utils import validateJSON
 
 
 @event.listens_for(Engine, "connect")
@@ -322,7 +323,8 @@ class check:
         _result = True
         sec = self.args.secPhase
         path = self.args.path_to_DB_file
-        engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}?cipher=aes-256-cfb&kdf_iter=64000"
+        engine = create_engine(f"sqlite+pysqlcipher://:{sec}@/{path}"
+                                ,module=dbapi2
                                # ,connect_args={'timeout': 10000}
                                )
         try:
@@ -334,10 +336,10 @@ class check:
             logger.info(
                 f"Sistema ejecutandose con restrición de tiempo de {self.args.time} segundos...")
             
-            if self.args.sequential:
-                return_dict = dict()
-                #return_dict = self.execute_sequentially(conn)
-                self.execute_sequentially(conn, return_dict)
+            if "sequential" in dir(self.args) and self.args.sequential:
+                #return_dict = dict()
+                #self.execute_sequentially(conn, return_dict)
+                return_dict = self.execute_parallel(conn, sequential=True)
             else:
                
                 return_dict = self.execute_parallel(conn)
@@ -356,11 +358,9 @@ class check:
             return _result
     def execute_sequentially(self, conn, return_dict):
         try:
-            start_time = datetime.now()
             for key, value in self.functions.items():
                 if(value != "No/Verificado"):
-                    timediff = (datetime.now()-start_time).total_seconds()
-                    logger.info(f"time elapsed: {timediff}")
+                    start_time = datetime.now()
                     if self.args.time > 0 and timediff > self.args.time:
                         logger.error("TIMEOUT EJECUCION SECUENCIAL.............")
                         break
@@ -370,11 +370,13 @@ class check:
                         fnTarget.__call__(conn, return_dict, self.args)
                     else:
                         fnTarget.__call__(conn, return_dict)
+                    timediff = (datetime.now()-start_time).total_seconds()
+                    logger.info(f"function: {key}, time elapsed: {timediff}")
             return return_dict
         except Exception as e:
             logger.error(f"Error general en ejecución secuencial: {e}")
             return False
-    def execute_parallel(self, conn):
+    def execute_parallel(self, conn, sequential=False):
         try:
             manager = Manager()
             return_dict = manager.dict()
@@ -395,6 +397,11 @@ class check:
             for p in jobs:
                 logger.info(f"{p.name} iniciando...")
                 p.start()
+                if sequential:
+                    start_time = datetime.now()
+                    p.join()
+                    timediff = (datetime.now()-start_time).total_seconds()
+                    logger.info(f"function: {p.name}, time elapsed: {timediff}")
 
             while True:
                 time += 1
@@ -406,11 +413,11 @@ class check:
                                 logger.error(f"TIMEOUT: {p}")
                         break
 
-                #else:
+                else:
                 #    if not self.args.parallel:
                 #        for p in jobs:
                 #            p.join()
-                #    break
+                    break
                 sleep(1)
             return return_dict
         except Exception as e:

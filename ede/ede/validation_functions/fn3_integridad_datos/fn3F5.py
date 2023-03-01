@@ -2,7 +2,8 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from validate_email import validate_email
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -10,7 +11,7 @@ def fn3F5(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica si los e-mails ingresados cumplen con el formato
+    Los e-mails ingresados cumplen con el formato.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -27,13 +28,13 @@ def fn3F5(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
         SELECT emailAddress
         from PersonEmailAddress
         UNION ALL
         SELECT ElectronicMailAddress
         FROM OrganizationEmail
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

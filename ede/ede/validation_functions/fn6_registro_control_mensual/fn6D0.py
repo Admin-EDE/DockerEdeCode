@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,9 +9,7 @@ def fn6D0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.3
-    verificar que las bajas y altas realizadas en el transcurso del
-    periodo escolar sean identificadas y establecida su fecha como insumo 
-    para otras verificaciones.
+    Las bajas y altas realizadas en el transcurso del periodo escolar son identificadas y establecida su fecha como insumo para otras verificaciones.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -28,7 +27,7 @@ def fn6D0(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""
+        rows = ejecutar_sql(conn, """--sql
         SELECT 
           opr.OrganizationPersonRoleId
           ,pid.Identifier
@@ -65,7 +64,7 @@ def fn6D0(conn, return_dict):
             FROM RefPersonStatusType
             WHERE RefPersonStatusType.Description IN ('Estudiante retirado definitivamente')
           )                          
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

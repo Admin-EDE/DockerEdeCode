@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn29A(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.7 De los estudiantes en práctica
-    Validar que los estudiantes en práctica hayan terminado al menos el primer semestre del tercer año.
+    Los estudiantes en práctica han terminado al menos el primer semestre del tercer año.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,13 +27,13 @@ def fn29A(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
         SELECT est.personid
         FROM person est
         JOIN PersonStatus ps
           ON ps.personId = est.personId
           AND ps.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description = 'En práctica')
-    """).fetchall()
+    """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 
@@ -45,7 +46,7 @@ def fn29A(conn, return_dict):
 
     results = []
     try:
-        results = conn.execute("""--sql
+        results = ejecutar_sql(conn, """--sql
 SELECT est.personid
 FROM person est
 JOIN PersonStatus ps
@@ -76,7 +77,7 @@ OUTER LEFT JOIN (
 		AND o.RefOrganizationTypeId IN (SELECT RefOrganizationTypeId FROM RefOrganizationType WHERE Code = 'practicaProfesional')
 ) orgPractica	
 ON orgPractica.personid = est.personId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {results} -> {str(e)}")
 

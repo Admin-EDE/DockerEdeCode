@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,9 +9,7 @@ def fn7F5(conn, return_dict):
     """
     REGISTRO DE EVALUACIONES Y SECTORES EDUCATIVOS
     6.2 Contenido mínimo, letra d
-    Verificar que exista un registro de los objetivos y contenidos 
-    de materias o actividades que son entregados por el docente en 
-    cada sector educativo, asignatura o módulo.
+    Existe un registro de los objetivos y contenidos de materias o actividades que son entregados por el docente en cada sector educativo, asignatura o módulo.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -28,14 +27,14 @@ def fn7F5(conn, return_dict):
     _r = False
     _query = []
     try:
-        _query = conn.execute("""
+        _query = ejecutar_sql(conn, """--sql
         SELECT LA.LearnerActivityId
         FROM Assessment A
                 JOIN AssessmentAdministration AA ON A.AssessmentId = AA.AssessmentId
                 JOIN AssessmentRegistration AR ON AA.AssessmentAdministrationId = AR.AssessmentAdministrationId
                 JOIN LearnerActivity LA ON LA.AssessmentRegistrationId = AR.AssessmentRegistrationId
         ORDER BY LA.LearnerActivityId;
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
 
@@ -48,7 +47,7 @@ def fn7F5(conn, return_dict):
 
     _organizationCalendarSession = []
     try:
-        _organizationCalendarSession = conn.execute("""
+        _organizationCalendarSession = ejecutar_sql(conn, """--sql
       SELECT OrganizationCalendarSessionId
       FROM LearnerActivity
       WHERE LearnerActivityId IN (
@@ -60,7 +59,7 @@ def fn7F5(conn, return_dict):
           ORDER BY LA.LearnerActivityId)
         AND OrganizationCalendarSessionId IS NOT NULL
       GROUP BY OrganizationCalendarSessionId;
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {_organizationCalendarSession} -> {str(e)}")
 
@@ -75,7 +74,7 @@ def fn7F5(conn, return_dict):
 
     _calendar = []
     try:
-        _calendar = conn.execute("""
+        _calendar = ejecutar_sql(conn, """--sql
           SELECT 'Descripcion' as Descrip
           FROM OrganizationCalendarSession
           WHERE Description IS NOT NULL
@@ -92,7 +91,7 @@ def fn7F5(conn, return_dict):
                   ORDER BY LA.LearnerActivityId)
                 AND OrganizationCalendarSessionId IS NOT NULL
               GROUP BY OrganizationCalendarSessionId)
-          """).fetchall()
+          """)
 
     except Exception as e:
         logger.info(f"Resultado: {_calendar} -> {str(e)}")

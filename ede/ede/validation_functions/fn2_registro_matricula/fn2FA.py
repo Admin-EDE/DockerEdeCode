@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,9 +9,7 @@ def fn2FA(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.1 Estructura del registro de matrícula.
-    Validar que el total de alumnos matriculados menos las bajas, 
-    sea igual a la suma de los estudiantes inscritos en los libros de clases 
-    de los diferentes cursos, por nivel y modalidad.
+    El total de alumnos matriculados menos las bajas, es igual a la suma de los estudiantes inscritos en los libros de clases.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -28,24 +27,24 @@ def fn2FA(conn, return_dict):
     _r = False
     results = []
     try:
-        results = conn.execute("""--sql
-        select count(distinct PersonId)-(select count(distinct PersonId) from OrganizationPersonRole
-        where RoleId=6 --Estudiante
-        and ExitDate is not null)
+        results = ejecutar_sql(conn, """--sql
+        select count(distinct PersonId)
         from OrganizationPersonRole
-        where  EntryDate is not null and RoleId=6  ;
-        """).fetchall()
+        where RoleId=6
+        and EntryDate is not null
+        and ExitDate is null   ;
+        """)
     except Exception as e:
         logger.info(f"Resultado: {results} -> {str(e)}")
 
     resultsTwo = []
     try:
-        resultsTwo = conn.execute("""--sql
+        resultsTwo = ejecutar_sql(conn, """--sql
         SELECT count(distinct K12StudentEnrollment.OrganizationPersonRoleId)
         from K12StudentEnrollment
         where RefEnrollmentStatusId is not null
         AND FirstEntryDateIntoUSSchool IS NOT NULL;
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {resultsTwo} -> {str(e)}")
 

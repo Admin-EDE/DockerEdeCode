@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,11 +10,11 @@ def fn8F0(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
     6.2 Contenido mínimo, letra e
-    Verificar que exista registro de la siguiente información
-      - Anotaciones negativas de su comportamiento
-      - Citaciones a los apoderados sobre temas relativos a sus pupilos.
-      - Medidas disciplinarias que sean aplicadas al estudiante.
-      - Reconocimientos por destacado cumplimiento del reglamento interno (positivas).      
+    Existe registro de la siguiente información
+    - Anotaciones negativas de su comportamiento
+    - Citaciones a los apoderados sobre temas relativos a sus pupilos.
+    - Medidas disciplinarias que sean aplicadas al estudiante.
+    - Reconocimientos por destacado cumplimiento del reglamento interno (positivas).
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -38,16 +39,20 @@ def fn8F0(conn, return_dict):
     _r = False
     allIncidents = []
     try:
-        allIncidents = conn.execute("""
+        allIncidents = ejecutar_sql(conn, """--sql
                   SELECT 
-                     I.*
-                    ,K12SD.*
-                    ,OPR.*
-                    ,rol.*
-                    ,K12SA.*
-                    ,rInBh.*
-	                  ,IncPer.*
-          					,rdat.*
+                    I.IncidentId,
+                    I.IncidentIdentifier,
+                    I.IncidentDate,
+                    I.IncidentTime,
+                    I.IncidentDescription,
+                    I.RefIncidentBehaviorId,
+                    I.RegulationViolatedDescription,
+                    rInBh.Description,
+                    IncPer.personId,
+                    IncPer.RefIncidentPersonTypeId,
+                    IncPer.Date,
+                    rdat.RefDisciplinaryActionTakenId
                   FROM Incident I
                     OUTER LEFT JOIN K12StudentDiscipline K12SD 
                       ON K12SD.IncidentId = I.IncidentId
@@ -64,7 +69,7 @@ def fn8F0(conn, return_dict):
                     OUTER LEFT JOIN RefDisciplinaryActionTaken rdat					
                       ON K12SD.RefDisciplinaryActionTakenId = rdat.RefDisciplinaryActionTakenId
                   GROUP BY I.IncidentId    
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {allIncidents} -> {str(e)}")
 
@@ -80,15 +85,15 @@ def fn8F0(conn, return_dict):
                 incidentIdentifier = incident[1]
                 incidentDate = incident[2]
                 incidentTime = incident[3]
-                incidentDesc = incident[5]
-                RefIncidentBehaviorId = incident[6]
+                incidentDesc = incident[4]
+                RefIncidentBehaviorId = incident[5]
                 isJsonValidRegulationViolatedDesc = check_utils.validateJSON(
-                    incident[16])
-                refIncidentBehaviorDesc = incident[66]
-                PersonId = incident[72]
-                refIncidentPersonId = incident[75]
-                incidentPersonDate = incident[76]
-                refDisciplinaryActionTaken = incident[81]
+                    incident[6])
+                refIncidentBehaviorDesc = incident[7]
+                PersonId = incident[8]
+                refIncidentPersonId = incident[9]
+                incidentPersonDate = incident[10]
+                refDisciplinaryActionTaken = incident[11]
                 # print(incidentId,RefIncidentBehaviorDescription,isJsonValid)
 
                 if(incidentId is None
@@ -97,11 +102,9 @@ def fn8F0(conn, return_dict):
                    or incidentDate is None
                    or incidentDesc is None
                    or RefIncidentBehaviorId is None
-                   or isJsonValidRegulationViolatedDesc is None
                    or PersonId is None
                    or refIncidentPersonId is None
-                   or incidentPersonDate is None
-                   or isJsonValidRegulationViolatedDesc == False):
+                   or incidentPersonDate is None):
                     logger.error("Rechazado")
                     logger.error("Los campos obligatorios no pueden ser nulos")
                     return_dict[getframeinfo(currentframe()).function] = False
@@ -110,7 +113,8 @@ def fn8F0(conn, return_dict):
 
                 if(refIncidentBehaviorDesc not in (
                     'Entrevista', 'Reunión con apoderados', 'Entrega de documentos retiro de un estudiante', 'Anotación positiva', 'Entrega de documentos de interés general', 'Entrega de información para continuidad de estudios')
-                   and refDisciplinaryActionTaken is None):
+                   and refDisciplinaryActionTaken is None
+                   and (isJsonValidRegulationViolatedDesc is None or isJsonValidRegulationViolatedDesc == False)):
                     logger.error("Rechazado")
                     logger.error(
                         "Las anotaciones negativas deben tener acciones asociadas")

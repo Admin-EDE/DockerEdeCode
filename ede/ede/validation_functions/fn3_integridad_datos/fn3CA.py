@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,8 +10,8 @@ def fn3CA(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verifica que existan campos relacionados a la asistencia
-    --------------------------------------------------
+    Existen campos relacionados a la asistencia.
+    -----
     Verificar que el evento “Daily attendance” sea solo asignado a  organizationId de tipo curso
     Verificar que el evento “Class/section attendance” sea solo asignado a  organizationId de tipo asignatura
     Verificar que el estado “Reingreso autorizado” sea solo asignado al organizationId del establecimiento
@@ -31,7 +32,7 @@ def fn3CA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
       SELECT DISTINCT ast.Description as 'RefAttendanceStatus',aet.Description as 'AttendanceEventType', orgt.Description as 'OrganizationType'
       FROM RoleAttendanceEvent rae
       INNER JOIN OrganizationPersonRole opr on opr.OrganizationPersonRoleId = rae.OrganizationPersonRoleId
@@ -39,7 +40,7 @@ def fn3CA(conn, return_dict):
       INNER JOIN RefAttendanceEventType aet on aet.RefAttendanceEventTypeId = rae.RefAttendanceEventTypeId
       INNER JOIN RefOrganizationType orgt on orgt.RefOrganizationTypeId = org.RefOrganizationTypeId
       INNER JOIN RefAttendanceStatus ast on ast.RefAttendanceStatusId = rae.RefAttendanceStatusId;
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
@@ -50,7 +51,11 @@ def fn3CA(conn, return_dict):
                         for m in rows if m[0] is not None]))
             _err, _r = check_utils.imprimeErrores(data, check_utils.validaEventosDeAsistencia,
                                                   "VERIFICA que los eventos de asistencia se encuentren correctamente asignados")
-            logger.info(f"Aprobado") if _r else logger.error(_err)
+            if _r:
+              logger.info(f"Aprobado")
+            else:
+              logger.error(_err)
+              logger.error("Rechazado")
         else:
             logger.info("La BD no contiene información de asistencia cargada")
             logger.info("S/Datos")

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn9F1(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
     6.2 Contenido mínimo, letra f
-    Verificar que la planificación del proceso formativo del estudiante se encuentre registrada
-    en el sistema.
+    La planificación del proceso formativo del estudiante se encuentra registrada en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,17 +26,18 @@ def fn9F1(conn, return_dict):
     _r = False
     courseSections = []
     try:
-        courseSections = conn.execute("""
+        courseSections = ejecutar_sql(conn, """--sql
         SELECT
           O.OrganizationId
         FROM Organization O
         WHERE
-          O.RefOrganizationTypeId IN (
+        O.RecordEndDateTime IS NULL
+        AND  O.RefOrganizationTypeId IN (
             SELECT RefOrganizationTypeId 
             FROM RefOrganizationType
             WHERE Code IN ('CourseSection')
           )                              
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {courseSections} -> {str(e)}")
 
@@ -50,7 +51,7 @@ def fn9F1(conn, return_dict):
         f"primer registro encontrado: {courseSections[0]} de {len(courseSections)}")
     _query = []
     try:
-        _query = conn.execute("""
+        _query = ejecutar_sql(conn, """--sql
           SELECT
               O.OrganizationId
             , group_concat(DISTINCT CSS.ClassMeetingDays) ClassMeetingDays
@@ -62,6 +63,7 @@ def fn9F1(conn, return_dict):
             JOIN CourseSection CS 
               ON CS.OrganizationId = O.OrganizationId
               AND CS.RecordEndDateTime IS NULL
+              AND O.RecordEndDateTime IS NULL
             JOIN CourseSectionSchedule CSS
               ON CSS.OrganizationId = O.OrganizationId
               AND CSS.RecordEndDateTime IS NULL
@@ -70,9 +72,10 @@ def fn9F1(conn, return_dict):
 			  
             JOIN OrganizationCalendar orgCal
               ON orgCal.OrganizationId = O.OrganizationId
-              AND CSS.RecordEndDateTime IS NULL
+              AND orgCal.RecordEndDateTime IS NULL
             JOIN OrganizationCalendarSession ocs
               ON ocs.OrganizationCalendarId = orgCal.OrganizationCalendarId		
+              AND ocs.RecordEndDateTime IS NULL
 
 			  
           WHERE
@@ -83,8 +86,8 @@ def fn9F1(conn, return_dict):
             )
             AND ClassMeetingDays REGEXP '^[(Lunes|Martes|Miércoles|Jueves|Viernes|,)]+$'
             AND ClassPeriod REGEXP '^[(Bloque|,|\d{2})]+$'
-            AND ClassBeginningTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
-            AND ClassEndingTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
+            AND CSS.ClassBeginningTime IS TIME(CSS.ClassBeginningTime)
+			      AND CSS.ClassEndingTime IS TIME(CSS.ClassEndingTime)
             AND CS.CourseId = ors.Parent_OrganizationId
             AND CS.MaximumCapacity IS NOT NULL
             AND CS.VirtualIndicator IS NOT NULL
@@ -92,7 +95,7 @@ def fn9F1(conn, return_dict):
             AND CS.RefInstructionLanguageId IS NOT NULL
             
           GROUP BY O.OrganizationId
-      """).fetchall()
+      """)
     except Exception as e:
         logger.error(f"Resultado: {_query}. Mensaje: {str(e)}")
     try:

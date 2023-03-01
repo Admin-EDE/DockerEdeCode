@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn5E4(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que la asistencia se encuentre tomada, es decir, 
-    cada estudiante debe tener alguno de los siguientes estados: Presente, ausente o atrasado.
+    La asistencia se encuentra tomada, es decir, cada estudiante tiene alguno de los siguientes estados: Presente, ausente o atrasado.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,14 +25,14 @@ def fn5E4(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""
+        _query = ejecutar_sql(conn, """--sql
         SELECT RAE.DATE,
               RAE.RefAttendanceStatusId
         FROM OrganizationPersonRole OPR
                 join RoleAttendanceEvent RAE on OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
         where OPR.RoleId = 6
         and RAE.Date is not null;
-        """).fetchall()
+        """)
         if(len(_query)>0):
           _date = (list(set([m[0] for m in _query if m[0] is not None])))
           if not _date:

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,14 +9,7 @@ def fn28B(conn, return_dict):
     """
     REGISTRO DE MATRÍCULA
     5.8 De los estudiantes migrantes
-    Validar que el certificado de convalidación de estudios y
-    los cursos convalidados se encuentre cargado en el sistema.
-    --------------------------------------------------
-    Este tipo de casos se registrará a través de la tabla 
-    PersonStatus.refPersonStatusTypeId == 34 (Convalidación de estudios) y 
-    los campos personStatus.docNumber, personStatus.Description y 
-    personStatus.fileScanBase64 se utilizanrán para almacenar la información 
-    de respaldo de este proceso extraordinario.
+    Los estudiantes migrantes tienen su IPE y el documento de convalidación de estudios no es nulo.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -31,7 +25,7 @@ def fn28B(conn, return_dict):
           ]
     """
     try:
-        _query = conn.execute("""--sql
+        _query = ejecutar_sql(conn, """--sql
         --Busca estudiantes migrantes
         SELECT DISTINCT PI.PersonId
         FROM OrganizationPersonRole OPR
@@ -41,16 +35,8 @@ def fn28B(conn, return_dict):
           AND OPR.RoleId = 6 --Estudiante
           AND PI.Identifier is not null;
         """)
-        if not _query.returns_rows:
-          logger.info(
-                f"No existen estudiantes migrantes registrados en el establecimiento")
-          logger.info(f"S/Datos")
-          return_dict[getframeinfo(currentframe()).function] = True
-          logger.info(f"{current_process().name} finalizando...")
-          return True
-        _query = _query.fetchall()
         if(len(_query) > 0):
-            _queryDocuments = conn.execute("""--sql
+            _queryDocuments = ejecutar_sql(conn, """--sql
           SELECT PS.fileScanBase64
           FROM PersonStatus PS
           WHERE PS.PersonId in (select DISTINCT PI.PersonId
@@ -66,9 +52,9 @@ def fn28B(conn, return_dict):
             AND PS.Description <> ''
             and PS.fileScanBase64 is not null
             and PS.RefPersonStatusTypeId = 34 --Convalidacion de estudios
-          """).fetchall()
+          """)
             if (len(_queryDocuments) == len(_query)):
-                _file = conn.execute("""--sql
+                _file = ejecutar_sql(conn, """--sql
                 --Busca documentos donde los estudiantes sean migrantes
             SELECT documentId
             FROM Document
@@ -89,7 +75,7 @@ def fn28B(conn, return_dict):
                                   AND PS.Description <> ''
                                   and PS.fileScanBase64 is not null
                                   and PS.RefPersonStatusTypeId = 34); --Convalidacion de estudios
-            """).fetchall()
+            """)
                 if(len(_file) == len(_query)):
                     logger.info(
                         f'Todos los estudiantes migrantes cuentan con sus documentos de convalidacion de ramos completos')

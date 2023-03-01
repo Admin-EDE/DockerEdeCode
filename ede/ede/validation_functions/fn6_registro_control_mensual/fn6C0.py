@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn6C0(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.4
-    verificar que los estudiantes excedentes estén registrados 
-    en el control de asistencia solo para efectos pedagógicos
+    Los estudiantes excedentes estan registrados en el control de asistencia solo para efectos pedagógicos.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -42,12 +42,12 @@ def fn6C0(conn, return_dict):
                 FROM RoleAttendanceEvent
                 WHERE OrganizationPersonRoleId = ?;"""
 
-        _q1 = conn.execute(_s1).fetchall()
+        _q1 = ejecutar_sql(conn, _s1)
         if(len(_q1) != 0):
             for q1 in _q1:
                 _r = str(q1[0])
                 _op = q1[1]
-                _q2 = conn.execute(_s2, _op).fetchall()
+                _q2 = ejecutar_sql(conn, _s2, _op)
                 if(len(_q2) != 0):
                     for q2 in _q2:
                         _d = str(q2[0])

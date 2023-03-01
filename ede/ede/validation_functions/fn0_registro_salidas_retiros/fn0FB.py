@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,11 +10,7 @@ def fn0FB(conn, return_dict):
     """
     REGISTRO DE SALIDAS
     7.0 Registro de salidas o retiros (NO Habituales)
-    Verificar, en caso que existan retiros anticipados, que se encuentre registrado
-    el “verificador de identidad” o escaneado el poder simple o la comunicación 
-    que autorice la salida del estudiante, según corresponda. Apodrado, papá, mamá, etc. 
-    Se puede filtrar por RoleAttendanceEvent.RefAttendanceStatusID == 5 (Early Departure) 
-    y agrupar por Date para obtener el bloque de registros      
+    Cuando hay un retiro, está escaneado el documento o está registrado el verificador de identidad.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -35,7 +32,7 @@ def fn0FB(conn, return_dict):
     _r = False
     Allrows = []
     try:
-        rows = conn.execute("""
+        rows = ejecutar_sql(conn, """--sql
             SELECT rae.RoleAttendanceEventId
             FROM RoleAttendanceEvent rae
             -- Antes de realizar cualquier acción se revisa que el estudiante tengan
@@ -43,7 +40,7 @@ def fn0FB(conn, return_dict):
             JOIN RefAttendanceStatus ras
               ON ras.RefAttendanceStatusId = rae.RefAttendanceStatusId
               AND ras.Code IN ('EarlyDeparture')
-      """).fetchall()
+      """)
         Allrows = check_utils.convertirArray2DToList(
             list([m[0] for m in rows if m[0] is not None]))
     except Exception as e:
@@ -58,7 +55,7 @@ def fn0FB(conn, return_dict):
         return True  # si no hay registros de salida anticipada, no continúa la revisión
     try:
         if(len(Allrows) > 0):
-            rows = conn.execute("""
+            rows = ejecutar_sql(conn, """--sql
             SELECT 
                 raeAlumnoAsignatura.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoAsignatura'
                 ,raeAlumnoEstablecimieto.RoleAttendanceEventId as 'RoleAttendanceEventIdAlumnoEstablecimiento'
@@ -217,7 +214,7 @@ def fn0FB(conn, return_dict):
               strftime('%H:%M:%f',raeAlumnoAsignatura.Date) <= strftime('%H:%M:%f',raeAlumnoEstablecimieto.Date)
               AND 
               strftime('%H:%M:%f',raeAlumnoAsignatura.Date) <= strftime('%H:%M:%f',raeApoderado.Date)
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:
@@ -230,10 +227,12 @@ def fn0FB(conn, return_dict):
                         pass
 
             if(len(Allrows) == 0):
+                logger.info(f"Aprobado")
                 _r = True
             else:
                 logger.info(
                     f"RoleAttendanceEventIdAlumnoAsignatura con problemas: {Allrows}")
+                logger.error(f"Rechazado")
         else:
             logger.error(f"Rechazado")
             logger.info(

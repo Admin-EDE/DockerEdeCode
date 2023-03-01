@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,8 +10,7 @@ def fn3C5(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificador de identidad (OTP)
-    Verifica que el campo cumpla con la siguiente expresión regular: ^[0-9]{6}+([-]{1}[0-9kK]{1})?$
+    Verificador de identidad (OTP) cumple la expresión regular.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -28,11 +28,14 @@ def fn3C5(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute(
-            "SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;").fetchall()
+        rows = ejecutar_sql(conn, 
+            "SELECT digitalRandomKey,firmaRatificador FROM RoleAttendanceEvent where digitalRandomKey not null;")
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
-
+        logger.error(f"Rechazado")
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
+        return _r
     try:
         logger.info(f"len(digitalRandomKey): {len(rows)}")
         if(len(rows) > 0):
@@ -50,6 +53,7 @@ def fn3C5(conn, return_dict):
             f"No se pudieron validar los verificadores de indentidad: {str(e)}")
         logger.error(f"Rechazado")
     finally:
+        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

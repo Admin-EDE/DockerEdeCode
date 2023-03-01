@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,9 +10,7 @@ def fn5E3(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.2
-    Validar que la clase con reemplazante no idóneo no sea contabilizada 
-    en el cumplimiento del plan de estudio.
-
+    La clase con reemplazante no idóneo no es contabilizada en el cumplimiento del plan de estudio.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -30,7 +29,7 @@ def fn5E3(conn, return_dict):
     suplencias_noidoneas = []
     try:
         i = 0
-        suplencias_noidoneas = conn.execute("""--sql
+        suplencias_noidoneas = ejecutar_sql(conn, """--sql
             SELECT
               FirstName,
               MiddleName,
@@ -51,7 +50,7 @@ def fn5E3(conn, return_dict):
             where OPR.RoleId !=6 --Distinto a estudiante
             and PDOC.idoneidadDocente != 1 --no es idoneo
             and LOWER(RAE.observaciones) like '%falta docente%';
-        """).fetchall()
+        """)
     except Exception as e:
         logger.info(f"Resultado: {suplencias_noidoneas} -> {str(e)}")
 

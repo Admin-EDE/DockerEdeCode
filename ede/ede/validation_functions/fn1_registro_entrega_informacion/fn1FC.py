@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,16 +9,7 @@ def fn1FC(conn, return_dict):
     """
     REGISTRO DE ENTREGA DE INFORMACIÓN
     8.0 De la entrega de información
-    Validar que exista cargado en la base de datos el documento digital que 
-    acredite la entrega al apoderado de los documentos necesarios para la 
-    continuidad del estudiante dentro del sistema educativo.
-    --------------------------------------------------
-    Revisar que la entrega de documentos se encuentre cargada en las 
-    incidencias como un tipo de reunión con el apoderado.
-
-    En tabla Indicent.RefIncidentBehaviorId == 36 
-    (Entrega de información en formato digital) y 
-    IncidentPerson.digitalRandomKey OR fileScanBase64 según sea el caso
+    A los alumnos retirados se les ha entregado a sus apoderados los documentos para continuidad de estudios.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -35,7 +27,7 @@ def fn1FC(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT DISTINCT
 	 pst.personId as 'estudianteId'
 	, pid.Identifier as 'RUN'
@@ -83,7 +75,7 @@ OUTER LEFT JOIN Incident Inc
 	
 WHERE 
 	pst.RefPersonStatusTypeId IN (SELECT RefPersonStatusTypeId FROM RefPersonStatusType WHERE Description IN ('Estudiante retirado definitivamente')) 
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 

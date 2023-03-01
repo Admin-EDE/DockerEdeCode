@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn4FA(conn, return_dict):
     """
     REGISTRO DE ANTECEDENTES GENERALES DE LOS ESTUDIANTES POR CURSO
     6.2 Contenido mínimo, letra a
-    Comprueba que el estudiante tiene sus datos mínimos
+    Los estudiantes tienen sus datos mínimos.
     ---------------------------------------
     - Número de lista
     - Número del registro de matrícula
@@ -44,7 +45,7 @@ def fn4FA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT 
 	  est.personId
 	, orgCurso.OrganizationId as cursoId
@@ -141,7 +142,7 @@ OUTER LEFT JOIN (
 ON asignaturas.organizationId = prof_educ.Organizationid
 
 GROUP BY est.personId
-                          """).fetchall()
+                          """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
 
@@ -173,9 +174,14 @@ GROUP BY est.personId
                 errorList.append('estudiante sin sexo asignado')
             if(row[9] is None):
                 errorList.append('estudiante sin dirección')
-            if(row[10] is not None
-               and ('Estudiante asignado a un curso, se crea número de lista' not in row[10]
-               or 'Estudiante con matrícula definitiva' not in row[10])):
+            if row[10] is None:
+                errorList.append('estudiante sin estatus asignados')
+            if 'Estudiante asignado a un curso, se crea número de lista' not in row[10]:
+                errorList.append('estudiante sin estatus de asignación a un curso')
+            if 'Estudiante con matrícula definitiva' not in row[10] \
+                and 'Estudiante promovido' not in row[10] \
+                and 'Estudiante con matrícula provisoria' not in row[10] \
+                and 'Estudiante Matriculado a través de Decreto 152, artículo 60' not in row[10]:
                 errorList.append(
                     'estudiante sin los estatus minimos asignados')
             if(row[11] is None):

@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,12 +10,7 @@ def fn0FA(conn, return_dict):
     """
     REGISTRO DE SALIDAS
     7.0 Registro de salidas o retiros (NO Habituales)
-    Verifica que cada estudiante tenga registrado un listado de personas
-    autorizadas para retirarlo.
-    Se considera excepción de estudiantes registrados en educación de adultos.
-    Se agregó el campo RetirarEstudianteIndicador a la tabla PersonRelationship
-    para identificar a las personas autorizadas para retirar estudiantes 
-    desde el establecimiento.
+    Cada estudiante tiene al menos una persona autorizada para retirarlo del establecimiento.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -31,7 +27,7 @@ def fn0FA(conn, return_dict):
     _r = False
     rows = []
     try:
-        rows = conn.execute("""--sql
+        rows = ejecutar_sql(conn, """--sql
 SELECT DISTINCT 
 	  pid.Identifier -- Muestra el RUN o IPE del estudiante con problemas
 	, count(prsh.RetirarEstudianteIndicador) as 'cantidadPersonasAutorizadas'
@@ -70,7 +66,7 @@ FROM Person p
 		AND prsh.RecordEndDateTime IS NULL
 		AND prsh.RetirarEstudianteIndicador = 1 --Indica que se encuentra habilitado
 GROUP BY pid.Identifier
-            """).fetchall()
+            """)
     except Exception as e:
         logger.info(f"Resultado: {rows} -> {str(e)}")
     try:

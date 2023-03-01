@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn8F1(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
     6.2 Contenido mínimo, letra e
-    Verificar la aplicación y seguimiento de medidas disciplinarias relacionadas con el reglamento interno.
+    La aplicación y seguimiento de medidas disciplinarias relacionadas con el reglamento interno es correcto.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -24,7 +25,7 @@ def fn8F1(conn, return_dict):
           ]
     """
     try:
-        query = conn.execute("""
+        query = ejecutar_sql(conn, """--sql
 SELECT
 	 Inc.incidentId
 FROM Incident Inc
@@ -36,8 +37,9 @@ JOIN RefIncidentBehavior rInBh
               ,'Entrega de documentos retiro de un estudiante'
               ,'Anotación positiva'
               ,'Entrega de documentos de interés general'
-              ,'Entrega de información para continuidad de estudios')
-                             """).fetchall()
+              ,'Entrega de información para continuidad de estudios'
+              ,'Reuniones técnicas o jornada docente')
+                             """)
         if(len(query) > 0):
             Incidentes = (list([m[0] for m in query if m[0] is not None]))
             for x in Incidentes:
@@ -45,7 +47,7 @@ JOIN RefIncidentBehavior rInBh
                 queryWhere = str(x)
                 queryComplete = querySelect+queryWhere
                 try:
-                    query = conn.execute(queryComplete).fetchall()
+                    query = ejecutar_sql(conn, queryComplete)
                     if(len(query) > 0):
                         query = len(query)
                         logger.info(f'Total de datos: {query}')

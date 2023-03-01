@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 import sys
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn5F0(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.1
-    Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
+    La información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes es válida.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -38,7 +39,7 @@ def fn5F0(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""--sql
+        _ExistData = ejecutar_sql(conn, """--sql
 WITH RECURSIVE dates(Organizationid, date) AS (
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------
   SELECT 
@@ -79,7 +80,7 @@ WITH RECURSIVE dates(Organizationid, date) AS (
   AND strftime('%Y-%m-%d',date) < strftime('%Y-%m-%d','now')
 ) -- END RECURSIVE
 SELECT * FROM dates                                   
-        """).fetchall()
+        """)
         if(not _ExistData):
             raise Exception("No hay registros de información")
     except Exception as e:
@@ -93,7 +94,7 @@ SELECT * FROM dates
         return _r
     try:
         asignaturas = []
-        asignaturas = conn.execute("""--sql
+        asignaturas = ejecutar_sql(conn, """--sql
 --6.2 Contenido mínimo, letra b.1
 --Validar la información relacionada con el cumplimiento de los programas de estudio y asistencia de los estudiantes.
 -- * día de clases
@@ -304,7 +305,7 @@ LEFT JOIN (
 ) occ 
 ON occ.org = OrgSchool
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
+-- Rescata las fechas desde OrganizationCalendarEvent asociadas a la Asignatura y las saca de la lista de días hábiles
 LEFT JOIN (
   SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
   FROM OrganizationCalendarEvent oce
@@ -316,6 +317,21 @@ LEFT JOIN (
   GROUP BY oc.Organizationid
 ) oce 
 ON oce.org = Organizationid
+-- Rescata las fechas desde OrganizationCalendarEvent asociadas al Establecimiento y las saca de la lista de días hábiles 
+LEFT JOIN (
+SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
+  FROM OrganizationCalendarEvent oce
+  JOIN OrganizationCalendar oc
+  ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+  JOIN RefCalendarEventType rcet
+  ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+  AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+  JOIN Organization o
+  ON oc.OrganizationId = o.OrganizationId
+  AND o.RefOrganizationTypeId = 10
+  GROUP BY oc.Organizationid
+  ) oce_colegio
+  ON oce_colegio.org = OrgSchool
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 JOIN (
 	SELECT OrganizationId as cssOrgId, group_concat(DISTINCT ClassMeetingDays) as cssClassMeetingDays
@@ -328,10 +344,11 @@ WHERE
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
   AND ifnull(oce.fechasEventos,'1900-01-01') NOT LIKE "%"  || date || "%"	 
   AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
+  AND ifnull(oce_colegio.fechasEventos,'1900-01-01')  NOT LIKE "%"|| date || "%"
   --AND result.idAsignatura NOT NULl
   AND md.cssClassMeetingDays like "%" || diaSemanaCalendar || "%"	   
 GROUP BY Organizationid, date
-""").fetchall()
+""")
     except Exception as e:
         logger.error(f"Resultado: {str(e)}")
 

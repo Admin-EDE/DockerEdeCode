@@ -1,7 +1,8 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
-import ede.ede.check_utils as check_utils
+import ede.ede.validation_functions.check_utils as check_utils
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,15 +10,7 @@ def fn8F2(conn, return_dict):
     """
     REGISTRO DE ANOTACIONES DE CONVIVENCIA ESCOLAR POR ESTUDIANTE
     6.2 Contenido mínimo, letra e
-    Verificar el contenido de cada registro de convivencia
-
-    Grupo _Incidentes debería contener todo lo necesario.
-
-    Identificación del estudiante
-    Identificación del apoderado
-    Fecha, asignatura y observación
-    Fecha, profesor y datos de la entrevista con el apoderado      
-
+    El contenido de cada registro de convivencia es correcto.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -34,7 +27,7 @@ def fn8F2(conn, return_dict):
     _r = False
     _queryIncident = []
     try:
-        _queryIncident = conn.execute("""
+        _queryIncident = ejecutar_sql(conn, """--sql
         SELECT DISTINCT
 			  I.incidentId                                                                         --00
 			, I.incidentDate                                                                       --01
@@ -117,9 +110,14 @@ def fn8F2(conn, return_dict):
 				AND 
 				k12disc.RecordEndDateTime IS NULL
 			ORDER BY I.incidentId
-    """).fetchall()
+    """)
     except Exception as e:
+        logger.error(f"Rechazado")
+        _r = False
+        return_dict[getframeinfo(currentframe()).function] = _r
+        logger.info(f"{current_process().name} finalizando...")
         logger.info(f"Resultado: {_queryIncident} -> {str(e)}")
+        return _r
 
     if(len(_queryIncident) <= 0):
         logger.info(f"S/Datos ")
@@ -219,21 +217,24 @@ def fn8F2(conn, return_dict):
                             _err(f"Falto definir el dirige en el incidente"))
                         dirige = 0
 
-            if(_incident[5] == 'Anotación positiva'):
-                if not check_utils.validateJSON(_incident[16]):
-                    _e.append(
-                        _err(f"Campo regulationViolatedDescription is NOT JSON"))
 
         if(len(_e) == 0):
             _r = True
+            logger.info(f'Aprobado')
+            return_dict[getframeinfo(currentframe()).function] = _r
+            logger.info(f"{current_process().name} finalizando...")
+            return _r
         else:
+            _r = False
+            logger.error(f'Rechazado')
             logger.error(_e)
+            return_dict[getframeinfo(currentframe()).function] = _r
+            logger.info(f"{current_process().name} finalizando...")
+            return _r
     except Exception as e:
-        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         logger.error(f"Rechazado")
         _r = False
-    finally:
-        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
+        logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,7 @@ def fn5D0(conn, return_dict):
     """
     REGISTRO DE CONTROL DE ASIGNATURA
     6.2 Contenido mínimo, letra b.3
-    Verifica que no existan asistencias de Class/section duplicadas
+    No existen asistencias de Class/section duplicadas.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -24,15 +25,15 @@ def fn5D0(conn, return_dict):
           ]
     """
     try:
-        _oPR = conn.execute("""
+        _oPR = ejecutar_sql(conn, """--sql
             SELECT DISTINCT count(RAE.Date), OPR.PersonId, RAE.Date, RAE.digitalRandomKey,RAE.VirtualIndicator
             FROM OrganizationPersonRole OPR
                     JOIN RoleAttendanceEvent RAE ON OPR.OrganizationPersonRoleId = RAE.OrganizationPersonRoleId
             WHERE OPR.RoleId in(4,5)
             AND RAE.RefAttendanceEventTypeId = 2
-            group by OPR.PersonId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
+            group by OPR.PersonId, OPR.OrganizationId, RAE.Date, RAE.digitalRandomKey, RAE.VirtualIndicator;
             """
-            ).fetchall()
+            )
         if(len(_oPR)>0):
             _count = (list([m[0] for m in _oPR if m[0] is not None]))
             _contador = 0

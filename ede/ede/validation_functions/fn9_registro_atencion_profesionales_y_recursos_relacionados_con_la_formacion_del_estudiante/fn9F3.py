@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,8 +9,7 @@ def fn9F3(conn, return_dict):
     """
     REGISTRO DE ATENCIÓN DE PROFESIONALES Y DE RECURSOS RELACIONADOS CON LA FORMACIÓN DEL ESTUDIANTE
     6.2 Contenido mínimo, letra f
-    Verificar que el registro de actividades con la familia 
-    y la comunidad se encuentre cargado en el sistema.
+    El registro de actividades con la familia y la comunidad se encuentra en el sistema.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -25,7 +25,7 @@ def fn9F3(conn, return_dict):
           ]
     """
     try:
-        incident = conn.execute("""
+        incident = ejecutar_sql(conn, """--sql
           SELECT IncidentId
           from Incident
           WHERE
@@ -34,17 +34,17 @@ def fn9F3(conn, return_dict):
               FROM RefIncidentBehavior
               WHERE RefIncidentBehavior.description IN ('Reunión con apoderados','Entrevista')
             );
-        """).fetchall()
+        """)
         if (len(incident) > 0):
             listIncident = (list([m[0] for m in incident if m[0] is not None]))
             for x in listIncident:
                 try:
                     x = str(x)
-                    incidentParent = conn.execute("""
+                    incidentParent = ejecutar_sql(conn, """--sql
                       SELECT IncidentId 
                       FROM IncidentPerson 
                       where 
-                      IncidentId = """+x+"""
+                      IncidentId = """+x+"""--sql
                       and 
                       (
                         IncidentPerson.RefIncidentPersonRoleTypeId IN (
@@ -71,12 +71,12 @@ def fn9F3(conn, return_dict):
                           WHERE RefIncidentPersonType.description IN ('Apoderado')
                         )	
                       )                                                      
-                    """).fetchall()
-                    incidentProfessor = conn.execute("""
+                    """)
+                    incidentProfessor = ejecutar_sql(conn, """--sql
                         SELECT IncidentId 
                         FROM IncidentPerson 
                         where 
-                        IncidentId = """+x+"""
+                        IncidentId = """+x+"""--sql
                         and 
                         (
                           IncidentPerson.RefIncidentPersonRoleTypeId IN (
@@ -103,7 +103,7 @@ def fn9F3(conn, return_dict):
                             WHERE RefIncidentPersonType.description IN ('Docente','Profesional de la educación','Personal Administrativo')
                           )	
                         )                                                         
-                    """).fetchall()
+                    """)
                     parent = 0
                     professor = 0
                     if (len(incidentParent) > 0):

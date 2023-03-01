@@ -2,6 +2,7 @@ from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 from datetime import datetime
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -9,7 +10,7 @@ def fn6F1(conn, return_dict):
     """
     REGISTRO CONTROL MENSUAL DE ASISTENCIA O CONTROL DE SUBVENCIONES
     6.2 Contenido mínimo, letra c.1
-    Verificar que el registro contenga la información mínima
+    El registro contiene la información mínima.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
           Objeto que establece la conexión con la base de datos.
@@ -26,7 +27,7 @@ def fn6F1(conn, return_dict):
     """
     arr = []
     try:
-        _S1 = """ 
+        _S1 = """--sql
 select 
 	strftime('%d',rae.Date) as Dia,
 	strftime('%m',rae.Date) as Mes,
@@ -55,7 +56,7 @@ where
          """
 
         now = datetime.now()
-        _q1 = conn.execute(_S1).fetchall()
+        _q1 = ejecutar_sql(conn, _S1)
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:

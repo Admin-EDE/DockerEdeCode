@@ -1,6 +1,7 @@
 from inspect import getframeinfo, currentframe
 from multiprocessing import current_process
 
+from ede.ede.validation_functions.check_bd_utils import ejecutar_sql
 from ede.ede._logger import logger
 
 
@@ -8,7 +9,8 @@ def fn3D0(conn, return_dict):
     """
     INTEGRIDAD DE DATOS
     
-    Verificar que cada asignatura se encuentre asociada a un curso.
+    Cada asignatura se encuentra asociada a un curso.
+    -----
     Entrega los organizationId de las asignaturas que no están asociadas a ningún curso.
     Args:
         conn ([sqlalchemy.engine.Connection]): [
@@ -27,7 +29,7 @@ def fn3D0(conn, return_dict):
     _r = False
     _ExistData = []
     try:
-        _ExistData = conn.execute("""--sql
+        _ExistData = ejecutar_sql(conn, """--sql
         SELECT count(OrganizationId)
         FROM OrganizationRelationship
         INNER JOIN Organization USING(OrganizationId)
@@ -38,7 +40,7 @@ def fn3D0(conn, return_dict):
             FROM RefOrganizationType 
             WHERE Description LIKE 'Course Section'
           )
-                                """).fetchall()
+                                """)
     except Exception as e:
         logger.info(f"Resultado: {_ExistData} -> {str(e)}")
 
@@ -51,7 +53,7 @@ def fn3D0(conn, return_dict):
 
     asignaturas = []
     try:
-        asignaturas = conn.execute("""--sql
+        asignaturas = ejecutar_sql(conn, """--sql
         /* 
         * Selecciona de la tabla Organization los ID's de todas las asignaturas
         * que no tengan un curso asociado 
@@ -84,7 +86,7 @@ def fn3D0(conn, return_dict):
                                                 )
                                         )
                 );
-      """).fetchall()
+      """)
     except Exception as e:
         logger.info(f"Resultado: {asignaturas} -> {str(e)}")
 
