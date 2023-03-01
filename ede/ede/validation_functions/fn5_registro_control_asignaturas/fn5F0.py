@@ -305,7 +305,7 @@ LEFT JOIN (
 ) occ 
 ON occ.org = OrgSchool
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Rescata las fechas desde OrganizationCalendarEvent y las saca de la lista de días hábiles
+-- Rescata las fechas desde OrganizationCalendarEvent asociadas a la Asignatura y las saca de la lista de días hábiles
 LEFT JOIN (
   SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
   FROM OrganizationCalendarEvent oce
@@ -317,6 +317,21 @@ LEFT JOIN (
   GROUP BY oc.Organizationid
 ) oce 
 ON oce.org = Organizationid
+-- Rescata las fechas desde OrganizationCalendarEvent asociadas al Establecimiento y las saca de la lista de días hábiles 
+LEFT JOIN (
+SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos'
+  FROM OrganizationCalendarEvent oce
+  JOIN OrganizationCalendar oc
+  ON oce.OrganizationCalendarId = oc.OrganizationCalendarId
+  JOIN RefCalendarEventType rcet
+  ON oce.RefCalendarEventType = rcet.RefCalendarEventTypeId
+  AND rcet.Code IN ('EmergencyDay','Holiday','Strike','TeacherOnlyDay')	
+  JOIN Organization o
+  ON oc.OrganizationId = o.OrganizationId
+  AND o.RefOrganizationTypeId = 10
+  GROUP BY oc.Organizationid
+  ) oce_colegio
+  ON oce_colegio.org = OrgSchool
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 JOIN (
 	SELECT OrganizationId as cssOrgId, group_concat(DISTINCT ClassMeetingDays) as cssClassMeetingDays
@@ -329,6 +344,7 @@ WHERE
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
   AND ifnull(oce.fechasEventos,'1900-01-01') NOT LIKE "%"  || date || "%"	 
   AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
+  AND ifnull(oce_colegio.fechasEventos,'1900-01-01')  NOT LIKE "%"|| date || "%"
   --AND result.idAsignatura NOT NULl
   AND md.cssClassMeetingDays like "%" || diaSemanaCalendar || "%"	   
 GROUP BY Organizationid, date

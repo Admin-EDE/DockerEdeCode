@@ -86,8 +86,8 @@ def fn9F1(conn, return_dict):
             )
             AND ClassMeetingDays REGEXP '^[(Lunes|Martes|Miércoles|Jueves|Viernes|,)]+$'
             AND ClassPeriod REGEXP '^[(Bloque|,|\d{2})]+$'
-            AND ClassBeginningTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
-            AND ClassEndingTime REGEXP '^((0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]),?){1,}$'
+            AND CSS.ClassBeginningTime IS TIME(CSS.ClassBeginningTime)
+			      AND CSS.ClassEndingTime IS TIME(CSS.ClassEndingTime)
             AND CS.CourseId = ors.Parent_OrganizationId
             AND CS.MaximumCapacity IS NOT NULL
             AND CS.VirtualIndicator IS NOT NULL

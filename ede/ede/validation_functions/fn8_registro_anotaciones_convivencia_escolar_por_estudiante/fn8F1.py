@@ -37,7 +37,8 @@ JOIN RefIncidentBehavior rInBh
               ,'Entrega de documentos retiro de un estudiante'
               ,'Anotación positiva'
               ,'Entrega de documentos de interés general'
-              ,'Entrega de información para continuidad de estudios')
+              ,'Entrega de información para continuidad de estudios'
+              ,'Reuniones técnicas o jornada docente')
                              """)
         if(len(query) > 0):
             Incidentes = (list([m[0] for m in query if m[0] is not None]))
