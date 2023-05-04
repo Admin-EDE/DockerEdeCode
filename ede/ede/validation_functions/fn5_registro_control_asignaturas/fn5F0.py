@@ -267,7 +267,7 @@ LEFT JOIN (
         -- Verifica que día y horario de firma corresponda con calendario de la asignatura
         css.ClassMeetingDays like '%'||diaSemana||'%'
         AND
-        hora between css.ClassBeginningTime and css.ClassEndingTime
+        strftime('%H:%M',hora) between strftime('%H:%M',css.ClassBeginningTime) and strftime('%H:%M',css.ClassEndingTime)
         AND
         -- Agrega a la lista todos los registros que no cumplan con la expresión regular
         rae.Date REGEXP '^(19|2[0-9])[0-9]{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])([T ])(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?((\+|\-)(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]))$'
