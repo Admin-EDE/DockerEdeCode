@@ -38,8 +38,11 @@ def fn29B(conn, return_dict):
         group by OPR.OrganizationId, P.PersonId;
         """)
         k12StudentEnrollment = ejecutar_sql(conn, """--sql
-        select OrganizationPersonRoleId
-        from K12StudentEnrollment;
+        select K12.OrganizationPersonRoleId
+        from K12StudentEnrollment K12
+        join OrganizationPersonRole OPR on OPR.OrganizationPersonRoleId = K12.OrganizationPersonRoleId
+        join Organization ORG on ORG.OrganizationId = OPR.OrganizationId
+        where ORG.RefOrganizationTypeId = 47;
         """)
         if(len(query) > 0 and len(k12StudentEnrollment) > 0):
             estudiantes = (list([m[2] for m in query if m[2] is not None]))

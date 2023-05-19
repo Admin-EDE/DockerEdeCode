@@ -243,7 +243,7 @@ LEFT JOIN (
       ON oc.OrganizationCalendarId = ocs.OrganizationCalendarId
       AND ocs.RecordEndDateTime IS NULL
       AND ocs.BeginDate = fecha  													--AGREGADO 2022/04/08
-      AND hora between ifnull(ocs.SessionStartTime,'00:00') and ifnull(ocs.SessionEndTime,"00:00")					--AGREGADO 2022/04/08  
+      AND hora between time(ifnull(ocs.SessionStartTime,'00:00'),'-5 minutes') and time(ifnull(ocs.SessionEndTime,'00:00'), '+5 minutes') --dado que en fn5e5 existe esta condicion, se incluye aqui tambien
     JOIN CourseSectionSchedule css
       ON O.OrganizationId = css.OrganizationId
       AND css.RecordEndDateTime IS NULL
