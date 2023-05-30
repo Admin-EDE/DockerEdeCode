@@ -100,8 +100,8 @@ GROUP BY pid.Identifier
                 logger.error(f"Rechazado")
         else:
             logger.info(
-                f"No se encontraron estudiantes y es obligación tenerlos. Se rechaza la función.")
-            logger.error(f"Rechazado")
+                f"No se encontraron estudiantes.")
+            logger.info(f"S/Datos")
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la vista personList filtrada por alumnos: {str(e)}")
