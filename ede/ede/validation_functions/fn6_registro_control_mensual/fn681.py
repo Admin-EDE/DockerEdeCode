@@ -75,9 +75,9 @@ def fn681(conn, return_dict):
                                         personid = str(q4[0])
                                         _q5 = ejecutar_sql(conn, 
                                             _S5, personid)
-                                        if(len(_q5) != 0):
-                                            rut = str(_q5[0])
-                                            arr.append(rut)
+                                        if(len(_q5) == 0):
+                                            #rut = str(_q5[0])
+                                            arr.append(personid)
 
                                     if(len(arr) != 0):
                                         logger.error(
