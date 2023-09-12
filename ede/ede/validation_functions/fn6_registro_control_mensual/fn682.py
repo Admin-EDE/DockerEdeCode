@@ -198,22 +198,22 @@ def fn682(conn, return_dict):
                                                 if(len(arr4) != 0):
                                                     logger.error(
                                                         f"Los siguientes alumnos no tienen asistencia:{str(arr4)}")
-                                                    logger.error(f"Rechazado")
+                                                    logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
                                                 else:
                                                     logger.info(f"Aprobado")
                                                     _r = True
                                 else:
                                     logger.error(
                                         f"No tiene alumnos en la asignatura ")
-                                    logger.error(f"Rechazado")
+                                    logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
                         else:
                             logger.error(
                                 f"La asignatura no esta enlazada para que sea de partica profesional")
-                            logger.error(f"Rechazado")
+                            logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
                 else:
                     logger.error(
                                 f"La asignatura no esta enlazada con su curso")
-                    logger.error(f"Rechazado")
+                    logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
         else:
             logger.info(
                 f"En el colegio no hay asignaturas de pratica profesional.")
@@ -222,7 +222,7 @@ def fn682(conn, return_dict):
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta de entrega de información: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
     finally:
         logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
         return_dict[getframeinfo(currentframe()).function] = _r
