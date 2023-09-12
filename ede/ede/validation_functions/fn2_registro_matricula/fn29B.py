@@ -53,7 +53,7 @@ def fn29B(conn, return_dict):
             for x in estudiantes:
                 if(x == 2):
                     logger.error(f"Matriculas repetidas")
-                    logger.error(f"Rechazado")
+                    logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
                     return_dict[getframeinfo(currentframe()).function] = False
                     logger.info(f"{current_process().name} finalizando...")
                     return False
@@ -64,7 +64,7 @@ def fn29B(conn, return_dict):
                                 contador = contador + 1
                             else:
                                 logger.error(f"Matricula/s no registrada/s")
-                                logger.error(f"Rechazado")
+                                logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
                                 logger.info(f"{current_process().name} finalizando...")
@@ -82,7 +82,7 @@ def fn29B(conn, return_dict):
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False
