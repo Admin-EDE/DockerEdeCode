@@ -65,7 +65,7 @@ ON orgCurso.personid = est.personId
 JOIN (
 SELECT  DISTINCT OrganizationIdDelCurso
 FROM jerarquiasList
-WHERE grado like '%3º medio%'
+WHERE grado like '%3º medio%' OR grado like '%4º medio%'
 ) jer 
 ON jer.OrganizationIdDelCurso = orgCurso.OrganizationId
 
