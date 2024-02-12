@@ -31,8 +31,10 @@ def fn2DA(conn, return_dict):
         FROM OrganizationPersonRole OPR
                 join Person P on OPR.PersonId = P.PersonId
                 join PersonStatus PS on P.PersonId = PS.PersonId
+				join jerarquiasList jL on OPR.OrganizationId = jL.OrganizationIdDelCurso
         WHERE OPR.RoleId = 6
           and PS.RefPersonStatusTypeId = 27
+		  and jL.codigoEnseñanza not in ("010:Educación Parvularia", "214:Educación Especial Trastornos Específicos del Lenguaje")
         """)
         if(len(_query) > 0):
             _personStatusFile = ejecutar_sql(conn, """--sql
@@ -44,8 +46,10 @@ def fn2DA(conn, return_dict):
               FROM OrganizationPersonRole OPR
                       join Person P on OPR.PersonId = P.PersonId
                       join PersonStatus PS on P.PersonId = PS.PersonId
+                      join jerarquiasList jL on OPR.OrganizationId = jL.OrganizationIdDelCurso
               WHERE OPR.RoleId = 6 --Estudiante
                 and PS.RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
+				and jL.codigoEnseñanza not in ("010:Educación Parvularia", "214:Educación Especial Trastornos Específicos del Lenguaje")
           )
           AND fileScanBase64 is not null
           and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
@@ -66,8 +70,10 @@ def fn2DA(conn, return_dict):
                           from OrganizationPersonRole OPR
                                   join Person P on OPR.PersonId = P.PersonId
                                   join PersonStatus PS on P.PersonId = PS.PersonId
+								  join jerarquiasList jL on OPR.OrganizationId = jL.OrganizationIdDelCurso
                           where OPR.RoleId = 6 --Estudiante
                             and PS.RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
+							and jL.codigoEnseñanza not in ("010:Educación Parvularia", "214:Educación Especial Trastornos Específicos del Lenguaje")
                       )
                       and fileScanBase64 is not null
                       and RefPersonStatusTypeId = 27 --Estudiante con matrícula definitiva
