@@ -42,7 +42,7 @@ def fn5D0(conn, return_dict):
                     _contador += 1
             if(_contador > 0):
                 logger.error('Duplicados')
-                logger.error('Rechazado')
+                logger.error('Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
@@ -60,7 +60,7 @@ def fn5D0(conn, return_dict):
             return False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"Rechazado") #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False

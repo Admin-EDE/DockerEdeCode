@@ -224,7 +224,7 @@ def fn682(conn, return_dict):
             f"NO se pudo ejecutar la consulta de entrega de información: {str(e)}")
         logger.error(f"S/Datos") #Rechazado, se cambia por S/Datos por error en la consulta
     finally:
-        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
+        logger.info(f'Aprobado') if _r else logger.error(f'S/Datos')  #Rechazado, se cambia por ser el calendario opcional
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

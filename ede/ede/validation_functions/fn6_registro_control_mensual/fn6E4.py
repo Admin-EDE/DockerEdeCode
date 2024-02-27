@@ -206,7 +206,7 @@ GROUP BY org
         if(organizacionesErrors):
             logger.error(
                 f"Las siguientes organizaciones estan con problemas: {str(set(organizacionesErrors))}")
-            logger.error(f"Rechazado")
+            logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
             return_dict[getframeinfo(currentframe()).function] = False
             logger.info(f"{current_process().name} finalizando...")
             return False
@@ -214,7 +214,7 @@ GROUP BY org
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta de entrega de informaciÓn: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False

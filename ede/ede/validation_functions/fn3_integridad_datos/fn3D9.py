@@ -54,7 +54,7 @@ def fn3D9(conn, return_dict):
 		   AND DATE(RoleAttendanceEvent.Date) = OrganizationCalendarSession.EndDate
       """)
     except Exception as e:
-        logger.error(f'Rechazado')
+        logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
         _r = False
         logger.info(f"Resultado: {listInfoSuccesfull} -> {str(e)}")
         return_dict[getframeinfo(currentframe()).function] = _r
@@ -94,7 +94,7 @@ def fn3D9(conn, return_dict):
 		   AND DATE(RoleAttendanceEvent.Date) = OrganizationCalendarSession.EndDate
       """)
     except Exception as e:
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
         logger.info(f"Resultado: {RoleAttendance_outer} -> {str(e)}")
 
     logger.info(
@@ -110,7 +110,7 @@ def fn3D9(conn, return_dict):
                 _err1 = f"Las siguientes organizaciones no coinciden: {data1}"
                 if (_c1 > 0):
                     logger.error(_err1)
-                    logger.error(f"Rechazado")
+                    logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                     _r = False
                 else:
                     logger.info(f"Aprobado")
@@ -121,9 +121,9 @@ def fn3D9(conn, return_dict):
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
     finally:
-        logger.info(f'Aprobado') if _r else logger.error(f'Rechazado')
+        logger.info(f'Aprobado') if _r else logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

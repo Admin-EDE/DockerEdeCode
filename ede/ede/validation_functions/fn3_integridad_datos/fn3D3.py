@@ -105,11 +105,11 @@ def fn3D3(conn, return_dict):
                     f"Las siguientes registros tienen mal formateado el campo ClassPeriod: {data2}")
 
         if (_c1 > 0 or _c2 > 0):
-            logger.error(f"Rechazado")
+            logger.error(f"S/Datos") #Rechazado, se cambia por ser el Calendario opcional
     except Exception as e:
         logger.error(
             f"NO se pudo ejecutar la consulta a la verificación: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

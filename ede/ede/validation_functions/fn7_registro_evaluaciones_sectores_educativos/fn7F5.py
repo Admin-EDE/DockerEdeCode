@@ -66,7 +66,7 @@ def fn7F5(conn, return_dict):
     if(len(_organizationCalendarSession) == 0):
         logger.error(
             f'Las evaluaciones registradas no poseen registro en los calendarios')
-        logger.error(f'Rechazado')
+        logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
         _r = False
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
@@ -105,11 +105,11 @@ def fn7F5(conn, return_dict):
         else:
             logger.error(
                 f'No se han ingresado en los calendarios la descripcion del contenido impartido')
-            logger.error(f'Rechazado')
+            logger.error(f'S/Datos')  #Rechazado, se cambia por ser el calendario opcional
             _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos")  #Rechazado, se cambia por ser el calendario opcional
         _r = False
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r

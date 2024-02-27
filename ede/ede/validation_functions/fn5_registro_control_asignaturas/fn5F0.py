@@ -425,7 +425,7 @@ GROUP BY Organizationid, date
             f"Error on line {sys.exc_info()[-1].tb_lineno}, {type(e).__name__},{e}")
         logger.error(f"{str(e)}")
     finally:
-        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado")
+        logger.info(f"Aprobado") if _r else logger.error(f"Rechazado") #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r

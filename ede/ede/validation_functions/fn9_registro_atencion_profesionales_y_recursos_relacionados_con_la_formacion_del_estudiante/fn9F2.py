@@ -68,28 +68,28 @@ def fn9F2(conn, return_dict):
 
                             if not organizationId:
                                 logger.error(f"Sin OrganizationId")
-                                logger.error(f'Rechazado')
+                                logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
                                 logger.info(f"{current_process().name} finalizando...")
                                 return False
                             if not calendarCode:
                                 logger.error(f"Sin CalendarCode")
-                                logger.error(f'Rechazado')
+                                logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
                                 logger.info(f"{current_process().name} finalizando...")
                                 return False
                             if not calendarDescripction:
                                 logger.error(f"Sin CaldendarDescription")
-                                logger.error(f'Rechazado')
+                                logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
                                 logger.info(f"{current_process().name} finalizando...")
                                 return False
                             if not calendarYear:
                                 logger.error(f"Sin CalendarYear")
-                                logger.error(f'Rechazado')
+                                logger.error(f'S/Datos') #Rechazado, se cambia por ser el calendario opcional
                                 return_dict[getframeinfo(
                                     currentframe()).function] = False
                                 logger.info(f"{current_process().name} finalizando...")
@@ -103,7 +103,7 @@ def fn9F2(conn, return_dict):
                             return True
                         else:
                             # logger.info(f"S/Datos")
-                            logger.error(f"Rechazado")
+                            logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                             return_dict[getframeinfo(
                                 currentframe()).function] = False
                             logger.info(f"{current_process().name} finalizando...")
@@ -111,20 +111,20 @@ def fn9F2(conn, return_dict):
                     except Exception as e:
                         logger.error(
                             f"No se pudo ejecutar la consulta: {str(e)}")
-                        logger.error(f"Rechazado")
+                        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                         return_dict[getframeinfo(
                             currentframe()).function] = False
                         logger.info(f"{current_process().name} finalizando...")
                         return False
                 else:
                     # logger.info(f"S/Datos")
-                    logger.error(f"Rechazado")
+                    logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                     return_dict[getframeinfo(currentframe()).function] = False
                     logger.info(f"{current_process().name} finalizando...")
                     return False
             except Exception as e:
                 logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-                logger.error(f"Rechazado")
+                logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
@@ -137,7 +137,7 @@ def fn9F2(conn, return_dict):
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False

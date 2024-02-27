@@ -86,13 +86,13 @@ def fn6E3(conn, return_dict):
 
         if(_flag1 == 1):
             logger.error(_msg1)
-            logger.error(f"Rechazado")
+            logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
             return_dict[getframeinfo(currentframe()).function] = False
             logger.info(f"{current_process().name} finalizando...")
             return False
         elif(_flag2 == 1):
             logger.error(_msg2)
-            logger.error(f"Rechazado")
+            logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
             return_dict[getframeinfo(currentframe()).function] = False
             logger.info(f"{current_process().name} finalizando...")
             return False
@@ -104,7 +104,7 @@ def fn6E3(conn, return_dict):
 
     except Exception as e:
         logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False

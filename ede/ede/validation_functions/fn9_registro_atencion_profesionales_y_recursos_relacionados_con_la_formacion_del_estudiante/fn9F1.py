@@ -120,10 +120,10 @@ def fn9F1(conn, return_dict):
         else:
             logger.error(
                 f"{len(courseSections)} Asignaturas tienen problemas con su planificación: {courseSections}")
-            logger.error(f"Rechazado")
+            logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")

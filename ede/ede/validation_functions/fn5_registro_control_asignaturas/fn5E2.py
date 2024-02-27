@@ -46,42 +46,42 @@ def fn5E2(conn, return_dict):
             identificador = (list(set([m[0] for m in rows if m[0] is not None])))
             if not identificador:
                 logger.error(f"Sin identificador")
-                logger.error(f'Rechazado')
+                logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             nombre = (list(set([m[1] for m in rows if m[1] is not None])))
             if not nombre:
                 logger.error(f"Sin nombre")
-                logger.error(f'Rechazado')
+                logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             titulo = (list(set([m[2] for m in rows if m[2] is not None])))
             if not titulo:
                 logger.error(f"Sin titulo")
-                logger.error(f'Rechazado')
+                logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             fechatitulo = (list(set([m[3] for m in rows if m[3] is not None])))
             if not fechatitulo:
                 logger.error(f"Sin fecha de titulo")
-                logger.error(f'Rechazado')
+                logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             institucion = (list(set([m[4] for m in rows if m[4] is not None])))
             if not institucion:
                 logger.error(f"Sin institucion")
-                logger.error(f'Rechazado')
+                logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
             observacion = (list(set([m[5] for m in rows if m[5] is not None])))
             if not observacion:
                 logger.error(f"Sin observacion")
-                logger.error(f'Rechazado')
+                logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
@@ -98,7 +98,7 @@ def fn5E2(conn, return_dict):
             return True
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"Rechazado") #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False

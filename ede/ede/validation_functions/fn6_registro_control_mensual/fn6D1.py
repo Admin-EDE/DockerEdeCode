@@ -62,7 +62,7 @@ def fn6D1(conn, return_dict):
                     else:
                         logger.error(
                             f"No hay informacion de calendario academico del establecimiento.")
-                        logger.error(f"Rechazado")
+                        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                         return_dict[getframeinfo(
                             currentframe()).function] = False
                         logger.info(f"{current_process().name} finalizando...")
@@ -84,7 +84,7 @@ def fn6D1(conn, return_dict):
             if(len(_l) != 0):
                 logger.error(
                     f"Hay alumnos retirados sin registro de fecha de retiro: {str(_l)}")
-                logger.error(f"Rechazado")
+                logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
@@ -92,7 +92,7 @@ def fn6D1(conn, return_dict):
             if(len(_l2) != 0):
                 logger.error(
                     f"Hay alumnos que registran asistencia anterior a la fecha de ingreso o posterior a la fecha de retiro del establecimiento: {str(_l2)}")
-                logger.error(f"Rechazado")
+                logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
                 return_dict[getframeinfo(currentframe()).function] = False
                 logger.info(f"{current_process().name} finalizando...")
                 return False
@@ -107,7 +107,7 @@ def fn6D1(conn, return_dict):
 
     except Exception as e:
         logger.error(f"NO se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
         return_dict[getframeinfo(currentframe()).function] = False
         logger.info(f"{current_process().name} finalizando...")
         return False

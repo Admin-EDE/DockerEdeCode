@@ -37,14 +37,14 @@ def fn5E4(conn, return_dict):
           _date = (list(set([m[0] for m in _query if m[0] is not None])))
           if not _date:
             logger.error(f"Sin fecha de asistencia ingresada")
-            logger.error(f'Rechazado')
+            logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
             return_dict[getframeinfo(currentframe()).function] = False
             logger.info(f"{current_process().name} finalizando...")
             return False
           _status = (list(set([m[1] for m in _query if m[1] is not None])))
           if not _status:
             logger.error(f"Sin estado de asistencia asignado")
-            logger.error(f'Rechazado')
+            logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
             return_dict[getframeinfo(currentframe()).function] = False
             logger.info(f"{current_process().name} finalizando...")
             return False
@@ -61,7 +61,7 @@ def fn5E4(conn, return_dict):
             return True
     except Exception as e:
           logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-          logger.error(f"Rechazado")
+          logger.error(f"Rechazado") #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
           return_dict[getframeinfo(currentframe()).function] = False
           logger.info(f"{current_process().name} finalizando...")
           return False

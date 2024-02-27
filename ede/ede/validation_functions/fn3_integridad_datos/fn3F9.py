@@ -141,13 +141,13 @@ def fn3F9(conn, return_dict):
           logger.info("Aprobado")
           _r = True
         elif( len(shortDateData) >= 0 or len(fullDateTimeData) >= 0):
-          logger.error(f"Rechazado")
+          logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
           logger.error(f"shortDateData: {set(shortDateData)}")
           logger.error(f"fullDateTimeData: {set(fullDateTimeData)}")
         
     except Exception as e:
       logger.error(f"NO se pudo ejecutar la verificación: {str(e)}")
-      logger.error(f"Rechazado")
+      logger.error(f"S/Datos") #Rechazado, se cambia por ser el calendario opcional
     finally:
       return_dict[getframeinfo(currentframe()).function] = _r
       logger.info(f"{current_process().name} finalizando...")

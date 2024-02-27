@@ -236,7 +236,7 @@ ORDER BY
     """)
     except Exception as e:
         logger.info(f"Resultado: {_query} -> {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"Rechazado") #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
         logger.info(
             f"No hay información para evaluar, pero debería por eso no aplica S/Datos")
     try:
@@ -271,14 +271,14 @@ ORDER BY
                 # logger.info(idx_)
                 # logger.info(el_)
                 if el_ != _totalAsign[idx_]:
-                    logger.error(f'Rechazado')
+                    logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                     logger.error(f'Totales de estudiantes no coinciden')
                     _result.append(False)
                 else:
                     _result.append(True)
 
                 if _estPresentesCurso[idx_] != (_estPresentesAsign[idx_]+_estAtradadosAsign[idx_]):
-                    logger.error(f'Rechazado')
+                    logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                     logger.error(
                         f'Total de estudiantes presentes no coinciden')
                     _result.append(False)
@@ -286,7 +286,7 @@ ORDER BY
                     _result.append(True)
 
                 if _estAusentesCurso[idx_] != _estAusentesAsign[idx_]:
-                    logger.error(f'Rechazado')
+                    logger.error(f'Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
                     logger.error(f'Total de estudiantes ausentes no coinciden')
                     _result.append(False)
                 else:
@@ -295,11 +295,11 @@ ORDER BY
         if(_r and len(_result) > 0):
             logger.info('Aprobado')
         else:
-            logger.error('Rechazado')
+            logger.error('Rechazado') #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
             _r = False
     except Exception as e:
         logger.error(f"No se pudo ejecutar la consulta: {str(e)}")
-        logger.error(f"Rechazado")
+        logger.error(f"Rechazado") #Rechazado, se cambia por ser el Registro de control de asignaturas opcional en Parvularia
     finally:
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
