@@ -32,8 +32,10 @@ def fn6E0(conn, return_dict):
 
         _S3 = """SELECT organizationid from Organization where reforganizationtypeid=22  ;"""
 
-        _S4 = """SELECT ClassMeetingDays,strftime('%H:%M',ClassBeginningTime) as ClassBeginningTime,strftime('%H:%M',ClassBeginningTime) as ClassBeginningTime,  
-            ClassPeriod from coursesectionschedule where organizationid=?;"""
+        _S4 = """SELECT CourseSectionScheduleId,OrganizationId,ClassMeetingDays,
+            strftime('%H:%M',ClassBeginningTime) as ClassBeginningTime,
+            strftime('%H:%M',ClassEndingTime) as ClassEndingTime,ClassPeriod
+            from coursesectionschedule where organizationid=?;"""
 
         _S5 = """SELECT a.OrganizationPersonRoleId,a.OrganizationId,a.PersonId,a.roleid,strftime('%Y-%m-%d %H:%M',a.EntryDate) as EntryDate, strftime('%Y-%m-%d %H:%M',a.ExitDate) as ExitDate,a.RecordStartDateTime,a.RecordEndDateTime,b.Identifier
                     from  OrganizationPersonRole a 
@@ -49,7 +51,7 @@ def fn6E0(conn, return_dict):
         XX = 0
         if(len(_q1) != 0):
             for q1 in _q1:
-                organizationid = str(q1)
+                organizationid = (q1[0],)
                 _q2 = ejecutar_sql(conn, _S4, organizationid)
                 if(len(_q2) != 0):
                     for q2 in _q2:
@@ -67,18 +69,18 @@ def fn6E0(conn, return_dict):
                                 hora1 = str(q3[4])
                                 hora2 = str(q3[5])
                                 dfs = datetime.strptime(hora1[:10], '%Y-%m-%d')
-                                nombresemana2 = dfs.isoweekday()
+                                nombresemana2 = dfs.weekday()
                                 for aa in diaSemana:
-                                    if str(aa.lower()) == 'lunes':
-                                        numero = 0
-                                    elif str(aa.lower()) == 'martes':
-                                        numero = 1
-                                    elif str(aa.lower()) == 'miércoles':
-                                        numero = 2
-                                    elif str(aa.lower()) == 'jueves':
-                                        numero = 3
-                                    elif str(aa.lower()) == 'viernes':
-                                        numero = 4
+                                    dia_semana = str(aa).strip().lower()
+                                    numero = {
+                                        'lunes': 0,
+                                        'martes': 1,
+                                        'miércoles': 2,
+                                        'jueves': 3,
+                                        'viernes': 4,
+                                    }.get(dia_semana)
+                                    if numero is None:
+                                        continue
                                     if int(nombresemana2) == int(numero):
                                         if datetime.strptime(hora1[11:len(hora1)], '%H:%M') > datetime.strptime(hora_comi[:5], '%H:%M'):
                                             _q4 = ejecutar_sql(conn, 
