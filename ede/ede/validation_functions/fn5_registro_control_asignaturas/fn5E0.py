@@ -111,7 +111,14 @@ def fn5E0(conn, return_dict):
 				AND DATE(rae.Date) = ocs.EndDate
               JOIN CourseSectionSchedule css
                 ON O.OrganizationId = css.OrganizationId
-                AND css.RecordEndDateTime IS NULL
+                AND (
+                  css.RecordStartDateTime IS NULL
+                  OR DATE(rae.Date) >= DATE(css.RecordStartDateTime)
+                )
+                AND (
+                  css.RecordEndDateTime IS NULL
+                  OR DATE(rae.Date) < DATE(css.RecordEndDateTime)
+                )
             --GROUP BY rae.Date
 
             WHERE 

@@ -176,7 +176,14 @@ FROM
       JOIN OrganizationCalendar oc ON O.OrganizationId = oc.OrganizationId
       AND oc.RecordEndDateTime IS NULL
       JOIN CourseSectionSchedule css ON O.OrganizationId = css.OrganizationId
-      AND css.RecordEndDateTime IS NULL
+      AND (
+        css.RecordStartDateTime IS NULL
+        OR DATE(rae.Date) >= DATE(css.RecordStartDateTime)
+      )
+      AND (
+        css.RecordEndDateTime IS NULL
+        OR DATE(rae.Date) < DATE(css.RecordEndDateTime)
+      )
       AND hora between time(
         ifnull(css.ClassBeginningTime, '00:00'),
         '-5 minutes'

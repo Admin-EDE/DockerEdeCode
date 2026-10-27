@@ -153,7 +153,7 @@ SELECT
 	, date
 	, result.*
 	, (SELECT OrganizationId FROM Organization WHERE RefOrganizationTypeId = 10) as 'OrgSchool'
-	, md.cssClassMeetingDays
+	, md.ClassMeetingDays
 	,CASE 
       WHEN strftime('%w', date) = '0' THEN 'Domingo'
       WHEN strftime('%w', date) = '1' THEN 'Lunes'
@@ -246,7 +246,14 @@ LEFT JOIN (
       AND hora between time(ifnull(ocs.SessionStartTime,'00:00'),'-5 minutes') and time(ifnull(ocs.SessionEndTime,'00:00'), '+5 minutes') --dado que en fn5e5 existe esta condicion, se incluye aqui tambien
     JOIN CourseSectionSchedule css
       ON O.OrganizationId = css.OrganizationId
-      AND css.RecordEndDateTime IS NULL
+      AND (
+        css.RecordStartDateTime IS NULL
+        OR DATE(rae.Date) >= DATE(css.RecordStartDateTime)
+      )
+      AND (
+        css.RecordEndDateTime IS NULL
+        OR DATE(rae.Date) < DATE(css.RecordEndDateTime)
+      )
 
     WHERE 
         -- Verifica que se encuentre cargado el leccionario
@@ -334,11 +341,22 @@ SELECT oc.Organizationid as 'org', group_concat(oce.EventDate) as 'fechasEventos
   ON oce_colegio.org = OrgSchool
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 JOIN (
-	SELECT OrganizationId as cssOrgId, group_concat(DISTINCT ClassMeetingDays) as cssClassMeetingDays
-	FROM CourseSectionSchedule css
-	GROUP BY organizationId
-) md 
-ON md.cssOrgId = Organizationid
+  SELECT
+    OrganizationId AS cssOrgId,
+    ClassMeetingDays,
+    RecordStartDateTime,
+    RecordEndDateTime
+  FROM CourseSectionSchedule
+) md
+  ON md.cssOrgId = Organizationid
+ AND (
+   md.RecordStartDateTime IS NULL
+   OR date >= DATE(md.RecordStartDateTime)
+ )
+ AND (
+   md.RecordEndDateTime IS NULL
+   OR date < DATE(md.RecordEndDateTime)
+ )
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 WHERE 
   CAST(strftime('%w',date) as INTEGER) between 1 and 5
@@ -346,7 +364,7 @@ WHERE
   AND ifnull(occ.fechasCrisis,'1900-01-01') NOT LIKE "%"|| date || "%"
   AND ifnull(oce_colegio.fechasEventos,'1900-01-01')  NOT LIKE "%"|| date || "%"
   --AND result.idAsignatura NOT NULl
-  AND md.cssClassMeetingDays like "%" || diaSemanaCalendar || "%"	   
+  AND md.ClassMeetingDays like "%" || diaSemanaCalendar || "%"
 GROUP BY Organizationid, date
 """)
     except Exception as e:
