@@ -90,11 +90,11 @@ def fn1FA(conn, return_dict):
             else:
                 for p in _p:
                     _v = str(p)
-                    _r2 = ejecutar_sql(conn, _s2, _v)
+                    _r2 = ejecutar_sql(conn, _s2, (_v,))
                     if(len(_r2) > 0):
                         for rp in _r2:
                             _v3 = str(rp[0])
-                            _r3 = ejecutar_sql(conn, _s3, _v3)
+                            _r3 = ejecutar_sql(conn, _s3, (_v3,))
                             if(len(_r3) > 0):
                                 for r3 in _r3:
                                     _v4 = r3
