@@ -30,7 +30,7 @@ def fn1FC(conn, return_dict):
         rows = ejecutar_sql(conn, """--sql
 SELECT DISTINCT
 	 pst.personId as 'estudianteId'
-	, pid.Identifier as 'RUN'
+	, pid.Identifier as 'RUN/IPE'
 	, oprAlumno.RoleId
 	, prshApoderado.personId as 'ApoderadoId'
 	, prshApoderado.RefPersonRelationshipId
@@ -47,7 +47,7 @@ FROM PersonStatus pst
 -- RESCATA INFORMACIÓN DEL ESTUDIANTE
 OUTER LEFT JOIN PersonIdentifier pid
 	ON pst.personId = pid.personId
-	AND pid.RefPersonIdentificationSystemId IN (SELECT RefPersonIdentificationSystemId FROM RefPersonIdentificationSystem WHERE CODE IN ('RUN'))
+	AND pid.RefPersonIdentificationSystemId IN (SELECT RefPersonIdentificationSystemId FROM RefPersonIdentificationSystem WHERE CODE IN ('RUN', 'IPE'))
 OUTER LEFT JOIN OrganizationPersonRole oprAlumno
 	ON pst.personId = oprAlumno.personId
 	AND oprAlumno.RoleId IN (SELECT RoleId FROM Role WHERE Name IN ('Estudiante'))
@@ -90,7 +90,7 @@ WHERE
     try:
         for row in rows:
             estudianteId = row[0]
-            estudianteRUN = row[1]
+            estudianteIdentifier = row[1]
             estudianteRole = row[2]
             apoderadoId = row[3]
             apoderadoRefPersonRelationShip = row[4]
@@ -104,7 +104,7 @@ WHERE
 
             if(not (estudianteId
                and
-               estudianteRUN
+               estudianteIdentifier
                and
                estudianteRole
                and
