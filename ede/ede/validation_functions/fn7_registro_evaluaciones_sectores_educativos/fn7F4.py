@@ -38,6 +38,7 @@ def fn7F4(conn, return_dict):
     if(len(_query) == 0):
         logger.error(f'No existen cambios realizados a las ponderaciones ')
         logger.error(f'S/Datos')
+        _r = True
         return_dict[getframeinfo(currentframe()).function] = _r
         logger.info(f"{current_process().name} finalizando...")
         return _r
