@@ -65,14 +65,14 @@ def fn5E0(conn, return_dict):
                 WHEN strftime('%w', rae.Date) = '5' THEN 'Viernes'
                 WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
               END as 'diaSemana', -- 03 rescata solo el dia de la semana desde rae.Date
-              count(refattendancestatusid) as 'totalEstudiantes', -- 04 Cantidad total de estudiantes
+              sum(CASE WHEN refattendancestatusid IN (1,2,3,4) THEN 1 ELSE 0 END) as 'totalEstudiantes', -- 04 Cantidad total de estudiantes
               sum(CASE WHEN refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- 05 
               --group_concat(CASE WHEN refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista',
               sum(CASE WHEN refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- 06
               --group_concat(CASE WHEN refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista',	
               sum(CASE WHEN refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- 07
               --group_concat(CASE WHEN refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista',
-              count(rae.digitalRandomKey) as 'firmadoEnClases' -- 08
+              sum(CASE WHEN refattendancestatusid IN (1,2,3,4) AND rae.digitalRandomKey IS NOT NULL THEN 1 ELSE 0 END) as 'firmadoEnClases' -- 08
             FROM Organization O
               JOIN RefOrganizationType rot
                 ON O.RefOrganizationTypeId = rot.RefOrganizationTypeId
