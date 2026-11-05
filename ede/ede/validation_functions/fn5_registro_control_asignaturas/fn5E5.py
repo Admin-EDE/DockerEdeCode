@@ -115,26 +115,23 @@ FROM
         WHEN strftime('%w', rae.Date) = '6' THEN 'Sabado'
       END as 'diaSemana',
       -- rescata solo el dia de la semana desde rae.Date [idx 3]
-      count(refattendancestatusid) as 'totalEstudiantes',
+      count(DISTINCT opr.PersonId) as 'totalEstudiantes',
       -- Cantidad total de estudiantes [idx 4]
-      sum(
+      count(DISTINCT
         CASE
-          WHEN refattendancestatusid IN (1) THEN 1
-          ELSE 0
+          WHEN refattendancestatusid IN (1) THEN opr.PersonId
         END
       ) as 'estudiantesPresentesAsignatura',
       -- [idx 5]
-      sum(
+      count(DISTINCT
         CASE
-          WHEN refattendancestatusid IN (2, 3) THEN 1
-          ELSE 0
+          WHEN refattendancestatusid IN (2, 3) THEN opr.PersonId
         END
       ) as 'estudiantesAusentesAsignatura',
       -- [idx 6]
-      sum(
+      count(DISTINCT
         CASE
-          WHEN refattendancestatusid IN (4) THEN 1
-          ELSE 0
+          WHEN refattendancestatusid IN (4) THEN opr.PersonId
         END
       ) as 'estudiantesRetrasadosAsignatura',
       -- [idx 7]
@@ -201,6 +198,7 @@ FROM
     WHERE
       -- Verifica que se encuentre cargado el leccionario
       rae.RefAttendanceEventTypeId = 2
+      AND rae.RefAttendanceStatusId IN (1, 2, 3, 4)
       AND -- Verifica que se encuentre cargado el leccionario
       ocs.Description NOT NULL
       AND -- Verifica que el indicador sea True, ya que en estos casos corresponde la relación	
@@ -219,8 +217,8 @@ FROM
       rae.digitalRandomKey REGEXP '^[0-9]{6}([-]{1}[0-9kK]{1})?$'
       AND ClassPeriod in ('Bloque02')
     GROUP BY
-      rae.Date,
-      O.OrganizationId --ORDER BY O.OrganizationId
+      ors.Parent_OrganizationID,
+      strftime('%Y-%m-%d', rae.Date) --ORDER BY O.OrganizationId
   ) a ON O.OrganizationId = a.Parent_OrganizationID
 WHERE
   -- Verifica que el tipo de asistencia sea diaria
