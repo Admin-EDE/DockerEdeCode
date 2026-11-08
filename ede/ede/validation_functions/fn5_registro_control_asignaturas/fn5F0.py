@@ -200,14 +200,14 @@ LEFT JOIN (
       WHEN strftime('%m', rae.Date) = '12' THEN 'Diciembre'		
     END as 'Mes', -- rescata solo el mes desde rae.Date [idx 5]
     strftime('%H:%M', rae.Date, substr(rae.Date,length(rae.Date)-5,6)) as 'hora', -- rescata solo la hora desde rae.Date [idx 6]
-    count(rae.RoleAttendanceEventId) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
+    sum(CASE WHEN rae.refattendancestatusid IN (1,2,3,4) THEN 1 ELSE 0 END) as 'totalEstudiantes', -- Cantidad total de estudiantes [idx 7]
     sum(CASE WHEN rae.refattendancestatusid IN (1) THEN 1 ELSE 0 END) as 'estudiantesPresentes', -- [idx 8]
     group_concat(CASE WHEN rae.refattendancestatusid IN (1) THEN Identifier END) as 'estudiantesPresentesNumLista', -- [idx 9]
     sum(CASE WHEN rae.refattendancestatusid IN (2,3) THEN 1 ELSE 0 END) as 'estudiantesAusentes', -- [idx 10]
     group_concat(CASE WHEN rae.refattendancestatusid IN (2,3) THEN Identifier END) as 'estudiantesAusentesNumLista', -- [idx 11]
     sum(CASE WHEN rae.refattendancestatusid IN (4) THEN 1 ELSE 0 END) as 'estudiantesRetrasados', -- [idx 12]
     group_concat(CASE WHEN rae.refattendancestatusid IN (4) THEN Identifier END) as 'estudiantesRetrasadosNumLista', -- [idx 13]
-    count(rae.digitalRandomKey) as 'cantidadRegistrosFirmados', -- [idx 14]
+    sum(CASE WHEN rae.refattendancestatusid IN (1,2,3,4) AND rae.digitalRandomKey IS NOT NULL THEN 1 ELSE 0 END) as 'cantidadRegistrosFirmados', -- [idx 14]
     group_concat(DISTINCT '"' || ocs.description || '"') as 'observacionesLeccionario' -- [idx 15]
     FROM Organization O
     JOIN RefOrganizationType rot
